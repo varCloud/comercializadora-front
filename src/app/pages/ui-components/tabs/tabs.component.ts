@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import {ThemePalette} from '@angular/material/core';
 
 @Component({
-  selector: 'app-tabs',
-  templateUrl: './tabs.component.html',
+    selector: 'app-tabs',
+    templateUrl: './tabs.component.html',
+    standalone: false
 })
 export class AppTabsComponent {
   constructor() {}

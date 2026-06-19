@@ -10,10 +10,9 @@ import { CommonModule, NgForOf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-horizontal-nav-item',
-  standalone: true,
-  imports: [TablerIconsModule, CommonModule, MatIconModule, NgForOf],
-  templateUrl: './nav-item.component.html',
+    selector: 'app-horizontal-nav-item',
+    imports: [TablerIconsModule, CommonModule, MatIconModule, NgForOf],
+    templateUrl: './nav-item.component.html'
 })
 export class AppHorizontalNavItemComponent implements OnInit {
   @Input() depth: any;

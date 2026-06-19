@@ -44,25 +44,24 @@ interface quicklinks {
 }
 
 @Component({
-  selector: 'app-full',
-  standalone: true,
-  imports: [
-    RouterModule,
-    AppNavItemComponent,
-    MaterialModule,
-    CommonModule,
-    SidebarComponent,
-    NgScrollbarModule,
-    TablerIconsModule,
-    HeaderComponent,
-    AppHorizontalHeaderComponent,
-    AppHorizontalSidebarComponent,
-    AppBreadcrumbComponent,
-    CustomizerComponent,
-  ],
-  templateUrl: './full.component.html',
-  styleUrls: [],
-  encapsulation: ViewEncapsulation.None,
+    selector: 'app-full',
+    imports: [
+        RouterModule,
+        AppNavItemComponent,
+        MaterialModule,
+        CommonModule,
+        SidebarComponent,
+        NgScrollbarModule,
+        TablerIconsModule,
+        HeaderComponent,
+        AppHorizontalHeaderComponent,
+        AppHorizontalSidebarComponent,
+        AppBreadcrumbComponent,
+        CustomizerComponent,
+    ],
+    templateUrl: './full.component.html',
+    styleUrls: [],
+    encapsulation: ViewEncapsulation.None
 })
 export class FullComponent implements OnInit {
   navItems = navItems;

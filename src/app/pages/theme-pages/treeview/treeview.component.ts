@@ -95,9 +95,10 @@ export class ChecklistDatabase {
 }
 
 @Component({
-  selector: 'app-treeview',
-  templateUrl: './treeview.component.html',
-  providers: [ChecklistDatabase],
+    selector: 'app-treeview',
+    templateUrl: './treeview.component.html',
+    providers: [ChecklistDatabase],
+    standalone: false
 })
 export class AppTreeviewComponent {
   /** Map from flat node to nested node. This helps us finding the nested node to be modified */

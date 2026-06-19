@@ -5,9 +5,10 @@ import { TaskSection } from './tasks';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'app-task',
-  templateUrl: './task.component.html',
-  styleUrls: ['./task.component.scss'],
+    selector: 'app-task',
+    templateUrl: './task.component.html',
+    styleUrls: ['./task.component.scss'],
+    standalone: false
 })
 export class AppTaskComponent {
   sectionTask: TaskSection[] | null = null;

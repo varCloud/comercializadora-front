@@ -6,8 +6,9 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
-  selector: 'app-invoice-list',
-  templateUrl: './invoice-list.component.html'
+    selector: 'app-invoice-list',
+    templateUrl: './invoice-list.component.html',
+    standalone: false
 })
 export class AppInvoiceListComponent implements AfterViewInit {
   allComplete: boolean = false;

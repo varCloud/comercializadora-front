@@ -7,11 +7,10 @@ import { UserCustomModel } from 'src/app/models/user-custom.model';
 import { ClavesService } from 'src/app/services/claves.service';
 
 @Component({
-  selector: 'app-card-info-usuario',
-  standalone: true,
-  imports: [BlockUIModule, MaterialModule, CommonModule],
-  templateUrl: './card-info-usuario.component.html',
-  styleUrl: './card-info-usuario.component.scss'
+    selector: 'app-card-info-usuario',
+    imports: [BlockUIModule, MaterialModule, CommonModule],
+    templateUrl: './card-info-usuario.component.html',
+    styleUrl: './card-info-usuario.component.scss'
 })
 export class CardInfoUsuarioComponent implements OnInit {
   @BlockUI('shipping-ticket-layout') blockUILayout: NgBlockUI;

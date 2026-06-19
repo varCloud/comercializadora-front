@@ -120,7 +120,8 @@ const employees = [
 ];
 
 @Component({
-  templateUrl: './kichen-sink.component.html',
+    templateUrl: './kichen-sink.component.html',
+    standalone: false
 })
 export class AppKichenSinkComponent implements AfterViewInit {
   @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
@@ -208,9 +209,10 @@ export class AppKichenSinkComponent implements AfterViewInit {
 }
 
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: 'app-dialog-content',
-  templateUrl: 'kichen-sink-dialog-content.html',
+    // tslint:disable-next-line: component-selector
+    selector: 'app-dialog-content',
+    templateUrl: 'kichen-sink-dialog-content.html',
+    standalone: false
 })
 // tslint:disable-next-line: component-class-suffix
 export class AppKichenSinkDialogContentComponent {

@@ -3,8 +3,9 @@ import { ThemePalette } from '@angular/material/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'app-progress-snipper',
-  templateUrl: './progress-snipper.component.html',
+    selector: 'app-progress-snipper',
+    templateUrl: './progress-snipper.component.html',
+    standalone: false
 })
 export class AppProgressSnipperComponent implements OnInit {
   constructor() {}

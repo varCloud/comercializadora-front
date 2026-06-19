@@ -120,7 +120,8 @@ const employees = [
 ];
 
 @Component({
-  templateUrl: './employee.component.html',
+    templateUrl: './employee.component.html',
+    standalone: false
 })
 export class AppEmployeeComponent implements AfterViewInit {
   @ViewChild(MatTable, { static: true }) table: MatTable<any> = Object.create(null);
@@ -208,9 +209,10 @@ export class AppEmployeeComponent implements AfterViewInit {
 }
 
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: 'app-dialog-content',
-  templateUrl: 'employee-dialog-content.html',
+    // tslint:disable-next-line: component-selector
+    selector: 'app-dialog-content',
+    templateUrl: 'employee-dialog-content.html',
+    standalone: false
 })
 // tslint:disable-next-line: component-class-suffix
 export class AppEmployeeDialogContentComponent {

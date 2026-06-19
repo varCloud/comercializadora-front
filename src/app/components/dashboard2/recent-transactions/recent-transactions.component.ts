@@ -13,10 +13,9 @@ interface stats {
 }
 
 @Component({
-  selector: 'app-recent-transactions',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule, NgFor, NgIf],
-  templateUrl: './recent-transactions.component.html',
+    selector: 'app-recent-transactions',
+    imports: [NgApexchartsModule, MaterialModule, NgFor, NgIf],
+    templateUrl: './recent-transactions.component.html'
 })
 export class AppRecentTransactionsComponent {
   stats: stats[] = [

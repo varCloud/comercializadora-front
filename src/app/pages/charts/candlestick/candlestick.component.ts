@@ -35,10 +35,9 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-candlestick',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule],
-  templateUrl: './candlestick.component.html',
+    selector: 'app-candlestick',
+    imports: [NgApexchartsModule, MaterialModule],
+    templateUrl: './candlestick.component.html'
 })
 export class AppCandlestickChartComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

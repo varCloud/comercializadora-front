@@ -11,9 +11,10 @@ interface DialogData {
 }
 
 @Component({
-  selector: 'app-calendar-form-dialog',
-  templateUrl: './calendar-form-dialog.component.html',
-  styleUrls: ['./calendar-form-dialog.component.scss'],
+    selector: 'app-calendar-form-dialog',
+    templateUrl: './calendar-form-dialog.component.html',
+    styleUrls: ['./calendar-form-dialog.component.scss'],
+    standalone: false
 })
 export class CalendarFormDialogComponent {
   event: any;

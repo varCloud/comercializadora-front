@@ -16,24 +16,23 @@ import { AppRecentTransactionsComponent } from '../../../components/dashboard2/r
 import { AppProductPerformanceComponent } from '../../../components/dashboard2/product-performance/product-performance.component';
 
 @Component({
-  selector: 'app-dashboard2',
-  standalone: true,
-  imports: [
-    AppWelcomeCardComponent,
-    AppPaymentsComponent,
-    AppProductsComponent,
-    AppRevenueUpdatesTwoComponent,
-    AppSalesOverviewComponent,
-    AppTotalEarningsComponent,
-    AppSalesProfitComponent,
-    AppMonthlyEarningsTwoComponent,
-    AppWeeklyStatsComponent,
-    AppYearlySalesComponent,
-    AppPaymentGatewaysComponent,
-    AppRecentTransactionsComponent,
-    AppProductPerformanceComponent,
-  ],
-  templateUrl: './dashboard2.component.html',
+    selector: 'app-dashboard2',
+    imports: [
+        AppWelcomeCardComponent,
+        AppPaymentsComponent,
+        AppProductsComponent,
+        AppRevenueUpdatesTwoComponent,
+        AppSalesOverviewComponent,
+        AppTotalEarningsComponent,
+        AppSalesProfitComponent,
+        AppMonthlyEarningsTwoComponent,
+        AppWeeklyStatsComponent,
+        AppYearlySalesComponent,
+        AppPaymentGatewaysComponent,
+        AppRecentTransactionsComponent,
+        AppProductPerformanceComponent,
+    ],
+    templateUrl: './dashboard2.component.html'
 })
 export class AppDashboard2Component {
   constructor() {}

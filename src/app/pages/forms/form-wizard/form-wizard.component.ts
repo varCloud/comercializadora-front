@@ -8,10 +8,9 @@ import {
 import { MaterialModule } from '../../../material.module';
 
 @Component({
-  selector: 'app-form-wizard',
-  standalone: true,
-  imports: [MaterialModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './form-wizard.component.html',
+    selector: 'app-form-wizard',
+    imports: [MaterialModule, FormsModule, ReactiveFormsModule],
+    templateUrl: './form-wizard.component.html'
 })
 export class AppFormWizardComponent {
   firstFormGroup = this._formBuilder.group({

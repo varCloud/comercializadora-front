@@ -202,10 +202,9 @@ const BASIC_DATA: Element[] = [
 
 
 @Component({
-  selector: 'app-basic-table',
-  standalone: true,
-  imports:[MaterialModule, CommonModule],
-  templateUrl: './basic-table.component.html',
+    selector: 'app-basic-table',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './basic-table.component.html'
 })
 export class AppBasicTableComponent implements OnInit {
 

@@ -7,8 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { OkDialogComponent } from './ok-dialog/ok-dialog.component';
 
 @Component({
-  selector: 'app-edit-invoice',
-  templateUrl: './edit-invoice.component.html'
+    selector: 'app-edit-invoice',
+    templateUrl: './edit-invoice.component.html',
+    standalone: false
 })
 export class AppEditInvoiceComponent {
   id: any;

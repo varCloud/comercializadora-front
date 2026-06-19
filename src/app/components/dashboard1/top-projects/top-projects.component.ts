@@ -58,10 +58,9 @@ interface month {
 }
 
 @Component({
-  selector: 'app-top-projects',
-  standalone: true,
-  imports: [MaterialModule, CommonModule],
-  templateUrl: './top-projects.component.html',
+    selector: 'app-top-projects',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './top-projects.component.html'
 })
 export class AppTopProjectsComponent {
 

@@ -12,10 +12,9 @@ export interface Task {
 }
 
 @Component({
-  selector: 'app-checkbox',
-  standalone: true,
-  imports: [MaterialModule, FormsModule, ReactiveFormsModule, CommonModule],
-  templateUrl: './checkbox.component.html',
+    selector: 'app-checkbox',
+    imports: [MaterialModule, FormsModule, ReactiveFormsModule, CommonModule],
+    templateUrl: './checkbox.component.html'
 })
 export class AppCheckboxComponent {
   //   reactive form

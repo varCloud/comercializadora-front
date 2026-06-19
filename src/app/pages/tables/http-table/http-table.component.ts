@@ -9,11 +9,10 @@ import { CommonModule } from '@angular/common';
 import { TablerIconsModule } from 'angular-tabler-icons';
 
 @Component({
-  selector: 'app-http-table',
-  standalone: true,
-  imports:[MaterialModule, CommonModule, TablerIconsModule],
-  templateUrl: './http-table.component.html',
-  styleUrls: ['./http-table.component.scss']
+    selector: 'app-http-table',
+    imports: [MaterialModule, CommonModule, TablerIconsModule],
+    templateUrl: './http-table.component.html',
+    styleUrls: ['./http-table.component.scss']
 })
 export class AppHttpTableComponent {
 

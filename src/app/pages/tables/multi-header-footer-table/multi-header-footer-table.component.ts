@@ -9,11 +9,10 @@ export interface Transaction {
 }
 
 @Component({
-  selector: 'app-multi-header-footer-table',
-  standalone: true,
-  imports: [MaterialModule, CommonModule],
-  templateUrl: './multi-header-footer-table.component.html',
-  styleUrls: ['./multi-header-footer-table.component.scss'],
+    selector: 'app-multi-header-footer-table',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './multi-header-footer-table.component.html',
+    styleUrls: ['./multi-header-footer-table.component.scss']
 })
 export class AppMultiHeaderFooterTableComponent implements OnInit {
   displayedColumns: string[] = ['item', 'cost'];

@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ThemePalette } from '@angular/material/core';
 
 @Component({
-  selector: 'app-slide-toggle',
-  templateUrl: './slide-toggle.component.html',
+    selector: 'app-slide-toggle',
+    templateUrl: './slide-toggle.component.html',
+    standalone: false
 })
 export class AppSlideToggleComponent implements OnInit {
   isChecked = true;

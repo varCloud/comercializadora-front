@@ -189,10 +189,9 @@ const PRODUCT_DATA: Element[] = [
 ];
 
 @Component({
-  selector: 'app-pagination-table',
-  standalone: true,
-  imports: [MaterialModule, CommonModule],
-  templateUrl: './pagination-table.component.html',
+    selector: 'app-pagination-table',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './pagination-table.component.html'
 })
 export class AppPaginationTableComponent {
   displayedColumns = ['assigned', 'name', 'priority', 'budget'];

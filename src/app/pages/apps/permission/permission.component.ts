@@ -4,9 +4,10 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-permission',
-  templateUrl: './permission.component.html',
-  styleUrls: ['./permission.component.scss']
+    selector: 'app-permission',
+    templateUrl: './permission.component.html',
+    styleUrls: ['./permission.component.scss'],
+    standalone: false
 })
 export class AppPermissionComponent implements OnInit {
   currentRole!: string;

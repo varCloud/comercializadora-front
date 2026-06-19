@@ -26,10 +26,9 @@ export interface projectsChart {
 }
 
 @Component({
-  selector: 'app-projects',
-  standalone: true, 
-  imports: [NgApexchartsModule, MaterialModule, TablerIconsModule],
-  templateUrl: './projects.component.html',
+    selector: 'app-projects',
+    imports: [NgApexchartsModule, MaterialModule, TablerIconsModule],
+    templateUrl: './projects.component.html'
 })
 export class AppProjectsComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

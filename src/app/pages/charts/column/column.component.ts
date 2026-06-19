@@ -35,10 +35,9 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-column',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule],
-  templateUrl: './column.component.html',
+    selector: 'app-column',
+    imports: [NgApexchartsModule, MaterialModule],
+    templateUrl: './column.component.html'
 })
 
 export class AppColumnChartComponent {

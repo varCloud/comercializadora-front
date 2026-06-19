@@ -6,10 +6,9 @@ import { MaterialModule } from '../../../material.module';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-boxed-register',
-  standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, NgIf],
-  templateUrl: './boxed-register.component.html',
+    selector: 'app-boxed-register',
+    imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, NgIf],
+    templateUrl: './boxed-register.component.html'
 })
 export class AppBoxedRegisterComponent {
   options = this.settings.getOptions();

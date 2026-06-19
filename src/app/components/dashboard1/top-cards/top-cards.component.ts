@@ -11,10 +11,9 @@ interface topcards {
 }
 
 @Component({
-  selector: 'app-top-cards',
-  standalone: true,
-  imports: [MaterialModule, NgFor],
-  templateUrl: './top-cards.component.html',
+    selector: 'app-top-cards',
+    imports: [MaterialModule, NgFor],
+    templateUrl: './top-cards.component.html'
 })
 export class AppTopCardsComponent {
   topcards: topcards[] = [

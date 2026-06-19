@@ -16,7 +16,7 @@ import { UserModel } from 'src/app/models/user';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
 import { BlockComponent } from '../../ui-components/block/block.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-import { NotifierService } from 'angular-notifier';
+import { NotificationService } from 'src/app/services/notification.service';
 import {
   LoginRequest,
   LoginRequestModel,
@@ -24,19 +24,18 @@ import {
 import { UserTypeEnum } from 'src/app/config/enum';
 
 @Component({
-  selector: 'app-side-login',
-  standalone: true,
-  imports: [
-    RouterModule,
-    MaterialModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BlockUIModule,
-    SweetAlert2Module,
-    CommonModule,
-  ],
-  templateUrl: './side-login.component.html',
-  styleUrl: './side-login.component.scss',
+    selector: 'app-side-login',
+    imports: [
+        RouterModule,
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule,
+        BlockUIModule,
+        SweetAlert2Module,
+        CommonModule,
+    ],
+    templateUrl: './side-login.component.html',
+    styleUrl: './side-login.component.scss'
 })
 export class AppSideLoginComponent {
   options = this.settings.getOptions();
@@ -49,7 +48,7 @@ export class AppSideLoginComponent {
     private settings: CoreService,
     private router: Router,
     private _loginService: LoginService,
-    private notify: NotifierService,
+    private notify: NotificationService,
   ) {}
 
   form = new FormGroup({

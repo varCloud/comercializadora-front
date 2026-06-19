@@ -89,13 +89,17 @@ antes de crear o modificar componentes, páginas, servicios o features, y respé
 - `01-css-minimo.md` — generar el mínimo CSS, usar utilidades globales.
 - `02-servicios-http.md` — HTTP vía `environment`/`uris-config`, sin URLs hardcodeadas.
 - `03-idioma.md` — UI en español, identificadores en inglés.
-- `04-errores-y-loading.md` — `ng-block-ui` para loading, `angular-notifier` para avisos.
+- `04-errores-y-loading.md` — `ng-block-ui` para loading, `NotificationService` (MatSnackBar) para avisos.
 - `05-commits.md` — convención de mensajes de commit.
 - `06-arquitectura.md` — standalone + `loadComponent` en admin.
 - `07-menu-navegacion.md` — rutas de producto en `navItemsApp`; prod oculta el menú demo.
 
 > Al definir una regla nueva, agrégala como archivo en `.claude/rules/` (no engordes
 > este CLAUDE.md) y registra su línea en `.claude/rules/README.md`.
+
+Planes de trabajo (features y cambios mayores) en **`.claude/docs/plans/features/`**
+(índice en su `README.md`). Pipelines de agentes en **`.claude/docs/agentes/<tema>/`**
+(describe cada agente antes de invocarlo — ver memoria `flujo-agentes`).
 
 ## Convenciones
 

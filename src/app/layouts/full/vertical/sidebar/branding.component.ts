@@ -4,10 +4,9 @@ import { RouterLink } from '@angular/router';
 import { CoreService } from 'src/app/services/core.service';
 
 @Component({
-  selector: 'app-branding',
-  standalone: true,
-  imports: [NgIf, RouterLink],
-  template: `
+    selector: 'app-branding',
+    imports: [NgIf, RouterLink],
+    template: `
     <div class="branding">
       @if (options.theme === 'light') {
         <a routerLink="/">
@@ -38,7 +37,7 @@ import { CoreService } from 'src/app/services/core.service';
         </a>
       }
     </div>
-  `,
+  `
 })
 export class BrandingComponent {
   options = this.settings.getOptions();

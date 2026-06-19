@@ -12,8 +12,9 @@ export interface DialogData {
 
 //  1
 @Component({
-  selector: 'dialog-overview',
-  templateUrl: 'dialog-overview.component.html',
+    selector: 'dialog-overview',
+    templateUrl: 'dialog-overview.component.html',
+    standalone: false
 })
 export class AppDialogOverviewComponent {
   constructor(public dialogRef: MatDialogRef<AppDialogOverviewComponent>) {}
@@ -23,15 +24,17 @@ export class AppDialogOverviewComponent {
  * @title 2 Dialog with header, scrollable content and actions
  */
 @Component({
-  selector: 'dialog-content',
-  templateUrl: 'dialog-content.component.html',
+    selector: 'dialog-content',
+    templateUrl: 'dialog-content.component.html',
+    standalone: false
 })
 export class AppDialogContentComponent {}
 
 // 3
 @Component({
-  selector: 'dialog-data-example-dialog',
-  templateUrl: 'dialog-data.component.html',
+    selector: 'dialog-data-example-dialog',
+    templateUrl: 'dialog-data.component.html',
+    standalone: false
 })
 export class AppDialogDataComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
@@ -39,14 +42,16 @@ export class AppDialogDataComponent {
 
 // 4
 @Component({
-  selector: 'dialog-menu',
-  templateUrl: 'dialog-menu.component.html',
+    selector: 'dialog-menu',
+    templateUrl: 'dialog-menu.component.html',
+    standalone: false
 })
 export class AppDialogMenuComponent {}
 
 @Component({
-  selector: 'app-dialog',
-  templateUrl: './dialog.component.html',
+    selector: 'app-dialog',
+    templateUrl: './dialog.component.html',
+    standalone: false
 })
 export class AppDialogComponent {
   // 4

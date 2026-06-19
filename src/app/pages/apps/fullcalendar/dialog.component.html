@@ -10,7 +10,7 @@
           <input
             matInput
             placeholder="Edit Title"
-            [(ngModel)]="data?.event.title"
+            [(ngModel)]="data.event.title"
           />
         </mat-form-field>
       </div>
@@ -21,7 +21,7 @@
             matInput
             placeholder="Change Color"
             type="color"
-            [(ngModel)]="data?.event.color.primary"
+            [(ngModel)]="data.event.color.primary"
           />
         </mat-form-field>
       </div>
@@ -33,7 +33,7 @@
             [matDatepicker]="startDateDP"
             placeholder="Start Date"
             name="startDate"
-            [(ngModel)]="data?.event.start"
+            [(ngModel)]="data.event.start"
           />
           <mat-datepicker-toggle
             matSuffix
@@ -50,7 +50,7 @@
             [matDatepicker]="endDateDP"
             placeholder="End Date"
             name="endDate"
-            [(ngModel)]="data?.event.end"
+            [(ngModel)]="data.event.end"
           />
           <mat-datepicker-toggle
             matSuffix

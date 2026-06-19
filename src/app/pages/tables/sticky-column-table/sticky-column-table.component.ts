@@ -88,11 +88,10 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 @Component({
-  selector: 'app-sticky-column-table',
-  standalone: true,
-  imports: [MaterialModule, CommonModule],
-  templateUrl: './sticky-column-table.component.html',
-  styleUrls: ['./sticky-column-table.component.scss'],
+    selector: 'app-sticky-column-table',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './sticky-column-table.component.html',
+    styleUrls: ['./sticky-column-table.component.scss']
 })
 export class AppStickyColumnTableComponent implements OnInit {
   displayedColumns = [

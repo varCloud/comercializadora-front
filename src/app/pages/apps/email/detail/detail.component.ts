@@ -4,8 +4,9 @@ import { mailGlobalVariable, mailService } from '../email.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-maildetail',
-  templateUrl: './detail.component.html',
+    selector: 'app-maildetail',
+    templateUrl: './detail.component.html',
+    standalone: false
 })
 export class DetailComponent {
   // tslint:disable-next-line: no-shadowed-variable

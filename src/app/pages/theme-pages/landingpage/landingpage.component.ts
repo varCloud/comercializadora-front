@@ -38,8 +38,9 @@ interface features {
 }
 
 @Component({
-  selector: 'app-landingpage',
-  templateUrl: './landingpage.component.html',
+    selector: 'app-landingpage',
+    templateUrl: './landingpage.component.html',
+    standalone: false
 })
 export class AppLandingpageComponent {
   @Input() showToggle = true;

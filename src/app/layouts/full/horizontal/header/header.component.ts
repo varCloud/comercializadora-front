@@ -46,10 +46,9 @@ interface quicklinks {
 }
 
 @Component({
-  selector: 'app-horizontal-header',
-  standalone: true,
-  imports: [RouterModule, TablerIconsModule, MaterialModule, BrandingComponent, NgFor],
-  templateUrl: './header.component.html',
+    selector: 'app-horizontal-header',
+    imports: [RouterModule, TablerIconsModule, MaterialModule, BrandingComponent, NgFor],
+    templateUrl: './header.component.html'
 })
 export class AppHorizontalHeaderComponent {
    @Input() showToggle = true;
@@ -96,7 +95,7 @@ export class AppHorizontalHeaderComponent {
     public dialog: MatDialog,
     private translate: TranslateService
   ) {
-    translate.setDefaultLang('en');
+    translate.setFallbackLang('en');
   }
 
   openDialog() {
@@ -274,10 +273,9 @@ export class AppHorizontalHeaderComponent {
 }
 
 @Component({
-  selector: 'app-search-dialog',
-  standalone: true,
-  imports: [RouterModule, MaterialModule, TablerIconsModule, FormsModule, NgForOf],
-  templateUrl: 'search-dialog.component.html',
+    selector: 'app-search-dialog',
+    imports: [RouterModule, MaterialModule, TablerIconsModule, FormsModule, NgForOf],
+    templateUrl: 'search-dialog.component.html'
 })
 export class AppHorizontalSearchDialogComponent {
   searchText: string = '';

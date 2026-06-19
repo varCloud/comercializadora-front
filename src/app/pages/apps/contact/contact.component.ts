@@ -21,7 +21,8 @@ export interface ContactData {
 }
 
 @Component({
-  templateUrl: './contact.component.html',
+    templateUrl: './contact.component.html',
+    standalone: false
 })
 export class AppContactComponent implements OnInit {
   closeResult = '';
@@ -90,9 +91,10 @@ export class AppContactComponent implements OnInit {
 }
 
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: 'app-dialog-content',
-  templateUrl: 'contact-dialog-content.html',
+    // tslint:disable-next-line: component-selector
+    selector: 'app-dialog-content',
+    templateUrl: 'contact-dialog-content.html',
+    standalone: false
 })
 // tslint:disable-next-line: component-class-suffix
 export class AppContactDialogContentComponent {

@@ -12,10 +12,9 @@ interface stats {
 }
 
 @Component({
-  selector: 'app-payment-gateways',
-  standalone: true,
-  imports:[MaterialModule, NgFor],
-  templateUrl: './payment-gateways.component.html',
+    selector: 'app-payment-gateways',
+    imports: [MaterialModule, NgFor],
+    templateUrl: './payment-gateways.component.html'
 })
 export class AppPaymentGatewaysComponent {
   stats: stats[] = [

@@ -2,8 +2,9 @@ import { Component, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion'
 
 @Component({
-  selector: 'app-expansion',
-  templateUrl: './expansion.component.html'
+    selector: 'app-expansion',
+    templateUrl: './expansion.component.html',
+    standalone: false
 })
 export class AppExpansionComponent {
   // 2 expand all

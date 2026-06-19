@@ -4,9 +4,10 @@ import { course } from '../course';
 import { CourseService } from '../course.service';
 
 @Component({
-  selector: 'app-course-detail',
-  templateUrl: './course-detail.component.html',
-  styleUrls: ['./course-detail.component.scss'],
+    selector: 'app-course-detail',
+    templateUrl: './course-detail.component.html',
+    styleUrls: ['./course-detail.component.scss'],
+    standalone: false
 })
 export class AppCourseDetailComponent {
   id: any;

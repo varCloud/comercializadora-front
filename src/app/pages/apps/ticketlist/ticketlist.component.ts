@@ -121,8 +121,9 @@ const tickets: TicketElement[] = [
 ];
 
 @Component({
-  selector: 'app-ticket-list',
-  templateUrl: './ticketlist.component.html',
+    selector: 'app-ticket-list',
+    templateUrl: './ticketlist.component.html',
+    standalone: false
 })
 export class AppTicketlistComponent implements OnInit {
   @ViewChild(MatTable, { static: true }) table: MatTable<any> =
@@ -221,9 +222,10 @@ export class AppTicketlistComponent implements OnInit {
 }
 
 @Component({
-  // tslint:disable-next-line - Disables all
-  selector: 'app-dialog-content',
-  templateUrl: 'ticket-dialog-content.html',
+    // tslint:disable-next-line - Disables all
+    selector: 'app-dialog-content',
+    templateUrl: 'ticket-dialog-content.html',
+    standalone: false
 })
 // tslint:disable-next-line - Disables all
 export class AppTicketDialogContentComponent {

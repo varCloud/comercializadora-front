@@ -38,8 +38,9 @@ interface month {
 }
 
 @Component({
-  selector: 'app-charts',
-  templateUrl: './charts.component.html',
+    selector: 'app-charts',
+    templateUrl: './charts.component.html',
+    standalone: false
 })
 export class AppChartsComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

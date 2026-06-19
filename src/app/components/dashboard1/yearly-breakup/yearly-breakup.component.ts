@@ -26,10 +26,9 @@ export interface yearlyChart {
 }
 
 @Component({
-  selector: 'app-yearly-breakup',
-  standalone: true,
-  imports: [MaterialModule, NgApexchartsModule, TablerIconsModule],
-  templateUrl: './yearly-breakup.component.html',
+    selector: 'app-yearly-breakup',
+    imports: [MaterialModule, NgApexchartsModule, TablerIconsModule],
+    templateUrl: './yearly-breakup.component.html'
 })
 export class AppYearlyBreakupComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

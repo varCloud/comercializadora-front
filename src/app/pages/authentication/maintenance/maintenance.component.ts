@@ -3,9 +3,8 @@ import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
 
 @Component({
-  selector: 'app-maintenance',
-  standalone: true,
-  imports: [RouterModule, MaterialModule],
-  templateUrl: './maintenance.component.html',
+    selector: 'app-maintenance',
+    imports: [RouterModule, MaterialModule],
+    templateUrl: './maintenance.component.html'
 })
 export class AppMaintenanceComponent {}

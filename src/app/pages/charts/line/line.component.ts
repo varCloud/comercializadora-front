@@ -34,10 +34,9 @@ export type ChartOptions = {
   labels: string[];
 };
 @Component({
-  selector: 'app-line',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule],
-  templateUrl: './line.component.html',
+    selector: 'app-line',
+    imports: [NgApexchartsModule, MaterialModule],
+    templateUrl: './line.component.html'
 })
 export class AppLineChartComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

@@ -2,13 +2,13 @@ import { NgBlockUI } from "ng-block-ui";
 import * as FileSaver from 'file-saver';
 import * as printJS from 'print-js';
 import { Router } from "@angular/router";
-import { NotifierService } from "angular-notifier";
+import { NotificationService } from "../services/notification.service";
 import { CONSTANTS } from "../config/constants";
 
 
 export const proccessReportPdf =
 (
-    _notifierService: NotifierService,
+    _notifierService: NotificationService,
     blockUI: NgBlockUI, 
     file:any, 
     fileName: string, 

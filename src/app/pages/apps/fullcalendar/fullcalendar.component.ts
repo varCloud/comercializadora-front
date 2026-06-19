@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, Inject, TemplateRef } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, ChangeDetectionStrategy, Inject, TemplateRef, DOCUMENT } from '@angular/core';
+
 import {
   MatDialog,
   MatDialogRef,
@@ -43,8 +43,9 @@ const colors: any = {
 };
 
 @Component({
-  selector: 'app-calendar-dialog',
-  templateUrl: './dialog.component.html',
+    selector: 'app-calendar-dialog',
+    templateUrl: './dialog.component.html',
+    standalone: false
 })
 export class CalendarDialogComponent {
   options!: UntypedFormGroup;
@@ -56,10 +57,11 @@ export class CalendarDialogComponent {
 }
 
 @Component({
-  selector: 'app-fullcalendar',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './fullcalendar.component.html',
-  styleUrls: ['./fullcalendar.component.scss'],
+    selector: 'app-fullcalendar',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './fullcalendar.component.html',
+    styleUrls: ['./fullcalendar.component.scss'],
+    standalone: false
 })
 export class AppFullcalendarComponent {
   dialogRef: MatDialogRef<CalendarDialogComponent> = Object.create(TemplateRef);

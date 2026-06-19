@@ -6,10 +6,9 @@ import { MaterialModule } from '../../../material.module';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-side-register',
-  standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, NgIf],
-  templateUrl: './side-register.component.html',
+    selector: 'app-side-register',
+    imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, NgIf],
+    templateUrl: './side-register.component.html'
 })
 export class AppSideRegisterComponent {
   options = this.settings.getOptions();

@@ -72,10 +72,9 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 @Component({
-  selector: 'app-selection-table',
-  standalone: true,
-  imports: [MaterialModule, CommonModule],
-  templateUrl: './selection-table.component.html',
+    selector: 'app-selection-table',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './selection-table.component.html'
 })
 export class AppSelectionTableComponent implements OnInit {
   displayedColumns: string[] = [

@@ -7,11 +7,10 @@ export interface Transaction {
   cost: number;
 }
 @Component({
-  selector: 'app-footer-row-table',
-  standalone: true,
-  imports: [MaterialModule, CommonModule],
-  templateUrl: './footer-row-table.component.html',
-  styleUrls: ['./footer-row-table.component.scss'],
+    selector: 'app-footer-row-table',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './footer-row-table.component.html',
+    styleUrls: ['./footer-row-table.component.scss']
 })
 export class AppFooterRowTableComponent implements OnInit {
   displayedColumns: string[] = ['item', 'cost'];

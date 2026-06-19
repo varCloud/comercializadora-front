@@ -7,11 +7,10 @@ import { filter, map, mergeMap } from 'rxjs/operators';
 import { TablerIconsModule } from 'angular-tabler-icons';
 
 @Component({
-  selector: 'app-breadcrumb',
-  standalone: true,
-  imports: [RouterModule, NgIf, TablerIconsModule],
-  templateUrl: './breadcrumb.component.html',
-  styleUrls: [],
+    selector: 'app-breadcrumb',
+    imports: [RouterModule, NgIf, TablerIconsModule],
+    templateUrl: './breadcrumb.component.html',
+    styleUrls: []
 })
 export class AppBreadcrumbComponent {
   // @Input() layout;

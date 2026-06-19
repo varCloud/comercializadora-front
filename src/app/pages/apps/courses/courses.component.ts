@@ -3,9 +3,10 @@ import { CourseService } from './course.service';
 import { course } from './course';
 
 @Component({
-  selector: 'app-courses',
-  templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.scss'],
+    selector: 'app-courses',
+    templateUrl: './courses.component.html',
+    styleUrls: ['./courses.component.scss'],
+    standalone: false
 })
 export class AppCoursesComponent {
   courseList: course[] = [];

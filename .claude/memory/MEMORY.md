@@ -16,3 +16,4 @@ o convención), `reference` (recursos externos: URLs, dashboards, tickets), `got
 - [Regla: reuso de componentes y CSS mínimo](regla-reuso-y-css-minimo.md) — reutilizar antes de crear; mínimo CSS usando utilidades globales.
 - [PENDIENTE: URLs del backend](pendiente-urls-backend.md) — repuntar environments al backend comercializadora-lluvia (faltan URLs).
 - [Paleta de marca](paleta-marca.md) — color principal #a6ce3a (verde Lluvia) + accent azul; dónde se define y el logo.
+- [Flujo de agentes](flujo-agentes.md) — describir agentes en docs/agentes/<tema>/ antes de invocarlos.

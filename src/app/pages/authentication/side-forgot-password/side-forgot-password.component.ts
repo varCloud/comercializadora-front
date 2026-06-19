@@ -6,10 +6,9 @@ import { MaterialModule } from '../../../material.module';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-side-forgot-password',
-  standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, NgIf],
-  templateUrl: './side-forgot-password.component.html',
+    selector: 'app-side-forgot-password',
+    imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, NgIf],
+    templateUrl: './side-forgot-password.component.html'
 })
 export class AppSideForgotPasswordComponent {
   options = this.settings.getOptions();

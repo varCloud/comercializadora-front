@@ -4,9 +4,10 @@ import { ToDo } from './todo';
 import { TodoService } from './todo.service';
 
 @Component({
-  selector: 'app-todo',
-  templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.scss'],
+    selector: 'app-todo',
+    templateUrl: './todo.component.html',
+    styleUrls: ['./todo.component.scss'],
+    standalone: false
 })
 export class AppTodoComponent implements OnInit {
   sidePanelOpened = true;

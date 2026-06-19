@@ -28,10 +28,9 @@ export interface employeeChart {
 }
 
 @Component({
-  selector: 'app-employee-salary',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule, TablerIconsModule],
-  templateUrl: './employee-salary.component.html',
+    selector: 'app-employee-salary',
+    imports: [NgApexchartsModule, MaterialModule, TablerIconsModule],
+    templateUrl: './employee-salary.component.html'
 })
 export class AppEmployeeSalaryComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

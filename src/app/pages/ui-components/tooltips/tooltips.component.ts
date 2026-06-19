@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
-  selector: 'app-tooltips',
-  templateUrl: './tooltips.component.html',
+    selector: 'app-tooltips',
+    templateUrl: './tooltips.component.html',
+    standalone: false
 })
 export class AppTooltipsComponent {
   //  disabled

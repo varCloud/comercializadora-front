@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-slider',
-  templateUrl: './slider.component.html',
+    selector: 'app-slider',
+    templateUrl: './slider.component.html',
+    standalone: false
 })
 export class AppSliderComponent implements OnInit {
   disabled = false;

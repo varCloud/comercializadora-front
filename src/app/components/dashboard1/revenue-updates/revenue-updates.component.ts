@@ -40,10 +40,9 @@ export interface revenueChart {
 }
 
 @Component({
-  selector: 'app-revenue-updates',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule, TablerIconsModule, NgForOf],
-  templateUrl: './revenue-updates.component.html',
+    selector: 'app-revenue-updates',
+    imports: [NgApexchartsModule, MaterialModule, TablerIconsModule, NgForOf],
+    templateUrl: './revenue-updates.component.html'
 })
 export class AppRevenueUpdatesComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

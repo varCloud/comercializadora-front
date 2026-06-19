@@ -6,10 +6,9 @@ import { MaterialModule } from '../../../material.module';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-boxed-forgot-password',
-  standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, NgIf],
-  templateUrl: './boxed-forgot-password.component.html',
+    selector: 'app-boxed-forgot-password',
+    imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule, NgIf],
+    templateUrl: './boxed-forgot-password.component.html'
 })
 export class AppBoxedForgotPasswordComponent {
   options = this.settings.getOptions();

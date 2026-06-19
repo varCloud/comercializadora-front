@@ -3,8 +3,9 @@ import { ThemePalette } from '@angular/material/core';
 import { ProgressBarMode } from '@angular/material/progress-bar';
 
 @Component({
-  selector: 'app-progress',
-  templateUrl: './progress.component.html',
+    selector: 'app-progress',
+    templateUrl: './progress.component.html',
+    standalone: false
 })
 export class AppProgressComponent implements OnInit {
   color: ThemePalette = 'primary';

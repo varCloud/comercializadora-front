@@ -16,24 +16,23 @@ import { AppTopProjectsComponent } from '../../../components/dashboard1/top-proj
 import { AppProjectsComponent } from '../../../components/dashboard1/projects/projects.component';
 
 @Component({
-  selector: 'app-dashboard1',
-  standalone: true,
-  imports: [
-    TablerIconsModule,
-    AppTopCardsComponent,
-    AppRevenueUpdatesComponent,
-    AppYearlyBreakupComponent,
-    AppMonthlyEarningsComponent,
-    AppEmployeeSalaryComponent,
-    AppCustomersComponent,
-    AppProductsComponent,
-    AppSocialCardComponent,
-    AppSellingProductComponent,
-    AppWeeklyStatsComponent,
-    AppTopProjectsComponent,
-    AppProjectsComponent
-  ],
-  templateUrl: './dashboard1.component.html',
+    selector: 'app-dashboard1',
+    imports: [
+        TablerIconsModule,
+        AppTopCardsComponent,
+        AppRevenueUpdatesComponent,
+        AppYearlyBreakupComponent,
+        AppMonthlyEarningsComponent,
+        AppEmployeeSalaryComponent,
+        AppCustomersComponent,
+        AppProductsComponent,
+        AppSocialCardComponent,
+        AppSellingProductComponent,
+        AppWeeklyStatsComponent,
+        AppTopProjectsComponent,
+        AppProjectsComponent
+    ],
+    templateUrl: './dashboard1.component.html'
 })
 export class AppDashboard1Component {
   constructor() {}

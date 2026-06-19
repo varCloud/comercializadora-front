@@ -3,10 +3,9 @@ import { MaterialModule } from '../../../material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
 
 @Component({
-  selector: 'app-form-vertical',
-  standalone: true,
-  imports: [MaterialModule, TablerIconsModule],
-  templateUrl: './form-vertical.component.html',
+    selector: 'app-form-vertical',
+    imports: [MaterialModule, TablerIconsModule],
+    templateUrl: './form-vertical.component.html'
 })
 export class AppFormVerticalComponent {
   constructor() {}

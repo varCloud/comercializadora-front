@@ -70,7 +70,7 @@ src/
 
 4. **Autenticación basada en Rol:**
    - Cada login debe validar el tipo de usuario inmediatamente
-   - Si rol ≠ esperado → Mostrar error (`NotifierService`) + Limpiar localStorage
+   - Si rol ≠ esperado → Mostrar error (`NotificationService`) + Limpiar localStorage
    - Usar `auth.guard.ts` para proteger rutas restringidas
 
 5. **Almacenamiento de Datos:**
@@ -164,10 +164,11 @@ signIn(request: LoginRequestModel): Observable<{user: UserModel, token: string}>
 getOptions()  // Retorna tema actual (light/dark)
 ```
 
-### NotifierService (`angular-notifier`)
+### NotificationService (`src/app/services/notification.service.ts`, MatSnackBar)
 ```typescript
-notify(type: 'success'|'error'|'warning', message: string)
+notify(type: 'success'|'error'|'warning'|'info'|'default', message: string)
 ```
+> Reemplaza a `angular-notifier` (sin soporte Angular 20). Mantiene la firma `notify(type, message)`.
 
 ---
 
@@ -175,7 +176,7 @@ notify(type: 'success'|'error'|'warning', message: string)
 
 - `@angular/material` → Componentes UI
 - `rxjs` → Observables
-- `angular-notifier` → Notificaciones
+- `MatSnackBar` (vía `NotificationService`) → Notificaciones
 - `ng-block-ui` → Bloqueo de UI durante peticiones
 - `@sweetalert2/ngx-sweetalert2` → Modales alertas
 

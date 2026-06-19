@@ -218,7 +218,7 @@
 
   // dialog
   .mat-mdc-dialog-container {
-    --mdc-dialog-container-color: #2a3447;
+    --mat-dialog-container-color: #2a3447;
   }
 
   // fill
@@ -230,16 +230,16 @@
 
   // chip
   .mat-mdc-standard-chip {
-    --mdc-chip-elevated-container-color: #333f55;
+    --mat-chip-elevated-container-color: #333f55;
   }
 
   // button
   .mat-mdc-raised-button.mat-unthemed {
-    --mdc-protected-button-container-color: #333f55;
+    --mat-button-protected-container-color: #333f55;
   }
 
   .mat-mdc-unelevated-button.mat-unthemed {
-    --mdc-filled-button-container-color: #333f55;
+    --mat-button-filled-container-color: #333f55;
   }
 
   .mat-mdc-button,
@@ -248,7 +248,7 @@
   }
 
   .mat-mdc-button.mat-unthemed {
-    --mdc-text-button-label-text-color: #7c8fac !important;
+    --mat-button-text-label-text-color: #7c8fac !important;
   }
 
   .mdc-list-item__primary-text {
@@ -272,8 +272,8 @@
     color: rgba(255, 255, 255, 0.6) !important;
 
     .mat-mdc-icon-button[disabled][disabled] {
-      --mdc-icon-button-icon-color: rgba(255, 255, 255, 0.5) !important;
-      --mdc-icon-button-disabled-icon-color: rgba(
+      --mat-icon-button-icon-color: rgba(255, 255, 255, 0.5) !important;
+      --mat-icon-button-disabled-icon-color: rgba(
         255,
         255,
         255,
@@ -362,40 +362,40 @@ html.dark-theme {
   }
 
   .mat-mdc-raised-button[disabled][disabled] {
-    --mdc-protected-button-disabled-label-text-color: rgba(255, 255, 255, 0.5);
+    --mat-button-protected-disabled-label-text-color: rgba(255, 255, 255, 0.5);
   }
 
   .mat-mdc-unelevated-button[disabled][disabled] {
-    --mdc-filled-button-disabled-label-text-color: rgba(255, 255, 255, 0.5);
+    --mat-button-filled-disabled-label-text-color: rgba(255, 255, 255, 0.5);
   }
 
   .mat-mdc-button[disabled][disabled] {
-    --mdc-text-button-disabled-label-text-color: rgba(255, 255, 255, 0.5);
+    --mat-button-text-disabled-label-text-color: rgba(255, 255, 255, 0.5);
   }
 
   .mat-mdc-outlined-button[disabled][disabled] {
-    --mdc-outlined-button-disabled-label-text-color: rgba(255, 255, 255, 0.5);
+    --mat-button-outlined-disabled-label-text-color: rgba(255, 255, 255, 0.5);
   }
 
   .mat-mdc-icon-button[disabled][disabled] {
-    --mdc-icon-button-icon-color: rgba(255, 255, 255, 0.5);
-    --mdc-icon-button-disabled-icon-color: rgba(255, 255, 255, 0.5);
+    --mat-icon-button-icon-color: rgba(255, 255, 255, 0.5);
+    --mat-icon-button-disabled-icon-color: rgba(255, 255, 255, 0.5);
   }
 
   .mat-mdc-outlined-button {
-    --mdc-outlined-button-outline-color: rgba(255, 255, 255, 0.12);
+    --mat-button-outlined-outline-color: rgba(255, 255, 255, 0.12);
   }
 
   .mat-mdc-outlined-button.mat-unthemed {
-    --mdc-outlined-button-label-text-color: #fff;
+    --mat-button-outlined-label-text-color: #fff;
   }
 
   .mat-mdc-raised-button.mat-unthemed {
-    --mdc-protected-button-label-text-color: #fff;
+    --mat-button-protected-label-text-color: #fff;
   }
 
   .mat-mdc-unelevated-button.mat-unthemed {
-    --mdc-filled-button-label-text-color: #fff;
+    --mat-button-filled-label-text-color: #fff;
   }
 
   .mdc-data-table__cell,

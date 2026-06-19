@@ -23,10 +23,9 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 @Component({
-  selector: 'app-dynamic-table',
-  standalone: true,
-  imports: [MaterialModule, CommonModule],
-  templateUrl: './dynamic-table.component.html',
+    selector: 'app-dynamic-table',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './dynamic-table.component.html'
 })
 export class AppDynamicTableComponent implements OnInit {
   displayedColumns: string[] = ['name', 'weight', 'symbol', 'position'];

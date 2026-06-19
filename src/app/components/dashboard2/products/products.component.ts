@@ -23,10 +23,9 @@ export interface productChart {
 }
 
 @Component({
-  selector: 'app-products',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule],
-  templateUrl: './products.component.html',
+    selector: 'app-products',
+    imports: [NgApexchartsModule, MaterialModule],
+    templateUrl: './products.component.html'
 })
 export class AppProductsComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

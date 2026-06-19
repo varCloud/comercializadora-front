@@ -53,10 +53,9 @@ const ELEMENT_DATA: productsData[] = [
 ];
 
 @Component({
-  selector: 'app-filterable-table',
-  standalone: true,
-  imports: [MaterialModule, CommonModule],
-  templateUrl: './filterable-table.component.html',
+    selector: 'app-filterable-table',
+    imports: [MaterialModule, CommonModule],
+    templateUrl: './filterable-table.component.html'
 })
 export class AppFilterableTableComponent implements OnInit {
   displayedColumns: string[] = ['assigned', 'name', 'priority', 'budget'];

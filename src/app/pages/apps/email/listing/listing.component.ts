@@ -18,8 +18,9 @@ import {
 } from '@angular/forms';
 
 @Component({
-  selector: 'app-dialog-data-example-dialog',
-  templateUrl: 'compose-dialog-content.html',
+    selector: 'app-dialog-data-example-dialog',
+    templateUrl: 'compose-dialog-content.html',
+    standalone: false
 })
 export class ListingDialogDataExampleDialogComponent {
   form: UntypedFormGroup;
@@ -81,9 +82,10 @@ export class ListingDialogDataExampleDialogComponent {
 }
 
 @Component({
-  selector: 'app-listing',
-  templateUrl: './listing.component.html',
-  styleUrls: ['./listing.component.scss'],
+    selector: 'app-listing',
+    templateUrl: './listing.component.html',
+    styleUrls: ['./listing.component.scss'],
+    standalone: false
 })
 export class ListingComponent implements OnInit {
   searchText: string = '';

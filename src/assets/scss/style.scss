@@ -1,5 +1,6 @@
 @use "@angular/material" as mat;
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 @import "variables";
 @import "layouts/transitions";
@@ -140,5 +141,28 @@ body::-webkit-scrollbar-track-piece {
   &.status-eliminado {
     background-color: rgba(244, 67, 54, 0.1);
     color: #f44336;
+  }
+}
+
+// Notificaciones (MatSnackBar) — color por estado. Lo aplica NotificationService
+// vía panelClass `app-snackbar app-snackbar-<estado>`. Usa las variables de marca.
+.app-snackbar {
+  --mdc-snackbar-supporting-text-color: #{$white};
+  --mat-snack-bar-button-color: #{$white};
+
+  &.app-snackbar-success {
+    --mdc-snackbar-container-color: #{$success};
+  }
+  &.app-snackbar-error {
+    --mdc-snackbar-container-color: #{$error};
+  }
+  &.app-snackbar-warning {
+    --mdc-snackbar-container-color: #{$warning};
+  }
+  &.app-snackbar-info {
+    --mdc-snackbar-container-color: #{$accent};
+  }
+  &.app-snackbar-default {
+    --mdc-snackbar-container-color: #323232;
   }
 }

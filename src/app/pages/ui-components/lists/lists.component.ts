@@ -6,8 +6,9 @@ export interface Section {
 }
 
 @Component({
-  selector: 'app-lists',
-  templateUrl: './lists.component.html',
+    selector: 'app-lists',
+    templateUrl: './lists.component.html',
+    standalone: false
 })
 export class AppListsComponent {
   constructor() {}

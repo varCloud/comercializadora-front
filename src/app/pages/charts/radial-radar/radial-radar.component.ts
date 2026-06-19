@@ -35,10 +35,9 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-radial-radar',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule],
-  templateUrl: './radial-radar.component.html',
+    selector: 'app-radial-radar',
+    imports: [NgApexchartsModule, MaterialModule],
+    templateUrl: './radial-radar.component.html'
 })
 export class AppRadialRadarChartComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

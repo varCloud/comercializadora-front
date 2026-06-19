@@ -7,8 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddedDialogComponent } from './added-dialog/added-dialog.component';
 
 @Component({
-  selector: 'app-add-invoice',
-  templateUrl: './add-invoice.component.html'
+    selector: 'app-add-invoice',
+    templateUrl: './add-invoice.component.html',
+    standalone: false
 })
 export class AppAddInvoiceComponent {
   addForm: UntypedFormGroup | any;

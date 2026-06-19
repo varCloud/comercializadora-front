@@ -3,10 +3,9 @@ import { MaterialModule } from '../../../material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
 
 @Component({
-  selector: 'app-form-horizontal',
-  standalone: true,
-  imports: [MaterialModule, TablerIconsModule],
-  templateUrl: './form-horizontal.component.html',
+    selector: 'app-form-horizontal',
+    imports: [MaterialModule, TablerIconsModule],
+    templateUrl: './form-horizontal.component.html'
 })
 export class AppFormHorizontalComponent {
   constructor() {}

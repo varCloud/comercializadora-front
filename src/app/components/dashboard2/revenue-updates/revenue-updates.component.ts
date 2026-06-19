@@ -34,10 +34,9 @@ export interface revenuetwoChart {
 }
 
 @Component({
-  selector: 'app-revenue-updates-two',
-  standalone: true,
-  imports: [MaterialModule, NgApexchartsModule, TablerIconsModule],
-  templateUrl: './revenue-updates.component.html',
+    selector: 'app-revenue-updates-two',
+    imports: [MaterialModule, NgApexchartsModule, TablerIconsModule],
+    templateUrl: './revenue-updates.component.html'
 })
 export class AppRevenueUpdatesTwoComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

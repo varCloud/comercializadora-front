@@ -2,8 +2,9 @@ import { Component, Inject, Optional } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-task-dialog',
-  templateUrl: './task-dialog.component.html',
+    selector: 'app-task-dialog',
+    templateUrl: './task-dialog.component.html',
+    standalone: false
 })
 export class TaskDialogComponent {
   action: string;

@@ -47,10 +47,9 @@ const NAMES = [
 ];
 
 @Component({
-  selector: 'app-mix-table',
-  standalone: true,
-  imports: [MaterialModule],
-  templateUrl: './mix-table.component.html',
+    selector: 'app-mix-table',
+    imports: [MaterialModule],
+    templateUrl: './mix-table.component.html'
 })
 export class AppMixTableComponent {
   displayedColumns = ['id', 'name', 'progress', 'color'];

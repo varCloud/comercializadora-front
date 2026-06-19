@@ -20,11 +20,18 @@ this._service.getData(...).pipe(
 });
 ```
 
-## Notificaciones: `angular-notifier`
+## Notificaciones: `NotificationService` (MatSnackBar)
 
-- Inyecta `NotifierService` y notifica resultado de acciones:
-  - Éxito: `this._notifierService.notify('success', 'Usuario actualizado correctamente');`
-  - Error: `this._notifierService.notify('error', 'Error al actualizar usuario');`
+> `angular-notifier` se **eliminó** en la migración a Angular 20 (no tiene release
+> compatible). Se reemplazó por `NotificationService` (`src/app/services/notification.service.ts`),
+> un wrapper de `MatSnackBar` que **conserva la misma firma** `notify(type, message)`.
+
+- Inyecta `NotificationService` y notifica resultado de acciones:
+  - Éxito: `this._notificationService.notify('success', 'Usuario actualizado correctamente');`
+  - Error: `this._notificationService.notify('error', 'Error al actualizar usuario');`
+- Estados soportados: `'success' | 'error' | 'warning' | 'info' | 'default'`. El color por
+  estado lo dan las clases globales `app-snackbar-<estado>` en `assets/scss/style.scss`
+  (usan las variables de marca de `_variables.scss`).
 - Loguea el error técnico con `console.error(...)` además del aviso al usuario.
 
 ## Resultado de modales

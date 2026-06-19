@@ -4,10 +4,9 @@ import { MaterialModule } from '../../../../material.module';
 import { TablerIconsModule } from 'angular-tabler-icons';
 
 @Component({
-  selector: 'app-button',
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MaterialModule, TablerIconsModule],
-  templateUrl: './button.component.html',
+    selector: 'app-button',
+    imports: [FormsModule, ReactiveFormsModule, MaterialModule, TablerIconsModule],
+    templateUrl: './button.component.html'
 })
 export class AppButtonComponent {
   constructor() {}

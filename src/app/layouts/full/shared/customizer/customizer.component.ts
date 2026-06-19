@@ -14,12 +14,11 @@ import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @Component({
-  selector: 'app-customizer',
-  standalone: true,
-  imports: [BrandingComponent, TablerIconsModule, MaterialModule, FormsModule, NgScrollbarModule, NgIf],
-  templateUrl: './customizer.component.html',
-  styleUrls: ['./customizer.component.scss'],
-  encapsulation: ViewEncapsulation.None,
+    selector: 'app-customizer',
+    imports: [BrandingComponent, TablerIconsModule, MaterialModule, FormsModule, NgScrollbarModule, NgIf],
+    templateUrl: './customizer.component.html',
+    styleUrls: ['./customizer.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class CustomizerComponent {
    

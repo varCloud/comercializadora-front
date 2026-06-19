@@ -35,10 +35,9 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-area',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule],
-  templateUrl: './area.component.html',
+    selector: 'app-area',
+    imports: [NgApexchartsModule, MaterialModule],
+    templateUrl: './area.component.html'
 })
 export class AppAreaChartComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

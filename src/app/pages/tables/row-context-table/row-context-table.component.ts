@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { MaterialModule } from '../../../material.module';
 
 @Component({
-  selector: 'app-row-context-table',
-  standalone: true,
-  imports: [MaterialModule],
-  templateUrl: './row-context-table.component.html',
+    selector: 'app-row-context-table',
+    imports: [MaterialModule],
+    templateUrl: './row-context-table.component.html'
 })
 export class AppRowContextTableComponent implements OnInit {
   displayedColumns: string[] = [

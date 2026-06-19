@@ -59,15 +59,14 @@ interface month {
 }
 
 @Component({
-  selector: 'app-product-performance',
-  standalone: true,
-  imports: [
-    NgApexchartsModule,
-    MaterialModule,
-    TablerIconsModule,
-    CommonModule,
-  ],
-  templateUrl: './product-performance.component.html',
+    selector: 'app-product-performance',
+    imports: [
+        NgApexchartsModule,
+        MaterialModule,
+        TablerIconsModule,
+        CommonModule,
+    ],
+    templateUrl: './product-performance.component.html'
 })
 export class AppProductPerformanceComponent {
   displayedColumns: string[] = ['product', 'progress', 'status', 'sales'];

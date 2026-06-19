@@ -178,8 +178,8 @@
                     formControlName="itemTotal"
                     [id]="'txtitemTotalControl' + i"
                     [value]="
-                      addForm.get('item').value[this.i].itemCost *
-                      addForm.get('item').value[this.i].itemSold
+                      addForm.get('item').value[i].itemCost *
+                      addForm.get('item').value[i].itemSold
                     "
                     class="form-control"
                     [disabled]="true"

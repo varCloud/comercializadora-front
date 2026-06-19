@@ -3,9 +3,8 @@ import { RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
 
 @Component({
-  selector: 'app-error',
-  standalone: true,
-  imports: [RouterModule, MaterialModule],
-  templateUrl: './error.component.html',
+    selector: 'app-error',
+    imports: [RouterModule, MaterialModule],
+    templateUrl: './error.component.html'
 })
 export class AppErrorComponent {}

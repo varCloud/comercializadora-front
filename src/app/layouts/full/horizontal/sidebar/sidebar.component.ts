@@ -13,10 +13,9 @@ import { AppHorizontalNavItemComponent } from './nav-item/nav-item.component';
 import { CommonModule, NgForOf, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-horizontal-sidebar',
-  standalone: true,
-  imports: [AppHorizontalNavItemComponent, NgIf, NgForOf, CommonModule],
-  templateUrl: './sidebar.component.html',
+    selector: 'app-horizontal-sidebar',
+    imports: [AppHorizontalNavItemComponent, NgIf, NgForOf, CommonModule],
+    templateUrl: './sidebar.component.html'
 })
 export class AppHorizontalSidebarComponent implements OnInit {
   navItems = navItems;

@@ -29,10 +29,9 @@ export interface totalEarnChart {
 }
 
 @Component({
-  selector: 'app-total-earnings',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule],
-  templateUrl: './total-earnings.component.html',
+    selector: 'app-total-earnings',
+    imports: [NgApexchartsModule, MaterialModule],
+    templateUrl: './total-earnings.component.html'
 })
 export class AppTotalEarningsComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

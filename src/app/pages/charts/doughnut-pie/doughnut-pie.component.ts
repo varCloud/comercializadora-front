@@ -35,10 +35,9 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-doughnut-pie',
-  standalone: true,
-  imports: [NgApexchartsModule, MaterialModule],
-  templateUrl: './doughnut-pie.component.html',
+    selector: 'app-doughnut-pie',
+    imports: [NgApexchartsModule, MaterialModule],
+    templateUrl: './doughnut-pie.component.html'
 })
 export class AppDoughnutpieChartComponent {
   @ViewChild('chart') chart: ChartComponent = Object.create(null);

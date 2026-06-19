@@ -36,10 +36,9 @@ export interface State {
 }
 
 @Component({
-  selector: 'app-autocomplete',
-  standalone: true,
-  imports: [MaterialModule, FormsModule, ReactiveFormsModule, NgForOf, CommonModule],
-  templateUrl: './autocomplete.component.html',
+    selector: 'app-autocomplete',
+    imports: [MaterialModule, FormsModule, ReactiveFormsModule, NgForOf, CommonModule],
+    templateUrl: './autocomplete.component.html'
 })
 export class AppAutocompleteComponent implements OnInit {
   // first option

@@ -3,9 +3,10 @@ import { CoreService } from 'src/app/services/core.service';
 import { AppSettings } from 'src/app/app.config';
 
 @Component({
-  selector: 'app-blank',
-  templateUrl: './blank.component.html',
-  styleUrls: [],
+    selector: 'app-blank',
+    templateUrl: './blank.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class BlankComponent {
   private htmlElement!: HTMLHtmlElement;

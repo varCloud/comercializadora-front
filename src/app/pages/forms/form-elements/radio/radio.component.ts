@@ -3,10 +3,9 @@ import { MaterialModule } from '../../../../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-radio',
-  standalone: true,
-  imports: [MaterialModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './radio.component.html',
+    selector: 'app-radio',
+    imports: [MaterialModule, FormsModule, ReactiveFormsModule],
+    templateUrl: './radio.component.html'
 })
 export class AppRadioComponent {
   constructor() {}

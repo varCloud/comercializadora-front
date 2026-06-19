@@ -6,21 +6,23 @@ import {
 } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-custom-snackbar',
-  templateUrl: 'snackbar-custom.component.html',
-  styles: [
-    `
+    selector: 'app-custom-snackbar',
+    templateUrl: 'snackbar-custom.component.html',
+    styles: [
+        `
       .example-pizza-party {
         color: hotpink;
       }
     `,
-  ],
+    ],
+    standalone: false
 })
 export class PizzaPartyComponent {}
 
 @Component({
-  selector: 'app-snackbar',
-  templateUrl: './snackbar.component.html',
+    selector: 'app-snackbar',
+    templateUrl: './snackbar.component.html',
+    standalone: false
 })
 export class AppSnackbarComponent {
   durationInSeconds = 5;
