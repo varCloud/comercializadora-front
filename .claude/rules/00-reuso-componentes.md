@@ -3,25 +3,25 @@
 **Antes de crear cualquier componente, pipe, helper o servicio, busca si ya existe
 uno que resuelva lo que necesitas. NO dupliques.**
 
-## Dónde buscar
+> Estado actual: `src/app/admin/` es un scaffold vacío (se eliminó el dominio
+> BodyBooster). Todavía **no hay** librería de componentes compartidos propia; se irá
+> construyendo. Mientras tanto, apóyate en Angular Material y la plantilla.
 
-- Componentes compartidos: `src/app/bb-admin/shared/components/`
-  (`chip-group`, `back-button`, `asset-player`, `workout-list`, `workout-filter-modal`,
-  `update-user-button`, `modal-status-history`, `user-status-history-list`,
-  `view-status-history-button`, `moda-delete-user`). Varios se reexportan desde
-  `shared/components/index.ts`.
-- Card de usuario reutilizable: `src/app/components/card-info-usuario/`.
-- Pipes: `src/app/bb-admin/shared/pipes/` (ej. `date-format.pipe.ts`).
-- Helpers: `src/app/bb-admin/shared/helpers/` (ej. `status-color.helper.ts`).
-- Funciones: `src/app/bb-admin/shared/functions/` (ej. `eventPaginator.ts`).
-- UI genérica (botones, tablas, diálogos, inputs, selects): **Angular Material** y
-  `@ng-matero/extensions`, `@ng-select/ng-select`. No reinventes.
+## Dónde buscar / qué reutilizar
+
+- **UI genérica** (botones, tablas, diálogos, inputs, selects, cards, paginador,
+  tooltips): **Angular Material**, `@ng-matero/extensions`, `@ng-select/ng-select`.
+  No reinventes estos componentes.
+- **Páginas demo de la plantilla** (`src/app/pages/`, `src/app/components/`): úsalas
+  como **referencia** de cómo se arma e estiliza un componente, pero NO son producto.
+- **Lo que vayas creando y sea reutilizable** → ponlo en `src/app/admin/shared/`
+  (componentes/pipes/helpers/funciones/modelos) y reexpórtalo desde un `index.ts`
+  para que todo el feature lo consuma desde un solo punto.
 
 ## Cómo aplicar
 
-- Si un componente compartido casi sirve, **extiéndelo con `@Input()`/`@Output()`**
-  en lugar de crear uno nuevo.
-- Si vas a crear algo que probablemente se reutilice, ponlo en `shared/` y reexpórtalo
-  desde `shared/components/index.ts`.
-- Lógica repetida (paginación, formato de fecha, colores de estado) → usa las
-  funciones/helpers existentes, no la reescribas inline.
+- Si un componente compartido (cuando exista) casi sirve, **extiéndelo con
+  `@Input()`/`@Output()`** en lugar de crear uno nuevo.
+- Lógica repetida (paginación, formato de fecha, colores de estado) → créala una vez
+  en `admin/shared/` y reúsala; no la copies inline en cada página.
+- Antes de crear, busca en el repo (grep) por nombre/uso para no duplicar.

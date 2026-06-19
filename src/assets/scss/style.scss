@@ -1,0 +1,144 @@
+@use "@angular/material" as mat;
+@include mat.core();
+
+@import "variables";
+@import "layouts/transitions";
+@import "helpers/color";
+@import "helpers/icon-size";
+
+//Theme colors
+
+@import "themecolors/default_theme";
+@include mat.all-component-themes($bluetheme);
+
+.dark-theme {
+  @include mat.all-component-colors($darkbluetheme);
+}
+
+// .dark-theme .aqua_theme {
+//   @include mat.all-component-colors($darkaquatheme);
+// }
+
+.orange_theme {
+  @import "themecolors/orange_theme";
+  @include mat.all-component-colors($orangetheme);
+}
+
+.aqua_theme {
+  @import "themecolors/aqua_theme";
+  @include mat.all-component-colors($aquatheme);
+}
+
+.purple_theme {
+  @import "themecolors/purple_theme";
+  @include mat.all-component-colors($purpletheme);
+}
+
+.green_theme {
+  @import "themecolors/green_theme";
+  @include mat.all-component-colors($greentheme);
+}
+
+.cyan_theme {
+  @import "themecolors/cyan_theme";
+  @include mat.all-component-colors($cyantheme);
+}
+
+//container layout
+@import "overrides/materialoverrides";
+@import "dark/dark";
+@import "container";
+@import "layouts/layouts";
+@import "grid/grid";
+@import "helpers/custom-flex";
+@import "helpers/index";
+
+// horizontal
+@import "horizontal/horizontal";
+
+// apps
+@import "apps/calendar";
+@import "apps/email";
+
+// pages
+@import "pages/dashboards";
+@import "pages/auth";
+@import "pages/landingpage";
+
+// RTL Theme
+@import "rtl/rtl";
+
+
+.scroll-view-app::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #a6ce3a;
+    background-color: #e8f4fc;
+}
+
+.scroll-view-app::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #e8f4fc;
+}
+
+.scroll-view-app::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+    background-color: #a6ce3a;
+}
+
+.scroll-view-app::-webkit-scrollbar-track-piece,
+body::-webkit-scrollbar-track-piece {
+    background-color: #e8f4fc;
+}
+
+.custom-form-field .mat-form-field-outline {
+  color: #ff0000; /* Cambia el color del borde a rojo */
+}
+
+.custom-form-field .mat-form-field-outline-thick {
+  color: #00ff00; /* Cambia el color del borde cuando el campo está enfocado */
+}
+
+
+.mat-mdc-cell{
+  font-size: 12px;
+  padding: 6px;
+}
+
+.mat-mdc-header-cell{
+  font-size: 13px !important;
+  padding: 6px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+  &.status-1,
+  &.status-activo  {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+  }
+
+  &.status-2,
+  &.status-inactivo {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+  }
+
+  &.status-3,
+  &.status-suspendido {
+    background-color: rgba(155, 155, 155, 0.1);
+    color: #757575;
+  }
+  
+  &.status-4,
+  &.status-eliminado {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+  }
+}

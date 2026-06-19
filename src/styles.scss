@@ -1,0 +1,28 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@ng-select/ng-select/themes/material.theme.css";
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+button{
+    &.mat-warn{
+        span.mdc-button__label:not(:disabled){
+            color: #000;
+        }
+        span.mdc-button__label:disabled{
+            color: #000;
+        }
+    }
+}
+
+
+.mat-mdc-dialog-component-host{
+        mat-card{
+            margin-bottom: 0px !important;
+
+        }
+}
+
+.rounded-circle{
+                width: 50px;
+                height: 50px;
+}

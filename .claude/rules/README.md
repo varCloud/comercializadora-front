@@ -14,4 +14,5 @@ No engordes `CLAUDE.md`; ahí solo va el puntero a esta carpeta.
 - [03 — Idioma](03-idioma.md): UI en español, identificadores de código en inglés.
 - [04 — Errores y loading](04-errores-y-loading.md): `ng-block-ui` + `angular-notifier`.
 - [05 — Commits](05-commits.md): convención de mensajes.
-- [06 — Arquitectura](06-arquitectura.md): standalone + `loadComponent` en bb-admin.
+- [06 — Arquitectura](06-arquitectura.md): standalone + `loadComponent` en admin.
+- [07 — Menú de navegación](07-menu-navegacion.md): rutas de producto en `navItemsApp`; prod muestra solo lo nuestro.

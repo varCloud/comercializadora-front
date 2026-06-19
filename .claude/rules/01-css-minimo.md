@@ -1,7 +1,8 @@
 # Regla 01 — Generar el mínimo CSS posible
 
-**Por defecto, un componente nuevo NO necesita SCSS propio.** Varios compartidos
-(`chip-group`, `back-button`) no tienen archivo `.scss`. Apunta a eso.
+**Por defecto, un componente nuevo NO necesita SCSS propio.** Resuelve el layout con
+las utilidades globales y deja el `.scss` vacío (o sin `styleUrl`). El shell
+`admin.component` sigue esta idea.
 
 ## Usa utilidades globales en vez de escribir CSS
 
@@ -16,9 +17,12 @@ Definidas en `src/assets/scss/helpers/` (`_display`, `_flexbox`, `_spacing`, `_t
 
 ## Reutiliza estilos/temas existentes
 
-- Estados: usa la clase global `.status-badge` con `.status-N` / `.status-<nombre>` y
-  el `status-color.helper.ts`; no recrees estilos de estado.
-- Colores: usa el **theming de Material** (variables de tema), no hex hardcodeado.
+- Estados: existe la clase global `.status-badge` con `.status-N` / `.status-<nombre>`
+  (en `assets/scss/style.scss`); reúsala en vez de recrear estilos de estado.
+- Colores: usa el **theming de Material** (`color="primary"`/`"accent"`) y las clases
+  `.text-*` / `.bg-*`, **nunca hex hardcodeado**. El color de marca es `#a6ce3a` (verde
+  Lluvia) y está centralizado en `_variables.scss` y `themecolors/_default_theme.scss`
+  (ver memoria `paleta-marca`). Si cambia la marca, se ajusta ahí, no por componente.
 
 ## Cuándo (y cómo) sí escribir SCSS
 

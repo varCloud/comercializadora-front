@@ -1,7 +1,7 @@
 # Regla 04 — Manejo de loading y notificaciones
 
-Usa las librerías que **ya están en uso** en bb-admin. No introduzcas otras
-(sweetalert2 está en dependencias pero bb-admin NO lo usa para esto).
+Usa las librerías ya incluidas en el proyecto. No introduzcas otras
+(sweetalert2 está en dependencias, pero para loading/avisos usa lo de abajo).
 
 ## Loading / bloqueo: `ng-block-ui`
 

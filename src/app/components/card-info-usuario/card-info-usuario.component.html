@@ -1,0 +1,20 @@
+<div *blockUI="'shipping-ticket-layout'">
+  @if(this.UserCustom){
+    <h3>{{UserCustom.getFullName() | titlecase }}</h3>
+    <h4>{{UserCustom.rol | titlecase}}</h4>
+    <h4><span class="title-label">Número Usuario:</span> {{UserCustom.numUsuario}}</h4>
+    <h4><span class="title-label"> Número Empleado:</span>  {{UserCustom.numemp}}</h4>
+    <h4><span class="title-label"> Departamento:</span>  {{UserCustom.area | titlecase}}</h4>
+    <h4><span class="title-label"> Dirección / Gerencia:</span>  {{UserCustom.departamento | titlecase}}</h4>
+    <h4><span class="title-label"> Ubicación:</span>  </h4>
+  }
+  @else {
+    <h3>{{user.getFullName() | titlecase}}</h3>
+    <h4>{{user.Rol?.nomRol | titlecase }}</h4>
+    <h4>Número Usuario: {{user.numusuario}}</h4>
+    <h4>Número Empleado: {{user.numemp}}</h4>
+    <h4>Departamento: {{user.numemp}}</h4>
+    <h4>Dirección / Gerencia: {{user.Departamento?.nomDepartamento | titlecase}}</h4>
+    <h4>Ubicación: </h4>
+  }
+</div>

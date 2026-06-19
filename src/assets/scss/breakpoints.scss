@@ -1,0 +1,104 @@
+$screen-xs-min: 425px;
+$screen-xs-max: 767px;
+$screen-sm-min: 768px;
+$screen-sm-max: 991px;
+$screen-md-min: 992px;
+$screen-md-max: 1199px;
+$screen-lg-min: 1200px;
+
+$breakpoint-xs-min: 0px;
+$breakpoint-sm-min: 576px;
+$breakpoint-md-min: 768px;
+$breakpoint-lg-min: 992px;
+$breakpoint-xl-min: 1200px;
+
+$breakpoint-xs-max: $breakpoint-sm-min - 1;
+$breakpoint-sm-max: $breakpoint-md-min - 1;
+$breakpoint-md-max: $breakpoint-lg-min - 1;
+$breakpoint-lg-max: $breakpoint-xl-min - 1;
+
+@debug XS $breakpoint-xs-min 'and' $breakpoint-xs-max;
+@debug SM $breakpoint-sm-min 'and' $breakpoint-sm-max;
+@debug MD $breakpoint-md-min 'and' $breakpoint-md-max;
+@debug LG $breakpoint-lg-min 'and' $breakpoint-lg-max;
+@debug XL $breakpoint-xl-min 'and' infinite;
+
+/**
+ *  Apply to a concrete resolution
+ **/
+@mixin applyTo($media) {
+  @if $media == xs {
+    @media only screen and (max-width: $breakpoint-xs-max) {
+      @content;
+    }
+  } @else if $media == sm {
+    @media only screen and (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-sm-max) {
+      @content;
+    }
+  } @else if $media == md {
+    @media only screen and (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max) {
+      @content;
+    }
+  } @else if $media == lg {
+    @media only screen and (min-width: $breakpoint-lg-min) and (max-width: $breakpoint-lg-max) {
+      @content;
+    }
+  } @else if $media == xl {
+    @media only screen and (min-width: $breakpoint-xl-min) {
+      @content;
+    }
+  }
+} /**
+ *  Apply to a minimum resolution
+ **/
+@mixin applyMin($media) {
+  @if $media == xs {
+    @media only screen and (min-width: $breakpoint-xs-min) {
+      @content;
+    }
+  } @else if $media == sm {
+    @media only screen and (min-width: $breakpoint-sm-min) {
+      @content;
+    }
+  } @else if $media == md {
+    @media only screen and (min-width: $breakpoint-md-min) {
+      @content;
+    }
+  } @else if $media == lg {
+    @media only screen and (min-width: $breakpoint-lg-min) {
+      @content;
+    }
+  } @else if $media == xl {
+    @media only screen and (min-width: $breakpoint-xl-min) {
+      @content;
+    }
+  }
+} /**
+ *  Apply to a minimum resolution
+ **/
+@mixin applyMax($media) {
+  @if $media == xs {
+    @media only screen and (max-width: $breakpoint-xs-max) {
+      @content;
+    }
+  } @else if $media == sm {
+    @media only screen and (max-width: $breakpoint-sm-max) {
+      @content;
+    }
+  } @else if $media == md {
+    @media only screen and (max-width: $breakpoint-md-max) {
+      @content;
+    }
+  } @else if $media == lg {
+    @media only screen and (max-width: $breakpoint-lg-max) {
+      @content;
+    }
+  }
+} /**
+ *  Apply to a range of resolutions
+ **/
+@mixin applyBetween($min-point, $max-breakpoint) {
+  @media only screen and (min-width: $min-point) and (max-width: 768px) {
+    @content;
+  }
+}

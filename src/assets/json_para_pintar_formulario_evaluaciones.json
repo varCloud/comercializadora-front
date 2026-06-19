@@ -1,0 +1,197 @@
+{
+    "evaluacion": {
+        "periodo_evaluado": "",
+        "fecha_entrevista": "",
+        "evaluado": {
+            "nombre_completo": "",
+            "fecha_ingreso": "",
+            "departamento": "",
+            "puesto": "",
+            "direccion_gerencia": "",
+            "ubicacion": "",
+            "fecha_ingreso_puesto": ""
+        },
+        "evaluador": {
+            "nombre_completo": "",
+            "fecha_ingreso": "",
+            "departamento": "",
+            "puesto": "",
+            "direccion_gerencia": "",
+            "ubicacion": "",
+            "fecha_ingreso_puesto": ""
+        },
+        "secciones": [
+            {
+                "name": "I. Evaluación Cuantitativa",
+                "description": "description",
+                "idSeccion":"1",
+                "subsecciones": [
+                    {
+                        "name": "cumplimiento_objetivos",
+                        "idSubSeccion":"1",
+                        "preguntas": [
+                            {
+                                "idPregunta": "1",
+                                "descripcion": "pregunta 1 ",
+                                "peso_de_objetivo": 50,
+                                "descripcion_resultado": "",
+                                "peso_logrado": 0,
+                                "valorPonderado": 0
+                            },
+                            {
+                                "idPregunta": "2",
+                                "descripcion": "pregunta 2 ",
+                                "peso_de_objetivo": 50,
+                                "descripcion_resultado": "",
+                                "peso_logrado": 0,
+                                "valorPonderado": 0
+                            }
+                        ]
+                    },
+                    {
+                        "idSubSeccion":"2",
+                        "name": "kpis",
+                        "preguntas": [
+                            {
+                                "idPregunta": "1",
+                                "descripcion": "pregunta 1 ",
+                                "peso_de_objetivo": 50
+                            },
+                            {
+                                "idPregunta": "1",
+                                "descripcion": "pregunta 1 ",
+                                "peso_de_objetivo": 50
+                            }
+                        ]
+                    },
+                    {
+                        "idSubSeccion":"3",
+                        "name": "logros y contribuciones cuantitativos adicionales",
+                        "preguntas": [
+                            {
+                                "idPregunta": "1",
+                                "descripcion": " Describa otros logros y contribuciones cuantitativos alcanzados por el colaborador durante el periodo:",
+                                "descripcion_resultado": ""                                
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "II. Evaluación Cualitativa",
+                "description": "description",
+                "idSeccion":"2",
+                "subsecciones": [
+                    {
+                        "name": "COMPETENCIAS ORGANIZACIONALES",
+                        "idSubSeccion":"4",
+                        "preguntas": [
+                            {
+                                "idPregunta": "1",
+                                "descripcion": "Comunicación Efectiva",
+                                "nivelAlcanzadoHabilitado":"Avanzado",
+                                "observacion_evaluador": "",
+                                "porcentaje_logrado": 0
+                            },
+                            {
+                                "idPregunta": "2",
+                                "descripcion": "Trabajo en Equipo y Cooperación",
+                                "nivelAlcanzadoHabilitado":"Avanzado",
+                                "porcentaje_logrado": 0
+                            },
+                            {
+                                "idPregunta": "3",
+                                "descripcion": "Enfoque a Resultados",
+                                "nivelAlcanzadoHabilitado":"Intermedio",
+                                "porcentaje_logrado": 0
+                            },
+                            {
+                                "idPregunta": "3",
+                                "descripcion": "Enfoque al Socio",
+                                "nivelAlcanzadoHabilitado":"Basico",
+                                "porcentaje_logrado": 0
+                            }
+                        ]
+                    },
+                    {
+                        "idSubSeccion":"5",
+                        "name": "COMPETENCIAS GERENCIALES",
+                        "preguntas": [
+                            {
+                                "idPregunta": "1",
+                                "descripcion": "Planeación y organización",
+                                "nivelAlcanzadoHabilitado":"Experto",
+                                "porcentaje_logrado": 0
+                            },
+                            {
+                                "idPregunta": "2",
+                                "descripcion": "Liderazgo / Dirección de personas",
+                                "nivelAlcanzadoHabilitado":"Avanzado",
+                                "porcentaje_logrado": 0
+                            },
+                            {
+                                "idPregunta": "3",
+                                "descripcion": "Orientación al mejoramiento continuo",
+                                "nivelAlcanzadoHabilitado":"Intermedio",
+                                "porcentaje_logrado": 0
+                            },
+                            {
+                                "idPregunta": "4",
+                                "descripcion": "Orientación estratégica de visión de negocio",
+                                "nivelAlcanzadoHabilitado":"Basico",
+                                "porcentaje_logrado": 0
+                            }
+                        ]
+                    },
+                    {
+                        "name": "COMPETENCIAS VINCULADAS CON EL PUESTO",
+                        "idSubSeccion":"6",
+                        "preguntas": [
+                            {
+                                "idPregunta": "1",
+                                "descripcion": "Planeación",
+                                "nivelAlcanzadoHabilitado":"Experto",
+                                "porcentaje_logrado": 0
+                            },
+                            {
+                                "idPregunta": "2",
+                                "descripcion": "Liderazgo",
+                                "nivelAlcanzadoHabilitado":"Avanzado",
+                                "porcentaje_logrado": 0
+                            },
+                            {
+                                "idPregunta": "3",
+                                "descripcion": "Mejoramiento continua",
+                                "nivelAlcanzadoHabilitado":"Intermedio",
+                                "porcentaje_logrado": 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name":"III. Evaluación global semestral",
+                "description": "description",
+                "idSeccion":"3",
+                "subsecciones": [
+                    {
+                        "idSubSeccion":"8",
+                        "name": "Fortalezas y Areas de oportunidad",
+                        "preguntas": [
+                            {
+                                "idPregunta": "1",
+                                "descripcion": "Fortalezas",
+                                "descripcion_resultado": ""
+                            },
+                            {
+                                "idPregunta": "1",
+                                "descripcion": "Areas de oportunidad",
+                                "descripcion_resultado": ""
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -4,14 +4,17 @@ Guía para Claude Code al trabajar en este repositorio. Lee este archivo al inic
 
 ## Qué es este proyecto
 
-Panel de administración web (frontend) construido sobre la plantilla comercial
-**Modernize Angular Admin** (Angular 17 + Angular Material). Sobre esa plantilla
-se desarrolla el dominio propio bajo `src/app/bb-admin/` (plataforma **BodyBooster**:
-atletas, creadores, workouts, finanzas y dashboard).
+Panel de administración web (frontend) de **Comercializadora Lluvia**, construido
+sobre la plantilla comercial **Modernize Angular Admin** (Angular 17 + Angular Material).
+El código de producto vive bajo `src/app/admin/`, que por ahora es un **scaffold vacío**
+(módulo + routing + componente shell) listo para empezar desde cero.
+
+> Origen: el proyecto se copió de otro (BodyBooster). Se eliminó todo el dominio
+> BodyBooster y se renombró `bb-admin` → `admin`. Aún puede quedar naming heredado
+> ("evaluaciones", logo `bodybooster.png`). Ver memoria del proyecto.
 
 > La plantilla trae muchas páginas de demostración (en `src/app/pages/`) que NO
 > forman parte del producto: sirven como referencia de componentes ya estilizados.
-> El código de producto vive en `src/app/bb-admin/`.
 
 - Repo GitHub: `varCloud/comercializadora-front`
 - Parte del proyecto `lluvia-migracion`.
@@ -42,26 +45,24 @@ Arquitectura **mixta** — respétala según la zona en la que trabajes:
 
 - **Raíz de la app** (`app.module.ts`, `app-routing.module.ts`): NgModules clásicos
   con lazy loading vía `loadChildren`.
-- **Feature `bb-admin`** (código de producto): cada feature tiene su
-  `*-routing.module.ts`, pero las páginas son **componentes standalone** cargados
-  con `loadComponent`. Al crear pantallas nuevas en `bb-admin`, sigue este patrón
-  (componentes standalone con sus propios `imports`).
+- **Feature `admin`** (código de producto): patrón recomendado para pantallas nuevas =
+  **componentes standalone** cargados con `loadComponent` desde el routing del feature
+  (ver `.claude/rules/06-arquitectura.md`).
 
-### Estructura de `src/app/bb-admin/`
+### Estructura de `src/app/admin/` (scaffold)
 
-- `feature/<dominio>/` — athlete, creator, workout, finance, dashboard.
-  Cada uno: `*-routing.module.ts` + `pages/<page>/` (componente standalone) +
-  `components/` locales.
-- `services/` — servicios HTTP por dominio (`list-athletes.service.ts`,
-  `creator-profile.service.ts`, `user.service.ts`, etc.).
-- `shared/` — `components/`, `pipes/`, `enums/`, `models/`, `helpers/`, `functions/`
-  reutilizables dentro de bb-admin.
-- `models/` — modelos del dominio.
+Hoy contiene solo el esqueleto: `admin.module.ts`, `admin-routing.module.ts`
+(con la ruta `''` apuntando al shell) y `admin.component.*`. A medida que crezca,
+la convención sugerida:
+
+- `feature/<dominio>/` — un módulo de routing por dominio + `pages/<page>/` (standalone).
+- `services/` — servicios HTTP por dominio (ver `.claude/rules/02-servicios-http.md`).
+- `shared/` — componentes/pipes/helpers/funciones/modelos reutilizables que vayas creando.
 
 ### Layouts y rutas
 
 - `layouts/full/` — layout autenticado (sidebar + header). `layouts/blank/` — login/landing.
-- Ruta raíz `''` redirige a `bb-admin`. Login en `login/authentication/side-login`.
+- Ruta raíz `''` redirige a `admin`. Login en `login/authentication/side-login`.
 
 ## Autenticación y API
 
@@ -90,7 +91,8 @@ antes de crear o modificar componentes, páginas, servicios o features, y respé
 - `03-idioma.md` — UI en español, identificadores en inglés.
 - `04-errores-y-loading.md` — `ng-block-ui` para loading, `angular-notifier` para avisos.
 - `05-commits.md` — convención de mensajes de commit.
-- `06-arquitectura.md` — standalone + `loadComponent` en bb-admin.
+- `06-arquitectura.md` — standalone + `loadComponent` en admin.
+- `07-menu-navegacion.md` — rutas de producto en `navItemsApp`; prod oculta el menú demo.
 
 > Al definir una regla nueva, agrégala como archivo en `.claude/rules/` (no engordes
 > este CLAUDE.md) y registra su línea en `.claude/rules/README.md`.
@@ -120,4 +122,4 @@ para compartir contexto entre sesiones y entre miembros del equipo.
 ## Antes de dar por terminado
 
 - Verifica que compila: `npm run build` (o `npm start` para probar en el navegador).
-- No edites a ciegas las páginas de demo de `src/app/pages/`; el producto está en `bb-admin/`.
+- No edites a ciegas las páginas de demo de `src/app/pages/`; el producto está en `admin/`.

@@ -15,7 +15,6 @@ para el código**.
 
 ## Nota
 
-El código heredado de la plantilla y de bb-admin mezcla idiomas (ej. `displayedColumns`
-con strings en español como `'fecha de creacion'`). En código **nuevo** sigue esta regla;
+El código heredado de la plantilla mezcla idiomas. En código **nuevo** sigue esta regla;
 no reescribas lo heredado solo por idioma a menos que se pida. Ante la duda, imita el
 archivo vecino.
