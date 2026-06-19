@@ -13,3 +13,4 @@ o convención), `reference` (recursos externos: URLs, dashboards, tickets), `got
 - [Origen y naming del proyecto](origen-proyecto.md) — plantilla Modernize reutilizada; naming heredado de "evaluaciones".
 - [Arquitectura mixta NgModules + standalone](arquitectura-mixta.md) — cuándo usar cada patrón.
 - [Autenticación por token](auth-token.md) — JWT en localStorage, interceptor y guard.
+- [Regla: reuso de componentes y CSS mínimo](regla-reuso-y-css-minimo.md) — reutilizar antes de crear; mínimo CSS usando utilidades globales.
