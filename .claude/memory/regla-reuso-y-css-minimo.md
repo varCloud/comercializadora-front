@@ -28,4 +28,5 @@ type: decision
 
 **Por qué:** mantener el CSS chico y reutilizar evita inconsistencias visuales,
 reduce el bundle y acelera el desarrollo aprovechando la plantilla comprada
-([[origen-proyecto]]). Documentado también en `CLAUDE.md` (sección "Reglas de desarrollo").
+([[origen-proyecto]]). Reglas formales en `.claude/rules/` (`00-reuso-componentes.md`,
+`01-css-minimo.md`); este archivo es el resumen en memoria.

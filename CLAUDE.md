@@ -80,48 +80,20 @@ Arquitectura **mixta** — respétala según la zona en la que trabajes:
 
 ## Reglas de desarrollo
 
-Al crear o modificar componentes, páginas o features, sigue estas reglas en orden:
+Las reglas de desarrollo viven en **`.claude/rules/`** (una por archivo). Léelas
+antes de crear o modificar componentes, páginas, servicios o features, y respétalas.
+Índice en `.claude/rules/README.md`. Resumen:
 
-### 1. Reutiliza antes de crear
+- `00-reuso-componentes.md` — reutilizar antes de crear.
+- `01-css-minimo.md` — generar el mínimo CSS, usar utilidades globales.
+- `02-servicios-http.md` — HTTP vía `environment`/`uris-config`, sin URLs hardcodeadas.
+- `03-idioma.md` — UI en español, identificadores en inglés.
+- `04-errores-y-loading.md` — `ng-block-ui` para loading, `angular-notifier` para avisos.
+- `05-commits.md` — convención de mensajes de commit.
+- `06-arquitectura.md` — standalone + `loadComponent` en bb-admin.
 
-- **Primero busca** si ya existe un componente, pipe, helper o servicio que resuelva
-  lo que necesitas. NO dupliques.
-- Componentes compartidos: `src/app/bb-admin/shared/components/`
-  (`chip-group`, `back-button`, `asset-player`, `workout-list`,
-  `update-user-button`, `modal-status-history`, `user-status-history-list`,
-  `view-status-history-button`, `moda-delete-user`, `workout-filter-modal`).
-  Varios se reexportan desde `shared/components/index.ts`.
-- Card de usuario reutilizable: `src/app/components/card-info-usuario/`.
-- Pipes/helpers/funciones compartidas: `shared/pipes/` (`date-format.pipe.ts`),
-  `shared/helpers/` (`status-color.helper.ts`), `shared/functions/` (`eventPaginator.ts`).
-- Para UI genérica usa **Angular Material** y `@ng-matero/extensions`; no reinventes
-  botones, tablas, diálogos, inputs, etc.
-- Si un componente compartido casi sirve, **extiéndelo con `@Input()`/`@Output()`**
-  en lugar de crear uno nuevo.
-
-### 2. Genera la MENOR cantidad de CSS posible
-
-- **Por defecto, un componente nuevo NO necesita SCSS propio.** Varios compartidos
-  (ej. `chip-group`, `back-button`) no tienen archivo `.scss`. Apunta a eso.
-- Usa las **clases utilitarias globales** (sistema tipo Bootstrap ya incluido) en lugar
-  de escribir CSS: `d-flex`, `align-items-center`, `justify-content-between`,
-  `m-*`/`p-*` (márgenes/padding), `text-*`, `rounded-*`, `border-*`, `gap-*`.
-  Definidas en `src/assets/scss/helpers/` (`_display`, `_flexbox`, `_spacing`,
-  `_text`, `_rounded`, `_border`) y `_custom-flex.scss`.
-- Reutiliza clases globales ya definidas como `.status-badge` / `.status-N` y los
-  helpers de color (`status-color.helper.ts`) en vez de recrear estilos de estado.
-- Usa el theming de Material (variables de tema) en lugar de hardcodear colores hex.
-- Escribe SCSS de componente **solo** cuando las utilidades no alcancen; si lo haces,
-  manténlo mínimo y local al componente. Evita `!important` y selectores globales.
-- No agregues estilos globales nuevos en `styles.scss` / `style.scss` salvo que sean
-  genuinamente reutilizables en toda la app (y entonces, como utilidad, no ad-hoc).
-
-### 3. Sigue el patrón existente
-
-- Páginas nuevas en `bb-admin`: componentes **standalone** + `loadComponent` (ver
-  [arquitectura mixta](.claude/memory/arquitectura-mixta.md)).
-- Imita la estructura del feature vecino (carpeta `pages/`, `components/` locales,
-  `*-routing.module.ts`).
+> Al definir una regla nueva, agrégala como archivo en `.claude/rules/` (no engordes
+> este CLAUDE.md) y registra su línea en `.claude/rules/README.md`.
 
 ## Convenciones
 
