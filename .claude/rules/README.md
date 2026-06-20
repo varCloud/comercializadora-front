@@ -16,3 +16,5 @@ No engordes `CLAUDE.md`; ahí solo va el puntero a esta carpeta.
 - [05 — Commits](05-commits.md): convención de mensajes.
 - [06 — Arquitectura](06-arquitectura.md): standalone + `loadComponent` en admin.
 - [07 — Menú de navegación](07-menu-navegacion.md): rutas de producto en `navItemsApp`; prod muestra solo lo nuestro.
+- [08 — Angular moderno](08-angular-moderno.md): standalone + signals + control flow nativo (`@if`/`@for`), no `*ngIf`/`*ngFor`.
+- [09 — Modelos interface + clase](09-modelos-interface-clase.md): cada interface lleva su clase `XModel implements X`; instancia respuestas con `new XModel(...)`.

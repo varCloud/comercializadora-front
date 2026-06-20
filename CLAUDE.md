@@ -5,7 +5,7 @@ Guía para Claude Code al trabajar en este repositorio. Lee este archivo al inic
 ## Qué es este proyecto
 
 Panel de administración web (frontend) de **Comercializadora Lluvia**, construido
-sobre la plantilla comercial **Modernize Angular Admin** (Angular 17 + Angular Material).
+sobre la plantilla comercial **Modernize Angular Admin** (Angular 20 + Angular Material).
 El código de producto vive bajo `src/app/admin/`, que por ahora es un **scaffold vacío**
 (módulo + routing + componente shell) listo para empezar desde cero.
 
@@ -21,13 +21,14 @@ El código de producto vive bajo `src/app/admin/`, que por ahora es un **scaffol
 
 ## Stack
 
-- **Angular 17** (no standalone bootstrap; usa `app.module.ts` clásico).
-- **Angular Material 17** + `@ng-matero/extensions`, `@ng-select/ng-select`.
+- **Angular 20** (la raíz aún arranca con `app.module.ts` clásico; el código nuevo es
+  standalone — ver regla `08-angular-moderno`). La migración 17→20 ya se completó.
+- **Angular Material 20** + `@ng-matero/extensions`, `@ng-select/ng-select`.
 - **SCSS** (estilo por defecto de componentes).
 - Iconos: `angular-tabler-icons`. Gráficas: `apexcharts` / `ng-apexcharts`.
 - Alertas: `sweetalert2` / `@sweetalert2/ngx-sweetalert2`.
 - Otros: `ngx-permissions`, `ngx-pagination`, `ng-block-ui`, `@ngx-translate`, `xlsx`.
-- TypeScript ~5.2, RxJS ~7.5.
+- TypeScript ~5.9, RxJS ~7.5.
 
 ## Comandos
 
@@ -93,6 +94,8 @@ antes de crear o modificar componentes, páginas, servicios o features, y respé
 - `05-commits.md` — convención de mensajes de commit.
 - `06-arquitectura.md` — standalone + `loadComponent` en admin.
 - `07-menu-navegacion.md` — rutas de producto en `navItemsApp`; prod oculta el menú demo.
+- `08-angular-moderno.md` — standalone + signals + control flow nativo (`@if`/`@for`); no `*ngIf`/`*ngFor`.
+- `09-modelos-interface-clase.md` — cada interface lleva su clase `XModel implements X`; instancia respuestas con `new XModel(...)`.
 
 > Al definir una regla nueva, agrégala como archivo en `.claude/rules/` (no engordes
 > este CLAUDE.md) y registra su línea en `.claude/rules/README.md`.
@@ -100,6 +103,9 @@ antes de crear o modificar componentes, páginas, servicios o features, y respé
 Planes de trabajo (features y cambios mayores) en **`.claude/docs/plans/features/`**
 (índice en su `README.md`). Pipelines de agentes en **`.claude/docs/agentes/<tema>/`**
 (describe cada agente antes de invocarlo — ver memoria `flujo-agentes`).
+
+Subagentes invocables (tool `Agent`) en **`.claude/agents/`** (índice en su `README.md`):
+`migrador-pantalla` → `revisor-frontend` para migrar pantallas legacy al feature `admin/`.
 
 ## Convenciones
 

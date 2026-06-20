@@ -17,3 +17,6 @@ o convención), `reference` (recursos externos: URLs, dashboards, tickets), `got
 - [PENDIENTE: URLs del backend](pendiente-urls-backend.md) — repuntar environments al backend comercializadora-lluvia (faltan URLs).
 - [Paleta de marca](paleta-marca.md) — color principal #a6ce3a (verde Lluvia) + accent azul; dónde se define y el logo.
 - [Flujo de agentes](flujo-agentes.md) — describir agentes en docs/agentes/<tema>/ antes de invocarlos.
+- [Subagentes de migración](subagentes-migracion.md) — `.claude/agents/`: migrador-pantalla → revisor-frontend.
+- [Login con JWT migrado](login-jwt-migrado.md) — el login consume la API nueva (usuario/contrasena + JWT); contrato y storage.
+- [Sin residuo BodyBooster](sin-residuo-bodybooster.md) — eliminar (no adaptar) todo lo de atleta/creador/BodyBooster.
