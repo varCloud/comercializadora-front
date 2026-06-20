@@ -1,10 +1,8 @@
-
+// Entorno de desarrollo: apunta a la API local comercializadora-api (.NET 10).
+// Ver memoria `pendiente-urls-backend` para el repunte definitivo de prod/IIS.
 export const environment = {
   PRODUCTION: false,
-  //BASE_URL: 'https://bb-api-y0vm.onrender.com/api/v1',
-  //BASE_URL_ADMIN: 'https://bb-api-y0vm.onrender.com/api/admin/v1/',
-  BASE_URL: 'https://api.bodybooster.com.mx/api/v1',
-  BASE_URL_ADMIN: 'https://api.bodybooster.com.mx/api/admin/v1',
+  // API local (HTTP). Para HTTPS usar https://localhost:7285/api.
+  BASE_URL: 'http://localhost:5163/api',
+  BASE_URL_ADMIN: 'http://localhost:5163/api',
 };
-
-

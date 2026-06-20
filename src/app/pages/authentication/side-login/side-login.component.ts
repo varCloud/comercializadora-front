@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CoreService } from 'src/app/services/core.service';
 import {
   FormGroup,
@@ -9,33 +9,29 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { LoginService } from '../services/login.service';
-import { take } from 'rxjs';
-import { UserModel } from 'src/app/models/user';
+import { finalize, take } from 'rxjs';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
 import { BlockComponent } from '../../ui-components/block/block.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { NotificationService } from 'src/app/services/notification.service';
-import {
-  LoginRequest,
-  LoginRequestModel,
-} from 'src/app/models/requests/login/login-request';
-import { UserTypeEnum } from 'src/app/config/enum';
+import { LoginRequestModel } from 'src/app/models/requests/login/login-request';
+import { Sesion } from 'src/app/models/sesion';
 
 @Component({
-    selector: 'app-side-login',
-    imports: [
-        RouterModule,
-        MaterialModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BlockUIModule,
-        SweetAlert2Module,
-        CommonModule,
-    ],
-    templateUrl: './side-login.component.html',
-    styleUrl: './side-login.component.scss'
+  selector: 'app-side-login',
+  imports: [
+    RouterModule,
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BlockUIModule,
+    SweetAlert2Module,
+    CommonModule,
+  ],
+  templateUrl: './side-login.component.html',
+  styleUrl: './side-login.component.scss',
 })
 export class AppSideLoginComponent {
   options = this.settings.getOptions();
@@ -52,7 +48,7 @@ export class AppSideLoginComponent {
   ) {}
 
   form = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
+    usuario: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required]),
   });
 
@@ -64,27 +60,29 @@ export class AppSideLoginComponent {
     this.blockUILayout.start();
 
     const payLoad: LoginRequestModel = new LoginRequestModel({
-      email: this.f.email.value!,
-      password: this.f.password.value!,
-      userType: UserTypeEnum.ADMIN,
+      usuario: this.f.usuario.value!,
+      contrasena: this.f.password.value!,
     });
 
     this._loginService
       .signIn(payLoad)
-      .pipe(take(1))
-      .subscribe(
-        (data: { user: UserModel; token: string }) => {
-          localStorage.setItem('user', JSON.stringify(data));
-          localStorage.setItem('token', data.token);
-          this.router.navigateByUrl('ui-components');
-          this.notify.notify('success', 'Bienvenido');
+      .pipe(
+        take(1),
+        finalize(() => this.blockUILayout.stop()),
+      )
+      .subscribe({
+        next: (sesion: Sesion) => {
+          localStorage.setItem('token', sesion.token);
+          localStorage.setItem('sesion', JSON.stringify(sesion));
+          this.notify.notify('success', `Bienvenido ${sesion.nombre ?? ''}`.trim());
           this.router.navigateByUrl('/');
-          this.blockUILayout.stop();
         },
-        (err) => {
-          this.notify.notify('error', err.error.message);
-          this.blockUILayout.stop();
+        error: (err) => {
+          const mensaje =
+            err?.error?.mensaje ?? err?.message ?? 'Usuario o contraseña incorrectos';
+          this.notify.notify('error', mensaje);
+          console.error('Error en login', err);
         },
-      );
+      });
   }
 }

@@ -1,39 +1,38 @@
 import { Injectable } from '@angular/core';
-import {
-  Router,
-  CanActivate,
-  RouterStateSnapshot,
-  ActivatedRouteSnapshot,
-} from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { Router, CanActivate } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-  ) {}
+  constructor(private router: Router) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot,
-  ): boolean {
+  canActivate(): boolean {
     const token = localStorage.getItem('token');
-    return true;
-    if (token) {
+
+    if (token && this.isTokenValid(token)) {
       return true;
-      // if(this.authService.isAuthorized(state.url)){
-      //   return true;
-      // }
-      // else {
-      //   this.router.navigate(['authentication/side-login']);
-      //   return false;
-      // }
     }
-    localStorage.clear();
-    this.router.navigate(['login/authentication/side-login']);
+
+    // Sin token o token expirado/corrupto: limpiar y mandar al login.
+    localStorage.removeItem('token');
+    localStorage.removeItem('sesion');
+    this.router.navigate(['login/authentication/side-login'], { replaceUrl: true });
     return false;
+  }
+
+  /** Valida que el JWT no haya expirado (claim `exp`, en segundos UTC). */
+  private isTokenValid(token: string): boolean {
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) return false;
+      const decoded = JSON.parse(
+        atob(payload.replace(/-/g, '+').replace(/_/g, '/')),
+      );
+      if (!decoded?.exp) return true; // sin exp: se asume válido
+      return decoded.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
   }
 }
