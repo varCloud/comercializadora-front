@@ -1,0 +1,84 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row justify-content-between">
+      <div class="col-lg-4">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'proveedores.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-4 d-flex align-items-center justify-content-end">
+        <button mat-flat-button color="primary" (click)="agregar()">
+          {{ 'proveedores.add' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="cardWithShadow" *blockUI="'proveedores'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'proveedores.columns.nombre' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'proveedores.columns.nombre' | translate">{{ p.nombre }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'proveedores.columns.descripcion' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'proveedores.columns.descripcion' | translate">{{ p.descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="telefono">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'proveedores.columns.telefono' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'proveedores.columns.telefono' | translate">{{ p.telefono }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="direccion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'proveedores.columns.direccion' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'proveedores.columns.direccion' | translate">{{ p.direccion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="porcAtendido">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'proveedores.columns.porcAtendido' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'proveedores.columns.porcAtendido' | translate">{{ p.porcAtendido | number:'1.0-1' }}%</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'proveedores.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="action-link text-right" [attr.data-label]="'proveedores.columns.acciones' | translate">
+            <a (click)="ver(p)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'proveedores.actions.ver' | translate">
+              <i-tabler name="eye" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="editar(p)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'proveedores.actions.editar' | translate">
+              <i-tabler name="edit" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="eliminar(p)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'proveedores.actions.eliminar' | translate">
+              <i-tabler name="trash" class="icon-18"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'proveedores.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

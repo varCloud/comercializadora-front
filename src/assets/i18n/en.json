@@ -1,4 +1,126 @@
 {
+  "dashboard": {
+    "title": "Dashboard",
+    "informacionGlobal": "Global information",
+    "kpis": {
+      "ventasDia": "Today's sales",
+      "ventasSemana": "Weekly sales",
+      "ventasMes": "Monthly sales",
+      "ventasAnio": "Yearly sales"
+    },
+    "merma": {
+      "actual": "Current month shrinkage",
+      "anterior": "Previous month shrinkage"
+    },
+    "costo": {
+      "actual": "Current production cost",
+      "anterior": "Previous production cost"
+    },
+    "periodo": {
+      "semana": "Week",
+      "mes": "Month",
+      "anio": "Year",
+      "dia": "Day"
+    },
+    "chart": {
+      "ventasTitle": "Sales by date",
+      "ventasSubtitle": "Click a column to see the breakdown by station",
+      "ventas": "Sales",
+      "ventasPE": "PE Sales",
+      "ventaDia": "Day sales",
+      "empty": "No sales to display."
+    },
+    "estaciones": {
+      "title": "Sales by station",
+      "empty": "No station sales to display.",
+      "listTitle": "Station sales",
+      "col": {
+        "estacion": "Station",
+        "dia": "Day",
+        "semana": "Week",
+        "mes": "Month",
+        "anio": "Year"
+      }
+    },
+    "msg": {
+      "loading": "Loading…",
+      "kpisError": "Error loading dashboard indicators",
+      "ventasError": "Error loading sales by date",
+      "estacionesError": "Error loading sales by station",
+      "topError": "Error loading Top"
+    },
+    "top": {
+      "clientes": "Top customers",
+      "productos": "Top products",
+      "proveedores": "Top suppliers",
+      "empty": "No results to display."
+    }
+  },
+  "usuarios": {
+    "title": "Users",
+    "searchPlaceholder": "Search user",
+    "add": "Add user",
+    "empty": "No users to display.",
+    "columns": {
+      "usuario": "User",
+      "nombre": "Name",
+      "rol": "Role",
+      "sucursal": "Branch",
+      "almacen": "Warehouse",
+      "telefono": "Phone",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "desactivar": "Deactivate"
+    },
+    "form": {
+      "titleAdd": "Add User",
+      "titleEdit": "Edit User",
+      "titleView": "User Information",
+      "usuario": "User",
+      "usuarioPlaceholder": "Username",
+      "contrasena": "Password",
+      "contrasenaPlaceholder": "Password",
+      "contrasenaHint": "Leave empty to keep the current one.",
+      "nombre": "Name",
+      "nombrePlaceholder": "First name(s)",
+      "apellidoPaterno": "Last Name",
+      "apellidoPaternoPlaceholder": "Last name",
+      "apellidoMaterno": "Second Last Name",
+      "apellidoMaternoPlaceholder": "Second last name",
+      "telefono": "Phone",
+      "telefonoPlaceholder": "10-digit phone number",
+      "sucursal": "Branch",
+      "sucursalPlaceholder": "Select a branch",
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "Select a warehouse",
+      "rol": "Role",
+      "rolPlaceholder": "Select a role",
+      "cancelar": "Cancel",
+      "guardar": "Save",
+      "requiredUsuario": "User is required.",
+      "requiredContrasena": "Password is required.",
+      "requiredNombre": "Name is required.",
+      "requiredSucursal": "Select a branch.",
+      "requiredAlmacen": "Select a warehouse.",
+      "requiredRol": "Select a role."
+    },
+    "confirm": {
+      "deactivateTitle": "Message",
+      "deactivateText": "Are you sure you want to deactivate {{nombre}}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loadError": "Could not load users",
+      "saveError": "Error saving the user",
+      "saveFallback": "Could not save the user",
+      "deactivateFallback": "Could not deactivate",
+      "deactivateError": "Error deactivating the user"
+    }
+  },
   "Analytical": "Analytical",
   "eCommerce": "eCommerce",
   "Chat": "Chat",
@@ -97,5 +219,506 @@
   "Menu Level": "Menu Level",
   "Menu 1": "Menu 1",
   "Menu 2": "Menu 2",
-  "Disabled": "Disabled"
+  "Disabled": "Disabled",
+  "estaciones": {
+    "title": "Stations",
+    "add": "Add station",
+    "empty": "No stations to display.",
+    "searchPlaceholder": "Search station…",
+    "columns": {
+      "nombre": "Name",
+      "numero": "Number",
+      "almacen": "Warehouse",
+      "configurado": "Configured",
+      "acciones": "Actions"
+    },
+    "configurado": {
+      "si": "Yes",
+      "no": "No"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "eliminar": "Delete"
+    },
+    "form": {
+      "titleAdd": "Add station",
+      "titleEdit": "Edit station",
+      "titleView": "Station detail",
+      "nombre": "Name",
+      "nombrePlaceholder": "Station name",
+      "numero": "Number",
+      "numeroPlaceholder": "Station number",
+      "sucursal": "Branch",
+      "sucursalPlaceholder": "Select a branch",
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "Select a warehouse",
+      "requiredNombre": "Enter the name.",
+      "requiredNumero": "Enter the number.",
+      "requiredSucursal": "Select a branch.",
+      "requiredAlmacen": "Select a warehouse.",
+      "guardar": "Save",
+      "cancelar": "Cancel"
+    },
+    "confirm": {
+      "deleteTitle": "Delete station",
+      "deleteText": "Are you sure you want to delete station {{nombre}}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading stations",
+      "saveError": "Error saving station",
+      "saveFallback": "Could not save the station",
+      "deleteError": "Error deleting station",
+      "deleteFallback": "Could not delete the station"
+    }
+  },
+  "paginador": {
+    "porPagina": "Per page",
+    "rango": "Showing {{from}}–{{to}} of {{total}}",
+    "primera": "First",
+    "anterior": "Previous",
+    "siguiente": "Next",
+    "ultima": "Last",
+    "sinResultados": "No results",
+    "cargando": "Loading…"
+  },
+  "limitesInventario": {
+    "title": "Inventory Limits",
+    "empty": "No inventory limits to display.",
+    "searchPlaceholder": "Search by product, code, warehouse or line…",
+    "downloadFormat": "Download template",
+    "filters": {
+      "almacen": "Warehouse",
+      "linea": "Product line",
+      "estatus": "Status",
+      "todos": "All"
+    },
+    "columns": {
+      "almacen": "Warehouse",
+      "linea": "Product line",
+      "producto": "Product",
+      "codigoBarras": "Barcode",
+      "minimo": "Minimum",
+      "maximo": "Maximum",
+      "cantidadInventario": "Current qty.",
+      "cantidadSugerida": "Suggested purchase qty.",
+      "estatus": "Status"
+    },
+    "edit": {
+      "confirm": "Are you sure you want to update the {{campo}} value?",
+      "accept": "Accept",
+      "cancel": "Cancel",
+      "empty": "The value to update cannot be empty.",
+      "notInteger": "The value must be an integer.",
+      "minGtMax": "The minimum cannot be greater than the maximum.",
+      "ok": "The value was updated successfully.",
+      "saveFallback": "The limit could not be updated.",
+      "saveError": "An error occurred while updating the limit."
+    },
+    "import": {
+      "add": "Import",
+      "title": "Import inventory limits",
+      "selectFile": "Select file",
+      "hint": "Select an .xlsx file with the format (Barcode, Warehouse, Minimum, Maximum).",
+      "invalidFile": "Invalid file. Only .xlsx or .xls are accepted.",
+      "readError": "An error occurred while reading the file.",
+      "empty": "The file has no rows.",
+      "badFormat": "The file does not have the correct format.",
+      "rowOk": "Correct",
+      "rowEmpty": "There are empty fields in the row.",
+      "rowNotInteger": "Minimum/Maximum must be integers.",
+      "rowMinGtMax": "The minimum cannot be greater than the maximum.",
+      "noData": "There is no data to process.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saveFallback": "The inventory limits could not be applied.",
+      "saveError": "An error occurred while applying the inventory limits.",
+      "columns": {
+        "codigoBarras": "Barcode",
+        "almacen": "Warehouse",
+        "minimo": "Minimum",
+        "maximo": "Maximum",
+        "estatus": "Status"
+      }
+    },
+    "msg": {
+      "loading": "Loading…",
+      "saving": "Updating…",
+      "loadError": "An error occurred while loading the inventory limits."
+    }
+  },
+  "compras": {
+    "title": "Purchases",
+    "add": "New purchase",
+    "empty": "No purchases to display.",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Search by supplier, notes or id…",
+    "filters": {
+      "proveedor": "Supplier",
+      "proveedorPlaceholder": "All suppliers",
+      "usuario": "User",
+      "usuarioPlaceholder": "All users",
+      "estatus": "Purchase status",
+      "todos": "--ALL--",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "id": "Id",
+      "proveedor": "Supplier",
+      "usuario": "User",
+      "fecha": "Date",
+      "estatus": "Status",
+      "conErrores": "Has products with errors",
+      "solicitados": "Qty Requested",
+      "recibidos": "Qty Received",
+      "devueltos": "Qty Returned",
+      "total": "Total",
+      "observaciones": "Notes",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "editar": "Edit",
+      "eliminar": "Delete"
+    },
+    "form": {
+      "titleAdd": "New Purchase",
+      "titleEdit": "Edit Purchase",
+      "almacen": "Warehouse",
+      "seleccione": "--SELECT--",
+      "producto": "Product",
+      "productoPlaceholder": "Search a product…",
+      "unidadCompra": "Purchase Unit",
+      "cantidadUnitaria": "Unit Quantity",
+      "unidadVenta": "Sale Unit",
+      "ultimoCosto": "Last Cost",
+      "cantidad": "Quantity",
+      "cantidadComprada": "Purchased Quantity",
+      "agregarProducto": "Add Product",
+      "proveedor": "Supplier",
+      "proveedorPlaceholder": "Select a supplier",
+      "nuevoProveedor": "New supplier",
+      "estatusCompra": "Purchase status",
+      "observaciones": "Notes",
+      "cerrar": "Close",
+      "limpiar": "Clear",
+      "realizarCompra": "Place Purchase",
+      "actualizarCompra": "Update Purchase"
+    },
+    "detalle": {
+      "idProducto": "Product Id",
+      "producto": "Product",
+      "estatus": "Status",
+      "observaciones": "Notes",
+      "cantRecibida": "Qty Received",
+      "cantDevuelta": "Qty Returned",
+      "cantSolicitada": "Qty Requested",
+      "costo": "Cost",
+      "total": "Total",
+      "acciones": "Actions",
+      "eliminar": "Delete",
+      "vacio": "Add products to the purchase.",
+      "totalGeneral": "Total"
+    },
+    "confirm": {
+      "deleteTitle": "Delete purchase",
+      "deleteText": "Are you sure you want to delete purchase #{{id}}?",
+      "saveText": "Are you sure you want to save this Purchase?",
+      "updateText": "Are you sure you want to update this Purchase?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading purchases",
+      "deleting": "Deleting purchase…",
+      "deleteError": "Error deleting the purchase",
+      "deleteFallback": "Could not delete the purchase",
+      "saving": "Saving purchase…",
+      "saveError": "Error saving the purchase",
+      "saveFallback": "Could not save the purchase",
+      "almacenRequerido": "You must select a warehouse.",
+      "productoRequerido": "You must select a product.",
+      "costoMayorCero": "The cost of the product you want to add must be greater than 0.",
+      "cantidadMayorCero": "The quantity of the product you want to add must be greater than 0.",
+      "productoDuplicado": "The product is already in your purchase.",
+      "noEliminarRecibido": "The product cannot be removed from the purchase because it was received.",
+      "proveedorRequerido": "You must select a supplier.",
+      "estatusRequerido": "You must select the purchase status.",
+      "cantidadFilaMayorCero": "The requested quantity of product {{producto}} must be greater than 0.",
+      "costoFilaMayorCero": "The cost of product {{producto}} must be greater than 0.",
+      "sinProductos": "You must add products to the purchase.",
+      "proveedorCreado": "Supplier created. Search it in the selector to assign it."
+    }
+  },
+  "proveedores": {
+    "title": "Suppliers",
+    "add": "Add supplier",
+    "empty": "No suppliers to display.",
+    "searchPlaceholder": "Search supplier…",
+    "columns": {
+      "nombre": "Name",
+      "descripcion": "Description",
+      "telefono": "Phone",
+      "direccion": "Address",
+      "porcAtendido": "% Fulfilled",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "eliminar": "Delete"
+    },
+    "form": {
+      "titleAdd": "Add supplier",
+      "titleEdit": "Edit supplier",
+      "titleView": "Supplier detail",
+      "nombre": "Name",
+      "nombrePlaceholder": "Supplier name",
+      "descripcion": "Description",
+      "descripcionPlaceholder": "Supplier description",
+      "telefono": "Phone",
+      "telefonoPlaceholder": "Contact phone",
+      "direccion": "Address",
+      "direccionPlaceholder": "Supplier address",
+      "requiredNombre": "Enter the name.",
+      "requiredDescripcion": "Enter the description.",
+      "requiredTelefono": "Enter the phone.",
+      "requiredDireccion": "Enter the address.",
+      "guardar": "Save",
+      "cancelar": "Cancel"
+    },
+    "confirm": {
+      "deleteTitle": "Delete supplier",
+      "deleteText": "Are you sure you want to delete supplier {{nombre}}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading suppliers",
+      "saveError": "Error saving supplier",
+      "saveFallback": "Could not save the supplier",
+      "deleteError": "Error deleting supplier",
+      "deleteFallback": "Could not delete the supplier"
+    }
+  },
+  "productos": {
+    "title": "Products",
+    "ubicaciones": {
+      "title": "Print locations",
+      "sucursal": "Branch",
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "Select the warehouse",
+      "piso": "Floor",
+      "pisoPlaceholder": "Select the floor",
+      "pasillo": "Aisle",
+      "pasilloPlaceholder": "Select the aisle",
+      "rack": "Rack",
+      "rackPlaceholder": "Select the rack",
+      "requiredAlmacen": "Select a warehouse.",
+      "requiredPiso": "Select a floor.",
+      "requiredPasillo": "Select an aisle.",
+      "requiredRack": "Select a rack.",
+      "agregar": "Add",
+      "aGenerar": "Locations to generate",
+      "limpiar": "Clear",
+      "generar": "Generate locations",
+      "acciones": "Actions",
+      "eliminar": "Remove",
+      "vacio": "Add at least one location to generate the PDF.",
+      "msg": {
+        "loadError": "Error loading location catalogs.",
+        "completaCampos": "Select warehouse, floor, aisle and rack.",
+        "duplicada": "That location is already in the list.",
+        "sinUbicaciones": "Add at least one location to generate the PDF.",
+        "generando": "Generating locations…",
+        "generarError": "Error generating the locations PDF."
+      }
+    },
+    "codigosBarras": {
+      "title": "Generate barcodes",
+      "linea": "Product line",
+      "lineaPlaceholder": "Select a line",
+      "agregarLinea": "Add line",
+      "producto": "Product",
+      "productoPlaceholder": "Search a product",
+      "agregarProducto": "Add product",
+      "aGenerar": "Codes to generate",
+      "limpiar": "Clear",
+      "generar": "Generate codes",
+      "idProducto": "idProduct",
+      "descripcion": "Description",
+      "menudeo": "Retail price",
+      "mayoreo": "Wholesale price",
+      "codigo": "Barcode",
+      "acciones": "Actions",
+      "eliminar": "Remove",
+      "vacio": "Add at least one product to generate the PDF.",
+      "msg": {
+        "loadError": "Error loading product lines.",
+        "seleccionaProducto": "Select a product.",
+        "seleccionaLinea": "Select a product line.",
+        "agregandoLinea": "Adding products from the line…",
+        "lineaSinProductos": "This line has no registered products.",
+        "lineaError": "Error fetching the products of the line.",
+        "sinProductos": "Add at least one product to generate the PDF.",
+        "generando": "Generating barcodes…",
+        "generarError": "Error generating the barcodes PDF."
+      }
+    },
+    "add": "Add product",
+    "empty": "No products to display.",
+    "searchPlaceholder": "Search by description, item or code…",
+    "columns": {
+      "descripcion": "Description",
+      "articulo": "Item",
+      "codigoBarras": "Barcode",
+      "linea": "Line",
+      "unidad": "Unit",
+      "precio": "Price",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "eliminar": "Delete",
+      "precios": "Prices"
+    },
+    "form": {
+      "titleAdd": "Add product",
+      "titleEdit": "Edit product",
+      "titleView": "Product detail",
+      "descripcion": "Description",
+      "descripcionPlaceholder": "Product description",
+      "articulo": "Item",
+      "articuloPlaceholder": "Item (auto-generated from line + description)",
+      "codigoBarras": "Barcode",
+      "codigoBarrasPlaceholder": "Barcode",
+      "linea": "Line",
+      "lineaPlaceholder": "Select a line",
+      "claveSat": "SAT code",
+      "claveSatPlaceholder": "Search SAT code",
+      "claveSatType": "Type to search…",
+      "unidadMedida": "Unit of measure",
+      "unidadMedidaPlaceholder": "Select the unit of measure",
+      "cantidadUnidadMedida": "Unit qty",
+      "cantidadUnidadMedidaPlaceholder": "Quantity per unit of measure",
+      "unidadCompra": "Purchase unit",
+      "unidadCompraPlaceholder": "Select the purchase unit",
+      "sinUnidadCompra": "No purchase unit",
+      "cantidadUnidadCompra": "Purchase qty",
+      "cantidadUnidadCompraPlaceholder": "Quantity per purchase unit",
+      "codigosTitle": "Codes",
+      "codigosVacio": "Enter the item to generate the codes.",
+      "requiredDescripcion": "Enter the description.",
+      "requiredArticulo": "Enter the item.",
+      "requiredLinea": "Select a line.",
+      "requiredClaveSat": "Select the SAT code.",
+      "requiredUnidadMedida": "Select the unit of measure.",
+      "guardar": "Save",
+      "cancelar": "Cancel"
+    },
+    "confirm": {
+      "deleteTitle": "Delete product",
+      "deleteText": "Are you sure you want to delete product {{nombre}}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading products",
+      "saveError": "Error saving product",
+      "saveFallback": "Could not save the product",
+      "deleteError": "Error deleting product",
+      "deleteFallback": "Could not delete the product"
+    },
+    "precios": {
+      "title": "Prices",
+      "loading": "Loading prices…",
+      "loadError": "Error loading prices",
+      "ultimoCosto": "Last purchase cost",
+      "ultimoCostoPlaceholder": "Last purchase cost",
+      "precioMenudeo": "Retail price",
+      "precioMayoreo": "Wholesale price",
+      "porcUtilidadMenudeo": "% Retail margin",
+      "porcUtilidadMayoreo": "% Wholesale margin",
+      "utilidad": "Margin",
+      "superMayoreoTitle": "Bulk wholesale prices",
+      "min": "Min",
+      "max": "Max",
+      "porcUtilidad": "% Margin",
+      "precio": "Price",
+      "costoRango": "Price",
+      "minPlaceholder": "Minimum quantity",
+      "maxPlaceholder": "Maximum quantity",
+      "porcUtilidadPlaceholder": "% margin",
+      "precioPlaceholder": "Price",
+      "cantidadMinima": "Minimum quantity",
+      "cantidadMaxima": "Maximum quantity",
+      "acciones": "Actions",
+      "agregarPrecio": "Add price",
+      "agregarRango": "Add range",
+      "eliminarRango": "Delete",
+      "sinRangos": "No prices configured for this product.",
+      "rangoDatosIncompletos": "You must fill in all fields to insert the price range.",
+      "rango1a5": "For products between 1 and 5 items you must assign the Individual Price.",
+      "rango6": "For products of 6 items you must assign the Retail Price.",
+      "rangoMaxMayorMin": "The maximum must be greater than the minimum of the range you want to add.",
+      "rangoMinMayorAnterior": "The minimum you are trying to insert must be greater than the maximum of the previous range.",
+      "precioMenorBase": "The price must be lower than the wholesale price and the retail price.",
+      "precioMenorAnterior": "The price you are trying to insert must be lower than the minimum price of the previous range.",
+      "saveBaseRequerido": "Please assign a value for the Wholesale and Retail prices.",
+      "saveMenudeoMayorMayoreo": "The Retail price must be greater than the Wholesale price.",
+      "saveRangoMenorBase": "The price from {{min}} to {{max}} products must be lower than the wholesale price and the retail price.",
+      "guardar": "Save",
+      "cancelar": "Cancel",
+      "saveError": "Error saving prices",
+      "saveFallback": "Could not save prices"
+    }
+  },
+  "lineasProducto": {
+    "title": "Product lines",
+    "add": "Add line",
+    "empty": "No product lines to display.",
+    "searchPlaceholder": "Search by description…",
+    "columns": {
+      "descripcion": "Description",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "eliminar": "Delete"
+    },
+    "form": {
+      "titleAdd": "Add product line",
+      "titleEdit": "Edit product line",
+      "titleView": "Product line detail",
+      "descripcion": "Description",
+      "descripcionPlaceholder": "Line description",
+      "requiredDescripcion": "Enter the description.",
+      "guardar": "Save",
+      "cancelar": "Cancel"
+    },
+    "confirm": {
+      "deleteTitle": "Deactivate product line",
+      "deleteText": "Are you sure you want to deactivate the line {{nombre}}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading product lines",
+      "saveError": "Error saving the product line",
+      "saveFallback": "Could not save the product line",
+      "deleteError": "Error deactivating the product line",
+      "deleteFallback": "Could not deactivate the product line"
+    }
+  }
 }

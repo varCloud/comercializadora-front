@@ -8,7 +8,8 @@ El sidebar se arma a partir de **dos** fuentes en
 - **`sidebar-data.ts` → `navItems`**: el menú **demo de la plantilla** Modernize
   (Home, Apps, eCommerce, etc.). Solo referencia para desarrollo.
 
-`FullComponent` (constructor) los combina según el entorno:
+> **REGLA DURA — no quitar este switch por entorno.** `FullComponent` (constructor) arma el
+> menú según `environment.PRODUCTION`. **No eliminar** este condicional.
 
 ```ts
 if (environment.PRODUCTION) {
@@ -19,7 +20,7 @@ if (environment.PRODUCTION) {
 ```
 
 - **Producción** (`environment.PRODUCTION === true`): se muestra **solo `navItemsApp`**.
-- **Desarrollo**: se muestran `navItemsApp` **+** las páginas demo de la plantilla.
+- **Desarrollo**: se muestran `navItemsApp` **+** las páginas demo de la plantilla (referencia).
 
 ## Cómo aplicar
 

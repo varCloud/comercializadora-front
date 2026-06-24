@@ -1,0 +1,254 @@
+<h2 mat-dialog-title>
+  {{ (esNueva() ? 'compras.form.titleAdd' : 'compras.form.titleEdit') | translate }}
+</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'compraForm'">
+  <!-- ===== Línea de alta de producto (solo con estatus <= 1) ===== -->
+  @if (mostrarAltaLinea()) {
+    <div class="row m-t-8">
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.almacen' | translate }}</mat-label>
+        
+          <ng-select 
+            #idAlmacenSelect
+            id="idAlmacen" 
+            [formControl]="idAlmacen" 
+            [placeholder]="'compras.form.seleccione' | translate"
+            [items]="almacenes()"
+            [bindLabel]="'descripcion'"
+            [bindValue]="'id'"
+            [closeOnSelect]="true"
+            (change)="onAlmacenChange($event)"
+            >
+          </ng-select>
+        
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.producto' | translate }}</mat-label>
+        <app-select-paginado
+          #productoSelect
+          [control]="$any(idProducto)"
+          [fetchPage]="fetchProductos"
+          identifier="idProducto"
+          bindLabel="descripcion"
+          bindValue="idProducto"
+          placeholder="compras.form.productoPlaceholder"
+          (selected)="onProductoSeleccionado($event)"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-2 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.unidadCompra' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input matInput [value]="unidadCompra()" disabled />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-2 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.cantidadUnitaria' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input matInput [value]="cantidadUnidadCompra()" disabled />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-2 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.unidadVenta' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input matInput [value]="unidadVenta()" disabled />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.ultimoCosto' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            id="precio"
+            matInput
+            type="number"
+            [formControl]="precio"
+            (keydown.enter)="focusEl('cantPorUnidadCompra')"
+          />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.cantidad' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            id="cantPorUnidadCompra"
+            matInput
+            type="number"
+            [formControl]="cantPorUnidadCompra"
+            (blur)="onCantPorUnidadBlur()"
+            (keydown.enter)="focusEl('cantidad')"
+          />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.cantidadComprada' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            id="cantidad"
+            matInput
+            type="number"
+            [formControl]="cantidad"
+            (blur)="onCantidadBlur()"
+            (keydown.enter)="focusEl('btnAgregarProducto')"
+          />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12  d-flex align-items-center">
+        <button id="btnAgregarProducto" mat-flat-button color="primary" type="button" (click)="agregarProducto()">
+          {{ 'compras.form.agregarProducto' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ===== Detalle de productos ===== -->
+  <div class="table-responsive m-t-8">
+    <table class="w-100 compra-detalle">
+      <thead>
+        <tr>
+          <th>{{ 'compras.detalle.idProducto' | translate }}</th>
+          <th>{{ 'compras.detalle.producto' | translate }}</th>
+          <th>{{ 'compras.detalle.estatus' | translate }}</th>
+          <th>{{ 'compras.detalle.observaciones' | translate }}</th>
+          <th class="text-center">{{ 'compras.detalle.cantRecibida' | translate }}</th>
+          <th class="text-center">{{ 'compras.detalle.cantDevuelta' | translate }}</th>
+          <th class="text-center">{{ 'compras.detalle.cantSolicitada' | translate }}</th>
+          <th class="text-center">{{ 'compras.detalle.costo' | translate }}</th>
+          <th class="text-center">{{ 'compras.detalle.total' | translate }}</th>
+          @if (puedeEditar()) {
+            <th class="text-center">{{ 'compras.detalle.acciones' | translate }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.idProducto) {
+          <tr>
+            <td>{{ row.idProducto }}</td>
+            <td>{{ row.descripcion }}</td>
+            <td>
+              <span class="rol-chip" [style.color]="estatusProductoColor(row)" [style.borderColor]="estatusProductoColor(row)">
+                {{ row.estatusProducto }}
+              </span>
+            </td>
+            <td>{{ row.observaciones }}</td>
+            <td class="text-center">{{ row.cantidadRecibida }}</td>
+            <td class="text-center">{{ row.cantidadDevuelta }}</td>
+            <td class="text-center">
+              <input
+                class="celda-input"
+                type="number"
+                [(ngModel)]="row.cantidad"
+                [ngModelOptions]="{ standalone: true }"
+                [readonly]="cantidadReadonly(row)"
+                (blur)="actualizaTicket()"
+              />
+            </td>
+            <td class="text-center">
+              <input
+                class="celda-input"
+                type="number"
+                [(ngModel)]="row.precio"
+                [ngModelOptions]="{ standalone: true }"
+                [readonly]="costoReadonly()"
+                (blur)="actualizaTicket()"
+              />
+            </td>
+            <td class="text-center">${{ totalFila(row) | number: '1.2-2' }}</td>
+            @if (puedeEditar()) {
+              <td class="text-center">
+                <a class="cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'compras.detalle.eliminar' | translate" (click)="eliminarFila(row)">
+                  <i-tabler name="trash" class="icon-18"></i-tabler>
+                </a>
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td [attr.colspan]="puedeEditar() ? 10 : 9" class="text-center p-16">
+              {{ 'compras.detalle.vacio' | translate }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row m-t-16">
+    <div class="col-lg-6"></div>
+    <div class="col-lg-6 text-right">
+      <hr class="m-t-8 m-b-8" />
+      <div class="d-flex justify-content-end align-items-center gap-2">
+        <span class="f-s-16 f-w-600">{{ 'compras.detalle.totalGeneral' | translate }}</span>
+        <span class="f-s-20 f-w-700">${{ total() | number: '1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="m-t-16 m-b-16" />
+
+  <!-- ===== Cabecera: proveedor / estatus / observaciones ===== -->
+  <div class="row">
+    <div class="col-lg-4 col-sm-12 m-b-12">
+      <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.proveedor' | translate }}</mat-label>
+      <div class="d-flex align-items-start gap-2">
+        <div class="flex-1-auto">
+          <app-select-paginado
+            [control]="$any(idProveedor)"
+            [fetchPage]="fetchProveedores"
+            identifier="idProveedor"
+            bindLabel="nombre"
+            bindValue="idProveedor"
+            placeholder="compras.form.proveedorPlaceholder"
+            [preload]="proveedorPreload()"
+          ></app-select-paginado>
+        </div>
+        @if (puedeEditar()) {
+          <button mat-mini-fab color="primary" type="button" [matTooltip]="'compras.form.nuevoProveedor' | translate" (click)="nuevoProveedor()">
+            <i-tabler name="truck-delivery" class="icon-20"></i-tabler>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-sm-12 m-b-12">
+      <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.estatusCompra' | translate }}</mat-label>
+      <mat-form-field appearance="outline" class="w-100 hide-hint">
+        <mat-select [formControl]="idStatusCompra" [placeholder]="'compras.form.seleccione' | translate" (selectionChange)="onEstatusCambio()">
+          @for (e of estatusOpciones(); track e.idStatus) {
+            <mat-option [value]="e.idStatus">{{ e.descripcion }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-lg-4 col-sm-12 m-b-12">
+      <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.form.observaciones' | translate }}</mat-label>
+      <mat-form-field appearance="outline" class="w-100 hide-hint">
+        <textarea matInput [formControl]="observaciones" rows="2"></textarea>
+      </mat-form-field>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="cerrar()">
+    {{ 'compras.form.cerrar' | translate }}
+  </button>
+  @if (esNueva()) {
+    <button mat-stroked-button color="warn" type="button" (click)="limpiar()">
+      {{ 'compras.form.limpiar' | translate }}
+    </button>
+  }
+  @if (mostrarGuardar()) {
+    <button mat-flat-button color="primary" type="button" [disabled]="saving()" (click)="guardar()">
+      {{ (esNueva() ? 'compras.form.realizarCompra' : 'compras.form.actualizarCompra') | translate }}
+    </button>
+  }
+</mat-dialog-actions>

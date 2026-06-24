@@ -1,0 +1,77 @@
+<h2 mat-dialog-title class="m-0">{{ titleKey | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="form" class="row m-t-8">
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'proveedores.form.nombre' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="nombre" autocomplete="off" [placeholder]="'proveedores.form.nombrePlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="building-warehouse" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if (form.controls.nombre.hasError('required') && form.controls.nombre.touched) {
+              <mat-error>{{ 'proveedores.form.requiredNombre' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'proveedores.form.telefono' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="telefono" inputmode="tel" [placeholder]="'proveedores.form.telefonoPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="phone" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if (form.controls.telefono.hasError('required') && form.controls.telefono.touched) {
+              <mat-error>{{ 'proveedores.form.requiredTelefono' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'proveedores.form.descripcion' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="descripcion" [placeholder]="'proveedores.form.descripcionPlaceholder' | translate" />
+            @if (form.controls.descripcion.hasError('required') && form.controls.descripcion.touched) {
+              <mat-error>{{ 'proveedores.form.requiredDescripcion' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'proveedores.form.direccion' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="direccion" [placeholder]="'proveedores.form.direccionPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="map-pin" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if (form.controls.direccion.hasError('required') && form.controls.direccion.touched) {
+              <mat-error>{{ 'proveedores.form.requiredDireccion' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'proveedores.form.cancelar' | translate }}</button>
+  @if (!readonly) {
+    <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+      {{ 'proveedores.form.guardar' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

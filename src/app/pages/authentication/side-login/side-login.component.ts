@@ -16,6 +16,7 @@ import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
 import { BlockComponent } from '../../ui-components/block/block.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { NotificationService } from 'src/app/services/notification.service';
+import { SesionService } from 'src/app/services/sesion.service';
 import { LoginRequestModel } from 'src/app/models/requests/login/login-request';
 import { Sesion } from 'src/app/models/sesion';
 
@@ -44,6 +45,7 @@ export class AppSideLoginComponent {
     private settings: CoreService,
     private router: Router,
     private _loginService: LoginService,
+    private _sesionService: SesionService,
     private notify: NotificationService,
   ) {}
 
@@ -72,8 +74,7 @@ export class AppSideLoginComponent {
       )
       .subscribe({
         next: (sesion: Sesion) => {
-          localStorage.setItem('token', sesion.token);
-          localStorage.setItem('sesion', JSON.stringify(sesion));
+          this._sesionService.setSesion(sesion);
           this.notify.notify('success', `Bienvenido ${sesion.nombre ?? ''}`.trim());
           this.router.navigateByUrl('/');
         },

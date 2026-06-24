@@ -1,0 +1,5 @@
+// Fondo sólido para la columna de acciones fija (stickyEnd) al hacer scroll horizontal (regla 10).
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}

@@ -15,6 +15,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule, NgForOf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { SesionService } from 'src/app/services/sesion.service';
 
 interface notifications {
   id: number;
@@ -67,10 +68,9 @@ export class HeaderComponent {
   showFiller = false;
 
   public selectedLanguage: any = {
-    language: 'English',
-    code: 'en',
-    type: 'US',
-    icon: '/assets/images/flag/icon-flag-en.svg',
+    language: 'Español',
+    code: 'es',
+    icon: '/assets/images/flag/icon-flag-mx.svg',
   };
 
   public languages: any[] = [
@@ -83,17 +83,7 @@ export class HeaderComponent {
     {
       language: 'Español',
       code: 'es',
-      icon: '/assets/images/flag/icon-flag-es.svg',
-    },
-    {
-      language: 'Français',
-      code: 'fr',
-      icon: '/assets/images/flag/icon-flag-fr.svg',
-    },
-    {
-      language: 'German',
-      code: 'de',
-      icon: '/assets/images/flag/icon-flag-de.svg',
+      icon: '/assets/images/flag/icon-flag-mx.svg',
     },
   ];
 
@@ -102,6 +92,7 @@ export class HeaderComponent {
     public dialog: MatDialog,
     private translate: TranslateService,
     private router: Router,
+    public sesion: SesionService,
   ) {
     translate.setFallbackLang('en');
   }
@@ -120,10 +111,10 @@ export class HeaderComponent {
   }
 
   logout() {
+    this.sesion.limpiar();
     this.router.navigate(['/login/authentication/side-login'], {
       replaceUrl: true,
     });
-    localStorage.clear();
   }
 
   notifications: notifications[] = [

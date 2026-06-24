@@ -33,6 +33,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { BlockUIModule } from 'ng-block-ui';
 import { BlockComponent } from './pages/ui-components/block/block.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { provideToastr } from 'ngx-toastr';
 
 @NgModule({ declarations: [AppComponent, BlankComponent, FilterPipe],
     exports: [TablerIconsModule],
@@ -52,6 +53,12 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         { provide: LOCALE_ID, useValue: 'es-MX' },
         provideHttpClient(withInterceptorsFromDi()),
+        provideToastr({
+            positionClass: 'toast-bottom-right',
+            timeOut: 4000,
+            progressBar: true,
+            closeButton: true,
+        }),
         provideTranslateService({
             fallbackLang: 'en',
             loader: provideTranslateHttpLoader({

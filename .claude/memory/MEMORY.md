@@ -19,4 +19,11 @@ o convención), `reference` (recursos externos: URLs, dashboards, tickets), `got
 - [Flujo de agentes](flujo-agentes.md) — describir agentes en docs/agentes/<tema>/ antes de invocarlos.
 - [Subagentes de migración](subagentes-migracion.md) — `.claude/agents/`: migrador-pantalla → revisor-frontend.
 - [Login con JWT migrado](login-jwt-migrado.md) — el login consume la API nueva (usuario/contrasena + JWT); contrato y storage.
+- [SesionService](sesion-service.md) — sesión centralizada con signals; no usar localStorage directo.
 - [Sin residuo BodyBooster](sin-residuo-bodybooster.md) — eliminar (no adaptar) todo lo de atleta/creador/BodyBooster.
+- [Módulo Usuarios](modulo-usuarios.md) — primer feature de producto; fijó reglas 10-14 (tablas/modelos por feature/modales/búsqueda/i18n).
+- [Notificaciones e idioma](notificaciones-e-idioma.md) — toasts con ngx-toastr vía NotificationService; idioma default es + selector en header.
+- [Módulo Dashboard (Fase 1)](modulo-dashboard.md) — landing /admin/dashboard; KPIs + gráfica ventas-por-fecha (ng-apexcharts) con drilldown on-click; gotcha pipes standalone (CurrencyPipe/DecimalPipe).
+- [Submenú Líneas de producto](submenu-lineas-producto.md) — CRUD bajo Productos; primer uso de NavItem.children (grupo desplegable Productos/Líneas de producto).
+- [Despliegue IIS — permisos](despliegue-iis-permisos.md) — 401.3 por ACL NTFS rota (falta IUSR/Usuarios); fix con icacls + herencia.
+- [Despliegue SmarterASP.NET](despliegue-smarterasp.md) — dominio raíz admin-v2; config `production-smarterasp` (base-href /, web.config raíz, environment propio); subir dist por FTP.

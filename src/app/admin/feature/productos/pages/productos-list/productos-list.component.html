@@ -1,0 +1,92 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row justify-content-between">
+      <div class="col-lg-4">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'productos.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-4 d-flex align-items-center justify-content-end">
+        <button mat-flat-button color="primary" (click)="agregar()">
+          {{ 'productos.add' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="cardWithShadow" *blockUI="'productos'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.descripcion' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.descripcion' | translate">{{ p.descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="articulo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.articulo' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.articulo' | translate">{{ p.articulo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.codigoBarras' | translate">{{ p.codigoBarras }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="linea">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.linea' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.linea' | translate">{{ p.descripcionLinea }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="unidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.unidad' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.unidad' | translate">{{ p.descripcionUnidadMedida }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precio">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'productos.columns.precio' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'productos.columns.precio' | translate">{{ (p.precioIndividual ?? 0) | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'productos.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="action-link text-right" [attr.data-label]="'productos.columns.acciones' | translate">
+            <a (click)="ver(p)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'productos.actions.ver' | translate">
+              <i-tabler name="eye" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="editar(p)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'productos.actions.editar' | translate">
+              <i-tabler name="edit" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="precios(p)" class="m-r-10 cursor-pointer" [style.color]="'#7c4dff'" [matTooltip]="'productos.actions.precios' | translate">
+              <i-tabler name="coin" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="eliminar(p)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'productos.actions.eliminar' | translate">
+              <i-tabler name="trash" class="icon-18"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'productos.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

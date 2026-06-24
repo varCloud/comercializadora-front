@@ -30,3 +30,29 @@ Definidas en `src/assets/scss/helpers/` (`_display`, `_flexbox`, `_spacing`, `_t
 - Prohibido: `!important`, selectores globales desde un componente, estilos ad-hoc
   nuevos en `styles.scss` / `assets/scss/style.scss` (ahí solo van utilidades
   genuinamente reutilizables en toda la app).
+
+## ⚠️ REGLA DURA — el SCSS va SIEMPRE en su propio archivo, nunca inline en el TS
+
+**Cuando un componente necesite estilos, se generan en su archivo `.scss` y se enlazan con
+`styleUrl` (o `styleUrls`). PROHIBIDO poner estilos en el decorador `@Component`** (`styles:
+[...]` o `styles: \`...\``). El TS no contiene CSS.
+
+```ts
+// ✅ Correcto — estilos en archivo aparte
+@Component({
+  selector: 'app-x',
+  templateUrl: './x.component.html',
+  styleUrl: './x.component.scss',
+})
+
+// ❌ Prohibido — estilos embebidos en el TS
+@Component({
+  selector: 'app-x',
+  templateUrl: './x.component.html',
+  styles: [`.foo { color: red; }`],
+})
+```
+
+- Si el componente **no** necesita estilos, no declares `styleUrl` y deja el `.scss` fuera
+  (regla del CSS mínimo, arriba). Pero **si hay aunque sea una línea de SCSS, va en el `.scss`**.
+- Aplica igual a estilos generados por scaffolding: muévelos al `.scss`, no los dejes en el TS.

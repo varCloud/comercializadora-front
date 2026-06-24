@@ -1,0 +1,163 @@
+<h2 mat-dialog-title class="m-0">{{ titleKey | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="form" class="row m-t-8">
+    <!-- Columna izquierda -->
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.usuario' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="usuario" autocomplete="off" [placeholder]="'usuarios.form.usuarioPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="user" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if (form.controls.usuario.hasError('required') && form.controls.usuario.touched) {
+              <mat-error>{{ 'usuarios.form.requiredUsuario' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.contrasena' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input
+              matInput
+              [type]="hidePassword() ? 'password' : 'text'"
+              formControlName="contrasena"
+              autocomplete="new-password"
+              [placeholder]="'usuarios.form.contrasenaPlaceholder' | translate"
+            />
+            <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())">
+              <i-tabler [name]="hidePassword() ? 'eye-off' : 'eye'" class="icon-18 d-flex"></i-tabler>
+            </button>
+            @if (isEdit) {
+              <mat-hint>{{ 'usuarios.form.contrasenaHint' | translate }}</mat-hint>
+            }
+            @if (form.controls.contrasena.hasError('required') && form.controls.contrasena.touched) {
+              <mat-error>{{ 'usuarios.form.requiredContrasena' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.nombre' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="nombre" [placeholder]="'usuarios.form.nombrePlaceholder' | translate" />
+            @if (form.controls.nombre.hasError('required') && form.controls.nombre.touched) {
+              <mat-error>{{ 'usuarios.form.requiredNombre' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.telefono' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="telefono" maxlength="10" inputmode="numeric" [placeholder]="'usuarios.form.telefonoPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="phone" class="icon-20 d-flex"></i-tabler></mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.apellidoPaterno' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="apellidoPaterno" [placeholder]="'usuarios.form.apellidoPaternoPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.apellidoMaterno' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="apellidoMaterno" [placeholder]="'usuarios.form.apellidoMaternoPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.sucursal' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="idSucursal" (selectionChange)="onSucursalChange($event.value)" [placeholder]="'usuarios.form.sucursalPlaceholder' | translate">
+              @for (s of sucursales(); track s.id) {
+                <mat-option [value]="s.id">{{ s.descripcion }}</mat-option>
+              }
+            </mat-select>
+            @if (form.controls.idSucursal.hasError('min') && form.controls.idSucursal.touched) {
+              <mat-error>{{ 'usuarios.form.requiredSucursal' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.almacen' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="idAlmacen" [placeholder]="'usuarios.form.almacenPlaceholder' | translate">
+              @for (a of almacenes(); track a.id) {
+                <mat-option [value]="a.id">{{ a.descripcion }}</mat-option>
+              }
+            </mat-select>
+            @if (form.controls.idAlmacen.hasError('min') && form.controls.idAlmacen.touched) {
+              <mat-error>{{ 'usuarios.form.requiredAlmacen' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'usuarios.form.rol' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="idRol" [placeholder]="'usuarios.form.rolPlaceholder' | translate">
+              @for (r of roles(); track r.id) {
+                <mat-option [value]="r.id">{{ r.descripcion }}</mat-option>
+              }
+            </mat-select>
+            @if (form.controls.idRol.hasError('min') && form.controls.idRol.touched) {
+              <mat-error>{{ 'usuarios.form.requiredRol' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'usuarios.form.cancelar' | translate }}</button>
+  @if (!readonly) {
+    <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+      {{ 'usuarios.form.guardar' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

@@ -1,10 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  MatSnackBar,
-  MatSnackBarConfig,
-  MatSnackBarHorizontalPosition,
-  MatSnackBarVerticalPosition,
-} from '@angular/material/snack-bar';
+import { ToastrService } from 'ngx-toastr';
 
 /**
  * Estados de aviso soportados. Mantienen los mismos identificadores que usaba
@@ -14,20 +9,15 @@ import {
 export type NotificationType = 'success' | 'error' | 'warning' | 'info' | 'default';
 
 /**
- * Servicio de notificaciones tipo "toast" basado en `MatSnackBar`.
+ * Servicio de notificaciones tipo "toast".
  *
- * Reemplaza a `angular-notifier` (sin soporte para Angular 20) conservando la
- * firma `notify(type, message)`. El estilo por estado se resuelve con las clases
- * globales `app-snackbar-<estado>` definidas en `assets/scss/style.scss`.
+ * **Punto único de abstracción** sobre la librería de toasts: hoy `ngx-toastr`. Si en el
+ * futuro se cambia/queda sin soporte, **solo se modifica este archivo** (la firma
+ * `notify(type, message)` se conserva y ningún componente la consume directamente).
  */
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
-  private readonly snackBar = inject(MatSnackBar);
-
-  /** Duración por defecto (ms); equivale al `autoHide` previo de angular-notifier. */
-  private readonly defaultDuration = 4000;
-  private readonly horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-  private readonly verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+  private readonly toastr = inject(ToastrService);
 
   /**
    * Muestra un aviso.
@@ -35,12 +25,22 @@ export class NotificationService {
    * @param message Texto a mostrar.
    */
   notify(type: NotificationType, message: string): void {
-    const config: MatSnackBarConfig = {
-      duration: this.defaultDuration,
-      horizontalPosition: this.horizontalPosition,
-      verticalPosition: this.verticalPosition,
-      panelClass: ['app-snackbar', `app-snackbar-${type}`],
-    };
-    this.snackBar.open(message, 'Cerrar', config);
+    switch (type) {
+      case 'success':
+        this.toastr.success(message);
+        break;
+      case 'error':
+        this.toastr.error(message);
+        break;
+      case 'warning':
+        this.toastr.warning(message);
+        break;
+      case 'info':
+        this.toastr.info(message);
+        break;
+      default:
+        this.toastr.show(message);
+        break;
+    }
   }
 }

@@ -1,0 +1,83 @@
+<h2 mat-dialog-title class="m-0">{{ titleKey | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="form" class="row m-t-8">
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'estaciones.form.nombre' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="nombre" autocomplete="off" [placeholder]="'estaciones.form.nombrePlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="building-store" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if (form.controls.nombre.hasError('required') && form.controls.nombre.touched) {
+              <mat-error>{{ 'estaciones.form.requiredNombre' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'estaciones.form.numero' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="numero" inputmode="numeric" [placeholder]="'estaciones.form.numeroPlaceholder' | translate" />
+            @if (form.controls.numero.hasError('min') && form.controls.numero.touched) {
+              <mat-error>{{ 'estaciones.form.requiredNumero' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'estaciones.form.sucursal' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="idSucursal" (selectionChange)="onSucursalChange($event.value)" [placeholder]="'estaciones.form.sucursalPlaceholder' | translate">
+              @for (s of sucursales(); track s.id) {
+                <mat-option [value]="s.id">{{ s.descripcion }}</mat-option>
+              }
+            </mat-select>
+            @if (form.controls.idSucursal.hasError('min') && form.controls.idSucursal.touched) {
+              <mat-error>{{ 'estaciones.form.requiredSucursal' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'estaciones.form.almacen' | translate }}</mat-label>
+        </div>
+        <div class="col-sm-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="idAlmacen" [placeholder]="'estaciones.form.almacenPlaceholder' | translate">
+              @for (a of almacenes(); track a.id) {
+                <mat-option [value]="a.id">{{ a.descripcion }}</mat-option>
+              }
+            </mat-select>
+            @if (form.controls.idAlmacen.hasError('min') && form.controls.idAlmacen.touched) {
+              <mat-error>{{ 'estaciones.form.requiredAlmacen' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'estaciones.form.cancelar' | translate }}</button>
+  @if (!readonly) {
+    <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+      {{ 'estaciones.form.guardar' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

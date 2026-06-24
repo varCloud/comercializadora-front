@@ -38,7 +38,13 @@ export const CONSTANTS = {
         PAGE_SIZE:25,
         PAGE:1,
         PAGE_SIZE_OPTIONS:[10,25,50,100]
-    }
+    },
 
+    // Sucursal fija de operación. Todo selector de sucursal queda en Uruapan y bloqueado
+    // (ver regla 15). Si en el futuro se opera multi-sucursal, se quita aquí y en la regla.
+    SUCURSAL_DEFAULT:{
+        ID:1,
+        NOMBRE:'Sucursal Uruapan'
+    }
 
 }

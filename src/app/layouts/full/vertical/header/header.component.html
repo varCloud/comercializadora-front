@@ -137,7 +137,6 @@
     [matMenuTriggerFor]="flags"
     mat-icon-button
     class="m-r-5"
-    *ngIf="false"
   >
     <img
       [src]="selectedLanguage.icon"
@@ -208,10 +207,15 @@
   <!-- --------------------------------------------------------------- -->
   <!-- profile Dropdown -->
   <!-- --------------------------------------------------------------- -->
+  @if (sesion.nombre()) {
+    <span class="d-none d-md-flex align-items-center f-w-600 m-r-8">
+      {{ sesion.nombre() }}
+    </span>
+  }
   <button
     mat-icon-button
     [matMenuTriggerFor]="profilemenu"
-    aria-label="Notifications"
+    aria-label="Perfil de usuario"
   >
     <img
       src="./assets/images/profile/user-1.jpg"
@@ -220,12 +224,17 @@
     />
   </button>
   <mat-menu #profilemenu="matMenu" class="topbar-dd cardWithShadow">
-    <ng-scrollbar class="position-relative" style="height: 80px">
-      <div class="p-y-12 p-x-32">
-        <a (click)="logout()" mat-stroked-button color="primary" class="w-100"
-          >Cerrar Sesión</a
-        >
+    @if (sesion.sesion(); as s) {
+      <div class="p-x-32 p-y-16">
+        <h6 class="f-s-16 f-w-600 m-0 mat-subtitle-1">{{ s.nombre }}</h6>
+        <span class="f-s-12 d-block">{{ s.rol }}</span>
+        <span class="f-s-12 d-block text-muted">{{ s.usuario }}</span>
       </div>
-    </ng-scrollbar>
+    }
+    <div class="p-y-12 p-x-32">
+      <a (click)="logout()" mat-stroked-button color="primary" class="w-100"
+        >Cerrar Sesión</a
+      >
+    </div>
   </mat-menu>
 </mat-toolbar>

@@ -1,11 +1,18 @@
 // Modelos de autenticación. Los nombres de campo replican el contrato JSON de la API
 // (`comercializadora-api`), que es en español; por eso no se anglifican aquí.
 
-/** Envoltorio estándar de respuesta de la API (status / mensaje / modelo). */
+import { PageLinks, PageMeta } from 'src/app/admin/models/shared/paged-result';
+
+/**
+ * Envoltorio estándar de respuesta de la API (status / mensaje / modelo). En listados
+ * paginados trae además `links` y `meta` junto a estatus/mensaje (los datos van en `modelo`).
+ */
 export interface Notificacion<T> {
   estatus: number;
   mensaje: string | null;
   modelo: T | null;
+  links?: PageLinks | null;
+  meta?: PageMeta | null;
   esExitoso?: boolean;
 }
 

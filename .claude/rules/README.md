@@ -18,3 +18,11 @@ No engordes `CLAUDE.md`; ahí solo va el puntero a esta carpeta.
 - [07 — Menú de navegación](07-menu-navegacion.md): rutas de producto en `navItemsApp`; prod muestra solo lo nuestro.
 - [08 — Angular moderno](08-angular-moderno.md): standalone + signals + control flow nativo (`@if`/`@for`), no `*ngIf`/`*ngFor`.
 - [09 — Modelos interface + clase](09-modelos-interface-clase.md): cada interface lleva su clase `XModel implements X`; instancia respuestas con `new XModel(...)`.
+- [10 — Tablas / listados](10-tablas-listados.md): basados en `datatable/kichen-sink`; acciones con iconos `i-tabler`; paginación server-side.
+- [11 — Modelos por feature](11-modelos-feature.md): `admin/models/<feature>/`; un archivo = una interfaz + su modelo; genéricos en `shared/`.
+- [12 — Modales y formularios](12-modales-formulario.md): basados en `forms/form-vertical`; dimensionar el diálogo (`width`/`maxWidth`).
+- [13 — Buscador en listados](13-busqueda-listados.md): todo listado lleva buscador; front input con debounce, back query param `search`.
+- [14 — i18n (ngx-translate)](14-i18n-traducciones.md): texto de UI con claves; descripciones en `en.json` y `es.json`; `TranslatePipe`/`TranslateService`.
+- [15 — Selector de Sucursal](15-selector-sucursal.md): sucursal Uruapan por defecto y **bloqueada** en todo selector; id en `CONSTANTS.SUCURSAL_DEFAULT`.
+- [16 — Selectores ng-select](16-selectores-ngselect.md): ≤10 → `mat-select`; 11–25 → `ng-select` (filtro cliente); **>25 → `app-select-paginado`** (paginado en scroll + búsqueda servidor + `arrayUnique`; carga 25 al iniciar).
+- [17 — Controles deshabilitados](17-controles-deshabilitados.md): estilo global (fondo gris tenue + cursor `not-allowed`) para todo control `disabled`; centralizado en `style.scss`, no por componente.

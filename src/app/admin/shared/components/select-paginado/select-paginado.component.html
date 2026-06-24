@@ -1,0 +1,21 @@
+<ng-select
+  #select
+  [items]="items()"
+  [bindLabel]="bindLabel()"
+  [bindValue]="bindValue()"
+  [placeholder]="placeholder() | translate"
+  [loading]="loading()"
+  [multiple]="multiple()"
+  [clearable]="clearable()"
+  [closeOnSelect]="closeOnSelect()"
+  [searchable]="searchable()"
+  [formControl]="control()"
+  [virtualScroll]="true"
+  [searchFn]="noClientFilter"
+  [notFoundText]="'paginador.sinResultados' | translate"
+  [loadingText]="'paginador.cargando' | translate"
+  (scrollToEnd)="onScrollEnd()"
+  (search)="onSearch($event)"
+  (change)="selected.emit($event)"
+  
+></ng-select>

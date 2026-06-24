@@ -1,0 +1,152 @@
+<div *blockUI="'imprimirUbicaciones'">
+  <!-- Card de filtros: arma una ubicación y la agrega a la lista a generar -->
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+      <h4 class="mat-subtitle-1 f-w-600 m-b-16">{{ 'productos.ubicaciones.title' | translate }}</h4>
+
+      <form [formGroup]="ubicacionForm" class="row">
+        <div class="col-12">
+          <div class="row">
+
+            <!-- Sucursal (fija Uruapan, bloqueada — regla 15) -->
+            <div class="col-sm-6 col-lg-4 m-b-16">
+              <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.ubicaciones.sucursal' |
+                translate }}</mat-label>
+              <mat-form-field appearance="outline" class="w-100">
+                <input matInput [value]="sucursalNombre" disabled />
+              </mat-form-field>
+            </div>
+
+            <!-- Almacén -->
+            <div class="col-sm-6 col-lg-4 m-b-16">
+              <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.ubicaciones.almacen' |
+                translate }}</mat-label>
+              <ng-select formControlName="idAlmacen" [items]="almacenes()" bindValue="id" bindLabel="descripcion"
+                [placeholder]="'productos.ubicaciones.almacenPlaceholder' | translate"></ng-select>
+              @if (ubicacionForm.controls.idAlmacen.hasError('required') &&
+              ubicacionForm.controls.idAlmacen.touched) {
+              <small class="text-error">{{ 'productos.ubicaciones.requiredAlmacen' | translate }}</small>
+              }
+            </div>
+
+            <!-- Piso -->
+            <div class="col-sm-6 col-lg-4 m-b-16">
+              <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.ubicaciones.piso' |
+                translate }}</mat-label>
+              <ng-select formControlName="idPiso" [items]="pisos()" bindValue="id" bindLabel="descripcion"
+                [placeholder]="'productos.ubicaciones.pisoPlaceholder' | translate"></ng-select>
+              @if (ubicacionForm.controls.idPiso.hasError('required') && ubicacionForm.controls.idPiso.touched) {
+              <small class="text-error">{{ 'productos.ubicaciones.requiredPiso' | translate }}</small>
+              }
+            </div>
+
+            <!-- Pasillo -->
+            <div class="col-sm-6 col-lg-4 m-b-16">
+              <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.ubicaciones.pasillo' |
+                translate }}</mat-label>
+              <ng-select formControlName="idPasillo" [items]="pasillos()" bindValue="id" bindLabel="descripcion"
+                [placeholder]="'productos.ubicaciones.pasilloPlaceholder' | translate"></ng-select>
+              @if (ubicacionForm.controls.idPasillo.hasError('required') &&
+              ubicacionForm.controls.idPasillo.touched) {
+              <small class="text-error">{{ 'productos.ubicaciones.requiredPasillo' | translate }}</small>
+              }
+            </div>
+
+            <!-- Rack -->
+            <div class="col-sm-6 col-lg-4 m-b-16">
+              <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.ubicaciones.rack' |
+                translate }}</mat-label>
+              <ng-select formControlName="idRaq" [items]="racks()" bindValue="id" bindLabel="descripcion"
+                [placeholder]="'productos.ubicaciones.rackPlaceholder' | translate"></ng-select>
+              @if (ubicacionForm.controls.idRaq.hasError('required') && ubicacionForm.controls.idRaq.touched) {
+              <small class="text-error">{{ 'productos.ubicaciones.requiredRack' | translate }}</small>
+              }
+            </div>
+
+            <!-- Botón Agregar -->
+            <div class="col-sm-6 col-lg-4 m-b-16 d-flex align-items-end">
+              <button mat-flat-button color="primary" type="button" class="w-100" (click)="agregar()">
+                <i-tabler name="plus" class="icon-18 m-r-4"></i-tabler>
+                {{ 'productos.ubicaciones.agregar' | translate }}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Card de la lista a generar -->
+  <mat-card class="cardWithShadow">
+    <mat-card-content class="p-24">
+      <div class="d-flex align-items-center justify-content-between m-b-16">
+        <h4 class="mat-subtitle-1 f-w-600 m-0">{{ 'productos.ubicaciones.aGenerar' | translate }}</h4>
+        <div class="d-flex gap-8">
+          <button mat-stroked-button color="warn" type="button" [disabled]="filas().length === 0"
+            (click)="limpiar()">
+            <i-tabler name="trash" class="icon-18 m-r-4"></i-tabler>
+            {{ 'productos.ubicaciones.limpiar' | translate }}
+          </button>
+          <button mat-flat-button color="primary" type="button" [disabled]="filas().length === 0 || generando()"
+            (click)="generar()">
+            <i-tabler name="printer" class="icon-18 m-r-4"></i-tabler>
+            {{ 'productos.ubicaciones.generar' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table mat-table [dataSource]="filas()" class="w-100">
+
+          <ng-container matColumnDef="posicion">
+            <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">#</th>
+            <td mat-cell *matCellDef="let row; let i = index" class="f-s-14">{{ i + 1 }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="almacen">
+            <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">{{ 'productos.ubicaciones.almacen' |
+              translate }}</th>
+            <td mat-cell *matCellDef="let row" class="f-s-14">{{ row.descripcionAlmacen }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="piso">
+            <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">{{ 'productos.ubicaciones.piso' |
+              translate }}</th>
+            <td mat-cell *matCellDef="let row" class="f-s-14">{{ row.descripcionPiso }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="pasillo">
+            <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">{{ 'productos.ubicaciones.pasillo' |
+              translate }}</th>
+            <td mat-cell *matCellDef="let row" class="f-s-14">{{ row.descripcionPasillo }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="rack">
+            <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">{{ 'productos.ubicaciones.rack' |
+              translate }}</th>
+            <td mat-cell *matCellDef="let row" class="f-s-14">{{ row.descripcionRaq }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="action" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600 text-right">
+              {{ 'productos.ubicaciones.acciones' | translate }}
+            </th>
+            <td mat-cell *matCellDef="let row; let i = index" class="action-link text-right">
+              <a (click)="eliminar(i)" class="cursor-pointer" [matTooltip]="'productos.ubicaciones.eliminar' | translate">
+                <i-tabler name="trash" class="icon-18" [style.color]="'#e53935'"></i-tabler>
+              </a>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        @if (filas().length === 0) {
+        <p class="text-center f-s-14 p-y-16 m-0">{{ 'productos.ubicaciones.vacio' | translate }}</p>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

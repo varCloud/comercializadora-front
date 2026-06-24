@@ -220,6 +220,8 @@ export class FullComponent implements OnInit {
         this.content.scrollTo({ top: 0 });
       });
 
+    // REGLA DURA: conservar este switch por entorno.
+    // PROD: solo el menú de producto. DEV: producto + menú demo del template (referencia).
     if (environment.PRODUCTION) {
       this.navItems = [...this.navItemsApp];
     } else {

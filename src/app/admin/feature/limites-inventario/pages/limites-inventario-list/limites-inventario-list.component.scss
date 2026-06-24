@@ -1,0 +1,21 @@
+// Fondo para la columna de acciones sticky (no aplica aquí, pero se conserva la convención
+// por si se agrega una columna fija). Input compacto para editar mín/máx en la tabla.
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}
+
+.limite-input {
+  width: 56px;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: center;
+  border-radius: 4px;
+  padding: 2px 4px;
+
+  &:hover,
+  &:focus {
+    border-color: rgba(0, 0, 0, 0.2);
+    outline: none;
+  }
+}

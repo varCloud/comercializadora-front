@@ -10,6 +10,8 @@
 //Theme colors
 
 @import "themecolors/default_theme";
+
+//@import "@ng-select/ng-select/themes/material.theme.css";
 @include mat.all-component-themes($bluetheme);
 
 .dark-theme {
@@ -69,7 +71,6 @@
 // RTL Theme
 @import "rtl/rtl";
 
-
 .scroll-view-app::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px #a6ce3a;
@@ -91,6 +92,36 @@ body::-webkit-scrollbar-thumb {
 .scroll-view-app::-webkit-scrollbar-track-piece,
 body::-webkit-scrollbar-track-piece {
     background-color: #e8f4fc;
+}
+
+/* Scrollbars con la marca (verde Lluvia) en TODA la app, no solo en .scroll-view-app */
+* {
+    scrollbar-width: thin;                /* Firefox */
+    scrollbar-color: #a6ce3a #e8f4fc;     /* thumb / track (Firefox) */
+}
+
+*::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #e8f4fc;
+}
+
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track-piece {
+    background-color: #e8f4fc;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #a6ce3a;
+    border-radius: 6px;
+}
+
+/* ngx-scrollbar (ng-scrollbar) usa variables CSS propias */
+ng-scrollbar {
+    --scrollbar-thumb-color: #a6ce3a;
+    --scrollbar-thumb-hover-color: #8fb22f;
+    --scrollbar-track-color: #e8f4fc;
+    --scrollbar-size: 6px;
 }
 
 .custom-form-field .mat-form-field-outline {
@@ -164,5 +195,158 @@ body::-webkit-scrollbar-track-piece {
   }
   &.app-snackbar-default {
     --mdc-snackbar-container-color: #323232;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Controles deshabilitados — estilo general (REGLA DURA, ver rules/17)
+// Todo input/select/control deshabilitado se ve atenuado: fondo gris tenue y cursor
+// not-allowed. Aplica a Angular Material (mat-form-field, mat-select), ng-select y
+// controles nativos. Punto único: NO redefinir el "look deshabilitado" por componente.
+// ─────────────────────────────────────────────────────────────────────────────
+$disabled-bg: rgba(0, 0, 0, 0.04); // gris tenue
+
+// Angular Material: form-field deshabilitado (input / select / textarea).
+// OJO: la clase que aplica Material en <mat-form-field> es `mat-form-field-disabled`
+// (NO `mat-mdc-form-field-disabled`). El fondo gris va en el wrapper para llenar todo
+// el recuadro del outline; el input nativo se deja transparente para que no quede un
+// segundo recuadro hundido dentro.
+.mat-form-field-disabled {
+  .mat-mdc-text-field-wrapper {
+    background-color: $disabled-bg !important;
+    border-radius: 4px;
+    cursor: not-allowed;
+  }
+  .mat-mdc-input-element,
+  .mat-mdc-select,
+  .mat-mdc-select-trigger,
+  .mat-mdc-form-field-infix,
+  .mat-mdc-form-field-flex {
+    cursor: not-allowed !important;
+  }
+  .mat-mdc-input-element {
+    background: transparent !important; // evita el doble recuadro inset
+  }
+}
+
+// ng-select deshabilitado (catálogos finitos y app-select-paginado en readonly)
+.ng-select.ng-select-disabled {
+  .ng-select-container {
+    background-color: $disabled-bg !important;
+    cursor: not-allowed;
+  }
+  .ng-value,
+  .ng-placeholder,
+  .ng-input > input {
+    cursor: not-allowed !important;
+  }
+}
+
+// Controles nativos deshabilitados (FUERA de Material; los mat-input ya se cubren arriba)
+input:disabled:not(.mat-mdc-input-element),
+select:disabled,
+textarea:disabled:not(.mat-mdc-input-element) {
+  background-color: $disabled-bg !important;
+  cursor: not-allowed !important;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ng-select con apariencia "outline" de Material — consistencia con los
+// mat-form-field appearance="outline" del resto del formulario (reglas 12 y 16).
+// El tema material de ng-select trae estilo "underline" (línea inferior); aquí lo
+// convertimos en un recuadro con borde redondeado igual que los demás inputs.
+// ─────────────────────────────────────────────────────────────────────────────
+// .ng-select.ng-select-single .ng-select-container,
+// .ng-select.ng-select-multiple .ng-select-container {
+//   min-height: 53px;
+//   border: 1px solid rgba(0, 0, 0, 0.38);
+//   border-radius: 4px;
+//   background-color: transparent;
+//   align-items: center;
+//   padding: 0 8px;
+// }
+
+// // quita el subrayado animado del tema material
+// .ng-select.ng-select-single .ng-select-container::after,
+// .ng-select.ng-select-multiple .ng-select-container::after {
+//   border: 0 !important;
+// }
+
+// // hover y foco como un campo Material (borde más oscuro / primario)
+// .ng-select:not(.ng-select-disabled) .ng-select-container:hover {
+//   border-color: rgba(0, 0, 0, 0.87);
+// }
+// .ng-select.ng-select-focused:not(.ng-select-opened) .ng-select-container,
+// .ng-select.ng-select-opened .ng-select-container {
+//   border-color: var(--mat-sys-primary, #5d87ff) !important;
+//   box-shadow: inset 0 0 0 1px var(--mat-sys-primary, #5d87ff);
+// }
+
+// // Placeholder NORMAL — desactiva el "floating label" del tema material (el placeholder no
+// // debe subir ni encogerse). El label ya va arriba con <mat-label> y ningún otro control hace
+// // ese efecto. El placeholder se queda fijo y desaparece cuando ya hay un valor seleccionado.
+// .ng-select .ng-placeholder {
+//   transform: none !important;
+//   transition: none !important;
+// }
+// .ng-select.ng-has-value .ng-placeholder {
+//   display: none !important;
+// }
+// .ng-select.ng-select-single .ng-select-container .ng-value-container {
+//   padding-top: 0 !important;
+// }
+
+// .ng-select.ng-select-single .ng-select-container .ng-clear-wrapper
+// {
+//     align-self: center;
+//      bottom: 0;
+// }
+
+// .ng-select.ng-select-single .ng-select-container .ng-arrow-wrapper {
+//     align-self: center;
+//      bottom: 0;
+// }
+
+// Tablas apiladas en móvil (cada fila = tarjeta, con etiqueta por celda). Patrón de
+// "responsive mat-table". Aplica la clase `table-stacked-mobile` al <table mat-table> y pon
+// `[attr.data-label]` (encabezado de la columna) en cada <td mat-cell>. Solo afecta bajo el
+// breakpoint móvil; en escritorio la tabla se ve normal (con su columna de acciones sticky).
+@media (max-width: 768px) {
+  .table-stacked-mobile {
+    .mat-mdc-header-row {
+      display: none;
+    }
+
+    .mat-mdc-row {
+      display: block;
+      height: auto;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
+    }
+
+    .mat-mdc-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 40px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      text-align: right;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      &::before {
+        content: attr(data-label);
+        font-weight: 600;
+        text-align: left;
+        color: rgba(0, 0, 0, 0.6);
+        padding-right: 8px;
+      }
+    }
   }
 }

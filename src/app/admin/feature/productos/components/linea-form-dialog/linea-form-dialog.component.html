@@ -1,0 +1,31 @@
+<h2 mat-dialog-title class="m-0">{{ titleKey | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="lineaForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+        <!-- descripcion -->
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'lineasProducto.form.descripcion' | translate
+            }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="descripcion" autocomplete="off" maxlength="50"
+              [placeholder]="'lineasProducto.form.descripcionPlaceholder' | translate" />
+            @if (lineaForm.controls.descripcion.hasError('required') && lineaForm.controls.descripcion.touched) {
+            <mat-error>{{ 'lineasProducto.form.requiredDescripcion' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'lineasProducto.form.cancelar' | translate }}</button>
+  @if (!readonly) {
+  <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+    {{ 'lineasProducto.form.guardar' | translate }}
+  </button>
+  }
+</mat-dialog-actions>

@@ -1,4 +1,126 @@
 {
+  "dashboard": {
+    "title": "Dashboard",
+    "informacionGlobal": "Información global",
+    "kpis": {
+      "ventasDia": "Ventas del día",
+      "ventasSemana": "Ventas de la semana",
+      "ventasMes": "Ventas del mes",
+      "ventasAnio": "Ventas del año"
+    },
+    "merma": {
+      "actual": "Merma del mes actual",
+      "anterior": "Merma del mes anterior"
+    },
+    "costo": {
+      "actual": "Costo de producción actual",
+      "anterior": "Costo de producción anterior"
+    },
+    "periodo": {
+      "semana": "Semana",
+      "mes": "Mes",
+      "anio": "Año",
+      "dia": "Día"
+    },
+    "chart": {
+      "ventasTitle": "Ventas por fecha",
+      "ventasSubtitle": "Da clic en una columna para ver el desglose por estación",
+      "ventas": "Ventas",
+      "ventasPE": "Ventas PE",
+      "ventaDia": "Venta del día",
+      "empty": "No hay ventas para mostrar."
+    },
+    "estaciones": {
+      "title": "Ventas por estación",
+      "empty": "No hay ventas por estación para mostrar.",
+      "listTitle": "Ventas de estaciones",
+      "col": {
+        "estacion": "Estación",
+        "dia": "Día",
+        "semana": "Semana",
+        "mes": "Mes",
+        "anio": "Año"
+      }
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "kpisError": "Error al cargar los indicadores del dashboard",
+      "ventasError": "Error al cargar las ventas por fecha",
+      "estacionesError": "Error al cargar las ventas por estación",
+      "topError": "Error al cargar el Top"
+    },
+    "top": {
+      "clientes": "Top clientes",
+      "productos": "Top productos",
+      "proveedores": "Top proveedores",
+      "empty": "Sin resultados para mostrar."
+    }
+  },
+  "usuarios": {
+    "title": "Usuarios",
+    "searchPlaceholder": "Buscar usuario",
+    "add": "Agregar usuario",
+    "empty": "No hay usuarios para mostrar.",
+    "columns": {
+      "usuario": "Usuario",
+      "nombre": "Nombre",
+      "rol": "Rol",
+      "sucursal": "Sucursal",
+      "almacen": "Almacén",
+      "telefono": "Teléfono",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "editar": "Editar",
+      "desactivar": "Desactivar"
+    },
+    "form": {
+      "titleAdd": "Agregar Usuario",
+      "titleEdit": "Editar Usuario",
+      "titleView": "Información del Usuario",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Nombre de usuario",
+      "contrasena": "Contraseña",
+      "contrasenaPlaceholder": "Contraseña",
+      "contrasenaHint": "Déjala vacía para conservar la actual.",
+      "nombre": "Nombre",
+      "nombrePlaceholder": "Nombre(s)",
+      "apellidoPaterno": "Apellido Paterno",
+      "apellidoPaternoPlaceholder": "Apellido paterno",
+      "apellidoMaterno": "Apellido Materno",
+      "apellidoMaternoPlaceholder": "Apellido materno",
+      "telefono": "Teléfono",
+      "telefonoPlaceholder": "Teléfono a 10 dígitos",
+      "sucursal": "Sucursal",
+      "sucursalPlaceholder": "Selecciona una sucursal",
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Selecciona un almacén",
+      "rol": "Rol",
+      "rolPlaceholder": "Selecciona un rol",
+      "cancelar": "Cancelar",
+      "guardar": "Guardar",
+      "requiredUsuario": "El usuario es obligatorio.",
+      "requiredContrasena": "La contraseña es obligatoria.",
+      "requiredNombre": "El nombre es obligatorio.",
+      "requiredSucursal": "Selecciona una sucursal.",
+      "requiredAlmacen": "Selecciona un almacén.",
+      "requiredRol": "Selecciona un rol."
+    },
+    "confirm": {
+      "deactivateTitle": "Mensaje",
+      "deactivateText": "¿Seguro que deseas desactivar a {{nombre}}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loadError": "No se pudieron cargar los usuarios",
+      "saveError": "Error al guardar el usuario",
+      "saveFallback": "No se pudo guardar el usuario",
+      "deactivateFallback": "No se pudo desactivar",
+      "deactivateError": "Error al desactivar el usuario"
+    }
+  },
   "Analytical": "Analítica",
   "eCommerce": "comércio eletrônico",
   "Chat": "Bater papo",
@@ -97,5 +219,506 @@
   "Menu Level": "Nível do menu",
   "Menu 1": "Menu 1",
   "Menu 2": "Menu 2",
-  "Disabled": "Desabilitada"
+  "Disabled": "Desabilitada",
+  "estaciones": {
+    "title": "Estaciones",
+    "add": "Agregar estación",
+    "empty": "No hay estaciones para mostrar.",
+    "searchPlaceholder": "Buscar estación…",
+    "columns": {
+      "nombre": "Nombre",
+      "numero": "Número",
+      "almacen": "Almacén",
+      "configurado": "Configurada",
+      "acciones": "Acciones"
+    },
+    "configurado": {
+      "si": "Sí",
+      "no": "No"
+    },
+    "actions": {
+      "ver": "Ver",
+      "editar": "Editar",
+      "eliminar": "Eliminar"
+    },
+    "form": {
+      "titleAdd": "Agregar estación",
+      "titleEdit": "Editar estación",
+      "titleView": "Detalle de estación",
+      "nombre": "Nombre",
+      "nombrePlaceholder": "Nombre de la estación",
+      "numero": "Número",
+      "numeroPlaceholder": "Número de la estación",
+      "sucursal": "Sucursal",
+      "sucursalPlaceholder": "Selecciona una sucursal",
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Selecciona un almacén",
+      "requiredNombre": "Captura el nombre.",
+      "requiredNumero": "Captura el número.",
+      "requiredSucursal": "Selecciona una sucursal.",
+      "requiredAlmacen": "Selecciona un almacén.",
+      "guardar": "Guardar",
+      "cancelar": "Cancelar"
+    },
+    "confirm": {
+      "deleteTitle": "Eliminar estación",
+      "deleteText": "¿Seguro que deseas eliminar la estación {{nombre}}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar las estaciones",
+      "saveError": "Error al guardar la estación",
+      "saveFallback": "No se pudo guardar la estación",
+      "deleteError": "Error al eliminar la estación",
+      "deleteFallback": "No se pudo eliminar la estación"
+    }
+  },
+  "paginador": {
+    "porPagina": "Por página",
+    "rango": "Mostrando {{from}}–{{to}} de {{total}}",
+    "primera": "Primera",
+    "anterior": "Anterior",
+    "siguiente": "Siguiente",
+    "ultima": "Última",
+    "sinResultados": "Sin resultados",
+    "cargando": "Cargando…"
+  },
+  "limitesInventario": {
+    "title": "Límites de Inventario",
+    "empty": "No hay límites de inventario para mostrar.",
+    "searchPlaceholder": "Buscar por producto, código, almacén o línea…",
+    "downloadFormat": "Descargar formato",
+    "filters": {
+      "almacen": "Almacén",
+      "linea": "Línea de producto",
+      "estatus": "Estatus",
+      "todos": "Todos"
+    },
+    "columns": {
+      "almacen": "Almacén",
+      "linea": "Línea de producto",
+      "producto": "Producto",
+      "codigoBarras": "Código de barras",
+      "minimo": "Mínimo",
+      "maximo": "Máximo",
+      "cantidadInventario": "Cant. actual",
+      "cantidadSugerida": "Cant. sugerida de compra",
+      "estatus": "Estatus"
+    },
+    "edit": {
+      "confirm": "¿Estás seguro que deseas actualizar el valor {{campo}}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar",
+      "empty": "El valor a actualizar no puede ir vacío.",
+      "notInteger": "El valor debe ser un número entero.",
+      "minGtMax": "El valor mínimo no puede ser mayor que el máximo.",
+      "ok": "El valor se actualizó correctamente.",
+      "saveFallback": "No se pudo actualizar el límite.",
+      "saveError": "Ocurrió un error al actualizar el límite."
+    },
+    "import": {
+      "add": "Importar",
+      "title": "Importar límites de inventario",
+      "selectFile": "Seleccionar archivo",
+      "hint": "Selecciona un archivo .xlsx con el formato (Código Barras, Almacén, Mínimo, Máximo).",
+      "invalidFile": "Archivo inválido. Solo se aceptan .xlsx o .xls.",
+      "readError": "Ocurrió un error al leer el archivo.",
+      "empty": "El archivo no tiene filas.",
+      "badFormat": "El archivo no tiene el formato correcto.",
+      "rowOk": "Correcto",
+      "rowEmpty": "Hay campos vacíos en la fila.",
+      "rowNotInteger": "Mínimo/Máximo deben ser números enteros.",
+      "rowMinGtMax": "El mínimo no puede ser mayor que el máximo.",
+      "noData": "No hay información para procesar.",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "saveFallback": "No se pudieron afectar los límites de inventario.",
+      "saveError": "Ocurrió un error al afectar los límites de inventario.",
+      "columns": {
+        "codigoBarras": "Código de barras",
+        "almacen": "Almacén",
+        "minimo": "Mínimo",
+        "maximo": "Máximo",
+        "estatus": "Estatus"
+      }
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "saving": "Actualizando…",
+      "loadError": "Ocurrió un error al cargar los límites de inventario."
+    }
+  },
+  "compras": {
+    "title": "Compras",
+    "add": "Nueva compra",
+    "empty": "No hay compras para mostrar.",
+    "searchLabel": "Búsqueda",
+    "searchPlaceholder": "Buscar por proveedor, observaciones o folio…",
+    "filters": {
+      "proveedor": "Proveedor",
+      "proveedorPlaceholder": "Todos los proveedores",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "estatus": "Estatus de la compra",
+      "todos": "--TODOS--",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "id": "Id",
+      "proveedor": "Proveedor",
+      "usuario": "Usuario",
+      "fecha": "Fecha",
+      "estatus": "Estatus",
+      "conErrores": "Tiene productos con error",
+      "solicitados": "Cant. Productos Solicitados",
+      "recibidos": "Cant. Productos Recibido",
+      "devueltos": "Cant. Productos Devuelta",
+      "total": "Total",
+      "observaciones": "Observaciones",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "editar": "Editar",
+      "eliminar": "Eliminar"
+    },
+    "form": {
+      "titleAdd": "Nueva Compra",
+      "titleEdit": "Editar Compra",
+      "almacen": "Almacén",
+      "seleccione": "--SELECCIONA--",
+      "producto": "Producto",
+      "productoPlaceholder": "Busca un producto…",
+      "unidadCompra": "Unidad de Compra",
+      "cantidadUnitaria": "Cantidad Unitaria",
+      "unidadVenta": "Unidad de Venta",
+      "ultimoCosto": "Último Costo",
+      "cantidad": "Cantidad",
+      "cantidadComprada": "Cantidad Comprada",
+      "agregarProducto": "Agregar Producto",
+      "proveedor": "Proveedor",
+      "proveedorPlaceholder": "Selecciona un proveedor",
+      "nuevoProveedor": "Nuevo proveedor",
+      "estatusCompra": "Estatus de la compra",
+      "observaciones": "Observaciones",
+      "cerrar": "Cerrar",
+      "limpiar": "Limpiar",
+      "realizarCompra": "Realizar Compra",
+      "actualizarCompra": "Actualizar Compra"
+    },
+    "detalle": {
+      "idProducto": "Id Producto",
+      "producto": "Producto",
+      "estatus": "Estatus",
+      "observaciones": "Observaciones",
+      "cantRecibida": "Cant. Recibida",
+      "cantDevuelta": "Cant. Devuelta",
+      "cantSolicitada": "Cant. Solicitada",
+      "costo": "Costo",
+      "total": "Total",
+      "acciones": "Acciones",
+      "eliminar": "Eliminar",
+      "vacio": "Agrega productos a la compra.",
+      "totalGeneral": "Total"
+    },
+    "confirm": {
+      "deleteTitle": "Eliminar compra",
+      "deleteText": "¿Seguro que deseas eliminar la compra #{{id}}?",
+      "saveText": "¿Estás seguro que deseas guardar esta Compra?",
+      "updateText": "¿Estás seguro que deseas actualizar esta Compra?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar las compras",
+      "deleting": "Eliminando compra…",
+      "deleteError": "Error al eliminar la compra",
+      "deleteFallback": "No se pudo eliminar la compra",
+      "saving": "Guardando compra…",
+      "saveError": "Error al guardar la compra",
+      "saveFallback": "No se pudo guardar la compra",
+      "almacenRequerido": "Debe seleccionar un almacén.",
+      "productoRequerido": "Debe seleccionar un producto.",
+      "costoMayorCero": "El costo del producto que desea agregar debe de ser mayor que 0.",
+      "cantidadMayorCero": "La cantidad del producto que desea agregar debe de ser mayor que 0.",
+      "productoDuplicado": "El producto ya existe en su compra.",
+      "noEliminarRecibido": "El producto no se puede eliminar de la compra ya que fue recibido.",
+      "proveedorRequerido": "Debe seleccionar un proveedor.",
+      "estatusRequerido": "Debe seleccionar el estatus de la compra.",
+      "cantidadFilaMayorCero": "La cantidad solicitada del producto {{producto}} debe ser mayor a 0.",
+      "costoFilaMayorCero": "El costo del producto {{producto}} debe ser mayor a 0.",
+      "sinProductos": "Debe agregar productos a la compra.",
+      "proveedorCreado": "Proveedor creado. Búscalo en el selector para asignarlo."
+    }
+  },
+  "proveedores": {
+    "title": "Proveedores",
+    "add": "Agregar proveedor",
+    "empty": "No hay proveedores para mostrar.",
+    "searchPlaceholder": "Buscar proveedor…",
+    "columns": {
+      "nombre": "Nombre",
+      "descripcion": "Descripción",
+      "telefono": "Teléfono",
+      "direccion": "Dirección",
+      "porcAtendido": "% Atendido",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "editar": "Editar",
+      "eliminar": "Eliminar"
+    },
+    "form": {
+      "titleAdd": "Agregar proveedor",
+      "titleEdit": "Editar proveedor",
+      "titleView": "Detalle de proveedor",
+      "nombre": "Nombre",
+      "nombrePlaceholder": "Nombre del proveedor",
+      "descripcion": "Descripción",
+      "descripcionPlaceholder": "Descripción del proveedor",
+      "telefono": "Teléfono",
+      "telefonoPlaceholder": "Teléfono de contacto",
+      "direccion": "Dirección",
+      "direccionPlaceholder": "Dirección del proveedor",
+      "requiredNombre": "Captura el nombre.",
+      "requiredDescripcion": "Captura la descripción.",
+      "requiredTelefono": "Captura el teléfono.",
+      "requiredDireccion": "Captura la dirección.",
+      "guardar": "Guardar",
+      "cancelar": "Cancelar"
+    },
+    "confirm": {
+      "deleteTitle": "Eliminar proveedor",
+      "deleteText": "¿Seguro que deseas eliminar al proveedor {{nombre}}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar los proveedores",
+      "saveError": "Error al guardar el proveedor",
+      "saveFallback": "No se pudo guardar el proveedor",
+      "deleteError": "Error al eliminar el proveedor",
+      "deleteFallback": "No se pudo eliminar el proveedor"
+    }
+  },
+  "productos": {
+    "title": "Productos",
+    "ubicaciones": {
+      "title": "Imprimir ubicaciones",
+      "sucursal": "Sucursal",
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Selecciona el almacén",
+      "piso": "Piso",
+      "pisoPlaceholder": "Selecciona el piso",
+      "pasillo": "Pasillo",
+      "pasilloPlaceholder": "Selecciona el pasillo",
+      "rack": "Rack",
+      "rackPlaceholder": "Selecciona el rack",
+      "requiredAlmacen": "Selecciona un almacén.",
+      "requiredPiso": "Selecciona un piso.",
+      "requiredPasillo": "Selecciona un pasillo.",
+      "requiredRack": "Selecciona un rack.",
+      "agregar": "Agregar",
+      "aGenerar": "Ubicaciones a generar",
+      "limpiar": "Limpiar",
+      "generar": "Generar ubicaciones",
+      "acciones": "Acciones",
+      "eliminar": "Eliminar",
+      "vacio": "Agrega al menos una ubicación para generar el PDF.",
+      "msg": {
+        "loadError": "Error al cargar los catálogos de ubicaciones.",
+        "completaCampos": "Selecciona almacén, piso, pasillo y rack.",
+        "duplicada": "Esa ubicación ya está en la lista.",
+        "sinUbicaciones": "Agrega al menos una ubicación para generar el PDF.",
+        "generando": "Generando ubicaciones…",
+        "generarError": "Error al generar el PDF de ubicaciones."
+      }
+    },
+    "codigosBarras": {
+      "title": "Generar códigos de barras",
+      "linea": "Línea de producto",
+      "lineaPlaceholder": "Selecciona una línea",
+      "agregarLinea": "Agregar línea",
+      "producto": "Producto",
+      "productoPlaceholder": "Busca un producto",
+      "agregarProducto": "Agregar producto",
+      "aGenerar": "Códigos a generar",
+      "limpiar": "Limpiar",
+      "generar": "Generar códigos",
+      "idProducto": "idProducto",
+      "descripcion": "Descripción",
+      "menudeo": "Precio menudeo",
+      "mayoreo": "Precio mayoreo",
+      "codigo": "Código de barras",
+      "acciones": "Acciones",
+      "eliminar": "Eliminar",
+      "vacio": "Agrega al menos un producto para generar el PDF.",
+      "msg": {
+        "loadError": "Error al cargar las líneas de producto.",
+        "seleccionaProducto": "Selecciona un producto.",
+        "seleccionaLinea": "Selecciona una línea de producto.",
+        "agregandoLinea": "Agregando productos de la línea…",
+        "lineaSinProductos": "Esta línea no tiene productos registrados.",
+        "lineaError": "Error al obtener los productos de la línea.",
+        "sinProductos": "Agrega al menos un producto para generar el PDF.",
+        "generando": "Generando códigos de barras…",
+        "generarError": "Error al generar el PDF de códigos de barras."
+      }
+    },
+    "add": "Agregar producto",
+    "empty": "No hay productos para mostrar.",
+    "searchPlaceholder": "Buscar por descripción, artículo o código…",
+    "columns": {
+      "descripcion": "Descripción",
+      "articulo": "Artículo",
+      "codigoBarras": "Código de barras",
+      "linea": "Línea",
+      "unidad": "Unidad",
+      "precio": "Precio",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "editar": "Editar",
+      "eliminar": "Eliminar",
+      "precios": "Precios"
+    },
+    "form": {
+      "titleAdd": "Agregar producto",
+      "titleEdit": "Editar producto",
+      "titleView": "Detalle de producto",
+      "descripcion": "Descripción",
+      "descripcionPlaceholder": "Descripción del producto",
+      "articulo": "Artículo",
+      "articuloPlaceholder": "Artículo (se autogenera de línea + descripción)",
+      "codigoBarras": "Código de barras",
+      "codigoBarrasPlaceholder": "Código de barras",
+      "linea": "Línea",
+      "lineaPlaceholder": "Selecciona una línea",
+      "claveSat": "Clave SAT",
+      "claveSatPlaceholder": "Busca la clave SAT",
+      "claveSatType": "Escribe para buscar…",
+      "unidadMedida": "Unidad de medida",
+      "unidadMedidaPlaceholder": "Selecciona la unidad de medida",
+      "cantidadUnidadMedida": "Cant. unidad",
+      "cantidadUnidadMedidaPlaceholder": "Cantidad por unidad de medida",
+      "unidadCompra": "Unidad de compra",
+      "unidadCompraPlaceholder": "Selecciona la unidad de compra",
+      "sinUnidadCompra": "Sin unidad de compra",
+      "cantidadUnidadCompra": "Cant. compra",
+      "cantidadUnidadCompraPlaceholder": "Cantidad por unidad de compra",
+      "codigosTitle": "Códigos",
+      "codigosVacio": "Captura el artículo para generar los códigos.",
+      "requiredDescripcion": "Captura la descripción.",
+      "requiredArticulo": "Captura el artículo.",
+      "requiredLinea": "Selecciona una línea.",
+      "requiredClaveSat": "Selecciona la clave SAT.",
+      "requiredUnidadMedida": "Selecciona la unidad de medida.",
+      "guardar": "Guardar",
+      "cancelar": "Cancelar"
+    },
+    "confirm": {
+      "deleteTitle": "Eliminar producto",
+      "deleteText": "¿Seguro que deseas eliminar el producto {{nombre}}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar los productos",
+      "saveError": "Error al guardar el producto",
+      "saveFallback": "No se pudo guardar el producto",
+      "deleteError": "Error al eliminar el producto",
+      "deleteFallback": "No se pudo eliminar el producto"
+    },
+    "precios": {
+      "title": "Precios",
+      "loading": "Cargando precios…",
+      "loadError": "Error al cargar los precios",
+      "ultimoCosto": "Último Costo de Compra",
+      "ultimoCostoPlaceholder": "Último costo de compra",
+      "precioMenudeo": "Precio Menudeo",
+      "precioMayoreo": "Precio Mayoreo",
+      "porcUtilidadMenudeo": "% Utilidad Menudeo",
+      "porcUtilidadMayoreo": "% Utilidad Mayoreo",
+      "utilidad": "Utilidad",
+      "superMayoreoTitle": "Precios de super mayoreo",
+      "min": "Mínimo",
+      "max": "Máximo",
+      "porcUtilidad": "% Utilidad",
+      "precio": "Precio",
+      "costoRango": "Precio",
+      "minPlaceholder": "Cantidad mínima",
+      "maxPlaceholder": "Cantidad máxima",
+      "porcUtilidadPlaceholder": "% de utilidad",
+      "precioPlaceholder": "Precio",
+      "cantidadMinima": "Cantidad Mínima",
+      "cantidadMaxima": "Cantidad Máxima",
+      "acciones": "Acciones",
+      "agregarPrecio": "Agregar Precio",
+      "agregarRango": "Agregar rango",
+      "eliminarRango": "Eliminar",
+      "sinRangos": "No se tienen configurados precios para este producto.",
+      "rangoDatosIncompletos": "Debe poner todos los datos para insertar el rango de precios.",
+      "rango1a5": "Para precios de productos entre 1 y 5 artículos debe asignar el Precio Individual.",
+      "rango6": "Para precios de productos de 6 artículos debe asignar el Precio Menudeo.",
+      "rangoMaxMayorMin": "El máximo debe ser mayor al mínimo del rango que quiere agregar.",
+      "rangoMinMayorAnterior": "El mínimo que intenta insertar debe ser mayor al máximo del rango anterior.",
+      "precioMenorBase": "El precio debe ser menor que el precio de mayoreo y que el precio de menudeo.",
+      "precioMenorAnterior": "El precio que intenta insertar debe ser menor al precio mínimo del rango anterior.",
+      "saveBaseRequerido": "Por favor asigne un valor para los precios de Mayoreo y Menudeo.",
+      "saveMenudeoMayorMayoreo": "El precio de Menudeo debe ser mayor que el precio de Mayoreo.",
+      "saveRangoMenorBase": "El precio de {{min}} a {{max}} productos debe ser menor que el precio de mayoreo y que el precio de menudeo.",
+      "guardar": "Guardar",
+      "cancelar": "Cancelar",
+      "saveError": "Error al guardar los precios",
+      "saveFallback": "No se pudieron guardar los precios"
+    }
+  },
+  "lineasProducto": {
+    "title": "Líneas de producto",
+    "add": "Agregar línea",
+    "empty": "No hay líneas de producto para mostrar.",
+    "searchPlaceholder": "Buscar por descripción…",
+    "columns": {
+      "descripcion": "Descripción",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "editar": "Editar",
+      "eliminar": "Eliminar"
+    },
+    "form": {
+      "titleAdd": "Agregar línea de producto",
+      "titleEdit": "Editar línea de producto",
+      "titleView": "Detalle de línea de producto",
+      "descripcion": "Descripción",
+      "descripcionPlaceholder": "Descripción de la línea",
+      "requiredDescripcion": "Captura la descripción.",
+      "guardar": "Guardar",
+      "cancelar": "Cancelar"
+    },
+    "confirm": {
+      "deleteTitle": "Desactivar línea de producto",
+      "deleteText": "¿Seguro que deseas desactivar la línea {{nombre}}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar las líneas de producto",
+      "saveError": "Error al guardar la línea de producto",
+      "saveFallback": "No se pudo guardar la línea de producto",
+      "deleteError": "Error al desactivar la línea de producto",
+      "deleteFallback": "No se pudo desactivar la línea de producto"
+    }
+  }
 }

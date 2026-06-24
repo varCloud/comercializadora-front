@@ -1,0 +1,144 @@
+<h2 mat-dialog-title class="m-0">{{ 'productos.precios.title' | translate }} — {{ data.producto.descripcion }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <div *blockUI="'precios'">
+    <!-- Precios base -->
+    <form [formGroup]="form" class="row m-t-8">
+      <div class="col-lg col-md-4 col-sm-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.ultimoCosto' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="ultimoCostoCompra" inputmode="decimal"
+                 [placeholder]="'productos.precios.ultimoCostoPlaceholder' | translate"
+                 (input)="onUltimoCostoInput()" />
+          <span matPrefix class="p-l-8">$</span>
+        </mat-form-field>
+      </div>
+      <div class="col-lg col-md-4 col-sm-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.porcUtilidadMayoreo' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="porcUtilidadMayoreo" inputmode="decimal"
+                 [placeholder]="'productos.precios.porcUtilidadPlaceholder' | translate"
+                 (input)="onPorcUtilidadMayoreoInput()" />
+          <span matSuffix class="p-r-8">%</span>
+        </mat-form-field>
+      </div>
+      <div class="col-lg col-md-4 col-sm-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.precioMayoreo' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="precioMenudeo" inputmode="decimal"
+                 [placeholder]="'productos.precios.precioPlaceholder' | translate"
+                 (input)="onPrecioMenudeoInput()" />
+          <span matPrefix class="p-l-8">$</span>
+        </mat-form-field>
+      </div>
+      <div class="col-lg col-md-4 col-sm-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.porcUtilidadMenudeo' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="porcUtilidadIndividual" inputmode="decimal"
+                 [placeholder]="'productos.precios.porcUtilidadPlaceholder' | translate"
+                 (input)="onPorcUtilidadIndividualInput()" />
+          <span matSuffix class="p-r-8">%</span>
+        </mat-form-field>
+      </div>
+      <div class="col-lg col-md-4 col-sm-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.precioMenudeo' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="precioIndividual" inputmode="decimal"
+                 [placeholder]="'productos.precios.precioPlaceholder' | translate"
+                 (input)="onPrecioIndividualInput()" />
+          <span matPrefix class="p-l-8">$</span>
+        </mat-form-field>
+      </div>
+    </form>
+
+    <hr class="m-y-16" />
+
+    <!-- Rangos de super mayoreo: alta -->
+    <h5 class="mat-subtitle-1 f-w-600 m-b-8">{{ 'productos.precios.superMayoreoTitle' | translate }}</h5>
+    <form [formGroup]="rangoForm" class="row align-items-end">
+      <div class="col-lg-3 col-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.min' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="min" inputmode="numeric"
+                 [placeholder]="'productos.precios.minPlaceholder' | translate" />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-3 col-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.max' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="max" inputmode="numeric"
+                 [placeholder]="'productos.precios.maxPlaceholder' | translate" />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-2 col-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.porcUtilidad' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="porcUtilidad" inputmode="decimal"
+                 [placeholder]="'productos.precios.porcUtilidadPlaceholder' | translate"
+                 (input)="onPorcUtilidadRangoInput()" />
+          <span matSuffix class="p-r-8">%</span>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-2 col-6">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'productos.precios.precio' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" formControlName="precio" inputmode="decimal"
+                 [placeholder]="'productos.precios.precioPlaceholder' | translate"
+                 (input)="onPrecioRangoInput()" />
+          <span matPrefix class="p-l-8">$</span>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-2 col-12 m-b-16">
+        <button mat-flat-button color="primary" type="button" class="w-100" (click)="agregarRango()">
+          <i-tabler name="plus" class="icon-18"></i-tabler> {{ 'productos.precios.agregarPrecio' | translate }}
+        </button>
+      </div>
+    </form>
+
+    <!-- Rangos de super mayoreo: tabla -->
+    <div class="table-responsive m-t-8">
+      <table mat-table [dataSource]="rangos()" class="w-100">
+        <ng-container matColumnDef="idx">
+          <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">#</th>
+          <td mat-cell *matCellDef="let r; let i = index" class="f-s-14">{{ i + 1 }}</td>
+        </ng-container>
+        <ng-container matColumnDef="min">
+          <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">{{ 'productos.precios.cantidadMinima' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14">{{ r.min }}</td>
+        </ng-container>
+        <ng-container matColumnDef="max">
+          <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">{{ 'productos.precios.cantidadMaxima' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14">{{ r.max }}</td>
+        </ng-container>
+        <ng-container matColumnDef="costo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600 text-right">{{ 'productos.precios.precio' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14 text-right">{{ r.costo | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="porcUtilidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600 text-right">{{ 'productos.precios.porcUtilidad' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14 text-right">{{ r.porcUtilidad | number:'1.0-2' }}%</td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600 text-right">{{ 'productos.precios.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let r; let i = index" class="text-right">
+            <a (click)="eliminarRango(i)" class="cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'productos.precios.eliminarRango' | translate">
+              <i-tabler name="trash" class="icon-18"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="rangosCols"></tr>
+        <tr mat-row *matRowDef="let row; columns: rangosCols"></tr>
+      </table>
+    </div>
+    @if (rangos().length === 0) {
+      <p class="mat-body-2 text-center text-muted m-y-16">{{ 'productos.precios.sinRangos' | translate }}</p>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'productos.precios.cancelar' | translate }}</button>
+  <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+    {{ 'productos.precios.guardar' | translate }}
+  </button>
+</mat-dialog-actions>

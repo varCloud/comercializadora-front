@@ -1,0 +1,6 @@
+// El alto del contenido lo gestiona mat-dialog-content; la tabla de previsualización
+// hace scroll dentro del diálogo.
+:host {
+  display: block;
+  min-width: 60vw;
+}

@@ -1,0 +1,39 @@
+.compra-detalle {
+  border-collapse: collapse;
+}
+.compra-detalle th,
+.compra-detalle td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant, #e5e7eb);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.compra-detalle thead th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.compra-detalle tbody tr:nth-child(odd) {
+  background: rgba(0, 0, 0, 0.02);
+}
+.celda-input {
+  width: 90px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+.celda-input:focus {
+  border-bottom: 1px solid var(--mat-sys-primary, #5d87ff);
+}
+.celda-input[readonly] {
+  color: rgba(0, 0, 0, 0.5);
+}
+.rol-chip {
+  display: inline-block;
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}

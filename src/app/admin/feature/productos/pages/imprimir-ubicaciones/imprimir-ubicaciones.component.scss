@@ -1,0 +1,5 @@
+// Solo lo mínimo (regla 01): que la celda de acciones fija (stickyEnd) no se transparente.
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}

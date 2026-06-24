@@ -1,0 +1,87 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row justify-content-between">
+      <div class="col-lg-4">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'estaciones.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-4 d-flex align-items-center justify-content-end">
+        <button mat-flat-button color="primary" (click)="agregar()">
+          {{ 'estaciones.add' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="cardWithShadow" *blockUI="'estaciones'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'estaciones.columns.nombre' | translate }}</th>
+          <td mat-cell *matCellDef="let e" class="f-s-14" [attr.data-label]="'estaciones.columns.nombre' | translate">{{ e.nombre }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="numero">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'estaciones.columns.numero' | translate }}</th>
+          <td mat-cell *matCellDef="let e" class="f-s-14" [attr.data-label]="'estaciones.columns.numero' | translate">{{ e.numero }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="almacen">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'estaciones.columns.almacen' | translate }}</th>
+          <td mat-cell *matCellDef="let e" class="f-s-14" [attr.data-label]="'estaciones.columns.almacen' | translate">{{ e.nombreAlmacen }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="configurado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'estaciones.columns.configurado' | translate }}</th>
+          <td mat-cell *matCellDef="let e" class="f-s-14" [attr.data-label]="'estaciones.columns.configurado' | translate">
+            <span
+              class="status-badge"
+              [style.color]="e.configurado ? '#2e7d32' : '#e53935'"
+              [style.borderColor]="e.configurado ? '#2e7d32' : '#e53935'"
+            >
+              {{ (e.configurado ? 'estaciones.configurado.si' : 'estaciones.configurado.no') | translate }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'estaciones.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let e" class="action-link text-right" [attr.data-label]="'estaciones.columns.acciones' | translate">
+            <a (click)="ver(e)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'estaciones.actions.ver' | translate">
+              <i-tabler name="eye" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="editar(e)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'estaciones.actions.editar' | translate">
+              <i-tabler name="edit" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="eliminar(e)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'estaciones.actions.eliminar' | translate">
+              <i-tabler name="trash" class="icon-18"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'estaciones.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

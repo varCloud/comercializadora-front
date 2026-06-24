@@ -20,11 +20,13 @@ this._service.getData(...).pipe(
 });
 ```
 
-## Notificaciones: `NotificationService` (MatSnackBar)
+## Notificaciones: `NotificationService` (ngx-toastr)
 
-> `angular-notifier` se **eliminó** en la migración a Angular 20 (no tiene release
-> compatible). Se reemplazó por `NotificationService` (`src/app/services/notification.service.ts`),
-> un wrapper de `MatSnackBar` que **conserva la misma firma** `notify(type, message)`.
+> `NotificationService` (`src/app/services/notification.service.ts`) es el **punto único de
+> abstracción** sobre la librería de toasts. Hoy envuelve **`ngx-toastr`** (antes MatSnackBar /
+> angular-notifier). Conserva la firma `notify(type, message)`: **ningún componente usa la
+> librería directamente**, así que cambiarla en el futuro = tocar solo ese archivo.
+> Config global (`provideToastr`) y CSS (`ngx-toastr/toastr.css`) en `app.module`/`angular.json`.
 
 - Inyecta `NotificationService` y notifica resultado de acciones:
   - Éxito: `this._notificationService.notify('success', 'Usuario actualizado correctamente');`

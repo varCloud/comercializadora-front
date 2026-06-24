@@ -1,0 +1,231 @@
+<div *blockUI="'dashboard'">
+  <!-- Tarjetas KPI (estilo dashboard1/top-cards): ventas por periodo, info global, merma y costo -->
+  <div class="row">
+    @for (card of topCards(); track $index) {
+      <div class="col-lg-2 col-sm-4 col-6">
+        <mat-card class="shadow-none text-center bg-light-{{ card.color }}">
+          <mat-card-content class="p-24">
+            <img [src]="card.img" [alt]="card.title" width="40" class="rounded-circle" />
+            <h4 class="mat-subtitle-2 f-w-600 text-{{ card.color }} m-t-8">{{ card.title }}</h4>
+            <h6 class="m-t-4 mat-subtitle-1 f-w-600 text-{{ card.color }}">{{ card.value }}</h6>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+  </div>
+
+  <!-- Gráfica: ventas por fecha -->
+  <mat-card class="cardWithShadow">
+    <mat-card-header>
+      <div class="d-flex align-items-center w-100">
+        <div>
+          <mat-card-title>{{ 'dashboard.chart.ventasTitle' | translate }}</mat-card-title>
+          <mat-card-subtitle class="mat-body-1">{{ 'dashboard.chart.ventasSubtitle' | translate }}</mat-card-subtitle>
+        </div>
+        <div class="m-l-auto">
+          <mat-button-toggle-group
+            [value]="periodo()"
+            (change)="onPeriodoChange($event.value)"
+            hideSingleSelectionIndicator
+          >
+            @for (p of periodos; track p.value) {
+              <mat-button-toggle [value]="p.value">{{ p.labelKey | translate }}</mat-button-toggle>
+            }
+          </mat-button-toggle-group>
+        </div>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      @if (categorias().length) {
+        <apx-chart
+          #ventasChart
+          [series]="ventasOptions.series!"
+          [chart]="ventasOptions.chart!"
+          [dataLabels]="ventasOptions.dataLabels!"
+          [plotOptions]="ventasOptions.plotOptions!"
+          [yaxis]="ventasOptions.yaxis!"
+          [xaxis]="ventasOptions.xaxis!"
+          [colors]="ventasOptions.colors!"
+          [legend]="ventasOptions.legend!"
+          [grid]="ventasOptions.grid!"
+          [stroke]="ventasOptions.stroke!"
+          [tooltip]="ventasOptions.tooltip!"
+        ></apx-chart>
+      } @else {
+        <p class="mat-body-1 text-center m-y-24">{{ 'dashboard.chart.empty' | translate }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Drilldown: ventas por estación de la categoría seleccionada -->
+  @if (estacionSeleccionada(); as sel) {
+    <mat-card class="cardWithShadow">
+      <mat-card-header>
+        <div>
+          <mat-card-title>{{ 'dashboard.estaciones.title' | translate }}</mat-card-title>
+          <mat-card-subtitle class="mat-body-1">{{ sel.categoria }}</mat-card-subtitle>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        @if (estaciones().length) {
+          <apx-chart
+            [series]="estacionesOptions.series!"
+            [chart]="estacionesOptions.chart!"
+            [dataLabels]="estacionesOptions.dataLabels!"
+            [plotOptions]="estacionesOptions.plotOptions!"
+            [yaxis]="estacionesOptions.yaxis!"
+            [xaxis]="estacionesOptions.xaxis!"
+            [colors]="estacionesOptions.colors!"
+            [legend]="estacionesOptions.legend!"
+            [grid]="estacionesOptions.grid!"
+            [stroke]="estacionesOptions.stroke!"
+            [tooltip]="estacionesOptions.tooltip!"
+          ></apx-chart>
+        } @else {
+          <p class="mat-body-1 text-center m-y-24">{{ 'dashboard.estaciones.empty' | translate }}</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Fase 2: Ventas de estaciones (totales globales) -->
+  <mat-card class="cardWithShadow">
+    <mat-card-header>
+      <mat-card-title>{{ 'dashboard.estaciones.listTitle' | translate }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="p-24">
+      @if (estacionesLista().length) {
+        <div class="table-responsive">
+          <table mat-table [dataSource]="estacionesLista()" class="w-100">
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'dashboard.estaciones.col.estacion' | translate }}</th>
+              <td mat-cell *matCellDef="let e" class="f-s-14">
+                <div class="f-w-600">{{ e.nombre }}</div>
+                <div class="mat-body-2 text-muted">{{ e.nombreAlmacen }}</div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="dia">
+              <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'dashboard.estaciones.col.dia' | translate }}</th>
+              <td mat-cell *matCellDef="let e" class="f-s-14 text-right">{{ e.montoTotalDia | currency:'MXN':'symbol-narrow':'1.0-0' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="semana">
+              <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'dashboard.estaciones.col.semana' | translate }}</th>
+              <td mat-cell *matCellDef="let e" class="f-s-14 text-right">{{ e.montoTotalSemana | currency:'MXN':'symbol-narrow':'1.0-0' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="mes">
+              <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'dashboard.estaciones.col.mes' | translate }}</th>
+              <td mat-cell *matCellDef="let e" class="f-s-14 text-right">{{ e.montoTotalMes | currency:'MXN':'symbol-narrow':'1.0-0' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="anio">
+              <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'dashboard.estaciones.col.anio' | translate }}</th>
+              <td mat-cell *matCellDef="let e" class="f-s-14 text-right">{{ e.montoTotalAnio | currency:'MXN':'symbol-narrow':'1.0-0' }}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="estacionesCols"></tr>
+            <tr mat-row *matRowDef="let row; columns: estacionesCols"></tr>
+          </table>
+        </div>
+      } @else {
+        <p class="mat-body-1 text-center m-y-24">{{ 'dashboard.estaciones.empty' | translate }}</p>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Fase 2: Top clientes / productos / proveedores -->
+  <div class="row">
+    <div class="col-lg-4">
+      <mat-card class="cardWithShadow">
+        <mat-card-header>
+          <div class="d-flex align-items-center w-100">
+            <mat-card-title>{{ 'dashboard.top.clientes' | translate }}</mat-card-title>
+            <mat-button-toggle-group
+              class="m-l-auto"
+              [value]="periodoClientes()"
+              (change)="onPeriodoClientesChange($event.value)"
+              hideSingleSelectionIndicator
+            >
+              @for (p of periodosTop; track p.value) {
+                <mat-button-toggle [value]="p.value">{{ p.labelKey | translate }}</mat-button-toggle>
+              }
+            </mat-button-toggle-group>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          @if (topClientes().length) {
+            @for (c of topClientes(); track c.id) {
+              <div class="d-flex align-items-center justify-content-between p-y-8 b-b-1">
+                <span class="f-w-600">{{ c.categoria }}</span>
+                <span class="text-success f-w-600">{{ c.total | currency:'MXN':'symbol-narrow':'1.0-0' }}</span>
+              </div>
+            }
+          } @else {
+            <p class="mat-body-1 text-center m-y-24">{{ 'dashboard.top.empty' | translate }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-4">
+      <mat-card class="cardWithShadow">
+        <mat-card-header>
+          <div class="d-flex align-items-center w-100">
+            <mat-card-title>{{ 'dashboard.top.productos' | translate }}</mat-card-title>
+            <mat-button-toggle-group
+              class="m-l-auto"
+              [value]="periodoProductos()"
+              (change)="onPeriodoProductosChange($event.value)"
+              hideSingleSelectionIndicator
+            >
+              @for (p of periodosTop; track p.value) {
+                <mat-button-toggle [value]="p.value">{{ p.labelKey | translate }}</mat-button-toggle>
+              }
+            </mat-button-toggle-group>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          @if (topProductos().length) {
+            @for (c of topProductos(); track c.id) {
+              <div class="d-flex align-items-center justify-content-between p-y-8 b-b-1">
+                <span class="f-w-600">{{ c.categoria }}</span>
+                <span class="text-muted f-w-600">{{ c.total | number:'1.0-0' }}</span>
+              </div>
+            }
+          } @else {
+            <p class="mat-body-1 text-center m-y-24">{{ 'dashboard.top.empty' | translate }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="col-lg-4">
+      <mat-card class="cardWithShadow">
+        <mat-card-header>
+          <div class="d-flex align-items-center w-100">
+            <mat-card-title>{{ 'dashboard.top.proveedores' | translate }}</mat-card-title>
+            <mat-button-toggle-group
+              class="m-l-auto"
+              [value]="periodoProveedores()"
+              (change)="onPeriodoProveedoresChange($event.value)"
+              hideSingleSelectionIndicator
+            >
+              @for (p of periodosTop; track p.value) {
+                <mat-button-toggle [value]="p.value">{{ p.labelKey | translate }}</mat-button-toggle>
+              }
+            </mat-button-toggle-group>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          @if (topProveedores().length) {
+            @for (c of topProveedores(); track c.id) {
+              <div class="d-flex align-items-center justify-content-between p-y-8 b-b-1">
+                <span class="f-w-600">{{ c.categoria }}</span>
+                <span class="text-success f-w-600">{{ c.total | currency:'MXN':'symbol-narrow':'1.0-0' }}</span>
+              </div>
+            }
+          } @else {
+            <p class="mat-body-1 text-center m-y-24">{{ 'dashboard.top.empty' | translate }}</p>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

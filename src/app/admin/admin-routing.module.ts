@@ -6,14 +6,62 @@ const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
-    // Agrega aquí los features del proyecto, p. ej.:
-    // children: [
-    //   {
-    //     path: 'productos',
-    //     loadChildren: () =>
-    //       import('./feature/producto/producto.module').then((m) => m.ProductoModule),
-    //   },
-    // ],
+    children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./feature/dashboard/dashboard-routing.module').then(
+            (m) => m.DashboardRoutingModule,
+          ),
+      },
+      {
+        path: 'usuarios',
+        loadChildren: () =>
+          import('./feature/usuarios/usuarios-routing.module').then(
+            (m) => m.UsuariosRoutingModule,
+          ),
+      },
+      {
+        path: 'estaciones',
+        loadChildren: () =>
+          import('./feature/estaciones/estaciones-routing.module').then(
+            (m) => m.EstacionesRoutingModule,
+          ),
+      },
+      {
+        path: 'proveedores',
+        loadChildren: () =>
+          import('./feature/proveedores/proveedores-routing.module').then(
+            (m) => m.ProveedoresRoutingModule,
+          ),
+      },
+      {
+        path: 'productos',
+        loadChildren: () =>
+          import('./feature/productos/productos-routing.module').then(
+            (m) => m.ProductosRoutingModule,
+          ),
+      },
+      {
+        path: 'limites-inventario',
+        loadChildren: () =>
+          import('./feature/limites-inventario/limites-inventario-routing.module').then(
+            (m) => m.LimitesInventarioRoutingModule,
+          ),
+      },
+      {
+        path: 'compras',
+        loadChildren: () =>
+          import('./feature/compras/compras-routing.module').then(
+            (m) => m.ComprasRoutingModule,
+          ),
+      },
+    ],
   },
 ];
 

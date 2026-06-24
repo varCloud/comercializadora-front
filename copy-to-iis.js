@@ -3,7 +3,7 @@ const path = require("path");
 
 // Rutas
 const distPath = path.join(__dirname, "dist"); // Reemplaza con el nombre real de tu app
-const iisPath = "C:\\inetpub\\wwwroot\\front-evaluaciones";
+const iisPath = "C:\\inetpub\\wwwroot\\wms-lluvia-v2";
 
 // Función para copiar archivos
 async function deploy() {
