@@ -6,6 +6,6 @@
 export const environment = {
   PRODUCTION: true,
   // TODO: URL real de la API (placeholder).
-  BASE_URL: 'https://api.comercializadoralluvia.com/api',
+  BASE_URL: 'http://api.comercializadoralluvia.com/api',
   BASE_URL_ADMIN: 'https://api.comercializadoralluvia.com/api',
 };

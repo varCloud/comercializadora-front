@@ -55,6 +55,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'relacion-liquidos',
+        loadChildren: () =>
+          import('./feature/relacion-liquidos/relacion-liquidos-routing.module').then(
+            (m) => m.RelacionLiquidosRoutingModule,
+          ),
+      },
+      {
         path: 'compras',
         loadChildren: () =>
           import('./feature/compras/compras-routing.module').then(

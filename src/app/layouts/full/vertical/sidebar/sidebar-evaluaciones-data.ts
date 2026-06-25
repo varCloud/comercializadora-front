@@ -52,6 +52,11 @@ export const navItemsApp: NavItem[] = [
         route: '/admin/productos/codigos-barras',
       },
       {
+        displayName: 'Relación Liquidos',
+        iconName: 'droplet',
+        route: '/admin/relacion-liquidos',
+      },
+      {
         displayName: 'Límites de inventario',
         iconName: 'adjustments',
         route: '/admin/limites-inventario',

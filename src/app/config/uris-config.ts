@@ -12,6 +12,7 @@ export const URIS_CONFIG = {
     CODIGOS_BARRAS: 'codigos-barras',
     LINEAS_PRODUCTO: 'lineas-producto',
     LIMITES_INVENTARIO: 'limites-inventario',
+    RELACION_LIQUIDOS: 'relacion-liquidos',
     COMPRAS: 'compras',
     EVALUACIONES: 'evaluaciones',
     ROLES: 'roles',

@@ -350,6 +350,66 @@
       "loadError": "An error occurred while loading the inventory limits."
     }
   },
+  "relacionLiquidos": {
+    "title": "Liquids Relation",
+    "add": "Add relation",
+    "empty": "No relations to display.",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Search by raw material, packaged product or container…",
+    "columns": {
+      "id": "Relation Id",
+      "granel": "Raw Material / Liquids",
+      "envasado": "Packaged Product",
+      "envase": "Container",
+      "unidad": "Unit of Measure",
+      "cantidad": "Unit of Measure Value",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "desactivar": "Delete"
+    },
+    "form": {
+      "titleAdd": "Add Relation",
+      "titleEdit": "Update Relation",
+      "titleView": "Product relation",
+      "granel": "Raw Material / Bulk",
+      "granelPlaceholder": "Select the raw material",
+      "envasado": "Product to Package",
+      "envasadoPlaceholder": "Select the product to package",
+      "envase": "Container",
+      "envasePlaceholder": "Select the container",
+      "unidadMedida": "Unit of Measure",
+      "unidadMedidaPlaceholder": "Select the unit of measure",
+      "cantidad": "Quantity to package",
+      "cantidadPlaceholder": "Captured quantity",
+      "convertido": "Converted value",
+      "requiredGranel": "Select the raw material / bulk.",
+      "requiredEnvasado": "Select the product to package.",
+      "requiredEnvase": "Select the container.",
+      "requiredUnidadMedida": "Select the unit of measure.",
+      "requiredCantidad": "Enter the quantity.",
+      "minCantidad": "Quantity must be greater than 0.",
+      "guardar": "Add",
+      "cancelar": "Close"
+    },
+    "confirm": {
+      "deleteTitle": "Delete relation",
+      "deleteText": "Are you sure you want to delete the product combination?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading liquid relations",
+      "deleting": "Deleting relation…",
+      "deleteError": "Error deleting the relation",
+      "deleteFallback": "Could not delete the relation",
+      "saveError": "Error saving the relation",
+      "saveFallback": "Could not save the relation"
+    }
+  },
   "compras": {
     "title": "Purchases",
     "add": "New purchase",

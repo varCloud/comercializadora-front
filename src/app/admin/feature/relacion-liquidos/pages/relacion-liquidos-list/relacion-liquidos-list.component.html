@@ -1,0 +1,92 @@
+<!-- Barra superior: buscador + botón Agregar (regla 10). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-8 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'relacionLiquidos.searchLabel' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'relacionLiquidos.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-4 col-sm-12 d-flex align-items-end justify-content-end m-b-12">
+        <button mat-flat-button color="accent" (click)="agregar()">
+          {{ 'relacionLiquidos.add' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de combinaciones (mismas columnas que _ObtenerCombinacionProductos.cshtml). -->
+<mat-card class="cardWithShadow" *blockUI="'relacionLiquidos'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'relacionLiquidos.columns.id' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14 text-center" [attr.data-label]="'relacionLiquidos.columns.id' | translate">{{ r.idRelacionEnvasadoAgranel }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="granel">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'relacionLiquidos.columns.granel' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'relacionLiquidos.columns.granel' | translate">{{ r.agranelDescripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="envasado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'relacionLiquidos.columns.envasado' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'relacionLiquidos.columns.envasado' | translate">{{ r.envasadoDescripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="envase">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'relacionLiquidos.columns.envase' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'relacionLiquidos.columns.envase' | translate">{{ r.envaseDescripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="unidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'relacionLiquidos.columns.unidad' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'relacionLiquidos.columns.unidad' | translate">{{ r.unidadMedidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'relacionLiquidos.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14 text-right" [attr.data-label]="'relacionLiquidos.columns.cantidad' | translate">{{ r.valorUnidadMedida | number: '1.0-4' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'relacionLiquidos.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="action-link text-right" [attr.data-label]="'relacionLiquidos.columns.acciones' | translate">
+            <a (click)="ver(r)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'relacionLiquidos.actions.ver' | translate">
+              <i-tabler name="eye" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="editar(r)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'relacionLiquidos.actions.editar' | translate">
+              <i-tabler name="edit" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="desactivar(r)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'relacionLiquidos.actions.desactivar' | translate">
+              <i-tabler name="trash" class="icon-18"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'relacionLiquidos.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>
