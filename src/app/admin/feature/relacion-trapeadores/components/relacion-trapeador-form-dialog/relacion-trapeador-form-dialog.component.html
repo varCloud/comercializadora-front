@@ -1,0 +1,119 @@
+<h2 mat-dialog-title class="m-0">{{ titleKey | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="relacionForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+
+        <!-- Materia Prima / Matra -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'relacionTrapeadores.form.materia1' | translate }}</mat-label>
+          <app-select-paginado
+            [control]="$any(relacionForm.controls.idProductoMateria1)"
+            [fetchPage]="fetchProductos"
+            identifier="idProducto"
+            bindLabel="descripcion"
+            bindValue="idProducto"
+            [preload]="materia1Preload()"
+            placeholder="relacionTrapeadores.form.materia1Placeholder"
+          ></app-select-paginado>
+          @if (relacionForm.controls.idProductoMateria1.hasError('required') && relacionForm.controls.idProductoMateria1.touched) {
+            <small class="text-error">{{ 'relacionTrapeadores.form.requiredMateria1' | translate }}</small>
+          }
+        </div>
+
+        <!-- Bastón -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'relacionTrapeadores.form.materia2' | translate }}</mat-label>
+          <app-select-paginado
+            [control]="$any(relacionForm.controls.idProductoMateria2)"
+            [fetchPage]="fetchProductos"
+            identifier="idProducto"
+            bindLabel="descripcion"
+            bindValue="idProducto"
+            [preload]="materia2Preload()"
+            placeholder="relacionTrapeadores.form.materia2Placeholder"
+          ></app-select-paginado>
+          @if (relacionForm.controls.idProductoMateria2.hasError('required') && relacionForm.controls.idProductoMateria2.touched) {
+            <small class="text-error">{{ 'relacionTrapeadores.form.requiredMateria2' | translate }}</small>
+          }
+        </div>
+
+        <!-- Trapeador a fabricar -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'relacionTrapeadores.form.produccion' | translate }}</mat-label>
+          <app-select-paginado
+            [control]="$any(relacionForm.controls.idProductoProduccion)"
+            [fetchPage]="fetchProductos"
+            identifier="idProducto"
+            bindLabel="descripcion"
+            bindValue="idProducto"
+            [preload]="produccionPreload()"
+            placeholder="relacionTrapeadores.form.produccionPlaceholder"
+          ></app-select-paginado>
+          @if (relacionForm.controls.idProductoProduccion.hasError('required') && relacionForm.controls.idProductoProduccion.touched) {
+            <small class="text-error">{{ 'relacionTrapeadores.form.requiredProduccion' | translate }}</small>
+          }
+        </div>
+
+        <!-- Unidad de Medida -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'relacionTrapeadores.form.unidadMedida' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select
+              formControlName="idUnidadMedidad"
+              [placeholder]="'relacionTrapeadores.form.unidadMedidaPlaceholder' | translate"
+              (selectionChange)="onUnidadChange($event.value)"
+            >
+              @for (u of unidadesMedida(); track u.id) {
+                <mat-option [value]="u.id">{{ u.descripcion }}</mat-option>
+              }
+            </mat-select>
+            @if (relacionForm.controls.idUnidadMedidad.hasError('required') && relacionForm.controls.idUnidadMedidad.touched) {
+              <mat-error>{{ 'relacionTrapeadores.form.requiredUnidadMedida' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Cantidad a fabricar -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'relacionTrapeadores.form.cantidad' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input
+              matInput
+              type="number"
+              formControlName="cantidad"
+              inputmode="decimal"
+              [placeholder]="'relacionTrapeadores.form.cantidadPlaceholder' | translate"
+              (input)="onCantidadInput($any($event.target).value)"
+            />
+            @if (relacionForm.controls.cantidad.hasError('required') && relacionForm.controls.cantidad.touched) {
+              <mat-error>{{ 'relacionTrapeadores.form.requiredCantidad' | translate }}</mat-error>
+            }
+            @if (relacionForm.controls.cantidad.hasError('min') && relacionForm.controls.cantidad.touched) {
+              <mat-error>{{ 'relacionTrapeadores.form.minCantidad' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Valor convertido (cantidad / 1000) -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'relacionTrapeadores.form.convertido' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput [value]="convertido()" readonly />
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'relacionTrapeadores.form.cancelar' | translate }}</button>
+  @if (!readonly) {
+    <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+      {{ 'relacionTrapeadores.form.guardar' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

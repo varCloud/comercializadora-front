@@ -1,0 +1,6 @@
+// Fix columna de acciones sticky (regla 10): sin esto la celda fija se transparenta al hacer
+// scroll horizontal. SCSS en archivo propio con styleUrl (regla dura 01 — nunca inline en el TS).
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}

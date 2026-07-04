@@ -1,0 +1,125 @@
+<!-- Card de filtros (equivalente al formulario "Producción Líquidos" del legado: rol, usuario en
+     cascada, rango de fechas). Reporte de solo lectura: sin buscador de texto libre (regla 13
+     no aplica) ni botón "Agregar". -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionLiquidos.filters.rol' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idRol" [placeholder]="'produccionLiquidos.filters.todos' | translate" (selectionChange)="onRolChange()">
+            <mat-option [value]="null">{{ 'produccionLiquidos.filters.todos' | translate }}</mat-option>
+            @for (r of roles(); track r.id) {
+              <mat-option [value]="r.id">{{ r.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionLiquidos.filters.usuario' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idUsuario"
+          [items]="usuarios()"
+          bindValue="idUsuario"
+          bindLabel="nombreCompleto"
+          [placeholder]="'produccionLiquidos.filters.usuarioPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionLiquidos.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'produccionLiquidos.filters.fechaIni' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'produccionLiquidos.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'produccionLiquidos.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'produccionLiquidos.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de movimientos de carga de mercancía líquidos (solo lectura, sin columna de acciones). -->
+<mat-card class="cardWithShadow" *blockUI="'produccionLiquidos'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" matSort (matSortChange)="onSort($event)" class="w-100 table-stacked-mobile">
+        <!-- Orden server-side: solo las columnas whitelisteadas por la API llevan mat-sort-header
+             (fecha | cantidad | producto); el id del header es el valor de `order` que espera el back. -->
+        <ng-container matColumnDef="idProducto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'produccionLiquidos.columns.idProducto' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-center" [attr.data-label]="'produccionLiquidos.columns.idProducto' | translate">{{ c.idProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionUbicacion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'produccionLiquidos.columns.ubicacion' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'produccionLiquidos.columns.ubicacion' | translate">{{ c.descripcionUbicacion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionProducto">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="producto" class="f-s-16 f-w-600">{{ 'produccionLiquidos.columns.descripcionProducto' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'produccionLiquidos.columns.descripcionProducto' | translate">{{ c.descripcionProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="cantidad" class="f-s-16 f-w-600 text-right">{{ 'produccionLiquidos.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'produccionLiquidos.columns.cantidad' | translate">{{ c.cantidad | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'produccionLiquidos.columns.usuario' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'produccionLiquidos.columns.usuario' | translate">{{ c.nombreUsuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="fecha" class="f-s-16 f-w-600">{{ 'produccionLiquidos.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'produccionLiquidos.columns.fecha' | translate">{{ c.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionRol">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'produccionLiquidos.columns.rol' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'produccionLiquidos.columns.rol' | translate">
+            @if (c.descripcionRol) {
+              <span class="rol-chip" [style.color]="rolColor(c.descripcionRol)" [style.borderColor]="rolColor(c.descripcionRol)">{{ c.descripcionRol }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="ultimoCostoCompra">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'produccionLiquidos.columns.costoCompra' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'produccionLiquidos.columns.costoCompra' | translate">${{ c.ultimoCostoCompra | number: '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descTipoMovInventario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'produccionLiquidos.columns.movimiento' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'produccionLiquidos.columns.movimiento' | translate">{{ c.descTipoMovInventario }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'produccionLiquidos.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,92 @@
+<!-- Barra superior: buscador + botón Agregar (regla 10). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-8 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'relacionTrapeadores.searchLabel' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'relacionTrapeadores.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+      <div class="col-lg-4 col-sm-12 d-flex align-items-end justify-content-end m-b-12">
+        <button mat-flat-button color="accent" (click)="agregar()">
+          {{ 'relacionTrapeadores.add' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de combinaciones materia1/materia2/producción. -->
+<mat-card class="cardWithShadow" *blockUI="'relacionTrapeadores'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'relacionTrapeadores.columns.id' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14 text-center" [attr.data-label]="'relacionTrapeadores.columns.id' | translate">{{ r.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="materia1">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'relacionTrapeadores.columns.materia1' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'relacionTrapeadores.columns.materia1' | translate">{{ r.productoMateria1Descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="materia2">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'relacionTrapeadores.columns.materia2' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'relacionTrapeadores.columns.materia2' | translate">{{ r.productoMateria2Descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="produccion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'relacionTrapeadores.columns.produccion' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'relacionTrapeadores.columns.produccion' | translate">{{ r.productoProduccionDescripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="unidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'relacionTrapeadores.columns.unidad' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'relacionTrapeadores.columns.unidad' | translate">{{ r.unidadMedidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'relacionTrapeadores.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="f-s-14 text-right" [attr.data-label]="'relacionTrapeadores.columns.cantidad' | translate">{{ r.valorUnidadMedida | number: '1.0-4' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'relacionTrapeadores.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let r" class="action-link text-right" [attr.data-label]="'relacionTrapeadores.columns.acciones' | translate">
+            <a (click)="ver(r)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'relacionTrapeadores.actions.ver' | translate">
+              <i-tabler name="eye" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="editar(r)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'relacionTrapeadores.actions.editar' | translate">
+              <i-tabler name="edit" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="desactivar(r)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'relacionTrapeadores.actions.desactivar' | translate">
+              <i-tabler name="trash" class="icon-18"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'relacionTrapeadores.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

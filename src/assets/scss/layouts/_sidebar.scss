@@ -110,6 +110,7 @@
       border-radius: 7px;
       height: 45px;
       padding: 8px 10px !important;
+      padding-inline-start: calc(10px + var(--nav-depth, 0) * 18px) !important;
       margin-bottom: 2px;
       &.twoline {
         height: 60px;
@@ -121,6 +122,22 @@
       }
       &.disabled {
         opacity: 0.38;
+      }
+
+      // Ítems de submenú (depth > 0): más bajos, ícono/texto discretos para
+      // que se lean como "un nivel abajo" del padre que los despliega.
+      &.is-submenu {
+        height: 38px;
+
+        .mdc-list-item__start {
+          width: 16px;
+          height: 16px;
+          opacity: 0.7;
+        }
+
+        .mdc-list-item__primary-text {
+          font-size: 0.8125rem;
+        }
       }
 
       .item-chip {

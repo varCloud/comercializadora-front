@@ -34,6 +34,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'clientes',
+        loadChildren: () =>
+          import('./feature/clientes/clientes-routing.module').then(
+            (m) => m.ClientesRoutingModule,
+          ),
+      },
+      {
         path: 'proveedores',
         loadChildren: () =>
           import('./feature/proveedores/proveedores-routing.module').then(
@@ -59,6 +66,27 @@ const routes: Routes = [
         loadChildren: () =>
           import('./feature/relacion-liquidos/relacion-liquidos-routing.module').then(
             (m) => m.RelacionLiquidosRoutingModule,
+          ),
+      },
+      {
+        path: 'relacion-trapeadores',
+        loadChildren: () =>
+          import('./feature/relacion-trapeadores/relacion-trapeadores-routing.module').then(
+            (m) => m.RelacionTrapeadoresRoutingModule,
+          ),
+      },
+      {
+        path: 'produccion-liquidos',
+        loadChildren: () =>
+          import('./feature/produccion-liquidos/produccion-liquidos-routing.module').then(
+            (m) => m.ProduccionLiquidosRoutingModule,
+          ),
+      },
+      {
+        path: 'produccion-trapeadores',
+        loadChildren: () =>
+          import('./feature/produccion-trapeadores/produccion-trapeadores-routing.module').then(
+            (m) => m.ProduccionTrapeadoresRoutingModule,
           ),
       },
       {

@@ -23,6 +23,22 @@ export const navItemsApp: NavItem[] = [
     route: '/admin/estaciones',
   },
   {
+    displayName: 'Clientes',
+    iconName: 'users',
+    children: [
+      {
+        displayName: 'Clientes',
+        iconName: 'user',
+        route: '/admin/clientes',
+      },
+      {
+        displayName: 'Tipos de cliente',
+        iconName: 'discount-2',
+        route: '/admin/clientes/tipos',
+      },
+    ],
+  },
+  {
     displayName: 'Proveedores',
     iconName: 'truck-delivery',
     route: '/admin/proveedores',
@@ -57,11 +73,26 @@ export const navItemsApp: NavItem[] = [
         route: '/admin/relacion-liquidos',
       },
       {
+        displayName: 'Relación Trapeadores',
+        iconName: 'bucket-droplet',
+        route: '/admin/relacion-trapeadores',
+      },
+      {
         displayName: 'Límites de inventario',
         iconName: 'adjustments',
         route: '/admin/limites-inventario',
       },
     ],
+  },
+  {
+    displayName: 'Producción líquidos',
+    iconName: 'droplet',
+    route: '/admin/produccion-liquidos',
+  },
+  {
+    displayName: 'Producción trapeadores',
+    iconName: 'wash',
+    route: '/admin/produccion-trapeadores',
   },
   {
     displayName: 'Compras',

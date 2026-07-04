@@ -410,6 +410,66 @@
       "saveFallback": "No se pudo guardar la relación"
     }
   },
+  "relacionTrapeadores": {
+    "title": "Relación Trapeadores",
+    "add": "Agregar relación",
+    "empty": "No hay relaciones para mostrar.",
+    "searchLabel": "Búsqueda",
+    "searchPlaceholder": "Buscar por materia prima, bastón o trapeador…",
+    "columns": {
+      "id": "Id de Relación",
+      "materia1": "Materia Prima / Matra",
+      "materia2": "Bastón",
+      "produccion": "Trapeador a fabricar",
+      "unidad": "Unidad de Medida",
+      "cantidad": "Valor Unidad de Medida",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "editar": "Editar",
+      "desactivar": "Eliminar"
+    },
+    "form": {
+      "titleAdd": "Agregar Relación",
+      "titleEdit": "Actualizar Relación",
+      "titleView": "Relación de productos",
+      "materia1": "Materia Prima / Matra",
+      "materia1Placeholder": "Selecciona la materia prima / matra",
+      "materia2": "Bastón",
+      "materia2Placeholder": "Selecciona el bastón",
+      "produccion": "Trapeador a fabricar",
+      "produccionPlaceholder": "Selecciona el trapeador a fabricar",
+      "unidadMedida": "Unidad de Medida",
+      "unidadMedidaPlaceholder": "Selecciona la unidad de medida",
+      "cantidad": "Cantidad a fabricar",
+      "cantidadPlaceholder": "Cantidad capturada",
+      "convertido": "Valor convertido",
+      "requiredMateria1": "Selecciona la materia prima / matra.",
+      "requiredMateria2": "Selecciona el bastón.",
+      "requiredProduccion": "Selecciona el trapeador a fabricar.",
+      "requiredUnidadMedida": "Selecciona la unidad de medida.",
+      "requiredCantidad": "Captura la cantidad.",
+      "minCantidad": "La cantidad debe ser mayor a 0.",
+      "guardar": "Agregar",
+      "cancelar": "Cerrar"
+    },
+    "confirm": {
+      "deleteTitle": "Eliminar relación",
+      "deleteText": "¿Estás seguro que deseas eliminar la combinación de los productos?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar las relaciones de trapeadores",
+      "deleting": "Eliminando relación…",
+      "deleteError": "Error al eliminar la relación",
+      "deleteFallback": "No se pudo eliminar la relación",
+      "saveError": "Error al guardar la relación",
+      "saveFallback": "No se pudo guardar la relación"
+    }
+  },
   "compras": {
     "title": "Compras",
     "add": "Nueva compra",
@@ -514,6 +574,66 @@
       "costoFilaMayorCero": "El costo del producto {{producto}} debe ser mayor a 0.",
       "sinProductos": "Debe agregar productos a la compra.",
       "proveedorCreado": "Proveedor creado. Búscalo en el selector para asignarlo."
+    }
+  },
+  "produccionLiquidos": {
+    "title": "Producción líquidos",
+    "empty": "No hay movimientos de carga de mercancía para mostrar.",
+    "filters": {
+      "rol": "Rol",
+      "todos": "--TODOS--",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "rangoFechas": "Rango de fechas",
+      "fechaIni": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "idProducto": "Producto",
+      "ubicacion": "Ubicación",
+      "descripcionProducto": "Descripción",
+      "cantidad": "Cantidad",
+      "usuario": "Usuario",
+      "fecha": "Fecha",
+      "rol": "Rol",
+      "costoCompra": "Costo de compra",
+      "movimiento": "Movimiento"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar la producción de líquidos"
+    }
+  },
+  "produccionTrapeadores": {
+    "title": "Producción trapeadores",
+    "empty": "No hay movimientos de carga de mercancía para mostrar.",
+    "filters": {
+      "rol": "Rol",
+      "todos": "--TODOS--",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "rangoFechas": "Rango de fechas",
+      "fechaIni": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "idProducto": "Producto",
+      "ubicacion": "Ubicación",
+      "descripcionProducto": "Descripción",
+      "cantidad": "Cantidad",
+      "usuario": "Usuario",
+      "fecha": "Fecha",
+      "rol": "Rol",
+      "costoCompra": "Costo de compra",
+      "movimiento": "Movimiento"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar la producción de trapeadores"
     }
   },
   "proveedores": {
@@ -779,6 +899,164 @@
       "saveFallback": "No se pudo guardar la línea de producto",
       "deleteError": "Error al desactivar la línea de producto",
       "deleteFallback": "No se pudo desactivar la línea de producto"
+    }
+  },
+  "clientes": {
+    "title": "Clientes",
+    "add": "Agregar cliente",
+    "empty": "No hay clientes para mostrar.",
+    "searchPlaceholder": "Buscar por nombre, RFC, teléfono, correo o municipio…",
+    "columns": {
+      "nombre": "Nombre / Razón social",
+      "rfc": "RFC",
+      "telefono": "Teléfono",
+      "correo": "Correo",
+      "municipio": "Municipio",
+      "tipoCliente": "Tipo de cliente",
+      "regimenFiscal": "Régimen fiscal",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "editar": "Editar",
+      "eliminar": "Eliminar"
+    },
+    "form": {
+      "titleAdd": "Agregar cliente",
+      "titleEdit": "Editar cliente",
+      "titleView": "Detalle de cliente",
+      "tipoPersona": "Tipo de persona",
+      "personaFisica": "Persona física",
+      "personaMoral": "Persona moral",
+      "sectionGenerales": "Datos generales",
+      "sectionDomicilio": "Domicilio",
+      "sectionFiscales": "Datos fiscales",
+      "sectionContacto": "Contacto",
+      "sectionPedidosEspeciales": "Pedidos especiales",
+      "sectionCredito": "Crédito",
+      "nombres": "Nombre(s)",
+      "nombresPlaceholder": "Nombre(s) del cliente",
+      "apellidoPaterno": "Apellido paterno",
+      "apellidoPaternoPlaceholder": "Apellido paterno",
+      "apellidoMaterno": "Apellido materno",
+      "apellidoMaternoPlaceholder": "Apellido materno",
+      "razonSocial": "Razón social",
+      "razonSocialPlaceholder": "Razón social de la empresa",
+      "sociedadMercantil": "Sociedad mercantil",
+      "sociedadMercantilPlaceholder": "S.A. de C.V., S. de R.L., …",
+      "calle": "Calle",
+      "callePlaceholder": "Calle",
+      "numeroExterior": "No. exterior",
+      "numeroExteriorPlaceholder": "No. ext.",
+      "numeroInterior": "No. interior",
+      "numeroInteriorPlaceholder": "No. int.",
+      "colonia": "Colonia",
+      "coloniaPlaceholder": "Colonia",
+      "localidad": "Localidad",
+      "localidadPlaceholder": "Localidad",
+      "municipio": "Municipio",
+      "municipioPlaceholder": "Municipio",
+      "estado": "Estado",
+      "estadoPlaceholder": "Estado",
+      "cp": "Código postal",
+      "cpPlaceholder": "C.P. (obligatorio para facturar)",
+      "rfc": "RFC",
+      "rfcPlaceholder": "RFC del cliente",
+      "tipoCliente": "Tipo de cliente",
+      "tipoClientePlaceholder": "Selecciona el tipo de cliente",
+      "regimenFiscal": "Régimen fiscal",
+      "regimenFiscalPlaceholder": "Selecciona el régimen fiscal",
+      "telefono": "Teléfono",
+      "telefonoPlaceholder": "Teléfono a 10 dígitos",
+      "correo": "Correo",
+      "correoPlaceholder": "correo@dominio.com",
+      "nombreContacto": "Nombre de contacto",
+      "nombreContactoPlaceholder": "Persona de contacto",
+      "latitud": "Latitud",
+      "latitudPlaceholder": "Latitud (ubicación de entrega)",
+      "longitud": "Longitud",
+      "longitudPlaceholder": "Longitud (ubicación de entrega)",
+      "usarDatosCliente": "Usar los datos del cliente como contacto de pedidos especiales",
+      "nombreContactoPE": "Contacto de pedidos especiales",
+      "nombreContactoPEPlaceholder": "Nombre del contacto PE",
+      "telefonoContactoPE": "Teléfono del contacto PE",
+      "telefonoContactoPEPlaceholder": "Teléfono a 10 dígitos",
+      "correoContactoPE": "Correo del contacto PE",
+      "correoContactoPEPlaceholder": "correo@dominio.com",
+      "diasCredito": "Días de crédito",
+      "diasCreditoPlaceholder": "0",
+      "montoMaximoCredito": "Monto máximo de crédito",
+      "montoMaximoCreditoPlaceholder": "0.00",
+      "requiredNombres": "Captura el nombre.",
+      "requiredApellidoPaterno": "Captura el apellido paterno.",
+      "requiredRazonSocial": "Captura la razón social.",
+      "requiredRfc": "Captura el RFC.",
+      "requiredCp": "Captura el código postal (obligatorio para facturar).",
+      "requiredTipoCliente": "Selecciona el tipo de cliente.",
+      "requiredRegimenFiscal": "Selecciona el régimen fiscal.",
+      "invalidTelefono": "El teléfono debe ser de 10 dígitos.",
+      "invalidCorreo": "Captura un correo válido.",
+      "invalidDiasCredito": "Los días de crédito no pueden ser negativos.",
+      "invalidMontoMaximoCredito": "El monto máximo no puede ser negativo.",
+      "guardar": "Guardar",
+      "cancelar": "Cancelar"
+    },
+    "confirm": {
+      "deleteTitle": "Eliminar cliente",
+      "deleteText": "¿Seguro que deseas eliminar al cliente {{nombre}}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar los clientes",
+      "saveError": "Error al guardar el cliente",
+      "saveFallback": "No se pudo guardar el cliente",
+      "deleteError": "Error al eliminar el cliente",
+      "deleteFallback": "No se pudo eliminar el cliente"
+    }
+  },
+  "tiposCliente": {
+    "title": "Tipos de cliente",
+    "add": "Agregar tipo de cliente",
+    "empty": "No hay tipos de cliente para mostrar.",
+    "searchPlaceholder": "Buscar por descripción…",
+    "columns": {
+      "descripcion": "Descripción",
+      "descuento": "% Descuento",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "editar": "Editar",
+      "eliminar": "Eliminar"
+    },
+    "form": {
+      "titleAdd": "Agregar tipo de cliente",
+      "titleEdit": "Editar tipo de cliente",
+      "titleView": "Detalle de tipo de cliente",
+      "descripcion": "Descripción",
+      "descripcionPlaceholder": "Descripción del tipo de cliente",
+      "descuento": "% de descuento",
+      "descuentoPlaceholder": "0 – 100",
+      "requiredDescripcion": "Captura la descripción.",
+      "invalidDescuento": "El descuento debe estar entre 0 y 100.",
+      "guardar": "Guardar",
+      "cancelar": "Cancelar"
+    },
+    "confirm": {
+      "deleteTitle": "Desactivar tipo de cliente",
+      "deleteText": "¿Seguro que deseas desactivar el tipo de cliente {{nombre}}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar los tipos de cliente",
+      "saveError": "Error al guardar el tipo de cliente",
+      "saveFallback": "No se pudo guardar el tipo de cliente",
+      "deleteError": "Error al desactivar el tipo de cliente",
+      "deleteFallback": "No se pudo desactivar el tipo de cliente"
     }
   }
 }

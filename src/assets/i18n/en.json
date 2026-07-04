@@ -410,6 +410,66 @@
       "saveFallback": "Could not save the relation"
     }
   },
+  "relacionTrapeadores": {
+    "title": "Mops Relation",
+    "add": "Add relation",
+    "empty": "No relations to display.",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Search by raw material, mop stick or mop…",
+    "columns": {
+      "id": "Relation Id",
+      "materia1": "Raw Material / Base",
+      "materia2": "Mop Stick",
+      "produccion": "Mop to Produce",
+      "unidad": "Unit of Measure",
+      "cantidad": "Unit of Measure Value",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "desactivar": "Delete"
+    },
+    "form": {
+      "titleAdd": "Add Relation",
+      "titleEdit": "Update Relation",
+      "titleView": "Product relation",
+      "materia1": "Raw Material / Base",
+      "materia1Placeholder": "Select the raw material / base",
+      "materia2": "Mop Stick",
+      "materia2Placeholder": "Select the mop stick",
+      "produccion": "Mop to Produce",
+      "produccionPlaceholder": "Select the mop to produce",
+      "unidadMedida": "Unit of Measure",
+      "unidadMedidaPlaceholder": "Select the unit of measure",
+      "cantidad": "Quantity to produce",
+      "cantidadPlaceholder": "Captured quantity",
+      "convertido": "Converted value",
+      "requiredMateria1": "Select the raw material / base.",
+      "requiredMateria2": "Select the mop stick.",
+      "requiredProduccion": "Select the mop to produce.",
+      "requiredUnidadMedida": "Select the unit of measure.",
+      "requiredCantidad": "Enter the quantity.",
+      "minCantidad": "Quantity must be greater than 0.",
+      "guardar": "Add",
+      "cancelar": "Close"
+    },
+    "confirm": {
+      "deleteTitle": "Delete relation",
+      "deleteText": "Are you sure you want to delete the product combination?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading mop relations",
+      "deleting": "Deleting relation…",
+      "deleteError": "Error deleting the relation",
+      "deleteFallback": "Could not delete the relation",
+      "saveError": "Error saving the relation",
+      "saveFallback": "Could not save the relation"
+    }
+  },
   "compras": {
     "title": "Purchases",
     "add": "New purchase",
@@ -514,6 +574,66 @@
       "costoFilaMayorCero": "The cost of product {{producto}} must be greater than 0.",
       "sinProductos": "You must add products to the purchase.",
       "proveedorCreado": "Supplier created. Search it in the selector to assign it."
+    }
+  },
+  "produccionLiquidos": {
+    "title": "Liquid production",
+    "empty": "No merchandise loading movements to display.",
+    "filters": {
+      "rol": "Role",
+      "todos": "--ALL--",
+      "usuario": "User",
+      "usuarioPlaceholder": "All users",
+      "rangoFechas": "Date range",
+      "fechaIni": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "idProducto": "Product",
+      "ubicacion": "Location",
+      "descripcionProducto": "Description",
+      "cantidad": "Quantity",
+      "usuario": "User",
+      "fecha": "Date",
+      "rol": "Role",
+      "costoCompra": "Purchase cost",
+      "movimiento": "Movement"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading liquid production"
+    }
+  },
+  "produccionTrapeadores": {
+    "title": "Mop production",
+    "empty": "No merchandise loading movements to display.",
+    "filters": {
+      "rol": "Role",
+      "todos": "--ALL--",
+      "usuario": "User",
+      "usuarioPlaceholder": "All users",
+      "rangoFechas": "Date range",
+      "fechaIni": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "idProducto": "Product",
+      "ubicacion": "Location",
+      "descripcionProducto": "Description",
+      "cantidad": "Quantity",
+      "usuario": "User",
+      "fecha": "Date",
+      "rol": "Role",
+      "costoCompra": "Purchase cost",
+      "movimiento": "Movement"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading mop production"
     }
   },
   "proveedores": {
@@ -779,6 +899,164 @@
       "saveFallback": "Could not save the product line",
       "deleteError": "Error deactivating the product line",
       "deleteFallback": "Could not deactivate the product line"
+    }
+  },
+  "clientes": {
+    "title": "Customers",
+    "add": "Add customer",
+    "empty": "No customers to display.",
+    "searchPlaceholder": "Search by name, RFC, phone, email or municipality…",
+    "columns": {
+      "nombre": "Name / Business name",
+      "rfc": "RFC",
+      "telefono": "Phone",
+      "correo": "Email",
+      "municipio": "Municipality",
+      "tipoCliente": "Customer type",
+      "regimenFiscal": "Tax regime",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "eliminar": "Delete"
+    },
+    "form": {
+      "titleAdd": "Add customer",
+      "titleEdit": "Edit customer",
+      "titleView": "Customer detail",
+      "tipoPersona": "Person type",
+      "personaFisica": "Individual",
+      "personaMoral": "Legal entity",
+      "sectionGenerales": "General information",
+      "sectionDomicilio": "Address",
+      "sectionFiscales": "Tax information",
+      "sectionContacto": "Contact",
+      "sectionPedidosEspeciales": "Special orders",
+      "sectionCredito": "Credit",
+      "nombres": "First name(s)",
+      "nombresPlaceholder": "Customer first name(s)",
+      "apellidoPaterno": "Last name",
+      "apellidoPaternoPlaceholder": "Last name",
+      "apellidoMaterno": "Second last name",
+      "apellidoMaternoPlaceholder": "Second last name",
+      "razonSocial": "Business name",
+      "razonSocialPlaceholder": "Company business name",
+      "sociedadMercantil": "Company type",
+      "sociedadMercantilPlaceholder": "S.A. de C.V., S. de R.L., …",
+      "calle": "Street",
+      "callePlaceholder": "Street",
+      "numeroExterior": "Ext. number",
+      "numeroExteriorPlaceholder": "Ext. no.",
+      "numeroInterior": "Int. number",
+      "numeroInteriorPlaceholder": "Int. no.",
+      "colonia": "Neighborhood",
+      "coloniaPlaceholder": "Neighborhood",
+      "localidad": "Locality",
+      "localidadPlaceholder": "Locality",
+      "municipio": "Municipality",
+      "municipioPlaceholder": "Municipality",
+      "estado": "State",
+      "estadoPlaceholder": "State",
+      "cp": "ZIP code",
+      "cpPlaceholder": "ZIP code (required for invoicing)",
+      "rfc": "RFC",
+      "rfcPlaceholder": "Customer RFC",
+      "tipoCliente": "Customer type",
+      "tipoClientePlaceholder": "Select the customer type",
+      "regimenFiscal": "Tax regime",
+      "regimenFiscalPlaceholder": "Select the tax regime",
+      "telefono": "Phone",
+      "telefonoPlaceholder": "10-digit phone number",
+      "correo": "Email",
+      "correoPlaceholder": "email@domain.com",
+      "nombreContacto": "Contact name",
+      "nombreContactoPlaceholder": "Contact person",
+      "latitud": "Latitude",
+      "latitudPlaceholder": "Latitude (delivery location)",
+      "longitud": "Longitude",
+      "longitudPlaceholder": "Longitude (delivery location)",
+      "usarDatosCliente": "Use the customer's data as the special orders contact",
+      "nombreContactoPE": "Special orders contact",
+      "nombreContactoPEPlaceholder": "Special orders contact name",
+      "telefonoContactoPE": "Special orders contact phone",
+      "telefonoContactoPEPlaceholder": "10-digit phone number",
+      "correoContactoPE": "Special orders contact email",
+      "correoContactoPEPlaceholder": "email@domain.com",
+      "diasCredito": "Credit days",
+      "diasCreditoPlaceholder": "0",
+      "montoMaximoCredito": "Maximum credit amount",
+      "montoMaximoCreditoPlaceholder": "0.00",
+      "requiredNombres": "Enter the first name.",
+      "requiredApellidoPaterno": "Enter the last name.",
+      "requiredRazonSocial": "Enter the business name.",
+      "requiredRfc": "Enter the RFC.",
+      "requiredCp": "Enter the ZIP code (required for invoicing).",
+      "requiredTipoCliente": "Select the customer type.",
+      "requiredRegimenFiscal": "Select the tax regime.",
+      "invalidTelefono": "The phone number must be 10 digits.",
+      "invalidCorreo": "Enter a valid email.",
+      "invalidDiasCredito": "Credit days cannot be negative.",
+      "invalidMontoMaximoCredito": "The maximum amount cannot be negative.",
+      "guardar": "Save",
+      "cancelar": "Cancel"
+    },
+    "confirm": {
+      "deleteTitle": "Delete customer",
+      "deleteText": "Are you sure you want to delete the customer {{nombre}}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading customers",
+      "saveError": "Error saving the customer",
+      "saveFallback": "Could not save the customer",
+      "deleteError": "Error deleting the customer",
+      "deleteFallback": "Could not delete the customer"
+    }
+  },
+  "tiposCliente": {
+    "title": "Customer types",
+    "add": "Add customer type",
+    "empty": "No customer types to display.",
+    "searchPlaceholder": "Search by description…",
+    "columns": {
+      "descripcion": "Description",
+      "descuento": "% Discount",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "editar": "Edit",
+      "eliminar": "Delete"
+    },
+    "form": {
+      "titleAdd": "Add customer type",
+      "titleEdit": "Edit customer type",
+      "titleView": "Customer type detail",
+      "descripcion": "Description",
+      "descripcionPlaceholder": "Customer type description",
+      "descuento": "% discount",
+      "descuentoPlaceholder": "0 – 100",
+      "requiredDescripcion": "Enter the description.",
+      "invalidDescuento": "The discount must be between 0 and 100.",
+      "guardar": "Save",
+      "cancelar": "Cancel"
+    },
+    "confirm": {
+      "deleteTitle": "Deactivate customer type",
+      "deleteText": "Are you sure you want to deactivate the customer type {{nombre}}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading customer types",
+      "saveError": "Error saving the customer type",
+      "saveFallback": "Could not save the customer type",
+      "deleteError": "Error deactivating the customer type",
+      "deleteFallback": "Could not deactivate the customer type"
     }
   }
 }

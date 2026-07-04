@@ -1,0 +1,307 @@
+<h2 mat-dialog-title class="m-0">{{ titleKey | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="clienteForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+
+        <!-- ============ Tipo de persona ============ -->
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.tipoPersona' | translate }}</mat-label>
+          <mat-button-toggle-group formControlName="esPersonaMoral">
+            <mat-button-toggle [value]="false">{{ 'clientes.form.personaFisica' | translate }}</mat-button-toggle>
+            <mat-button-toggle [value]="true">{{ 'clientes.form.personaMoral' | translate }}</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <!-- ============ Datos generales ============ -->
+        <div class="col-12">
+          <h4 class="mat-subtitle-1 f-w-600 m-b-4">{{ 'clientes.form.sectionGenerales' | translate }}</h4>
+          <mat-divider class="m-b-16"></mat-divider>
+        </div>
+
+        @if (!esMoral()) {
+          <!-- Persona física -->
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.nombres' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="nombres" autocomplete="off" maxlength="250" [placeholder]="'clientes.form.nombresPlaceholder' | translate" />
+              <mat-icon matPrefix class="op-5"><i-tabler name="user" class="icon-20 d-flex"></i-tabler></mat-icon>
+              @if (clienteForm.controls.nombres.hasError('required') && clienteForm.controls.nombres.touched) {
+                <mat-error>{{ 'clientes.form.requiredNombres' | translate }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.apellidoPaterno' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="apellidoPaterno" autocomplete="off" maxlength="50" [placeholder]="'clientes.form.apellidoPaternoPlaceholder' | translate" />
+              @if (clienteForm.controls.apellidoPaterno.hasError('required') && clienteForm.controls.apellidoPaterno.touched) {
+                <mat-error>{{ 'clientes.form.requiredApellidoPaterno' | translate }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.apellidoMaterno' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="apellidoMaterno" autocomplete="off" maxlength="50" [placeholder]="'clientes.form.apellidoMaternoPlaceholder' | translate" />
+            </mat-form-field>
+          </div>
+        } @else {
+          <!-- Persona moral -->
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.razonSocial' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="razonSocial" autocomplete="off" maxlength="250" [placeholder]="'clientes.form.razonSocialPlaceholder' | translate" />
+              <mat-icon matPrefix class="op-5"><i-tabler name="building" class="icon-20 d-flex"></i-tabler></mat-icon>
+              @if (clienteForm.controls.razonSocial.hasError('required') && clienteForm.controls.razonSocial.touched) {
+                <mat-error>{{ 'clientes.form.requiredRazonSocial' | translate }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.sociedadMercantil' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input matInput formControlName="sociedadMercantil" autocomplete="off" maxlength="50" [placeholder]="'clientes.form.sociedadMercantilPlaceholder' | translate" />
+            </mat-form-field>
+          </div>
+        }
+
+        <!-- ============ Domicilio ============ -->
+        <div class="col-12">
+          <h4 class="mat-subtitle-1 f-w-600 m-b-4">{{ 'clientes.form.sectionDomicilio' | translate }}</h4>
+          <mat-divider class="m-b-16"></mat-divider>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.calle' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="calle" autocomplete="off" maxlength="50" [placeholder]="'clientes.form.callePlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="map-pin" class="icon-20 d-flex"></i-tabler></mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-3 col-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.numeroExterior' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="numeroExterior" autocomplete="off" maxlength="50" [placeholder]="'clientes.form.numeroExteriorPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-3 col-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.numeroInterior' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="numeroInterior" autocomplete="off" maxlength="20" [placeholder]="'clientes.form.numeroInteriorPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.colonia' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="colonia" autocomplete="off" maxlength="50" [placeholder]="'clientes.form.coloniaPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.localidad' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="localidad" autocomplete="off" maxlength="250" [placeholder]="'clientes.form.localidadPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.municipio' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="municipio" autocomplete="off" maxlength="50" [placeholder]="'clientes.form.municipioPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.estado' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="estado" autocomplete="off" maxlength="50" [placeholder]="'clientes.form.estadoPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.cp' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="cp" autocomplete="off" maxlength="50" inputmode="numeric" [placeholder]="'clientes.form.cpPlaceholder' | translate" />
+            @if (clienteForm.controls.cp.hasError('required') && clienteForm.controls.cp.touched) {
+              <mat-error>{{ 'clientes.form.requiredCp' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- ============ Datos fiscales ============ -->
+        <div class="col-12">
+          <h4 class="mat-subtitle-1 f-w-600 m-b-4">{{ 'clientes.form.sectionFiscales' | translate }}</h4>
+          <mat-divider class="m-b-16"></mat-divider>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.rfc' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="rfc" autocomplete="off" maxlength="50" class="text-uppercase" [placeholder]="'clientes.form.rfcPlaceholder' | translate" />
+            @if (clienteForm.controls.rfc.hasError('required') && clienteForm.controls.rfc.touched) {
+              <mat-error>{{ 'clientes.form.requiredRfc' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.tipoCliente' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="idTipoCliente" [placeholder]="'clientes.form.tipoClientePlaceholder' | translate">
+              @for (t of tipos(); track t.idTipoCliente) {
+                <mat-option [value]="t.idTipoCliente">{{ t.descripcion }} ({{ t.descuento }}%)</mat-option>
+              }
+            </mat-select>
+            @if (clienteForm.controls.idTipoCliente.hasError('required') && clienteForm.controls.idTipoCliente.touched) {
+              <mat-error>{{ 'clientes.form.requiredTipoCliente' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.regimenFiscal' | translate }}</mat-label>
+          <ng-select formControlName="idRegimenFiscal" [items]="regimenes()" bindValue="idRegimenFiscal" bindLabel="descripcion"
+            [readonly]="readonly" [placeholder]="'clientes.form.regimenFiscalPlaceholder' | translate"></ng-select>
+          @if (clienteForm.controls.idRegimenFiscal.hasError('required') && clienteForm.controls.idRegimenFiscal.touched) {
+            <small class="text-error">{{ 'clientes.form.requiredRegimenFiscal' | translate }}</small>
+          }
+        </div>
+
+        <!-- ============ Contacto ============ -->
+        <div class="col-12">
+          <h4 class="mat-subtitle-1 f-w-600 m-b-4">{{ 'clientes.form.sectionContacto' | translate }}</h4>
+          <mat-divider class="m-b-16"></mat-divider>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.telefono' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="telefono" inputmode="tel" maxlength="10" [placeholder]="'clientes.form.telefonoPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="phone" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if (clienteForm.controls.telefono.hasError('pattern') && clienteForm.controls.telefono.touched) {
+              <mat-error>{{ 'clientes.form.invalidTelefono' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.correo' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="correo" inputmode="email" maxlength="50" [placeholder]="'clientes.form.correoPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="mail" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if (clienteForm.controls.correo.hasError('email') && clienteForm.controls.correo.touched) {
+              <mat-error>{{ 'clientes.form.invalidCorreo' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.nombreContacto' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="nombreContacto" autocomplete="off" maxlength="250" [placeholder]="'clientes.form.nombreContactoPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+
+        <!-- ============ Pedidos especiales ============ -->
+        <div class="col-12">
+          <h4 class="mat-subtitle-1 f-w-600 m-b-4">{{ 'clientes.form.sectionPedidosEspeciales' | translate }}</h4>
+          <mat-divider class="m-b-16"></mat-divider>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.latitud' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="latitud" autocomplete="off" maxlength="250" [placeholder]="'clientes.form.latitudPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="map-2" class="icon-20 d-flex"></i-tabler></mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.longitud' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="longitud" autocomplete="off" maxlength="250" [placeholder]="'clientes.form.longitudPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="map-2" class="icon-20 d-flex"></i-tabler></mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="col-12 m-b-16">
+          <mat-slide-toggle formControlName="usarDatosCliente">
+            {{ 'clientes.form.usarDatosCliente' | translate }}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.nombreContactoPE' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="nombreContactoPE" autocomplete="off" maxlength="250" [placeholder]="'clientes.form.nombreContactoPEPlaceholder' | translate" />
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.telefonoContactoPE' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="telefonoContactoPE" inputmode="tel" maxlength="10" [placeholder]="'clientes.form.telefonoContactoPEPlaceholder' | translate" />
+            @if (clienteForm.controls.telefonoContactoPE.hasError('pattern') && clienteForm.controls.telefonoContactoPE.touched) {
+              <mat-error>{{ 'clientes.form.invalidTelefono' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.correoContactoPE' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="correoContactoPE" inputmode="email" maxlength="50" [placeholder]="'clientes.form.correoContactoPEPlaceholder' | translate" />
+            @if (clienteForm.controls.correoContactoPE.hasError('email') && clienteForm.controls.correoContactoPE.touched) {
+              <mat-error>{{ 'clientes.form.invalidCorreo' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- ============ Crédito ============ -->
+        <div class="col-12">
+          <h4 class="mat-subtitle-1 f-w-600 m-b-4">{{ 'clientes.form.sectionCredito' | translate }}</h4>
+          <mat-divider class="m-b-16"></mat-divider>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.diasCredito' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="diasCredito" inputmode="numeric" min="0" [placeholder]="'clientes.form.diasCreditoPlaceholder' | translate" />
+            @if (clienteForm.controls.diasCredito.hasError('min') && clienteForm.controls.diasCredito.touched) {
+              <mat-error>{{ 'clientes.form.invalidDiasCredito' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'clientes.form.montoMaximoCredito' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="montoMaximoCredito" inputmode="decimal" min="0" [placeholder]="'clientes.form.montoMaximoCreditoPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="currency-dollar" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if (clienteForm.controls.montoMaximoCredito.hasError('min') && clienteForm.controls.montoMaximoCredito.touched) {
+              <mat-error>{{ 'clientes.form.invalidMontoMaximoCredito' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'clientes.form.cancelar' | translate }}</button>
+  @if (!readonly) {
+    <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+      {{ 'clientes.form.guardar' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

@@ -1,0 +1,43 @@
+<h2 mat-dialog-title class="m-0">{{ titleKey | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="tipoClienteForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+        <!-- descripcion -->
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'tiposCliente.form.descripcion' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="descripcion" autocomplete="off" maxlength="50"
+              [placeholder]="'tiposCliente.form.descripcionPlaceholder' | translate" />
+            @if (tipoClienteForm.controls.descripcion.hasError('required') && tipoClienteForm.controls.descripcion.touched) {
+              <mat-error>{{ 'tiposCliente.form.requiredDescripcion' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- descuento -->
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'tiposCliente.form.descuento' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="descuento" inputmode="decimal" min="0" max="100"
+              [placeholder]="'tiposCliente.form.descuentoPlaceholder' | translate" />
+            <mat-icon matPrefix class="op-5"><i-tabler name="percentage" class="icon-20 d-flex"></i-tabler></mat-icon>
+            @if ((tipoClienteForm.controls.descuento.hasError('min') || tipoClienteForm.controls.descuento.hasError('max') || tipoClienteForm.controls.descuento.hasError('required')) && tipoClienteForm.controls.descuento.touched) {
+              <mat-error>{{ 'tiposCliente.form.invalidDescuento' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'tiposCliente.form.cancelar' | translate }}</button>
+  @if (!readonly) {
+    <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+      {{ 'tiposCliente.form.guardar' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

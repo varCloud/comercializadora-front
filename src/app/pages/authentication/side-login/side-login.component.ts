@@ -19,6 +19,8 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { SesionService } from 'src/app/services/sesion.service';
 import { LoginRequestModel } from 'src/app/models/requests/login/login-request';
 import { Sesion } from 'src/app/models/sesion';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-side-login',
@@ -41,18 +43,27 @@ export class AppSideLoginComponent {
     BlockComponent;
   _isAdmin: boolean = false;
 
+  form = new FormGroup({
+    usuario: new FormControl('', [Validators.required]),
+    password: new FormControl('', [Validators.required]),
+  });
   constructor(
     private settings: CoreService,
     private router: Router,
     private _loginService: LoginService,
     private _sesionService: SesionService,
     private notify: NotificationService,
-  ) {}
+  ) {
 
-  form = new FormGroup({
-    usuario: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-  });
+    if (!environment.PRODUCTION) {
+      this.form.setValue({
+        usuario: 'admin',
+        password: 'COVO#GACL25',
+      });
+    }
+
+  }
+
 
   get f() {
     return this.form.controls;

@@ -13,6 +13,8 @@
     expanded: expanded,
     disabled: item.disabled
   }"
+  [class.is-submenu]="depth > 0"
+  [style.--nav-depth]="depth"
   class="menu-list-item"
 >
   <i-tabler
@@ -45,6 +47,8 @@
 <mat-list-item
   onClick="window.open('//google.com')"
   class="menu-list-item"
+  [class.is-submenu]="depth > 0"
+  [style.--nav-depth]="depth"
   target="_blank"
 >
   <i-tabler
