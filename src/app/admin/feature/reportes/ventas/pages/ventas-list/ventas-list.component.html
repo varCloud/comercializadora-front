@@ -1,0 +1,181 @@
+<!-- Card de filtros (equivalente al formulario de búsqueda del legado: línea de producto,
+     cliente, usuario/cajero, rango de fechas default hoy/hoy) + exportación con los filtros
+     activos (a diferencia de Inventario, no los ignora). Sin buscador de texto libre; listado
+     paginado server-side (app-paginador, corrección post-aprobación 2026-07-19). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesVentas.filters.linea' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idLineaProducto"
+          [items]="lineas()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'reportesVentas.filters.lineaPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesVentas.filters.cliente' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idCliente)"
+          [fetchPage]="fetchClientes"
+          identifier="idCliente"
+          bindLabel="nombreCompleto"
+          bindValue="idCliente"
+          placeholder="reportesVentas.filters.clientePlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesVentas.filters.usuario' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idUsuario)"
+          [fetchPage]="fetchUsuarios"
+          identifier="idUsuario"
+          bindLabel="nombreCompleto"
+          bindValue="idUsuario"
+          placeholder="reportesVentas.filters.usuarioPlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesVentas.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'reportesVentas.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'reportesVentas.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap gap-2">
+      <div class="d-flex flex-wrap gap-2" *blockUI="'reportesVentasExportar'">
+        <button mat-stroked-button color="primary" (click)="exportar()">
+          <i-tabler name="file-download" class="icon-18 m-r-4"></i-tabler>
+          {{ 'reportesVentas.actions.exportar' | translate }}
+        </button>
+      </div>
+      <div class="d-flex gap-2">
+        <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+          {{ 'reportesVentas.filters.limpiar' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="buscar()">
+          {{ 'reportesVentas.filters.buscar' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla del reporte de ventas (paridad de columnas con _Ventas.cshtml del legado, paginado
+     server-side: se pintan las filas de la página actual, regla 10). -->
+<mat-card class="cardWithShadow" *blockUI="'reportesVentas'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.fecha' | translate">{{ i.fecha | date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="sucursal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.sucursal' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.sucursal' | translate">{{ i.sucursal }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tienda">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.tienda' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.tienda' | translate">{{ i.tienda }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cajero">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.cajero' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.cajero' | translate">{{ i.cajero }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="folio">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesVentas.columns.folio' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesVentas.columns.folio' | translate">{{ i.folio }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.cliente' | translate">{{ i.cliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.codigoBarras' | translate">{{ i.codigoBarras }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="lineaProducto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.linea' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.linea' | translate">{{ i.lineaProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="producto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.producto' | translate">{{ i.producto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesVentas.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesVentas.columns.cantidad' | translate">{{ i.cantidad | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesVentas.columns.precioVenta' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesVentas.columns.precioVenta' | translate">{{ i.precioVenta | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="iva">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesVentas.columns.iva' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesVentas.columns.iva' | translate">{{ i.iva | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesVentas.columns.montoTotal' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesVentas.columns.montoTotal' | translate">{{ i.montoTotal | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="costoCompra">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesVentas.columns.costoCompra' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesVentas.columns.costoCompra' | translate">{{ i.costoCompra | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="utilidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesVentas.columns.utilidad' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesVentas.columns.utilidad' | translate">{{ i.utilidad | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="margenBruto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesVentas.columns.margenBruto' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesVentas.columns.margenBruto' | translate">{{ i.margenBruto | number: '1.2-2' }}%</td>
+        </ng-container>
+
+        <ng-container matColumnDef="formaPago">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesVentas.columns.formaPago' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesVentas.columns.formaPago' | translate">{{ i.formaPago }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'reportesVentas.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

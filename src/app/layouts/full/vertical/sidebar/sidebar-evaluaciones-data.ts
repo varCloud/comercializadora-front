@@ -137,4 +137,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'report',
     route: '/admin/reportes/inventario',
   },
+  {
+    displayName: 'Ventas',
+    iconName: 'report-money',
+    route: '/admin/reportes/ventas',
+  },
 ];
