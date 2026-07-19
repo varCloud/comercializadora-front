@@ -1,0 +1,134 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-12 m-b-16">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'consumoMpl.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-md-6 m-b-16">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [(ngModel)]="anioCalculo" (ngModelChange)="onAnioChange()" [placeholder]="'consumoMpl.filters.anio' | translate">
+            <mat-option [value]="0">{{ 'consumoMpl.filters.todos' | translate }}</mat-option>
+            @for (a of anios(); track a.id) {
+              <mat-option [value]="a.id">{{ a.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-md-6 m-b-16">
+        <ng-select
+          [(ngModel)]="mesCalculo"
+          (ngModelChange)="onFiltroChange()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [items]="meses()"
+          [placeholder]="'consumoMpl.filters.mes' | translate"
+        >
+          <ng-option [value]="0">{{ 'consumoMpl.filters.todos' | translate }}</ng-option>
+        </ng-select>
+      </div>
+
+      <div class="col-lg-3 col-md-6 m-b-16">
+        <ng-select
+          [(ngModel)]="idAlmacen"
+          (ngModelChange)="onAlmacenChange()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [items]="almacenes()"
+          [placeholder]="'consumoMpl.filters.almacen' | translate"
+        >
+          <ng-option [value]="0">{{ 'consumoMpl.filters.todos' | translate }}</ng-option>
+        </ng-select>
+      </div>
+
+      <div class="col-lg-3 col-md-6 m-b-16">
+        <ng-select
+          [(ngModel)]="idLineaProducto"
+          (ngModelChange)="onFiltroChange()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [items]="lineas()"
+          [placeholder]="'consumoMpl.filters.linea' | translate"
+        >
+          <ng-option [value]="0">{{ 'consumoMpl.filters.todos' | translate }}</ng-option>
+        </ng-select>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="cardWithShadow" *blockUI="'consumoMpl'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idProducto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'consumoMpl.columns.idProducto' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'consumoMpl.columns.idProducto' | translate">{{ c.idProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'consumoMpl.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'consumoMpl.columns.codigoBarras' | translate">{{ c.codigoBarras }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionProducto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'consumoMpl.columns.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'consumoMpl.columns.producto' | translate">{{ c.descripcionProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionLinea">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'consumoMpl.columns.linea' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'consumoMpl.columns.linea' | translate">{{ c.descripcionLinea }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadSolicitadaMesAnt">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'consumoMpl.columns.cantidadSolicitada' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMpl.columns.cantidadSolicitada' | translate">{{ c.cantidadSolicitadaMesAnt | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadAceptadaFinalMesAnt">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'consumoMpl.columns.cantidadAceptada' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMpl.columns.cantidadAceptada' | translate">{{ c.cantidadAceptadaFinalMesAnt | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadRestanteMesAnt">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'consumoMpl.columns.cantidadRestante' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMpl.columns.cantidadRestante' | translate">{{ c.cantidadRestanteMesAnt | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="ultCostoCompra">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'consumoMpl.columns.ultCostoCompra' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMpl.columns.ultCostoCompra' | translate">{{ c.ultCostoCompra | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="costoProduccionMerma">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'consumoMpl.columns.costoProduccion' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMpl.columns.costoProduccion' | translate">{{ c.costoProduccionMerma | currency }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'consumoMpl.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

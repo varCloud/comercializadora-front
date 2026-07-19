@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>
+  {{ 'bitacoras.detalle.title' | translate }} #{{ data.idPedidoInterno }}
+</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'bitacoraDetalle'">
+  @if (cargado() && pasos().length === 0) {
+    <p class="text-center m-t-16 m-b-16">{{ 'bitacoras.detalle.empty' | translate }}</p>
+  } @else {
+    <ul class="timeline">
+      @for (paso of pasos(); track $index) {
+        <li class="timeline-item">
+          <span class="timeline-dot" [style.backgroundColor]="estatusColor(paso.detalle.idStatus)"></span>
+          <div class="timeline-body">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <span class="f-w-600">{{ paso.detalle.nombreCompleto }}</span>
+              @if (paso.detalle.descripcionEstatus) {
+                <span
+                  class="estatus-chip"
+                  [style.color]="estatusColor(paso.detalle.idStatus)"
+                  [style.borderColor]="estatusColor(paso.detalle.idStatus)"
+                  >{{ paso.detalle.descripcionEstatus }}</span
+                >
+              }
+              <span class="text-muted f-s-12">{{ paso.detalle.fechaAlta | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+            </div>
+            <div class="text-muted f-s-12 m-t-4">
+              <i-tabler name="clock" class="icon-14 m-r-4"></i-tabler>
+              {{ paso.transcurrido ?? ('bitacoras.detalle.inicio' | translate) }}
+            </div>
+            @if (paso.detalle.observacion && paso.detalle.observacion !== 'Sin Observación') {
+              <div class="f-s-13 m-t-4">
+                <span class="f-w-600">{{ 'bitacoras.detalle.observacion' | translate }}:</span>
+                {{ paso.detalle.observacion }}
+              </div>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>{{ 'bitacoras.detalle.cerrar' | translate }}</button>
+</mat-dialog-actions>

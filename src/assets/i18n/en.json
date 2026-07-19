@@ -483,6 +483,7 @@
       "usuarioPlaceholder": "All users",
       "estatus": "Purchase status",
       "todos": "--ALL--",
+      "rangoFechas": "Date range",
       "fechaInicio": "Start date",
       "fechaFin": "End date",
       "limpiar": "Clear",
@@ -604,6 +605,146 @@
     "msg": {
       "loading": "Loading…",
       "loadError": "Error loading liquid production"
+    }
+  },
+  "consumoMpl": {
+    "title": "MPL consumption",
+    "empty": "There are no MPL consumption records to show.",
+    "searchPlaceholder": "Search by product or barcode…",
+    "filters": {
+      "anio": "Year",
+      "mes": "Month",
+      "almacen": "Warehouse",
+      "linea": "Product line",
+      "todos": "--ALL--"
+    },
+    "columns": {
+      "idProducto": "# Product",
+      "codigoBarras": "Barcode",
+      "producto": "Product",
+      "linea": "Line",
+      "cantidadSolicitada": "Requested quantity",
+      "cantidadAceptada": "Accepted quantity",
+      "cantidadRestante": "Remaining quantity",
+      "ultCostoCompra": "Last purchase cost",
+      "costoProduccion": "Production cost"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading MPL consumption"
+    }
+  },
+  "bitacoras": {
+    "title": "Logs",
+    "empty": "No internal orders to display.",
+    "filters": {
+      "folio": "Folio",
+      "folioPlaceholder": "Folio",
+      "almacenOrigen": "Source warehouse",
+      "almacenDestino": "Target warehouse",
+      "usuario": "User",
+      "usuarioPlaceholder": "Search user…",
+      "estatus": "Status",
+      "producto": "Product",
+      "productoPlaceholder": "Search product…",
+      "rangoFechas": "Date",
+      "fechaIni": "Start",
+      "fechaFin": "End",
+      "todos": "--ALL--",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "folio": "Folio",
+      "almacenOrigen": "Source warehouse",
+      "almacenDestino": "Target warehouse",
+      "usuario": "User",
+      "producto": "Product",
+      "cantidad": "Quantity",
+      "fecha": "Date",
+      "estatus": "Status",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "verDetalle": "View log"
+    },
+    "detalle": {
+      "title": "Internal order log",
+      "empty": "No history for this internal order.",
+      "inicio": "Order start",
+      "observacion": "Note",
+      "cerrar": "Close"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading logs"
+    }
+  },
+  "produccionAgranel": {
+    "title": "Bulk production",
+    "empty": "There are no production processes to show.",
+    "filters": {
+      "usuario": "User",
+      "usuarioPlaceholder": "All users",
+      "estatus": "Status",
+      "todos": "--ALL--",
+      "rangoFechas": "Date range",
+      "fechaIni": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "actions": {
+      "agregar": "Add to production",
+      "envasado": "Register bottling",
+      "aprobar": "Approve / reject"
+    },
+    "columns": {
+      "codigoBarras": "Barcode",
+      "producto": "Product",
+      "linea": "Line",
+      "usuario": "User",
+      "cantidad": "Requested quantity",
+      "cantidadAceptada": "Accepted quantity",
+      "cantidadRestante": "Remaining quantity",
+      "costoCompra": "Purchase cost",
+      "fecha": "Created on",
+      "estatus": "Status",
+      "acciones": "Actions"
+    },
+    "form": {
+      "titleAgregar": "Add product to production",
+      "titleEnvasado": "Register liquid bottling",
+      "titleAprobar": "Approve production",
+      "productoMpl": "MPL product",
+      "productoMplPlaceholder": "Search a product from the MPL line",
+      "productoEnvasado": "Bottled product",
+      "productoEnvasadoPlaceholder": "Search a product to bottle",
+      "cantidad": "Quantity",
+      "cantidadPlaceholder": "Quantity to produce",
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "Select a warehouse",
+      "cantidadAtendida": "Fulfilled quantity",
+      "cantidadAtendidaPlaceholder": "Actually produced quantity",
+      "observaciones": "Notes",
+      "observacionesPlaceholder": "Notes (optional)",
+      "aprobarHint": "0 rejects everything; equal to requested processes it fully; less means partial rejection.",
+      "requiredProducto": "Product is required",
+      "requiredCantidad": "Quantity is required",
+      "minCantidad": "Quantity must be greater than zero",
+      "requiredAlmacen": "Warehouse is required",
+      "requiredCantidadAtendida": "Fulfilled quantity is required",
+      "minCantidadAtendida": "Fulfilled quantity cannot be negative",
+      "maxCantidadAtendida": "Fulfilled quantity cannot exceed the requested one",
+      "cancelar": "Cancel",
+      "guardar": "Save",
+      "aprobarBtn": "Approve"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading bulk production",
+      "saveError": "Error while saving",
+      "saveFallback": "The operation could not be completed"
     }
   },
   "produccionTrapeadores": {
@@ -1057,6 +1198,285 @@
       "saveFallback": "Could not save the customer type",
       "deleteError": "Error deactivating the customer type",
       "deleteFallback": "Could not deactivate the customer type"
+    }
+  },
+  "inventarioFisico": {
+    "title": "Physical inventory",
+    "empty": "There are no physical inventories to show.",
+    "nombreTooltip": "Edit the name and leave the field to save it",
+    "filters": {
+      "tipoInventario": "Inventory type",
+      "rangoFechas": "Date range",
+      "fechaIni": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "actions": {
+      "crear": "Create physical inventory",
+      "iniciar": "Start adjustment",
+      "ver": "View adjustment"
+    },
+    "columns": {
+      "id": "Id",
+      "nombre": "Name",
+      "fechaAlta": "Created on",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "sucursal": "Branch",
+      "estatus": "Status",
+      "tipoInventario": "Inventory type",
+      "observaciones": "Notes",
+      "acciones": "Actions"
+    },
+    "form": {
+      "title": "Create Physical Inventory",
+      "nombre": "Name",
+      "nombrePlaceholder": "Physical inventory name",
+      "requiredNombre": "The name cannot be empty",
+      "cancelar": "Cancel",
+      "guardar": "Save"
+    },
+    "confirm": {
+      "renameText": "Are you sure you want to update the name?",
+      "iniciarText": "Are you sure you want to start the physical inventory adjustment?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "updating": "Updating…",
+      "loadError": "Error loading physical inventories",
+      "saveError": "Error saving the physical inventory",
+      "saveFallback": "The operation could not be completed",
+      "nombreVacio": "The name you want to update cannot be empty"
+    },
+    "ajuste": {
+      "title": "Physical Inventory Adjustment",
+      "empty": "No results found.",
+      "filters": {
+        "almacen": "Warehouse",
+        "linea": "Product line",
+        "todos": "--ALL--",
+        "buscar": "Search"
+      },
+      "columns": {
+        "id": "Id",
+        "producto": "Product",
+        "linea": "Product line",
+        "almacen": "Warehouse",
+        "ubicacion": "Location",
+        "cantActual": "Current qty",
+        "cantFisico": "Physical qty",
+        "cantSobrante": "Surplus qty",
+        "cantFaltante": "Missing qty",
+        "ultPrecioCompra": "Last purchase price",
+        "errorProceso": "Process error"
+      },
+      "sinAcomodar": "Not Arranged",
+      "sinAjustar": "Not Adjusted",
+      "ajustado": "Adjusted",
+      "si": "Yes",
+      "no": "No",
+      "observaciones": "Notes",
+      "observacionesPlaceholder": "Adjustment notes (optional)",
+      "cerrar": "Close",
+      "cancelarBtn": "Cancel Inventory Adjustment",
+      "finalizarBtn": "Finish Inventory Adjustment",
+      "confirm": {
+        "finalizarText": "Are you sure you want to finish and apply the physical inventory adjustment?",
+        "cancelarText": "Are you sure you want to cancel the physical inventory adjustment?"
+      },
+      "msg": {
+        "loading": "Searching…",
+        "loadError": "Error loading the physical inventory adjustments"
+      }
+    }
+  },
+  "facturas": {
+    "title": "Sales Invoices",
+    "empty": "No invoices to display.",
+    "filters": {
+      "estatus": "Invoice status",
+      "todos": "--ALL--",
+      "usuario": "User",
+      "usuarioPlaceholder": "Search user…",
+      "rangoFechas": "Date",
+      "fechaIni": "Start",
+      "fechaFin": "End",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "ticket": "# Ticket",
+      "cliente": "Customer",
+      "usuario": "User",
+      "codigoBarras": "Barcode",
+      "monto": "Amount",
+      "fechaTimbrado": "Stamped date",
+      "fechaCancelacion": "Cancellation date",
+      "estatus": "Status",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "reenviar": "Resend",
+      "cancelar": "Cancel invoice",
+      "consultarEstatus": "Check status"
+    },
+    "confirm": {
+      "cancelarTitle": "Message",
+      "cancelarText": "Are you sure you want to cancel sales invoice #{{ idVenta }}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "detalle": {
+      "title": "Resend invoice",
+      "cliente": "Customer",
+      "comprobante": "Voucher",
+      "rfc": "RFC",
+      "correo": "Email",
+      "formaPago": "Payment method",
+      "usoCfdi": "CFDI usage",
+      "subtotal": "Subtotal",
+      "iva": "V.A.T.",
+      "total": "Total",
+      "enviarCopia": "Send email copy",
+      "correoCopiaLabel": "Email",
+      "correoCopiaPlaceholder": "Enter the email that will receive a copy of the invoice",
+      "correoInvalido": "Enter a valid email address",
+      "cancelarBtn": "Cancel",
+      "reenviarBtn": "Resend",
+      "loadError": "Error loading the sale detail"
+    },
+    "estatusCancelacion": {
+      "title": "Invoice status: #{{ idVenta }}",
+      "estado": "Status",
+      "estatusCancelacion": "Cancellation status",
+      "validacionEfos": "EFOS validation"
+    },
+    "msg": {
+      "loading": "Searching…",
+      "loadError": "Error loading the invoices",
+      "cancelando": "Cancelling invoice…",
+      "cancelarFallback": "The invoice could not be cancelled",
+      "cancelarError": "Error cancelling the invoice",
+      "consultando": "Checking invoice status…",
+      "consultaError": "Error checking the cancellation status",
+      "reenviarFallback": "The invoice could not be resent",
+      "reenviarError": "Error resending the invoice"
+    }
+  },
+  "facturasPe": {
+    "title": "Special Order Invoices",
+    "empty": "No special order invoices to display.",
+    "filters": {
+      "estatus": "Invoice status",
+      "todos": "--ALL--",
+      "usuario": "User",
+      "usuarioPlaceholder": "Search user…",
+      "rangoFechas": "Date",
+      "fechaIni": "Start",
+      "fechaFin": "End",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "ticket": "# Ticket",
+      "cliente": "Customer",
+      "usuario": "User",
+      "codigoBarras": "Barcode",
+      "monto": "Amount",
+      "fechaTimbrado": "Stamped date",
+      "fechaCancelacion": "Cancellation date",
+      "estatus": "Status",
+      "acciones": "Actions"
+    },
+    "actions": {
+      "ver": "View",
+      "reenviar": "Resend",
+      "cancelar": "Cancel invoice",
+      "consultarEstatus": "Check status"
+    },
+    "confirm": {
+      "cancelarTitle": "Message",
+      "cancelarText": "Are you sure you want to cancel the special order invoice #{{ idPedidoEspecial }}?",
+      "accept": "Accept",
+      "cancel": "Cancel"
+    },
+    "detalle": {
+      "title": "Resend invoice",
+      "cliente": "Customer",
+      "comprobante": "Voucher",
+      "rfc": "RFC",
+      "correo": "Email",
+      "formaPago": "Payment method",
+      "usoCfdi": "CFDI usage",
+      "subtotal": "Subtotal",
+      "iva": "V.A.T.",
+      "total": "Total",
+      "enviarCopia": "Send email copy",
+      "correoCopiaLabel": "Email",
+      "correoCopiaPlaceholder": "Enter the email that will receive a copy of the invoice",
+      "correoInvalido": "Enter a valid email address",
+      "cancelarBtn": "Cancel",
+      "reenviarBtn": "Resend",
+      "loadError": "Error loading the special order detail"
+    },
+    "estatusCancelacion": {
+      "title": "Invoice status: #{{ idPedidoEspecial }}",
+      "estado": "Status",
+      "estatusCancelacion": "Cancellation status",
+      "validacionEfos": "EFOS validation"
+    },
+    "msg": {
+      "loading": "Searching…",
+      "loadError": "Error loading the special order invoices",
+      "cancelando": "Cancelling invoice…",
+      "cancelarFallback": "The invoice could not be cancelled",
+      "cancelarError": "Error cancelling the invoice",
+      "consultando": "Checking invoice status…",
+      "consultaError": "Error checking the cancellation status",
+      "reenviarFallback": "The invoice could not be resent",
+      "reenviarError": "Error resending the invoice"
+    }
+  },
+  "reportesInventario": {
+    "title": "Inventory Report",
+    "empty": "No inventory to display.",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Search by description or item…",
+    "filters": {
+      "linea": "Product Line",
+      "lineaPlaceholder": "All lines",
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "All warehouses",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "fecha": "Date",
+      "almacen": "Warehouse",
+      "linea": "Product Line",
+      "producto": "Product",
+      "codigoBarras": "Barcode",
+      "cantidad": "Quantity",
+      "costo": "Cost"
+    },
+    "actions": {
+      "reporteGeneral": "General Report",
+      "reportePorUbicacion": "Report by Location"
+    },
+    "msg": {
+      "loading": "Loading inventory…",
+      "loadError": "Error loading the inventory report",
+      "exportando": {
+        "general": "Generating General Report…",
+        "ubicacion": "Generating Report by Location…"
+      }
     }
   }
 }

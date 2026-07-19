@@ -1,0 +1,149 @@
+<!-- Card de filtros (equivalente a frmInventarioFisico del legado: tipo inventario General
+     default sin TODOS + rango de fechas default hoy/hoy) + botón "+" Crear Inventario Físico
+     (en el legado vivía junto al buscador de la DataTable). Sin buscador de texto libre
+     (regla 13 no aplica: filtros estructurados). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'inventarioFisico.filters.tipoInventario' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idTipoInventario">
+            @for (t of tiposInventario; track t.id) {
+              <mat-option [value]="t.id">{{ t.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'inventarioFisico.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'inventarioFisico.filters.fechaIni' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'inventarioFisico.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap gap-2">
+      <button mat-flat-button color="accent" (click)="crear()">
+        <i-tabler name="plus" class="icon-18 m-r-4"></i-tabler>
+        {{ 'inventarioFisico.actions.crear' | translate }}
+      </button>
+      <div class="d-flex gap-2">
+        <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+          {{ 'inventarioFisico.filters.limpiar' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="buscar()">
+          {{ 'inventarioFisico.filters.buscar' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de inventarios físicos (10 columnas de _ObtenerInventarioFisico.cshtml). -->
+<mat-card class="cardWithShadow" *blockUI="'inventarioFisico'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" matSort (matSortChange)="onSort($event)" class="w-100 table-stacked-mobile">
+        <!-- Orden server-side: solo las columnas whitelisteadas por la API llevan mat-sort-header
+             (fecha | nombre | estatus); el id del header es el `order` del back. -->
+        <ng-container matColumnDef="idInventarioFisico">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.id' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.id' | translate">{{ inv.idInventarioFisico }}</td>
+        </ng-container>
+
+        <!-- Nombre editable inline (paridad con txtNombre_@id del legado): al perder el foco,
+             si cambió y no está vacío se confirma y se envía el PUT. -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="nombre" class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.nombre' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.nombre' | translate">
+            <input
+              #nombreInput
+              type="text"
+              class="nombre-inline"
+              [value]="inv.nombre ?? ''"
+              [matTooltip]="'inventarioFisico.nombreTooltip' | translate"
+              (blur)="renombrar(inv, nombreInput)"
+              (keydown.enter)="nombreInput.blur()"
+            />
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="fecha" class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.fechaAlta' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.fechaAlta' | translate">{{ inv.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaInicio">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.fechaInicio' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.fechaInicio' | translate">{{ inv.fechaInicio | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaFin">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.fechaFin' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.fechaFin' | translate">{{ inv.fechaFin | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="sucursal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.sucursal' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.sucursal' | translate">{{ inv.sucursal.descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="estatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="estatus" class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.estatus' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.estatus' | translate">
+            @if (inv.estatus.descripcion) {
+              <span class="estatus-chip" [style.color]="estatusColor(inv.estatus.idStatus)" [style.borderColor]="estatusColor(inv.estatus.idStatus)">{{ inv.estatus.descripcion }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoInventario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.tipoInventario' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.tipoInventario' | translate">{{ inv.tipoInventario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="observaciones">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.columns.observaciones' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="f-s-14" [attr.data-label]="'inventarioFisico.columns.observaciones' | translate">{{ inv.observaciones }}</td>
+        </ng-container>
+
+        <!-- Acciones (regla 10: iconos Tabler, columna stickyEnd): Iniciar (estatus 1) / Ver (estatus ≥ 2). -->
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'inventarioFisico.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let inv" class="action-link text-right" [attr.data-label]="'inventarioFisico.columns.acciones' | translate">
+            @if (inv.estatus.idStatus === ESTATUS.PENDIENTE) {
+              <a (click)="iniciar(inv)" class="m-r-10 cursor-pointer" [matTooltip]="'inventarioFisico.actions.iniciar' | translate" [style.color]="'#1e88e5'">
+                <i-tabler name="player-play" class="icon-18"></i-tabler>
+              </a>
+            }
+            @if (inv.estatus.idStatus >= ESTATUS.INICIADO) {
+              <a (click)="ver(inv)" class="m-r-10 cursor-pointer" [matTooltip]="'inventarioFisico.actions.ver' | translate" [style.color]="'#2e7d32'">
+                <i-tabler name="eye" class="icon-18"></i-tabler>
+              </a>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'inventarioFisico.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

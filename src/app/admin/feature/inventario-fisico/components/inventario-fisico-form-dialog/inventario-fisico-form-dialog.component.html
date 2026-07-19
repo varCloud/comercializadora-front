@@ -1,0 +1,32 @@
+<h2 mat-dialog-title class="m-0">{{ 'inventarioFisico.form.title' | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="inventarioForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+        <!-- Nombre (obligatorio, paridad con nombreInventarioFisico del legado) -->
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'inventarioFisico.form.nombre' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input
+              matInput
+              formControlName="nombre"
+              maxlength="300"
+              [placeholder]="'inventarioFisico.form.nombrePlaceholder' | translate"
+            />
+            @if (inventarioForm.controls.nombre.hasError('required') && inventarioForm.controls.nombre.touched) {
+              <mat-error>{{ 'inventarioFisico.form.requiredNombre' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'inventarioFisico.form.cancelar' | translate }}</button>
+  <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+    {{ 'inventarioFisico.form.guardar' | translate }}
+  </button>
+</mat-dialog-actions>

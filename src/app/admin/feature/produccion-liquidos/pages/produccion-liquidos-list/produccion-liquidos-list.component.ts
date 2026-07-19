@@ -82,13 +82,14 @@ export class ProduccionLiquidosListComponent implements OnInit {
   // Filtros del formulario (equivalentes al legado: rol, usuario en cascada, rango de fechas).
   readonly idRol = new FormControl<number | null>(null);
   readonly idUsuario = new FormControl<number | null>(null);
-  // Rango de fechas con mat-date-range-input (regla 18): `hoy` como `[max]` para que el propio
-  // día de hoy nunca quede excluido del calendario.
-  readonly rangoFechasForm = this.fb.group({
-    inicio: new FormControl<Date | null>(null),
-    fin: new FormControl<Date | null>(null),
-  });
   readonly hoy = new Date();
+  // Rango de fechas con mat-date-range-input (regla 18): default = hoy/hoy, visible en el
+  // input desde la carga inicial; `hoy` como `[max]` para que el propio día de hoy nunca
+  // quede excluido del calendario.
+  readonly rangoFechasForm = this.fb.group({
+    inicio: new FormControl<Date | null>(this.hoy),
+    fin: new FormControl<Date | null>(this.hoy),
+  });
 
   /** Orden server-side whitelisteado por la API: fecha | cantidad | producto. */
   private order: string | null = null;
@@ -194,11 +195,11 @@ export class ProduccionLiquidosListComponent implements OnInit {
     this.cargar();
   }
 
-  /** Botón "Limpiar": resetea filtros y recarga sin ellos. */
+  /** Botón "Limpiar": resetea filtros (rango de fechas vuelve a su default hoy/hoy). */
   limpiarFiltros(): void {
     this.idRol.reset();
     this.idUsuario.reset();
-    this.rangoFechasForm.reset();
+    this.rangoFechasForm.reset({ inicio: this.hoy, fin: this.hoy });
     this.cargarUsuarios(null);
     this.cargar();
   }

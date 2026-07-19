@@ -483,6 +483,7 @@
       "usuarioPlaceholder": "Todos los usuarios",
       "estatus": "Estatus de la compra",
       "todos": "--TODOS--",
+      "rangoFechas": "Rango de fechas",
       "fechaInicio": "Fecha inicio",
       "fechaFin": "Fecha fin",
       "limpiar": "Limpiar",
@@ -604,6 +605,146 @@
     "msg": {
       "loading": "Cargando…",
       "loadError": "Error al cargar la producción de líquidos"
+    }
+  },
+  "consumoMpl": {
+    "title": "Consumo de MPL",
+    "empty": "No hay registros de consumo de MPL para mostrar.",
+    "searchPlaceholder": "Buscar por producto o código de barras…",
+    "filters": {
+      "anio": "Año",
+      "mes": "Mes",
+      "almacen": "Almacén",
+      "linea": "Línea de producto",
+      "todos": "--TODOS--"
+    },
+    "columns": {
+      "idProducto": "# Producto",
+      "codigoBarras": "Código de barras",
+      "producto": "Producto",
+      "linea": "Línea",
+      "cantidadSolicitada": "Cantidad solicitada",
+      "cantidadAceptada": "Cantidad aceptada",
+      "cantidadRestante": "Cantidad restante",
+      "ultCostoCompra": "Último costo de compra",
+      "costoProduccion": "Costo de producción"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar el consumo de MPL"
+    }
+  },
+  "bitacoras": {
+    "title": "Bitácoras",
+    "empty": "No hay pedidos internos para mostrar.",
+    "filters": {
+      "folio": "Folio",
+      "folioPlaceholder": "Folio",
+      "almacenOrigen": "Almacén origen",
+      "almacenDestino": "Almacén destino",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Buscar usuario…",
+      "estatus": "Estatus",
+      "producto": "Producto",
+      "productoPlaceholder": "Buscar producto…",
+      "rangoFechas": "Fecha",
+      "fechaIni": "Inicio",
+      "fechaFin": "Fin",
+      "todos": "--TODOS--",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "folio": "Folio",
+      "almacenOrigen": "Almacén origen",
+      "almacenDestino": "Almacén destino",
+      "usuario": "Usuario",
+      "producto": "Producto",
+      "cantidad": "Cantidad",
+      "fecha": "Fecha",
+      "estatus": "Estatus",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "verDetalle": "Ver bitácora"
+    },
+    "detalle": {
+      "title": "Bitácora del pedido interno",
+      "empty": "No hay historial para este pedido interno.",
+      "inicio": "Inicio del pedido",
+      "observacion": "Observación",
+      "cerrar": "Cerrar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar las bitácoras"
+    }
+  },
+  "produccionAgranel": {
+    "title": "Producción a granel",
+    "empty": "No hay procesos de producción para mostrar.",
+    "filters": {
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "estatus": "Estatus",
+      "todos": "--TODOS--",
+      "rangoFechas": "Rango de fechas",
+      "fechaIni": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "actions": {
+      "agregar": "Agregar a producción",
+      "envasado": "Registrar envasado",
+      "aprobar": "Aprobar / rechazar"
+    },
+    "columns": {
+      "codigoBarras": "Código de barras",
+      "producto": "Producto",
+      "linea": "Línea",
+      "usuario": "Usuario",
+      "cantidad": "Cantidad solicitada",
+      "cantidadAceptada": "Cantidad aceptada",
+      "cantidadRestante": "Cantidad restante",
+      "costoCompra": "Costo de compra",
+      "fecha": "Fecha alta",
+      "estatus": "Estatus",
+      "acciones": "Acciones"
+    },
+    "form": {
+      "titleAgregar": "Agregar producto a producción",
+      "titleEnvasado": "Registrar envasado de líquidos",
+      "titleAprobar": "Aprobar producción",
+      "productoMpl": "Producto MPL",
+      "productoMplPlaceholder": "Busca un producto de la línea MPL",
+      "productoEnvasado": "Producto envasado",
+      "productoEnvasadoPlaceholder": "Busca un producto a envasar",
+      "cantidad": "Cantidad",
+      "cantidadPlaceholder": "Cantidad a producir",
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Selecciona un almacén",
+      "cantidadAtendida": "Cantidad atendida",
+      "cantidadAtendidaPlaceholder": "Cantidad realmente producida",
+      "observaciones": "Observaciones",
+      "observacionesPlaceholder": "Observaciones (opcional)",
+      "aprobarHint": "Con 0 se rechaza todo; igual a la solicitada se procesa completa; menor, rechazo parcial.",
+      "requiredProducto": "El producto es requerido",
+      "requiredCantidad": "La cantidad es requerida",
+      "minCantidad": "La cantidad debe ser mayor a cero",
+      "requiredAlmacen": "El almacén es requerido",
+      "requiredCantidadAtendida": "La cantidad atendida es requerida",
+      "minCantidadAtendida": "La cantidad atendida no puede ser negativa",
+      "maxCantidadAtendida": "La cantidad atendida no puede exceder la solicitada",
+      "cancelar": "Cancelar",
+      "guardar": "Guardar",
+      "aprobarBtn": "Aprobar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar la producción a granel",
+      "saveError": "Error al guardar",
+      "saveFallback": "No fue posible completar la operación"
     }
   },
   "produccionTrapeadores": {
@@ -1057,6 +1198,285 @@
       "saveFallback": "No se pudo guardar el tipo de cliente",
       "deleteError": "Error al desactivar el tipo de cliente",
       "deleteFallback": "No se pudo desactivar el tipo de cliente"
+    }
+  },
+  "inventarioFisico": {
+    "title": "Inventario físico",
+    "empty": "No hay inventarios físicos para mostrar.",
+    "nombreTooltip": "Edita el nombre y sal del campo para guardarlo",
+    "filters": {
+      "tipoInventario": "Tipo inventario",
+      "rangoFechas": "Rango de fechas",
+      "fechaIni": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "actions": {
+      "crear": "Crear inventario físico",
+      "iniciar": "Iniciar ajuste",
+      "ver": "Ver ajuste"
+    },
+    "columns": {
+      "id": "Id",
+      "nombre": "Nombre",
+      "fechaAlta": "Fecha alta",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "sucursal": "Sucursal",
+      "estatus": "Estatus",
+      "tipoInventario": "Tipo inventario",
+      "observaciones": "Observaciones",
+      "acciones": "Acciones"
+    },
+    "form": {
+      "title": "Crear Inventario Físico",
+      "nombre": "Nombre",
+      "nombrePlaceholder": "Nombre del inventario físico",
+      "requiredNombre": "El nombre no puede ir vacío",
+      "cancelar": "Cancelar",
+      "guardar": "Guardar"
+    },
+    "confirm": {
+      "renameText": "¿Estás seguro que deseas actualizar el nombre?",
+      "iniciarText": "¿Estás seguro que deseas iniciar el ajuste de inventario físico?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "updating": "Actualizando…",
+      "loadError": "Error al cargar los inventarios físicos",
+      "saveError": "Error al guardar el inventario físico",
+      "saveFallback": "No fue posible completar la operación",
+      "nombreVacio": "El nombre que desea actualizar no puede ir vacío"
+    },
+    "ajuste": {
+      "title": "Ajuste Inventario Físico",
+      "empty": "No se encontraron resultados.",
+      "filters": {
+        "almacen": "Almacén",
+        "linea": "Línea de producto",
+        "todos": "--TODOS--",
+        "buscar": "Buscar"
+      },
+      "columns": {
+        "id": "Id",
+        "producto": "Producto",
+        "linea": "Línea producto",
+        "almacen": "Almacén",
+        "ubicacion": "Ubicación",
+        "cantActual": "Cant. actual",
+        "cantFisico": "Cant. físico",
+        "cantSobrante": "Cant. sobrante",
+        "cantFaltante": "Cant. faltante",
+        "ultPrecioCompra": "Últ. precio compra",
+        "errorProceso": "Error de proceso"
+      },
+      "sinAcomodar": "Sin Acomodar",
+      "sinAjustar": "Sin Ajustar",
+      "ajustado": "Ajustado",
+      "si": "Si",
+      "no": "No",
+      "observaciones": "Observaciones",
+      "observacionesPlaceholder": "Observaciones del ajuste (opcional)",
+      "cerrar": "Cerrar",
+      "cancelarBtn": "Cancelar Ajuste Inventario",
+      "finalizarBtn": "Finalizar Ajuste de Inventario",
+      "confirm": {
+        "finalizarText": "¿Estás seguro que deseas finalizar y afectar el ajuste de inventario físico?",
+        "cancelarText": "¿Estás seguro que deseas cancelar el ajuste de inventario físico?"
+      },
+      "msg": {
+        "loading": "Buscando…",
+        "loadError": "Error al consultar los ajustes del inventario físico"
+      }
+    }
+  },
+  "facturas": {
+    "title": "Facturas Ventas",
+    "empty": "No hay facturas para mostrar.",
+    "filters": {
+      "estatus": "Estatus de la factura",
+      "todos": "--TODOS--",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Buscar usuario…",
+      "rangoFechas": "Fecha",
+      "fechaIni": "Inicio",
+      "fechaFin": "Fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "ticket": "# Ticket",
+      "cliente": "Cliente",
+      "usuario": "Usuario",
+      "codigoBarras": "Código Barras",
+      "monto": "Monto",
+      "fechaTimbrado": "Fecha Timbrado",
+      "fechaCancelacion": "Fecha Cancelación",
+      "estatus": "Estatus",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "reenviar": "Reenviar",
+      "cancelar": "Cancelar factura",
+      "consultarEstatus": "Consultar estatus"
+    },
+    "confirm": {
+      "cancelarTitle": "Mensaje",
+      "cancelarText": "¿Estás seguro que deseas cancelar la factura de venta #{{ idVenta }}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "detalle": {
+      "title": "Reenviar factura",
+      "cliente": "Cliente",
+      "comprobante": "Comprobante",
+      "rfc": "RFC",
+      "correo": "Correo",
+      "formaPago": "Forma de pago",
+      "usoCfdi": "Uso del CFDI",
+      "subtotal": "Subtotal",
+      "iva": "I.V.A.",
+      "total": "Total",
+      "enviarCopia": "Enviar copia de correo",
+      "correoCopiaLabel": "Correo",
+      "correoCopiaPlaceholder": "Introduzca el correo al cual le llegará copia de la factura",
+      "correoInvalido": "Introduzca un correo electrónico válido",
+      "cancelarBtn": "Cancelar",
+      "reenviarBtn": "Reenviar",
+      "loadError": "Error al cargar el detalle de la venta"
+    },
+    "estatusCancelacion": {
+      "title": "Estatus de la factura: #{{ idVenta }}",
+      "estado": "Estado",
+      "estatusCancelacion": "Estatus de cancelación",
+      "validacionEfos": "Validación EFOS"
+    },
+    "msg": {
+      "loading": "Buscando…",
+      "loadError": "Error al consultar las facturas",
+      "cancelando": "Cancelando factura…",
+      "cancelarFallback": "No fue posible cancelar la factura",
+      "cancelarError": "Error al cancelar la factura",
+      "consultando": "Consultando estatus de la factura…",
+      "consultaError": "Error al consultar el estatus de cancelación",
+      "reenviarFallback": "No fue posible reenviar la factura",
+      "reenviarError": "Error al reenviar la factura"
+    }
+  },
+  "facturasPe": {
+    "title": "Facturas Pedidos Especiales",
+    "empty": "No hay facturas de pedidos especiales para mostrar.",
+    "filters": {
+      "estatus": "Estatus de la factura",
+      "todos": "--TODOS--",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Buscar usuario…",
+      "rangoFechas": "Fecha",
+      "fechaIni": "Inicio",
+      "fechaFin": "Fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "ticket": "# Ticket",
+      "cliente": "Cliente",
+      "usuario": "Usuario",
+      "codigoBarras": "Código Barras",
+      "monto": "Monto",
+      "fechaTimbrado": "Fecha Timbrado",
+      "fechaCancelacion": "Fecha Cancelación",
+      "estatus": "Estatus",
+      "acciones": "Acciones"
+    },
+    "actions": {
+      "ver": "Ver",
+      "reenviar": "Reenviar",
+      "cancelar": "Cancelar factura",
+      "consultarEstatus": "Consultar estatus"
+    },
+    "confirm": {
+      "cancelarTitle": "Mensaje",
+      "cancelarText": "¿Estás seguro que deseas cancelar la factura del pedido especial #{{ idPedidoEspecial }}?",
+      "accept": "Aceptar",
+      "cancel": "Cancelar"
+    },
+    "detalle": {
+      "title": "Reenviar factura",
+      "cliente": "Cliente",
+      "comprobante": "Comprobante",
+      "rfc": "RFC",
+      "correo": "Correo",
+      "formaPago": "Forma de pago",
+      "usoCfdi": "Uso del CFDI",
+      "subtotal": "Subtotal",
+      "iva": "I.V.A.",
+      "total": "Total",
+      "enviarCopia": "Enviar copia de correo",
+      "correoCopiaLabel": "Correo",
+      "correoCopiaPlaceholder": "Introduzca el correo al cual le llegará copia de la factura",
+      "correoInvalido": "Introduzca un correo electrónico válido",
+      "cancelarBtn": "Cancelar",
+      "reenviarBtn": "Reenviar",
+      "loadError": "Error al cargar el detalle del pedido especial"
+    },
+    "estatusCancelacion": {
+      "title": "Estatus de la factura: #{{ idPedidoEspecial }}",
+      "estado": "Estado",
+      "estatusCancelacion": "Estatus de cancelación",
+      "validacionEfos": "Validación EFOS"
+    },
+    "msg": {
+      "loading": "Buscando…",
+      "loadError": "Error al consultar las facturas de pedidos especiales",
+      "cancelando": "Cancelando factura…",
+      "cancelarFallback": "No fue posible cancelar la factura",
+      "cancelarError": "Error al cancelar la factura",
+      "consultando": "Consultando estatus de la factura…",
+      "consultaError": "Error al consultar el estatus de cancelación",
+      "reenviarFallback": "No fue posible reenviar la factura",
+      "reenviarError": "Error al reenviar la factura"
+    }
+  },
+  "reportesInventario": {
+    "title": "Reporte de Inventario",
+    "empty": "No hay inventario para mostrar.",
+    "searchLabel": "Búsqueda",
+    "searchPlaceholder": "Buscar por descripción o artículo…",
+    "filters": {
+      "linea": "Línea de Producto",
+      "lineaPlaceholder": "Todas las líneas",
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Todos los almacenes",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "fecha": "Fecha",
+      "almacen": "Almacén",
+      "linea": "Línea de Producto",
+      "producto": "Producto",
+      "codigoBarras": "Código de barras",
+      "cantidad": "Cantidad",
+      "costo": "Costo"
+    },
+    "actions": {
+      "reporteGeneral": "Reporte General",
+      "reportePorUbicacion": "Reporte por Ubicación"
+    },
+    "msg": {
+      "loading": "Consultando inventario…",
+      "loadError": "Error al consultar el reporte de inventario",
+      "exportando": {
+        "general": "Generando Reporte General…",
+        "ubicacion": "Generando Reporte por Ubicación…"
+      }
     }
   }
 }

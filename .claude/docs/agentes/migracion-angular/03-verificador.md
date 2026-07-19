@@ -27,6 +27,6 @@ cada salto identificado (17→18, 18→19, 19→20).
 
 ## Reglas
 - `ng serve` es bloqueante: ejecutarlo en segundo plano y **detenerlo** tras verificar.
-- No "arreglar" código por su cuenta salvo correcciones triviales obvias; reportar al
+- No "arreglar" código por su cuenta a menos que correcciones triviales obvias; reportar al
   Orquestador.
 - Idioma español.

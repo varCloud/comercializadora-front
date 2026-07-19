@@ -1,0 +1,13 @@
+// Chip outline del estatus del proceso (regla 10).
+.estatus-chip {
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+// La columna de acciones va stickyEnd (regla 10): fondo para que no se transparente.
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}

@@ -1,0 +1,155 @@
+<!-- Card de filtros (equivalente al formulario ProduccionAgranel del legado: usuario rol 13,
+     estatus del proceso, rango de fechas) + acciones operativas de los WS móviles migrados
+     (Agregar a producción / Registrar envasado). Sin buscador de texto libre (regla 13 no
+     aplica: filtros estructurados). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionAgranel.filters.usuario' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idUsuario"
+          [items]="usuarios()"
+          bindValue="idUsuario"
+          bindLabel="nombreCompleto"
+          [placeholder]="'produccionAgranel.filters.usuarioPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionAgranel.filters.estatus' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idEstatus" [placeholder]="'produccionAgranel.filters.todos' | translate">
+            <mat-option [value]="null">{{ 'produccionAgranel.filters.todos' | translate }}</mat-option>
+            @for (e of estatus(); track e.id) {
+              <mat-option [value]="e.id">{{ e.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionAgranel.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'produccionAgranel.filters.fechaIni' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'produccionAgranel.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap gap-2">
+      <div class="d-flex gap-2">
+        <button mat-flat-button color="accent" (click)="agregarProduccion()">
+          <i-tabler name="plus" class="icon-18 m-r-4"></i-tabler>
+          {{ 'produccionAgranel.actions.agregar' | translate }}
+        </button>
+        <button mat-stroked-button color="primary" (click)="registrarEnvasado()">
+          <i-tabler name="bottle" class="icon-18 m-r-4"></i-tabler>
+          {{ 'produccionAgranel.actions.envasado' | translate }}
+        </button>
+      </div>
+      <div class="d-flex gap-2">
+        <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+          {{ 'produccionAgranel.filters.limpiar' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="buscar()">
+          {{ 'produccionAgranel.filters.buscar' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla del proceso de producción a granel (columnas de la vista legada + acciones). -->
+<mat-card class="cardWithShadow" *blockUI="'produccionAgranel'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" matSort (matSortChange)="onSort($event)" class="w-100 table-stacked-mobile">
+        <!-- Orden server-side: solo las columnas whitelisteadas por la API llevan mat-sort-header
+             (fecha | producto | cantidad | estatus); el id del header es el `order` del back. -->
+        <ng-container matColumnDef="codigoBarras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'produccionAgranel.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'produccionAgranel.columns.codigoBarras' | translate">{{ p.codigoBarras }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionProducto">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="producto" class="f-s-16 f-w-600">{{ 'produccionAgranel.columns.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'produccionAgranel.columns.producto' | translate">{{ p.descripcionProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionLinea">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'produccionAgranel.columns.linea' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'produccionAgranel.columns.linea' | translate">{{ p.descripcionLinea }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'produccionAgranel.columns.usuario' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'produccionAgranel.columns.usuario' | translate">{{ p.nombreUsuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="cantidad" class="f-s-16 f-w-600 text-right">{{ 'produccionAgranel.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'produccionAgranel.columns.cantidad' | translate">{{ p.cantidad | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadAceptada">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'produccionAgranel.columns.cantidadAceptada' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'produccionAgranel.columns.cantidadAceptada' | translate">{{ p.cantidadAceptada | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadRestante">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'produccionAgranel.columns.cantidadRestante' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'produccionAgranel.columns.cantidadRestante' | translate">{{ p.cantidadRestante | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="ultimoCostoCompra">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'produccionAgranel.columns.costoCompra' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'produccionAgranel.columns.costoCompra' | translate">${{ p.ultimoCostoCompra | number: '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="fecha" class="f-s-16 f-w-600">{{ 'produccionAgranel.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'produccionAgranel.columns.fecha' | translate">{{ p.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionEstatus">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="estatus" class="f-s-16 f-w-600">{{ 'produccionAgranel.columns.estatus' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'produccionAgranel.columns.estatus' | translate">
+            @if (p.descripcionEstatus) {
+              <span class="estatus-chip" [style.color]="estatusColor(p.idEstatusProduccionAgranel)" [style.borderColor]="estatusColor(p.idEstatusProduccionAgranel)">{{ p.descripcionEstatus }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <!-- Acciones (regla 10: iconos Tabler, columna stickyEnd). Solo pendientes se aprueban. -->
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'produccionAgranel.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="action-link text-right" [attr.data-label]="'produccionAgranel.columns.acciones' | translate">
+            @if (esPendiente(p)) {
+              <a (click)="aprobar(p)" class="m-r-10 cursor-pointer" [matTooltip]="'produccionAgranel.actions.aprobar' | translate" [style.color]="'#2e7d32'">
+                <i-tabler name="checks" class="icon-18"></i-tabler>
+              </a>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'produccionAgranel.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

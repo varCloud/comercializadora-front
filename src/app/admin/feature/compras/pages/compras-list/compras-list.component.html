@@ -41,15 +41,14 @@
 
     <div class="row">
       <div class="col-lg-4 col-sm-12 m-b-12">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.filters.fechaInicio' | translate }}</mat-label>
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.filters.rangoFechas' | translate }}</mat-label>
         <mat-form-field appearance="outline" class="w-100 hide-hint">
-          <input matInput type="date" [formControl]="fechaInicio" />
-        </mat-form-field>
-      </div>
-      <div class="col-lg-4 col-sm-12 m-b-12">
-        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'compras.filters.fechaFin' | translate }}</mat-label>
-        <mat-form-field appearance="outline" class="w-100 hide-hint">
-          <input matInput type="date" [formControl]="fechaFin" />
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'compras.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'compras.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
         </mat-form-field>
       </div>
       <div class="col-lg-4 col-sm-12 m-b-12">

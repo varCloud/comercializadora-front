@@ -22,7 +22,7 @@ Llevar el proyecto de Angular 17 a 20 ejecutando, en secuencia, Revisor → Actu
 3. **Llamar al Verificador** (agente 3). Corre `ng build` + `ng serve` por cada salto.
 4. **Reportar** al usuario: resumen de cada fase, librerías que fallaron, estado del
    build/serve por salto, y próximos pasos.
-
+5. **Detener el proceso por salto** si todo funciono bien preguntarme si continuamos con el siguiente salgo y comenzar de nuevo el flujo 
 ## Reglas
 - No commitear automáticamente (regla 05).
 - Si un agente reporta bloqueo grave, detenerse y consultar al usuario antes de seguir.

@@ -76,6 +76,20 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'produccion-agranel',
+        loadChildren: () =>
+          import('./feature/produccion-agranel/produccion-agranel-routing.module').then(
+            (m) => m.ProduccionAgranelRoutingModule,
+          ),
+      },
+      {
+        path: 'consumo-mpl',
+        loadChildren: () =>
+          import('./feature/consumo-mpl/consumo-mpl-routing.module').then(
+            (m) => m.ConsumoMplRoutingModule,
+          ),
+      },
+      {
         path: 'produccion-liquidos',
         loadChildren: () =>
           import('./feature/produccion-liquidos/produccion-liquidos-routing.module').then(
@@ -94,6 +108,41 @@ const routes: Routes = [
         loadChildren: () =>
           import('./feature/compras/compras-routing.module').then(
             (m) => m.ComprasRoutingModule,
+          ),
+      },
+      {
+        path: 'inventario-fisico',
+        loadChildren: () =>
+          import('./feature/inventario-fisico/inventario-fisico-routing.module').then(
+            (m) => m.InventarioFisicoRoutingModule,
+          ),
+      },
+      {
+        path: 'bitacoras',
+        loadChildren: () =>
+          import('./feature/bitacoras/bitacoras-routing.module').then(
+            (m) => m.BitacorasRoutingModule,
+          ),
+      },
+      {
+        path: 'facturas',
+        loadChildren: () =>
+          import('./feature/facturas/facturas-routing.module').then(
+            (m) => m.FacturasRoutingModule,
+          ),
+      },
+      {
+        path: 'facturas-pedidos-especiales',
+        loadChildren: () =>
+          import('./feature/facturas-pedidos-especiales/facturas-pedidos-especiales-routing.module').then(
+            (m) => m.FacturasPedidosEspecialesRoutingModule,
+          ),
+      },
+      {
+        path: 'reportes/inventario',
+        loadChildren: () =>
+          import('./feature/reportes/inventario/inventario-reportes-routing.module').then(
+            (m) => m.InventarioReportesRoutingModule,
           ),
       },
     ],

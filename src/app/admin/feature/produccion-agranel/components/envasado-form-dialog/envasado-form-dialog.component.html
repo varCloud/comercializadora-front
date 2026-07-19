@@ -1,0 +1,69 @@
+<h2 mat-dialog-title class="m-0">{{ 'produccionAgranel.form.titleEnvasado' | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="envasadoForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+
+        <!-- Producto envasado (con relación envasado↔granel) -->
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionAgranel.form.productoEnvasado' | translate }}</mat-label>
+          <app-select-paginado
+            [control]="$any(envasadoForm.controls.idProducto)"
+            [fetchPage]="fetchEnvasados"
+            identifier="idProducto"
+            bindLabel="descripcion"
+            bindValue="idProducto"
+            placeholder="produccionAgranel.form.productoEnvasadoPlaceholder"
+          ></app-select-paginado>
+          @if (envasadoForm.controls.idProducto.hasError('required') && envasadoForm.controls.idProducto.touched) {
+            <small class="text-error">{{ 'produccionAgranel.form.requiredProducto' | translate }}</small>
+          }
+        </div>
+
+        <!-- Cantidad -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionAgranel.form.cantidad' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input
+              matInput
+              type="number"
+              formControlName="cantidad"
+              inputmode="decimal"
+              [placeholder]="'produccionAgranel.form.cantidadPlaceholder' | translate"
+            />
+            @if (envasadoForm.controls.cantidad.hasError('required') && envasadoForm.controls.cantidad.touched) {
+              <mat-error>{{ 'produccionAgranel.form.requiredCantidad' | translate }}</mat-error>
+            }
+            @if (envasadoForm.controls.cantidad.hasError('min') && envasadoForm.controls.cantidad.touched) {
+              <mat-error>{{ 'produccionAgranel.form.minCantidad' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Almacén -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionAgranel.form.almacen' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="idAlmacen" [placeholder]="'produccionAgranel.form.almacenPlaceholder' | translate">
+              @for (a of almacenes(); track a.id) {
+                <mat-option [value]="a.id">{{ a.descripcion }}</mat-option>
+              }
+            </mat-select>
+            @if (envasadoForm.controls.idAlmacen.hasError('required') && envasadoForm.controls.idAlmacen.touched) {
+              <mat-error>{{ 'produccionAgranel.form.requiredAlmacen' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'produccionAgranel.form.cancelar' | translate }}</button>
+  <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+    {{ 'produccionAgranel.form.guardar' | translate }}
+  </button>
+</mat-dialog-actions>

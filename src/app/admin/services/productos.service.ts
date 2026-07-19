@@ -138,8 +138,15 @@ export class ProductosService {
     });
   }
 
-  obtenerLineas(): Observable<Catalogo[]> {
-    return this.obtenerCatalogo(`${this.baseUri}/catalogos/lineas`);
+  /**
+   * Catálogo de líneas de producto. Sin `idAlmacen` (u 0) trae todas las líneas activas
+   * (comportamiento previo, retrocompatible); con `idAlmacen` > 0 filtra a las líneas con
+   * existencia en ese almacén (extensión para la cascada Almacén→Línea de consumo-mpl,
+   * paridad con `ConsultaLineaAlmacen` del legado — regla 00, mismo endpoint, no se duplica).
+   */
+  obtenerLineas(idAlmacen?: number): Observable<Catalogo[]> {
+    const params = idAlmacen ? new HttpParams().set('idAlmacen', idAlmacen) : undefined;
+    return this.obtenerCatalogo(`${this.baseUri}/catalogos/lineas`, params);
   }
 
   obtenerUnidadesMedida(): Observable<Catalogo[]> {
@@ -150,9 +157,9 @@ export class ProductosService {
     return this.obtenerCatalogo(`${this.baseUri}/catalogos/unidades-compra`);
   }
 
-  private obtenerCatalogo(uri: string): Observable<Catalogo[]> {
+  private obtenerCatalogo(uri: string, params?: HttpParams): Observable<Catalogo[]> {
     return this.http
-      .get<Notificacion<Catalogo[]>>(uri)
+      .get<Notificacion<Catalogo[]>>(uri, { params })
       .pipe(map((res) => (res?.modelo ?? []).map((c) => new CatalogoModel(c))));
   }
 

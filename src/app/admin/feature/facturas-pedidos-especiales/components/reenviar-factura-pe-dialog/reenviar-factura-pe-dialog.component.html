@@ -1,0 +1,83 @@
+<h2 mat-dialog-title class="m-0">
+  {{ 'facturasPe.detalle.title' | translate }} #{{ data.idPedidoEspecial }}
+</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'reenviarFacturaPe'">
+  @if (cargado()) {
+    <form [formGroup]="reenviarForm" class="row m-t-8">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-sm-6 m-b-16">
+            <h4 class="mat-subtitle-1 f-w-600 m-b-4">{{ 'facturasPe.detalle.cliente' | translate }}</h4>
+            <mat-divider class="m-b-8"></mat-divider>
+            <div class="f-s-14"><strong>{{ detalle()?.nombre }}</strong></div>
+            @if (detalle()?.sociedadMercantil) {
+              <div class="f-s-13 text-muted">{{ detalle()?.sociedadMercantil }}</div>
+            }
+            <div class="f-s-13 text-muted">{{ 'facturasPe.detalle.rfc' | translate }}: {{ detalle()?.rfc }}</div>
+            <div class="f-s-13 text-muted">{{ 'facturasPe.detalle.correo' | translate }}: {{ detalle()?.correo }}</div>
+            @if (detalle()?.domicilio) {
+              <div class="f-s-13 text-muted">{{ detalle()?.domicilio }}</div>
+            }
+          </div>
+
+          <div class="col-sm-6 m-b-16">
+            <h4 class="mat-subtitle-1 f-w-600 m-b-4">{{ 'facturasPe.detalle.comprobante' | translate }}</h4>
+            <mat-divider class="m-b-8"></mat-divider>
+            <div class="f-s-14">
+              <strong>{{ 'facturasPe.detalle.formaPago' | translate }}:</strong>
+              {{ detalle()?.descripcionFormaPago }}
+            </div>
+            <div class="f-s-14 m-t-4">
+              <strong>{{ 'facturasPe.detalle.usoCfdi' | translate }}:</strong>
+              {{ detalle()?.descripcionUsoCfdi }}
+            </div>
+          </div>
+
+          <div class="col-12 m-b-16">
+            <div class="d-flex justify-content-end gap-3 flex-wrap">
+              <div class="text-right">
+                <div class="text-muted f-s-13">{{ 'facturasPe.detalle.subtotal' | translate }}</div>
+                <div class="f-s-16">{{ subtotal() | currency:'MXN' }}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-muted f-s-13">{{ 'facturasPe.detalle.iva' | translate }}</div>
+                <div class="f-s-16">{{ iva() | currency:'MXN' }}</div>
+              </div>
+              <div class="text-right">
+                <div class="text-muted f-s-13">{{ 'facturasPe.detalle.total' | translate }}</div>
+                <div class="f-s-20 f-w-600">{{ total() | currency:'MXN' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 m-b-16">
+            <mat-checkbox formControlName="enviarCopia">
+              {{ 'facturasPe.detalle.enviarCopia' | translate }}
+            </mat-checkbox>
+          </div>
+
+          @if (reenviarForm.controls.enviarCopia.value) {
+            <div class="col-12 m-b-16">
+              <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'facturasPe.detalle.correoCopiaLabel' | translate }}</mat-label>
+              <mat-form-field appearance="outline" class="w-100">
+                <input matInput type="email" formControlName="correoCopia" [placeholder]="'facturasPe.detalle.correoCopiaPlaceholder' | translate" />
+                <mat-icon matPrefix class="op-5"><i-tabler name="mail" class="icon-20 d-flex"></i-tabler></mat-icon>
+                @if (reenviarForm.controls.correoCopia.invalid && reenviarForm.controls.correoCopia.touched) {
+                  <mat-error>{{ 'facturasPe.detalle.correoInvalido' | translate }}</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          }
+        </div>
+      </div>
+    </form>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="cancelar()">{{ 'facturasPe.detalle.cancelarBtn' | translate }}</button>
+  <button mat-flat-button color="primary" [disabled]="enviando()" (click)="reenviar()">
+    {{ 'facturasPe.detalle.reenviarBtn' | translate }}
+  </button>
+</mat-dialog-actions>

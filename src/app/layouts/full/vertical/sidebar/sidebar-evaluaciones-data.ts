@@ -85,6 +85,16 @@ export const navItemsApp: NavItem[] = [
     ],
   },
   {
+    displayName: 'Producción a granel',
+    iconName: 'flask',
+    route: '/admin/produccion-agranel',
+  },
+  {
+    displayName: 'Consumo de MPL',
+    iconName: 'report-analytics',
+    route: '/admin/consumo-mpl',
+  },
+  {
     displayName: 'Producción líquidos',
     iconName: 'droplet',
     route: '/admin/produccion-liquidos',
@@ -98,5 +108,33 @@ export const navItemsApp: NavItem[] = [
     displayName: 'Compras',
     iconName: 'shopping-cart',
     route: '/admin/compras',
+  },
+  {
+    displayName: 'Inventario físico',
+    iconName: 'clipboard-list',
+    route: '/admin/inventario-fisico',
+  },
+  {
+    displayName: 'Bitácoras',
+    iconName: 'timeline',
+    route: '/admin/bitacoras',
+  },
+  {
+    displayName: 'Facturas Ventas',
+    iconName: 'file-invoice',
+    route: '/admin/facturas',
+  },
+  {
+    displayName: 'Facturas Pedidos Esp',
+    iconName: 'file-star',
+    route: '/admin/facturas-pedidos-especiales',
+  },
+  {
+    navCap: 'Reportes',
+  },
+  {
+    displayName: 'Inventario',
+    iconName: 'report',
+    route: '/admin/reportes/inventario',
   },
 ];

@@ -1,7 +1,8 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, formatDate } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatNativeDateModule } from '@angular/material/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
@@ -29,6 +30,7 @@ import {
   standalone: true,
   imports: [
     MaterialModule,
+    MatNativeDateModule,
     TablerIconsModule,
     BlockUIModule,
     TranslatePipe,
@@ -73,6 +75,7 @@ export class ComprasListComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
+  private readonly fb = inject(FormBuilder);
 
   @BlockUI('compras') blockUI!: NgBlockUI;
 
@@ -97,9 +100,14 @@ export class ComprasListComponent implements OnInit {
   readonly idProveedor = new FormControl<number | null>(null);
   readonly idUsuario = new FormControl<number | null>(null);
   readonly idStatusCompra = new FormControl<number | null>(null);
-  // Inputs nativos type="date" → el valor ya es 'yyyy-MM-dd' (sin DateAdapter de Material).
-  readonly fechaInicio = new FormControl<string | null>(null);
-  readonly fechaFin = new FormControl<string | null>(null);
+  readonly hoy = new Date();
+  // Rango de fechas con mat-date-range-input (regla 18): default = hoy/hoy, visible en el
+  // input desde la carga inicial; `hoy` como `[max]` para que el propio día de hoy nunca
+  // quede excluido del calendario.
+  readonly rangoFechasForm = this.fb.group({
+    inicio: new FormControl<Date | null>(this.hoy),
+    fin: new FormControl<Date | null>(this.hoy),
+  });
 
   private search = '';
   private readonly search$ = new Subject<string>();
@@ -127,13 +135,14 @@ export class ComprasListComponent implements OnInit {
   }
 
   private get filtros(): Record<string, string | number | null> {
+    const { inicio, fin } = this.rangoFechasForm.value;
     return {
       q: this.search,
       idProveedor: this.idProveedor.value,
       idUsuario: this.idUsuario.value,
       idStatusCompra: this.idStatusCompra.value,
-      fechaInicio: this.fechaInicio.value,
-      fechaFin: this.fechaFin.value,
+      fechaInicio: inicio ? formatDate(inicio, 'yyyy-MM-dd', 'en-US') : null,
+      fechaFin: fin ? formatDate(fin, 'yyyy-MM-dd', 'en-US') : null,
     };
   }
 
@@ -179,13 +188,12 @@ export class ComprasListComponent implements OnInit {
     this.cargar();
   }
 
-  /** Botón "Limpiar": resetea filtros y recarga. */
+  /** Botón "Limpiar": resetea filtros (rango de fechas vuelve a su default hoy/hoy). */
   limpiarFiltros(): void {
     this.idProveedor.reset();
     this.idUsuario.reset();
     this.idStatusCompra.reset();
-    this.fechaInicio.reset();
-    this.fechaFin.reset();
+    this.rangoFechasForm.reset({ inicio: this.hoy, fin: this.hoy });
     this.search = '';
     this.cargar();
   }

@@ -2,6 +2,7 @@
 name: migrador-pantalla
 description: Porta una pantalla/feature del sistema legado al feature de producto src/app/admin/ de comercializadora-front, usando Angular 20 moderno (standalone, signals, control flow nativo). Úsalo cuando se pida migrar/crear una pantalla o módulo de dominio (clientes, productos, usuarios, etc.).
 tools: Read, Write, Edit, Grep, Glob, Bash
+model: sonnet
 ---
 
 # Migrador de pantalla (legacy → admin/)
@@ -10,10 +11,30 @@ Eres un especialista en portar una pantalla/feature al feature de producto
 `src/app/admin/` de comercializadora-front. Trabajas **una pantalla a la vez**.
 
 ## Antes de empezar (lee siempre)
-- Reglas: `.claude/rules/` (índice en `README.md`). Especialmente:
-  `00-reuso`, `01-css-minimo`, `02-servicios-http`, `03-idioma`, `04-errores-y-loading`,
-  `06-arquitectura`, `07-menu-navegacion`, `08-angular-moderno`.
+- **Reglas: lee el índice `.claude/rules/README.md` y aplica TODAS las reglas vigentes**
+  (hoy `00`–`18`; el índice es la fuente viva — si crece, se leen las nuevas). NO trabajes
+  con una lista fija de reglas: consulta el README cada vez.
 - `CLAUDE.md` y memorias de `.claude/memory/`.
+
+### ⚠️ REGLAS DURAS que se te suelen escapar (verifícalas SIEMPRE)
+No entregues una pantalla sin haber comprobado, según aplique:
+- **`10` + `13`** — TODO listado se **pagina** (server-side, `app-paginador`, `Paginador<T>`;
+  nunca `mat-paginator`) y lleva **buscador** con debounce. Si el SP legado no pagina, se crea
+  `SP_V2_CONSULTA_<X>` (no se parchea en el front).
+- **`14`** — TODO texto de UI va por **i18n** (`ngx-translate`), con su clave en `es.json` **y**
+  `en.json`. Nada de strings visibles hardcodeados en template/TS.
+- **`15`** — todo selector de **Sucursal** = Uruapan (`CONSTANTS.SUCURSAL_DEFAULT.ID`) por
+  defecto y **deshabilitado**; el valor sí se envía (`getRawValue()`).
+- **`16`** — umbral de selectores: ≤10 `mat-select`; 11–25 `ng-select` (filtro cliente);
+  **>25 → `app-select-paginado`** (paginado en scroll, 25 al iniciar).
+- **`18`** — fecha inicio+fin → **`mat-date-range-input`** (nunca dos `input type="date"`),
+  default **hoy/hoy** visible, `MatNativeDateModule` importado.
+- **`09` + `11`** — cada interface lleva su clase `XModel implements X`; materializa respuestas
+  con `new XModel(...)`. Modelos en `admin/models/<feature>/` (genéricos en `shared/`).
+- **`12`** — formularios con `this.fb.group`, nombre descriptivo (`<entidad>Form`), layout
+  vertical `row`/`col-sm-6 m-b-16`; diálogos con `width`/`maxWidth`.
+- **`01` (dura)** — si hay SCSS, va en el archivo `.scss` (`styleUrl`), **nunca** `styles: [...]`
+  inline en el decorador.
 
 ## Proceso para migrar una pantalla `Xxx`
 1. **Reusa antes de crear** (regla 00). Busca en `admin/shared/`, Angular Material,

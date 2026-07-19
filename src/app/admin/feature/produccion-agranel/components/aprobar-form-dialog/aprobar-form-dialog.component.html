@@ -1,0 +1,72 @@
+<h2 mat-dialog-title class="m-0">{{ 'produccionAgranel.form.titleAprobar' | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <!-- Resumen del renglón pendiente -->
+  <div class="row m-t-8">
+    <div class="col-sm-6 m-b-8">
+      <span class="mat-subtitle-2 f-w-600 d-block">{{ 'produccionAgranel.columns.producto' | translate }}</span>
+      <span class="f-s-14">{{ proceso.descripcionProducto }}</span>
+    </div>
+    <div class="col-sm-3 m-b-8">
+      <span class="mat-subtitle-2 f-w-600 d-block">{{ 'produccionAgranel.columns.cantidad' | translate }}</span>
+      <span class="f-s-14">{{ proceso.cantidad | number: '1.0-2' }}</span>
+    </div>
+    <div class="col-sm-3 m-b-8">
+      <span class="mat-subtitle-2 f-w-600 d-block">{{ 'produccionAgranel.columns.fecha' | translate }}</span>
+      <span class="f-s-14">{{ proceso.fechaAlta | date: 'dd/MM/yyyy' }}</span>
+    </div>
+  </div>
+
+  <p class="f-s-12 m-b-8">{{ 'produccionAgranel.form.aprobarHint' | translate }}</p>
+
+  <form [formGroup]="aprobarForm" class="row">
+    <div class="col-12">
+      <div class="row">
+
+        <!-- Cantidad atendida -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionAgranel.form.cantidadAtendida' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input
+              matInput
+              type="number"
+              formControlName="cantidadAtendida"
+              inputmode="decimal"
+              [placeholder]="'produccionAgranel.form.cantidadAtendidaPlaceholder' | translate"
+            />
+            @if (aprobarForm.controls.cantidadAtendida.hasError('required') && aprobarForm.controls.cantidadAtendida.touched) {
+              <mat-error>{{ 'produccionAgranel.form.requiredCantidadAtendida' | translate }}</mat-error>
+            }
+            @if (aprobarForm.controls.cantidadAtendida.hasError('min') && aprobarForm.controls.cantidadAtendida.touched) {
+              <mat-error>{{ 'produccionAgranel.form.minCantidadAtendida' | translate }}</mat-error>
+            }
+            @if (aprobarForm.controls.cantidadAtendida.hasError('max') && aprobarForm.controls.cantidadAtendida.touched) {
+              <mat-error>{{ 'produccionAgranel.form.maxCantidadAtendida' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Observaciones -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'produccionAgranel.form.observaciones' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input
+              matInput
+              formControlName="observaciones"
+              maxlength="500"
+              [placeholder]="'produccionAgranel.form.observacionesPlaceholder' | translate"
+            />
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'produccionAgranel.form.cancelar' | translate }}</button>
+  <button mat-flat-button color="primary" [disabled]="saving()" (click)="guardar()">
+    {{ 'produccionAgranel.form.aprobarBtn' | translate }}
+  </button>
+</mat-dialog-actions>

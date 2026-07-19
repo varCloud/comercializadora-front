@@ -1,0 +1,150 @@
+<h2 mat-dialog-title class="m-0">
+  {{ 'inventarioFisico.ajuste.title' | translate }} — {{ data.inventario.nombre }}
+</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'ajusteInventarioFisico'">
+  <!-- Filtros (paridad con frmBuscarAjusteInventarioFisico del legado): Almacén y Línea de
+       Producto, ambos con TODOS (id 0), y botón Buscar. La búsqueda corre sola al abrir. -->
+  <form [formGroup]="filtrosAjusteForm" class="row m-t-8 align-items-end">
+    <div class="col-sm-4 m-b-16">
+      <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'inventarioFisico.ajuste.filters.almacen' | translate }}</mat-label>
+      <ng-select
+        formControlName="idAlmacen"
+        bindValue="id"
+        bindLabel="descripcion"
+        [items]="almacenes()"
+        [clearable]="false"
+      >
+        <ng-option [value]="0">{{ 'inventarioFisico.ajuste.filters.todos' | translate }}</ng-option>
+      </ng-select>
+    </div>
+
+    <div class="col-sm-4 m-b-16">
+      <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'inventarioFisico.ajuste.filters.linea' | translate }}</mat-label>
+      <ng-select
+        formControlName="idLineaProducto"
+        bindValue="id"
+        bindLabel="descripcion"
+        [items]="lineas()"
+        [clearable]="false"
+      >
+        <ng-option [value]="0">{{ 'inventarioFisico.ajuste.filters.todos' | translate }}</ng-option>
+      </ng-select>
+    </div>
+
+    <div class="col-sm-4 m-b-16">
+      <button mat-flat-button color="primary" type="button" (click)="buscar()">
+        <i-tabler name="search" class="icon-18 m-r-4"></i-tabler>
+        {{ 'inventarioFisico.ajuste.filters.buscar' | translate }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Tabla de ajustes (11 columnas de _ObtenerAjusteInventario.cshtml). -->
+  <div class="table-responsive">
+    <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+      <ng-container matColumnDef="idAjusteInventarioFisico">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.ajuste.columns.id' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14" [attr.data-label]="'inventarioFisico.ajuste.columns.id' | translate">{{ a.idAjusteInventarioFisico }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="producto">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.ajuste.columns.producto' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14" [attr.data-label]="'inventarioFisico.ajuste.columns.producto' | translate">{{ a.producto.descripcion }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="linea">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.ajuste.columns.linea' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14" [attr.data-label]="'inventarioFisico.ajuste.columns.linea' | translate">{{ a.producto.descripcionLinea }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="almacen">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.ajuste.columns.almacen' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14" [attr.data-label]="'inventarioFisico.ajuste.columns.almacen' | translate">{{ a.producto.almacen }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ubicacion">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.ajuste.columns.ubicacion' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14" [attr.data-label]="'inventarioFisico.ajuste.columns.ubicacion' | translate">{{ ubicacion(a) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="cantActual">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'inventarioFisico.ajuste.columns.cantActual' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14 text-right" [attr.data-label]="'inventarioFisico.ajuste.columns.cantActual' | translate">{{ a.cantidadActual }}</td>
+      </ng-container>
+
+      <!-- Cant. Físico con badge por estado (paridad con los badges del legado). -->
+      <ng-container matColumnDef="cantFisico">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.ajuste.columns.cantFisico' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14" [attr.data-label]="'inventarioFisico.ajuste.columns.cantFisico' | translate">
+          <span class="estatus-chip" [style.color]="fisicoBadge(a).color" [style.borderColor]="fisicoBadge(a).color">{{ fisicoBadge(a).texto }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="cantSobrante">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'inventarioFisico.ajuste.columns.cantSobrante' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14 text-right" [attr.data-label]="'inventarioFisico.ajuste.columns.cantSobrante' | translate">{{ sobrante(a) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="cantFaltante">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'inventarioFisico.ajuste.columns.cantFaltante' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14 text-right" [attr.data-label]="'inventarioFisico.ajuste.columns.cantFaltante' | translate">{{ faltante(a) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ultPrecioCompra">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'inventarioFisico.ajuste.columns.ultPrecioCompra' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14 text-right" [attr.data-label]="'inventarioFisico.ajuste.columns.ultPrecioCompra' | translate">{{ a.producto.ultimoCostoCompra | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="errorProceso">
+        <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'inventarioFisico.ajuste.columns.errorProceso' | translate }}</th>
+        <td mat-cell *matCellDef="let a" class="f-s-14" [attr.data-label]="'inventarioFisico.ajuste.columns.errorProceso' | translate">
+          {{ (a.errorHumano === 1 ? 'inventarioFisico.ajuste.si' : 'inventarioFisico.ajuste.no') | translate }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+
+  @if (pag.isEmpty()) {
+    <p class="text-center m-t-16">{{ 'inventarioFisico.ajuste.empty' | translate }}</p>
+  }
+
+  <app-paginador
+    [paginador]="pag"
+    (navegar)="navegar($event)"
+    (perPageChange)="onPerPage($event)"
+  ></app-paginador>
+
+  <!-- Observaciones (editables solo con estatus 2, paridad con el textarea readonly del legado). -->
+  <form [formGroup]="observacionesForm" class="row m-t-16">
+    <div class="col-sm-6 m-b-16">
+      <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'inventarioFisico.ajuste.observaciones' | translate }}</mat-label>
+      <mat-form-field appearance="outline" class="w-100 hide-hint">
+        <textarea
+          matInput
+          formControlName="observaciones"
+          maxlength="500"
+          rows="3"
+          [placeholder]="'inventarioFisico.ajuste.observacionesPlaceholder' | translate"
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-stroked-button (click)="cerrar()">{{ 'inventarioFisico.ajuste.cerrar' | translate }}</button>
+  @if (esEditable) {
+    <button mat-flat-button color="warn" [disabled]="saving()" (click)="cambiarEstatus(ESTATUS.CANCELADO)">
+      <i-tabler name="x" class="icon-18 m-r-4"></i-tabler>
+      {{ 'inventarioFisico.ajuste.cancelarBtn' | translate }}
+    </button>
+    <button mat-flat-button color="primary" [disabled]="saving()" (click)="cambiarEstatus(ESTATUS.FINALIZADO)">
+      <i-tabler name="check" class="icon-18 m-r-4"></i-tabler>
+      {{ 'inventarioFisico.ajuste.finalizarBtn' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

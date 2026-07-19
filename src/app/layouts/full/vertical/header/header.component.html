@@ -183,7 +183,7 @@
       </span>
     </div>
 
-    @for (notification of notifications; track notification.title) {
+    @for (notification of notifications; track notification.id) {
       <button mat-menu-item class="p-x-32 p-y-16">
         <div class="d-flex align-items-center">
           <img [src]="notification.img" class="rounded-circle" width="48" />

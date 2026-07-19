@@ -1,0 +1,15 @@
+// Fondo de la celda sticky de acciones (regla 10) y chip de estatus. Mínimo y local (regla 01).
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}
+
+.estatus-chip {
+  display: inline-block;
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}

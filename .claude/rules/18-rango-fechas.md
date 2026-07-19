@@ -3,23 +3,40 @@
 > ⚠️ **REGLA DURA.** Todo filtro o formulario que tenga **fecha inicio + fecha fin** usa el
 > control nativo de Angular Material **`mat-date-range-input`** (un solo `mat-form-field` con
 > selector de calendario). **Prohibido** modelarlo como dos `<input matInput type="date">`
-> sueltos (patrón heredado en `compras`, pendiente de migrar cuando se vuelva a tocar esa
-> pantalla). `produccion-liquidos` **ya se migró** a este patrón; `produccion-trapeadores` nació
-> directamente con él (primer módulo de referencia end-to-end).
+> sueltos. `produccion-liquidos` y `compras` **ya se migraron** a este patrón (nacieron con dos
+> inputs `type="date"` sueltos); `produccion-trapeadores` nació directamente con él (primer
+> módulo de referencia end-to-end). No queda ninguna pantalla pendiente de migrar a la fecha.
+
+## ⚠️ Default: hoy/hoy, siempre visible (no arranca vacío)
+
+**Todo rango de fechas de un listado arranca con `inicio = fin = hoy`**, visible en el input
+desde la carga inicial (no placeholders vacíos). El primer `cargar()` del `ngOnInit` ya
+consulta con ese rango por defecto. El botón **"Limpiar" restaura este mismo default**
+(`hoy`/`hoy`), no lo deja vacío — mismo criterio que otros filtros del listado que vuelven a
+su valor por defecto (p. ej. Tipo Inventario → General) en vez de quedar en blanco:
+
+```ts
+this.rangoFechasForm.reset({ inicio: this.hoy, fin: this.hoy });
+```
+
+> Pantallas migradas a este default (2026-07-05): `inventario-fisico`, `produccion-agranel`,
+> `produccion-liquidos`, `produccion-trapeadores`, `compras`. Antes arrancaban vacías; se
+> corrigió porque el usuario pidió que el rango por defecto sea visible y acotado a hoy.
 
 ## Patrón
 
 Un **`FormGroup`** con `start`/`end` (o nombres descriptivos del filtro), un único
 `mat-form-field appearance="outline" class="w-100 hide-hint"` con `mat-date-range-input` +
-`matStartDate`/`matEndDate` + toggle + `mat-date-range-picker`:
+`matStartDate`/`matEndDate` + toggle + `mat-date-range-picker`. **Declara `hoy` antes del
+`FormGroup`** (el grupo lo usa como valor inicial):
 
 ```ts
-readonly rangoFechasForm = this.fb.group({
-  inicio: new FormControl<Date | null>(null),
-  fin: new FormControl<Date | null>(null),
-});
+readonly hoy = new Date(); // default de inicio/fin y límite superior del picker
 
-readonly hoy = new Date(); // límite superior: nunca excluye el día de hoy
+readonly rangoFechasForm = this.fb.group({
+  inicio: new FormControl<Date | null>(this.hoy),
+  fin: new FormControl<Date | null>(this.hoy),
+});
 ```
 
 ```html

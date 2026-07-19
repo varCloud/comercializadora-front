@@ -1,0 +1,37 @@
+// Línea de tiempo del detalle de bitácora. Estilos mínimos y locales (regla 01): la lista
+// vertical con conector no existe como utilidad global.
+.timeline {
+  list-style: none;
+  margin: 16px 0 8px;
+  padding: 0;
+}
+
+.timeline-item {
+  position: relative;
+  padding: 0 0 20px 24px;
+  border-left: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.timeline-item:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -7px;
+  top: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.estatus-chip {
+  display: inline-block;
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 1px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}

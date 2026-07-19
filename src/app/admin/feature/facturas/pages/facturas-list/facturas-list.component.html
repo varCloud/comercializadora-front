@@ -1,0 +1,154 @@
+<!-- Card de filtros (equivalente al formulario Facturas del legado: estatus, usuario, rango de
+     fechas). Sin buscador de texto libre (regla 13 no aplica: filtros estructurados). Usuario es
+     catálogo grande → selector paginado (regla 16). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'facturas.filters.estatus' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idStatusFactura" [placeholder]="'facturas.filters.todos' | translate">
+            <mat-option [value]="null">{{ 'facturas.filters.todos' | translate }}</mat-option>
+            @for (e of estatusOptions; track e.id) {
+              <mat-option [value]="e.id">{{ e.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'facturas.filters.usuario' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idUsuario)"
+          [fetchPage]="fetchUsuarios"
+          identifier="idUsuario"
+          bindLabel="nombreCompleto"
+          bindValue="idUsuario"
+          placeholder="facturas.filters.usuarioPlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'facturas.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'facturas.filters.fechaIni' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'facturas.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12 d-flex align-items-end justify-content-end gap-2">
+        <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+          {{ 'facturas.filters.limpiar' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="buscar()">
+          {{ 'facturas.filters.buscar' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de facturas (columnas de la vista legada + acciones por estatus). -->
+<mat-card class="cardWithShadow" *blockUI="'facturas'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'facturas.columns.ticket' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="f-s-14" [attr.data-label]="'facturas.columns.ticket' | translate">{{ f.idVenta }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'facturas.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="f-s-14" [attr.data-label]="'facturas.columns.cliente' | translate">{{ f.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuarioFacturacion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'facturas.columns.usuario' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="f-s-14" [attr.data-label]="'facturas.columns.usuario' | translate">{{ f.nombreUsuarioFacturacion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'facturas.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="f-s-14" [attr.data-label]="'facturas.columns.codigoBarras' | translate">{{ f.codigoBarras }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'facturas.columns.monto' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="f-s-14 text-right" [attr.data-label]="'facturas.columns.monto' | translate">{{ f.montoTotal | currency:'MXN' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaTimbrado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'facturas.columns.fechaTimbrado' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="f-s-14" [attr.data-label]="'facturas.columns.fechaTimbrado' | translate">{{ f.fechaTimbrado | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaCancelacion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'facturas.columns.fechaCancelacion' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="f-s-14" [attr.data-label]="'facturas.columns.fechaCancelacion' | translate">
+            {{ f.fechaCancelacion ? (f.fechaCancelacion | date: 'dd/MM/yyyy HH:mm') : '' }}
+          </td>
+        </ng-container>
+
+        <!-- Estatus con tooltip de mensajeError (paridad con el `data-toggle="tooltip"`/popover del legado). -->
+        <ng-container matColumnDef="estatus">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'facturas.columns.estatus' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="f-s-14" [attr.data-label]="'facturas.columns.estatus' | translate">
+            @if (f.descripcion) {
+              <span
+                class="estatus-chip"
+                [style.color]="estatusColor(f.idEstatusFactura)"
+                [style.borderColor]="estatusColor(f.idEstatusFactura)"
+                [matTooltip]="f.mensajeError ?? ''"
+                [matTooltipDisabled]="!f.mensajeError"
+                >{{ f.descripcion }}</span
+              >
+            }
+          </td>
+        </ng-container>
+
+        <!-- Acciones por estatus (regla 10: iconos Tabler, columna stickyEnd). Vigente (Facturada)
+             → Ver/Reenviar/Cancelar; en cancelación/cancelada → Consultar estatus; Error → sin
+             acciones (el mensaje de error ya se ve en el tooltip de la columna Estatus). -->
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'facturas.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let f" class="action-link text-right" [attr.data-label]="'facturas.columns.acciones' | translate">
+            @if (f.idEstatusFactura === EstatusFacturaId.Facturada) {
+              <a (click)="ver(f)" class="m-r-10 cursor-pointer" [matTooltip]="'facturas.actions.ver' | translate" [style.color]="'#2e7d32'">
+                <i-tabler name="eye" class="icon-18"></i-tabler>
+              </a>
+              <a (click)="reenviar(f)" class="m-r-10 cursor-pointer" [matTooltip]="'facturas.actions.reenviar' | translate" [style.color]="'#1e88e5'">
+                <i-tabler name="mail" class="icon-18"></i-tabler>
+              </a>
+              <a (click)="cancelar(f)" class="m-r-10 cursor-pointer" [matTooltip]="'facturas.actions.cancelar' | translate" [style.color]="'#e53935'">
+                <i-tabler name="ban" class="icon-18"></i-tabler>
+              </a>
+            }
+            @if (f.idEstatusFactura === EstatusFacturaId.PendienteDeCancelacion || f.idEstatusFactura === EstatusFacturaId.Cancelada) {
+              <a (click)="consultarEstatus(f)" class="m-r-10 cursor-pointer" [matTooltip]="'facturas.actions.consultarEstatus' | translate" [style.color]="'#5d87ff'">
+                <i-tabler name="refresh" class="icon-18"></i-tabler>
+              </a>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'facturas.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>
