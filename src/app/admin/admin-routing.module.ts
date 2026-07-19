@@ -145,6 +145,13 @@ const routes: Routes = [
             (m) => m.InventarioReportesRoutingModule,
           ),
       },
+      {
+        path: 'reportes/ventas',
+        loadChildren: () =>
+          import('./feature/reportes/ventas/ventas-reportes-routing.module').then(
+            (m) => m.VentasReportesRoutingModule,
+          ),
+      },
     ],
   },
 ];

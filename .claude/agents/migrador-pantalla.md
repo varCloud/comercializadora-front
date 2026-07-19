@@ -16,6 +16,22 @@ Eres un especialista en portar una pantalla/feature al feature de producto
   con una lista fija de reglas: consulta el README cada vez.
 - `CLAUDE.md` y memorias de `.claude/memory/`.
 
+## Explora con CodeGraph antes que Grep/Read (ahorro de tokens)
+Este repo y el legado (`E:\Documents\GitHub\comercializadora`) tienen índice CodeGraph
+(`.codegraph/`). **Antes de Grep/Glob/Read en bucle**, usa la herramienta MCP
+`codegraph_explore` (o `codegraph explore "<términos>"` por CLI si el MCP no está disponible),
+pasando `projectPath` con la raíz que corresponda:
+- Para correlacionar la pantalla/JS legado (`.cshtml`/`.js`): `projectPath` =
+  `E:\Documents\GitHub\comercializadora`, consulta en lenguaje natural o por símbolo (ej.
+  `"XxxController Index.cshtml xxx.js"`). Te da el código relevante + call paths en una
+  llamada — evita abrir el `.cshtml`/`.js` completo si ya te resolvió lo que necesitas.
+- Para imitar un patrón ya migrado en este repo (otra pantalla/servicio similar): omite
+  `projectPath` (usa este repo) o pásalo explícito si hace falta.
+- Si `codegraph_explore` no alcanza (necesitas el archivo completo o algo muy específico de
+  HTML/CSS), cae a Grep/Read como hasta ahora — es el primer intento, no el único recurso.
+- El watcher sincroniza el índice solo tras tus cambios; no corras `codegraph sync` salvo
+  resultados obviamente desactualizados.
+
 ### ⚠️ REGLAS DURAS que se te suelen escapar (verifícalas SIEMPRE)
 No entregues una pantalla sin haber comprobado, según aplique:
 - **`10` + `13`** — TODO listado se **pagina** (server-side, `app-paginador`, `Paginador<T>`;

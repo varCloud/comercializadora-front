@@ -1478,5 +1478,49 @@
         "ubicacion": "Generando Reporte por Ubicación…"
       }
     }
+  },
+  "reportesVentas": {
+    "title": "Reporte de Ventas",
+    "empty": "No hay ventas para mostrar.",
+    "filters": {
+      "linea": "Línea de Producto",
+      "lineaPlaceholder": "Todas las líneas",
+      "cliente": "Cliente",
+      "clientePlaceholder": "Todos los clientes",
+      "usuario": "Usuario / Cajero",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "fecha": "Fecha",
+      "sucursal": "Sucursal",
+      "tienda": "Tienda",
+      "cajero": "Cajero",
+      "folio": "Folio",
+      "cliente": "Cliente",
+      "codigoBarras": "Código de barras",
+      "linea": "Línea de Producto",
+      "producto": "Producto",
+      "cantidad": "Cantidad",
+      "precioVenta": "Precio Venta",
+      "iva": "I.V.A.",
+      "montoTotal": "Monto Total",
+      "costoCompra": "Costo Compra",
+      "utilidad": "Utilidad",
+      "margenBruto": "Margen Bruto",
+      "formaPago": "Forma de Pago"
+    },
+    "actions": {
+      "exportar": "Exportar"
+    },
+    "msg": {
+      "loading": "Consultando ventas…",
+      "loadError": "Error al consultar el reporte de ventas",
+      "exportando": "Generando reporte de ventas…"
+    }
   }
 }

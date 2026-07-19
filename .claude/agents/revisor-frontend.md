@@ -15,6 +15,13 @@ migración; **auditas y reportas** (puedes sugerir parches, no aplicarlos a cieg
   (hoy `00`–`18`), no solo las de abajo. El checklist es un recordatorio, no el límite.
 - `CLAUDE.md` y memorias de `.claude/memory/`.
 
+## Explora con CodeGraph antes que Grep/Read (ahorro de tokens)
+Este repo tiene índice CodeGraph (`.codegraph/`). Antes de recorrer archivos con Grep/Read para
+comparar contra una pantalla/servicio similar ya migrado, prueba primero la herramienta MCP
+`codegraph_explore` (o `codegraph explore "<términos>"` por CLI si el MCP no está disponible) —
+te da el código relevante + call paths en una sola llamada. Cae a Grep/Read si CodeGraph no
+cubre lo que buscas.
+
 ## Checklist
 1. **Arquitectura (06/08).** Componentes `standalone` con `imports` propios, cargados con
    `loadComponent`. Sin NgModules nuevos dentro de `admin`.

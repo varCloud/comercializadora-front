@@ -1478,5 +1478,49 @@
         "ubicacion": "Generating Report by Location…"
       }
     }
+  },
+  "reportesVentas": {
+    "title": "Sales Report",
+    "empty": "No sales to display.",
+    "filters": {
+      "linea": "Product Line",
+      "lineaPlaceholder": "All lines",
+      "cliente": "Customer",
+      "clientePlaceholder": "All customers",
+      "usuario": "User / Cashier",
+      "usuarioPlaceholder": "All users",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "fecha": "Date",
+      "sucursal": "Branch",
+      "tienda": "Store",
+      "cajero": "Cashier",
+      "folio": "Folio",
+      "cliente": "Customer",
+      "codigoBarras": "Barcode",
+      "linea": "Product Line",
+      "producto": "Product",
+      "cantidad": "Quantity",
+      "precioVenta": "Sale Price",
+      "iva": "Tax",
+      "montoTotal": "Total Amount",
+      "costoCompra": "Purchase Cost",
+      "utilidad": "Profit",
+      "margenBruto": "Gross Margin",
+      "formaPago": "Payment Method"
+    },
+    "actions": {
+      "exportar": "Export"
+    },
+    "msg": {
+      "loading": "Loading sales…",
+      "loadError": "Error loading the sales report",
+      "exportando": "Generating sales report…"
+    }
   }
 }
