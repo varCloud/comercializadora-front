@@ -142,4 +142,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'report-money',
     route: '/admin/reportes/ventas',
   },
+  {
+    displayName: 'Merma',
+    iconName: 'trending-down',
+    route: '/admin/reportes/merma',
+  },
 ];

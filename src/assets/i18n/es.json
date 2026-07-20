@@ -1522,5 +1522,44 @@
       "loadError": "Error al consultar el reporte de ventas",
       "exportando": "Generando reporte de ventas…"
     }
+  },
+  "reportesMerma": {
+    "title": "Reporte de Merma",
+    "empty": "No hay merma para mostrar.",
+    "filters": {
+      "anio": "Año",
+      "anioPlaceholder": "Año",
+      "mes": "Mes",
+      "mesPlaceholder": "Todos los meses",
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Todos los almacenes",
+      "linea": "Línea de Producto",
+      "lineaPlaceholder": "Todas las líneas",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "fechaAlta": "Fecha Alta",
+      "codigoBarras": "Código de barras",
+      "producto": "Producto",
+      "linea": "Línea de Producto",
+      "inventarioFinalMesAnt": "Inv. Final Mes Ant.",
+      "totalCompras": "Total Compras",
+      "inventarioSistema": "Inventario Sistema",
+      "merma": "Merma",
+      "porcMerma": "% Merma",
+      "ultCostoCompra": "Último Costo Compra",
+      "costoMerma": "Costo Merma",
+      "ultimoDiaMesCalculo": "Último Día Mes Cálculo",
+      "ultimoDiaMesAnterior": "Último Día Mes Anterior"
+    },
+    "actions": {
+      "exportar": "Exportar"
+    },
+    "msg": {
+      "loading": "Consultando merma…",
+      "loadError": "Error al consultar el reporte de merma",
+      "exportando": "Generando reporte de merma…"
+    }
   }
 }

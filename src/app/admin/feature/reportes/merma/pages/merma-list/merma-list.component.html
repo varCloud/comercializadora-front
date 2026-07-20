@@ -1,0 +1,158 @@
+<!-- Card de filtros (equivalente al formulario de búsqueda del legado: año/mes -cascada-,
+     almacén, línea de producto) + exportación con los filtros activos (a diferencia de
+     Inventario, no los ignora). Sin buscador de texto libre; listado paginado server-side. -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesMerma.filters.anio' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-select
+            [formControl]="anioCalculo"
+            (selectionChange)="onAnioChange()"
+          >
+            <mat-option *ngFor="let a of anios()" [value]="a.id">{{ a.descripcion }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesMerma.filters.mes' | translate }}</mat-label>
+        <ng-select
+          [formControl]="mesCalculo"
+          [items]="meses()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'reportesMerma.filters.mesPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesMerma.filters.almacen' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idAlmacen"
+          [items]="almacenes()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'reportesMerma.filters.almacenPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesMerma.filters.linea' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idLineaProducto"
+          [items]="lineas()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'reportesMerma.filters.lineaPlaceholder' | translate"
+        ></ng-select>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap gap-2">
+      <div class="d-flex flex-wrap gap-2" *blockUI="'reportesMermaExportar'">
+        <button mat-stroked-button color="primary" (click)="exportar()">
+          <i-tabler name="file-download" class="icon-18 m-r-4"></i-tabler>
+          {{ 'reportesMerma.actions.exportar' | translate }}
+        </button>
+      </div>
+      <div class="d-flex gap-2">
+        <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+          {{ 'reportesMerma.filters.limpiar' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="buscar()">
+          {{ 'reportesMerma.filters.buscar' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla del reporte de merma (paridad de columnas con las del CSV exportado por la API,
+     listado paginado server-side, regla 10). -->
+<mat-card class="cardWithShadow" *blockUI="'reportesMerma'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesMerma.columns.fechaAlta' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesMerma.columns.fechaAlta' | translate">{{ i.fechaAlta | date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesMerma.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesMerma.columns.codigoBarras' | translate">{{ i.codigoBarras }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionProducto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesMerma.columns.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesMerma.columns.producto' | translate">{{ i.descripcionProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionLinea">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesMerma.columns.linea' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesMerma.columns.linea' | translate">{{ i.descripcionLinea }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="inventarioFinalMesAnt">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.inventarioFinalMesAnt' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.inventarioFinalMesAnt' | translate">{{ i.inventarioFinalMesAnt | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalCompras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.totalCompras' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.totalCompras' | translate">{{ i.totalCompras | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="inventarioSistema">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.inventarioSistema' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.inventarioSistema' | translate">{{ i.inventarioSistema | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="merma">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.merma' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.merma' | translate">{{ i.merma | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="porcMerma">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.porcMerma' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.porcMerma' | translate">{{ i.porcMerma | number: '1.2-2' }}%</td>
+        </ng-container>
+
+        <ng-container matColumnDef="ultCostoCompra">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.ultCostoCompra' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.ultCostoCompra' | translate">{{ i.ultCostoCompra | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="costoMerma">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.costoMerma' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.costoMerma' | translate">{{ i.costoMerma | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="ultimoDiaMesCalculo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesMerma.columns.ultimoDiaMesCalculo' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesMerma.columns.ultimoDiaMesCalculo' | translate">{{ i.ultimoDiaMesCalculo | date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="ultimoDiaMesAnterior">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesMerma.columns.ultimoDiaMesAnterior' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesMerma.columns.ultimoDiaMesAnterior' | translate">{{ i.ultimoDiaMesAnterior | date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'reportesMerma.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

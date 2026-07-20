@@ -1522,5 +1522,44 @@
       "loadError": "Error loading the sales report",
       "exportando": "Generating sales report…"
     }
+  },
+  "reportesMerma": {
+    "title": "Shrinkage Report",
+    "empty": "No shrinkage records to display.",
+    "filters": {
+      "anio": "Year",
+      "anioPlaceholder": "Year",
+      "mes": "Month",
+      "mesPlaceholder": "All months",
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "All warehouses",
+      "linea": "Product Line",
+      "lineaPlaceholder": "All lines",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "fechaAlta": "Created On",
+      "codigoBarras": "Barcode",
+      "producto": "Product",
+      "linea": "Product Line",
+      "inventarioFinalMesAnt": "Prev. Month Final Inv.",
+      "totalCompras": "Total Purchases",
+      "inventarioSistema": "System Inventory",
+      "merma": "Shrinkage",
+      "porcMerma": "% Shrinkage",
+      "ultCostoCompra": "Last Purchase Cost",
+      "costoMerma": "Shrinkage Cost",
+      "ultimoDiaMesCalculo": "Calc. Month Last Day",
+      "ultimoDiaMesAnterior": "Prev. Month Last Day"
+    },
+    "actions": {
+      "exportar": "Export"
+    },
+    "msg": {
+      "loading": "Loading shrinkage…",
+      "loadError": "Error loading the shrinkage report",
+      "exportando": "Generating shrinkage report…"
+    }
   }
 }
