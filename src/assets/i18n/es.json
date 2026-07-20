@@ -1649,6 +1649,9 @@
       "limpiar": "Limpiar",
       "buscar": "Buscar"
     },
+    "actions": {
+      "exportar": "Exportar a CSV"
+    },
     "columns": {
       "fecha": "Fecha",
       "almacen": "Almacén",
@@ -1670,7 +1673,10 @@
     },
     "msg": {
       "loading": "Consultando cierres…",
-      "loadError": "Error al consultar el reporte de cierres"
+      "loadError": "Error al consultar el reporte de cierres",
+      "exportando": "Generando reporte de cierres…",
+      "exportOk": "Reporte de cierres exportado correctamente",
+      "exportError": "Error al exportar el reporte de cierres"
     }
   }
 }

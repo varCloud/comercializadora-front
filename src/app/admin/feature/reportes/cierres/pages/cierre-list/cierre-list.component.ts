@@ -63,6 +63,8 @@ export class CierreListComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   @BlockUI('reportesCierres') blockUI!: NgBlockUI;
+  /** Bloque propio para la exportación (no bloquea/depende del listado). */
+  @BlockUI('reportesCierresExportar') blockUIExportar!: NgBlockUI;
 
   readonly displayedColumns = [
     'fechaCierre',
@@ -166,5 +168,35 @@ export class CierreListComponent implements OnInit {
   /** Cambio de tamaño de página: repagina el arreglo ya cargado, sin volver a consultar la API. */
   onPerPage(perPage: number): void {
     this.pag.setPage(paginarCliente(this.allCierres, 1, perPage));
+  }
+
+  /**
+   * Botón "Exportar a CSV" (FE-7): descarga el reporte con los filtros activos del formulario.
+   * Deshabilitado en la plantilla si no hay datos en la tabla (`pag.isEmpty()`).
+   */
+  exportar(): void {
+    this.blockUIExportar.start(this.translate.instant('reportesCierres.msg.exportando'));
+    this.service
+      .exportarCSV(this.filtros)
+      .pipe(finalize(() => this.blockUIExportar.stop()))
+      .subscribe({
+        next: (blob) => this.descargarCSV(blob),
+        error: (err) => {
+          console.error('Error al exportar el reporte de cierres', err);
+          this.notify.notify('error', this.translate.instant('reportesCierres.msg.exportError'));
+        },
+      });
+  }
+
+  /** Dispara la descarga del blob CSV en el navegador (anchor temporal). */
+  private descargarCSV(blob: Blob): void {
+    const nombreArchivo = `Cierres_${formatDate(new Date(), 'yyyy-MM-dd', 'en-US')}.csv`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    URL.revokeObjectURL(url);
+    this.notify.notify('success', this.translate.instant('reportesCierres.msg.exportOk'));
   }
 }

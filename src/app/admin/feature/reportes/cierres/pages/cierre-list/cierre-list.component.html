@@ -42,6 +42,12 @@
     </div>
 
     <div class="d-flex justify-content-end gap-2">
+      <span *blockUI="'reportesCierresExportar'" class="d-inline-block">
+        <button mat-stroked-button color="primary" [disabled]="pag.isEmpty()" (click)="exportar()">
+          <i-tabler name="download" class="icon-18 m-r-4"></i-tabler>
+          {{ 'reportesCierres.actions.exportar' | translate }}
+        </button>
+      </span>
       <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
         {{ 'reportesCierres.filters.limpiar' | translate }}
       </button>

@@ -1649,6 +1649,9 @@
       "limpiar": "Clear",
       "buscar": "Search"
     },
+    "actions": {
+      "exportar": "Export to CSV"
+    },
     "columns": {
       "fecha": "Date",
       "almacen": "Warehouse",
@@ -1670,7 +1673,10 @@
     },
     "msg": {
       "loading": "Loading closings…",
-      "loadError": "Error loading the closings report"
+      "loadError": "Error loading the closings report",
+      "exportando": "Generating closings report…",
+      "exportOk": "Closings report exported successfully",
+      "exportError": "Error exporting the closings report"
     }
   }
 }

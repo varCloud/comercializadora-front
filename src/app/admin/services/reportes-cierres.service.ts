@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -40,6 +40,21 @@ export class ReportesCierresService {
     return this.http
       .post<Notificacion<Cierre[]>>(`${this.baseUri}/buscar`, filtros)
       .pipe(map((res) => this.mapModelo(res)));
+  }
+
+  /**
+   * GET /api/reportes/cierres/exportar — descarga CSV con los mismos filtros de `searchCierres`
+   * (FE-7). El nombre del archivo lo genera el back (`Cierres_<fecha>.csv`); el componente arma
+   * el nombre client-side al descargar el blob.
+   */
+  exportarCSV(filtros: CierreSearchParams): Observable<Blob> {
+    let params = new HttpParams();
+    if (filtros.idAlmacen != null) params = params.set('idAlmacen', filtros.idAlmacen);
+    if (filtros.idUsuario != null) params = params.set('idUsuario', filtros.idUsuario);
+    if (filtros.fechaIni) params = params.set('fechaIni', filtros.fechaIni);
+    if (filtros.fechaFin) params = params.set('fechaFin', filtros.fechaFin);
+
+    return this.http.get(`${this.baseUri}/exportar`, { params, responseType: 'blob' });
   }
 
   private mapModelo(res: Notificacion<Cierre[]>): Cierre[] {
