@@ -147,4 +147,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'trending-down',
     route: '/admin/reportes/merma',
   },
+  {
+    displayName: 'Devoluciones',
+    iconName: 'receipt-refund',
+    route: '/admin/reportes/devolucion',
+  },
 ];

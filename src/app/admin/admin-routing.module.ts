@@ -159,6 +159,13 @@ const routes: Routes = [
             (m) => m.MermaReportesRoutingModule,
           ),
       },
+      {
+        path: 'reportes/devolucion',
+        loadChildren: () =>
+          import('./feature/reportes/devolucion/devolucion-reportes-routing.module').then(
+            (m) => m.DevolucionReportesRoutingModule,
+          ),
+      },
     ],
   },
 ];

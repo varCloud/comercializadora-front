@@ -37,6 +37,7 @@ export const URIS_CONFIG = {
     REPORTE_INVENTARIO: 'inventario',
     REPORTE_VENTAS: 'ventas',
     REPORTE_MERMA: 'merma',
+    REPORTE_DEVOLUCION: 'devoluciones',
     SYNC_DATA:'sync-data',
     PREGUNTAS_ESPECIALES: 'preguntas-especiales',
 };

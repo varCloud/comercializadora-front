@@ -1561,5 +1561,42 @@
       "loadError": "Error loading the shrinkage report",
       "exportando": "Generating shrinkage report…"
     }
+  },
+  "reportesDevolucion": {
+    "title": "Returns Report",
+    "empty": "No returns to display.",
+    "filters": {
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "All warehouses",
+      "usuario": "User",
+      "usuarioPlaceholder": "All users",
+      "tipo": "Type",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "fecha": "Date",
+      "tipo": "Type",
+      "venta": "Sale",
+      "cliente": "Customer",
+      "almacen": "Warehouse",
+      "codigoBarras": "Barcode",
+      "producto": "Product",
+      "cantidad": "Quantity",
+      "precioVenta": "Sale Price",
+      "montoTotal": "Total Amount",
+      "usuario": "User"
+    },
+    "actions": {
+      "exportar": "Export"
+    },
+    "msg": {
+      "loading": "Loading returns…",
+      "loadError": "Error loading the returns report",
+      "exportando": "Generating returns report…"
+    }
   }
 }

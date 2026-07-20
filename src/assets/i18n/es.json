@@ -1561,5 +1561,42 @@
       "loadError": "Error al consultar el reporte de merma",
       "exportando": "Generando reporte de merma…"
     }
+  },
+  "reportesDevolucion": {
+    "title": "Reporte de Devoluciones",
+    "empty": "No hay devoluciones para mostrar.",
+    "filters": {
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Todos los almacenes",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "tipo": "Tipo",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "fecha": "Fecha",
+      "tipo": "Tipo",
+      "venta": "Venta",
+      "cliente": "Cliente",
+      "almacen": "Almacén",
+      "codigoBarras": "Código de barras",
+      "producto": "Producto",
+      "cantidad": "Cantidad",
+      "precioVenta": "Precio Venta",
+      "montoTotal": "Monto Total",
+      "usuario": "Usuario"
+    },
+    "actions": {
+      "exportar": "Exportar"
+    },
+    "msg": {
+      "loading": "Consultando devoluciones…",
+      "loadError": "Error al consultar el reporte de devoluciones",
+      "exportando": "Generando reporte de devoluciones…"
+    }
   }
 }
