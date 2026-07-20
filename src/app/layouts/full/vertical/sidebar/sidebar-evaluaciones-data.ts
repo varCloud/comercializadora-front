@@ -152,4 +152,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'receipt-refund',
     route: '/admin/reportes/devolucion',
   },
+  {
+    displayName: 'Compras',
+    iconName: 'shopping-bag',
+    route: '/admin/reportes/compras',
+  },
 ];

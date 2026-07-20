@@ -1598,5 +1598,41 @@
       "loadError": "Error loading the returns report",
       "exportando": "Generating returns report…"
     }
+  },
+  "reportesCompras": {
+    "title": "Purchases Report",
+    "empty": "No purchases to display.",
+    "filters": {
+      "proveedor": "Supplier",
+      "proveedorPlaceholder": "All suppliers",
+      "linea": "Product Line",
+      "lineaPlaceholder": "All lines",
+      "comprador": "Buyer",
+      "compradorPlaceholder": "All buyers",
+      "estatus": "Status",
+      "estatusPlaceholder": "All statuses",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "idCompra": "Purchase ID",
+      "fecha": "Date",
+      "proveedor": "Supplier",
+      "comprador": "Buyer",
+      "estatus": "Status",
+      "productos": "Products",
+      "total": "Total"
+    },
+    "actions": {
+      "exportar": "Export"
+    },
+    "msg": {
+      "loading": "Loading purchases…",
+      "loadError": "Error loading the purchases report",
+      "exportando": "Generating purchases report…"
+    }
   }
 }

@@ -166,6 +166,13 @@ const routes: Routes = [
             (m) => m.DevolucionReportesRoutingModule,
           ),
       },
+      {
+        path: 'reportes/compras',
+        loadChildren: () =>
+          import('./feature/reportes/compras/compras-reportes-routing.module').then(
+            (m) => m.ComprasReportesRoutingModule,
+          ),
+      },
     ],
   },
 ];

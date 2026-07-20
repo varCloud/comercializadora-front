@@ -1,0 +1,143 @@
+<!-- Card de filtros (equivalente al formulario de búsqueda del legado: proveedor, línea de
+     producto, comprador, estatus, rango de fechas — todos opcionales e independientes, sin
+     cascadas) + exportación con los filtros activos (mismo criterio que Ventas/Merma/
+     Devoluciones). Sin buscador de texto libre; listado paginado server-side. -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesCompras.filters.proveedor' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idProveedor"
+          [items]="proveedores()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'reportesCompras.filters.proveedorPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesCompras.filters.linea' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idLineaProducto"
+          [items]="lineas()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'reportesCompras.filters.lineaPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesCompras.filters.comprador' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idUsuario"
+          [items]="compradores()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'reportesCompras.filters.compradorPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesCompras.filters.estatus' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idStatusCompra" [placeholder]="'reportesCompras.filters.estatusPlaceholder' | translate">
+            <mat-option [value]="null">{{ 'reportesCompras.filters.estatusPlaceholder' | translate }}</mat-option>
+            @for (e of estatusList(); track e.id) {
+              <mat-option [value]="e.id">{{ e.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesCompras.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'reportesCompras.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'reportesCompras.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap gap-2">
+      <div class="d-flex flex-wrap gap-2" *blockUI="'reportesComprasExportar'">
+        <button mat-stroked-button color="primary" (click)="exportar()">
+          <i-tabler name="file-download" class="icon-18 m-r-4"></i-tabler>
+          {{ 'reportesCompras.actions.exportar' | translate }}
+        </button>
+      </div>
+      <div class="d-flex gap-2">
+        <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+          {{ 'reportesCompras.filters.limpiar' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="buscar()">
+          {{ 'reportesCompras.filters.buscar' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla del reporte de compras (paridad de columnas con las del CSV exportado por la API,
+     listado paginado server-side, regla 10). -->
+<mat-card class="cardWithShadow" *blockUI="'reportesCompras'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idCompra">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCompras.columns.idCompra' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCompras.columns.idCompra' | translate">{{ i.idCompra }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesCompras.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesCompras.columns.fecha' | translate">{{ i.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="proveedor">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesCompras.columns.proveedor' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesCompras.columns.proveedor' | translate">{{ i.proveedorNombre }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="comprador">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesCompras.columns.comprador' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesCompras.columns.comprador' | translate">{{ i.nombreCompleto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="estatus">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesCompras.columns.estatus' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesCompras.columns.estatus' | translate">
+            <span class="estatus-chip" [style.color]="estatusColor(i.idStatus)" [style.borderColor]="estatusColor(i.idStatus)">{{ i.estatusDescripcion }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="productos">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCompras.columns.productos' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCompras.columns.productos' | translate">{{ i.totalCantProductos | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCompras.columns.total' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCompras.columns.total' | translate">{{ i.montoTotal | currency }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'reportesCompras.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

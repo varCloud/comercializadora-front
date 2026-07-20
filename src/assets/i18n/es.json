@@ -1598,5 +1598,41 @@
       "loadError": "Error al consultar el reporte de devoluciones",
       "exportando": "Generando reporte de devoluciones…"
     }
+  },
+  "reportesCompras": {
+    "title": "Reporte de Compras",
+    "empty": "No hay compras para mostrar.",
+    "filters": {
+      "proveedor": "Proveedor",
+      "proveedorPlaceholder": "Todos los proveedores",
+      "linea": "Línea de Producto",
+      "lineaPlaceholder": "Todas las líneas",
+      "comprador": "Comprador",
+      "compradorPlaceholder": "Todos los compradores",
+      "estatus": "Estatus",
+      "estatusPlaceholder": "Todos los estatus",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "idCompra": "ID Compra",
+      "fecha": "Fecha",
+      "proveedor": "Proveedor",
+      "comprador": "Comprador",
+      "estatus": "Estatus",
+      "productos": "Productos",
+      "total": "Total"
+    },
+    "actions": {
+      "exportar": "Exportar"
+    },
+    "msg": {
+      "loading": "Consultando compras…",
+      "loadError": "Error al consultar el reporte de compras",
+      "exportando": "Generando reporte de compras…"
+    }
   }
 }
