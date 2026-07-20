@@ -157,4 +157,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'shopping-bag',
     route: '/admin/reportes/compras',
   },
+  {
+    displayName: 'Cierres',
+    iconName: 'cash',
+    route: '/admin/reportes/cierres',
+  },
 ];

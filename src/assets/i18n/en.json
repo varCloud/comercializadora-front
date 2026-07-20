@@ -1634,5 +1634,43 @@
       "loadError": "Error loading the purchases report",
       "exportando": "Generating purchases report…"
     }
+  },
+  "reportesCierres": {
+    "title": "Cash Register Closings Report",
+    "empty": "No closings to display.",
+    "filters": {
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "All warehouses",
+      "usuario": "User",
+      "usuarioPlaceholder": "All users",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "fecha": "Date",
+      "almacen": "Warehouse",
+      "cajero": "Cashier",
+      "apertura": "Opening Amount",
+      "ingresos": "Cash Income",
+      "numVentas": "No. Sales",
+      "ventasContado": "Cash Sales",
+      "ventasTarjeta": "Card Sales",
+      "ventasTransferencias": "Transfer Sales",
+      "ventasOtros": "Other Sales",
+      "ventasCanceladas": "Canceled Sales",
+      "productosDevueltos": "Returned Products",
+      "montoDevoluciones": "Returns Amount",
+      "retiros": "Withdrawals",
+      "saldoTotal": "Total Balance",
+      "saldoCaja": "Cash Balance",
+      "efectivoEntregado": "Cash Handed Over"
+    },
+    "msg": {
+      "loading": "Loading closings…",
+      "loadError": "Error loading the closings report"
+    }
   }
 }

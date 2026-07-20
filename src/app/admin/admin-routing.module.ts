@@ -173,6 +173,13 @@ const routes: Routes = [
             (m) => m.ComprasReportesRoutingModule,
           ),
       },
+      {
+        path: 'reportes/cierres',
+        loadChildren: () =>
+          import('./feature/reportes/cierres/cierres-reportes-routing.module').then(
+            (m) => m.CierresReportesRoutingModule,
+          ),
+      },
     ],
   },
 ];

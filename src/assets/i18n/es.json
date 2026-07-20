@@ -1634,5 +1634,43 @@
       "loadError": "Error al consultar el reporte de compras",
       "exportando": "Generando reporte de compras…"
     }
+  },
+  "reportesCierres": {
+    "title": "Reporte de Cierres de Caja",
+    "empty": "No hay cierres para mostrar.",
+    "filters": {
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Todos los almacenes",
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "fecha": "Fecha",
+      "almacen": "Almacén",
+      "cajero": "Cajero",
+      "apertura": "Apertura de Caja",
+      "ingresos": "Ingresos de Efectivo",
+      "numVentas": "No. Ventas",
+      "ventasContado": "Ventas Contado",
+      "ventasTarjeta": "Ventas Tarjeta",
+      "ventasTransferencias": "Ventas Transferencias",
+      "ventasOtros": "Ventas Otros",
+      "ventasCanceladas": "Ventas Canceladas",
+      "productosDevueltos": "Productos Devueltos",
+      "montoDevoluciones": "Monto Devoluciones",
+      "retiros": "Retiros",
+      "saldoTotal": "Saldo Total",
+      "saldoCaja": "Saldo en Caja",
+      "efectivoEntregado": "Efectivo Entregado"
+    },
+    "msg": {
+      "loading": "Consultando cierres…",
+      "loadError": "Error al consultar el reporte de cierres"
+    }
   }
 }

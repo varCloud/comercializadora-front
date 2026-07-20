@@ -1,0 +1,161 @@
+<!-- Card de filtros (equivalente al formulario de búsqueda del legado: almacén, usuario/cajero,
+     rango de fechas). FE-5/FE-6: Buscar/Limpiar disparan ReportesCierresService.searchCierres
+     (ver cierre-list.component.ts); Usuario usa app-select-paginado (regla 16). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesCierres.filters.almacen' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idAlmacen" [placeholder]="'reportesCierres.filters.almacenPlaceholder' | translate">
+            <mat-option [value]="null">{{ 'reportesCierres.filters.almacenPlaceholder' | translate }}</mat-option>
+            @for (a of almacenes(); track a.id) {
+              <mat-option [value]="a.id">{{ a.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesCierres.filters.usuario' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idUsuario)"
+          [fetchPage]="fetchUsuarios"
+          identifier="idUsuario"
+          bindLabel="nombreCompleto"
+          bindValue="idUsuario"
+          placeholder="reportesCierres.filters.usuarioPlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesCierres.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'reportesCierres.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'reportesCierres.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'reportesCierres.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'reportesCierres.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla del reporte de cierres (17 columnas, paridad 1:1 con Views/Reportes/Cierres.cshtml,
+     regla 10). Paginación en el cliente (paginarCliente): la API no pagina server-side. -->
+<mat-card class="cardWithShadow" *blockUI="'reportesCierres'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="fechaCierre">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesCierres.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesCierres.columns.fecha' | translate">{{ i.fechaCierre | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descAlmacen">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesCierres.columns.almacen' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesCierres.columns.almacen' | translate">{{ i.descAlmacen }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesCierres.columns.cajero' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesCierres.columns.cajero' | translate">{{ i.nombreUsuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoApertura">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.apertura' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.apertura' | translate">{{ i.montoApertura | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoIngresosEfectivo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.ingresos' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.ingresos' | translate">{{ i.montoIngresosEfectivo | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalVentas">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.numVentas' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.numVentas' | translate">{{ i.totalVentas | number: '1.0-0' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoVentasContado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.ventasContado' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.ventasContado' | translate">{{ i.montoVentasContado | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoVentasTarjeta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.ventasTarjeta' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.ventasTarjeta' | translate">{{ i.montoVentasTarjeta | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoVentasTransferencias">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.ventasTransferencias' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.ventasTransferencias' | translate">{{ i.montoVentasTransferencias | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoVentasOtros">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.ventasOtros' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.ventasOtros' | translate">{{ i.montoVentasOtros | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoVentasCanceladas">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.ventasCanceladas' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.ventasCanceladas' | translate">{{ i.montoVentasCanceladas | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="productosDevueltos">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.productosDevueltos' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.productosDevueltos' | translate">{{ i.productosDevueltos | number:'1.0-0' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotalDevoluciones">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.montoDevoluciones' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.montoDevoluciones' | translate">{{ i.montoTotalDevoluciones | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="retirosExcesoEfectivo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.retiros' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.retiros' | translate">{{ i.retirosExcesoEfectivo | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoCierre">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.saldoTotal' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.saldoTotal' | translate">{{ i.montoCierre | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="efectivoDisponible">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.saldoCaja' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.saldoCaja' | translate">{{ i.efectivoDisponible | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="efectivoEntregadoEnCierre">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesCierres.columns.efectivoEntregado' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesCierres.columns.efectivoEntregado' | translate">{{ i.efectivoEntregadoEnCierre | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'reportesCierres.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>
