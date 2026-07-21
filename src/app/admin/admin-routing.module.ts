@@ -180,6 +180,13 @@ const routes: Routes = [
             (m) => m.CierresReportesRoutingModule,
           ),
       },
+      {
+        path: 'reportes/cierres-pe',
+        loadChildren: () =>
+          import('./feature/reportes/cierres-pe/cierres-pe-reportes-routing.module').then(
+            (m) => m.CierresPEReportesRoutingModule,
+          ),
+      },
     ],
   },
 ];

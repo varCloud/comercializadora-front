@@ -1678,5 +1678,50 @@
       "exportOk": "Reporte de cierres exportado correctamente",
       "exportError": "Error al exportar el reporte de cierres"
     }
+  },
+  "reportesCierresPE": {
+    "title": "Reporte de Cierres de Pedidos Especiales",
+    "empty": "No hay cierres para mostrar.",
+    "filters": {
+      "usuario": "Usuario",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "actions": {
+      "exportar": "Exportar a CSV"
+    },
+    "columns": {
+      "id": "ID",
+      "fecha": "Fecha de Cierre",
+      "usuario": "Usuario",
+      "ventasContado": "Ventas Contado",
+      "ventasTC": "Ventas TC",
+      "ventasTransferencias": "Ventas Transferencias",
+      "ventasOtras": "Ventas Otras Formas de Pago",
+      "ventasCredito": "Ventas Crédito",
+      "montoDevoluciones": "Monto Devoluciones",
+      "ingresos": "Ingresos Efectivo",
+      "retiros": "Retiros Efectivo",
+      "cierreEfectivo": "Cierre Efectivo",
+      "cierreTC": "Cierre TC",
+      "efectivoEntregado": "Efectivo Entregado",
+      "noDevoluciones": "No. Devoluciones",
+      "noTicketsEfectivo": "No. Tickets Efectivo",
+      "noTicketsCredito": "No. Tickets Crédito",
+      "pedidosResguardo": "Pedidos en Resguardo",
+      "totalEfectivo": "Total Efectivo",
+      "abonosEfectivo": "Abonos Efectivo"
+    },
+    "msg": {
+      "loading": "Consultando cierres de pedidos especiales…",
+      "loadError": "Error al consultar el reporte de cierres de pedidos especiales",
+      "exportando": "Generando reporte de cierres de pedidos especiales…",
+      "exportOk": "Reporte de cierres de pedidos especiales exportado correctamente",
+      "exportError": "Error al exportar el reporte de cierres de pedidos especiales"
+    }
   }
 }

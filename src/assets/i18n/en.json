@@ -1678,5 +1678,50 @@
       "exportOk": "Closings report exported successfully",
       "exportError": "Error exporting the closings report"
     }
+  },
+  "reportesCierresPE": {
+    "title": "Special Orders Closings Report",
+    "empty": "No closings to display.",
+    "filters": {
+      "usuario": "User",
+      "usuarioPlaceholder": "All users",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "actions": {
+      "exportar": "Export to CSV"
+    },
+    "columns": {
+      "id": "ID",
+      "fecha": "Closing Date",
+      "usuario": "User",
+      "ventasContado": "Cash Sales",
+      "ventasTC": "Card Sales",
+      "ventasTransferencias": "Transfer Sales",
+      "ventasOtras": "Other Payment Sales",
+      "ventasCredito": "Credit Sales",
+      "montoDevoluciones": "Returns Amount",
+      "ingresos": "Cash Income",
+      "retiros": "Cash Withdrawals",
+      "cierreEfectivo": "Cash Closing",
+      "cierreTC": "Card Closing",
+      "efectivoEntregado": "Cash Handed Over",
+      "noDevoluciones": "No. Returns",
+      "noTicketsEfectivo": "No. Cash Tickets",
+      "noTicketsCredito": "No. Credit Tickets",
+      "pedidosResguardo": "Orders in Safekeeping",
+      "totalEfectivo": "Total Cash",
+      "abonosEfectivo": "Cash Payments"
+    },
+    "msg": {
+      "loading": "Loading special orders closings…",
+      "loadError": "Error loading the special orders closings report",
+      "exportando": "Generating special orders closings report…",
+      "exportOk": "Special orders closings report exported successfully",
+      "exportError": "Error exporting the special orders closings report"
+    }
   }
 }

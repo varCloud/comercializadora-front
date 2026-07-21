@@ -162,4 +162,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'cash',
     route: '/admin/reportes/cierres',
   },
+  {
+    displayName: 'Cierres Pedidos Especiales',
+    iconName: 'cash-banknote',
+    route: '/admin/reportes/cierres-pe',
+  },
 ];

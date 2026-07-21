@@ -40,6 +40,7 @@ export const URIS_CONFIG = {
     REPORTE_DEVOLUCION: 'devoluciones',
     REPORTE_COMPRAS: 'compras',
     REPORTE_CIERRES: 'cierres',
+    REPORTE_CIERRES_PE: 'cierres-pe',
     SYNC_DATA:'sync-data',
     PREGUNTAS_ESPECIALES: 'preguntas-especiales',
 };
