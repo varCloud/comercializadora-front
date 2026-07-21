@@ -42,6 +42,7 @@ export const URIS_CONFIG = {
     REPORTE_CIERRES: 'cierres',
     REPORTE_CIERRES_PE: 'cierres-pe',
     REPORTE_MARGEN_BRUTO: 'margen-bruto',
+    REPORTE_DIAS_PROMEDIO_INVENTARIO: 'dias-promedio-inventario',
     SYNC_DATA:'sync-data',
     PREGUNTAS_ESPECIALES: 'preguntas-especiales',
 };

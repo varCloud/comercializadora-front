@@ -1756,5 +1756,39 @@
       "exportOk": "Gross margin report exported successfully",
       "exportError": "Error exporting the gross margin report"
     }
+  },
+  "reportesDiasPromedioInventario": {
+    "title": "Average Inventory Days Report",
+    "empty": "No data found for the given filters.",
+    "filters": {
+      "tipo": "Type",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "actions": {
+      "exportar": "Export to CSV"
+    },
+    "columns": {
+      "id": "ID",
+      "descripcion": "Description",
+      "codigoBarras": "Barcode",
+      "costoProducto": "Product Cost",
+      "inventarioPromedioPeriodo": "Average Inventory (Period)",
+      "costoInvPromedio": "Average Inventory Cost",
+      "diasPeriodo": "Period Days",
+      "costoVendido": "Cost of Goods Sold",
+      "diasPromedioInventario": "Average Inventory Days",
+      "rotacionInventario": "Inventory Turnover"
+    },
+    "msg": {
+      "loading": "Loading average inventory days…",
+      "loadError": "Error loading the average inventory days report",
+      "exportando": "Generating average inventory days report…",
+      "exportOk": "Average inventory days report exported successfully",
+      "exportError": "Error exporting the average inventory days report"
+    }
   }
 }

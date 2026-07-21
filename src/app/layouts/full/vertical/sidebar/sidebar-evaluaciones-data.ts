@@ -172,4 +172,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'chart-infographic',
     route: '/admin/reportes/margen-bruto',
   },
+  {
+    displayName: 'Días Promedio Inventario',
+    iconName: 'rotate-clockwise-2',
+    route: '/admin/reportes/dias-promedio-inventario',
+  },
 ];

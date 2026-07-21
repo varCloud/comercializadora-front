@@ -194,6 +194,13 @@ const routes: Routes = [
             (m) => m.MargenBrutoReportesRoutingModule,
           ),
       },
+      {
+        path: 'reportes/dias-promedio-inventario',
+        loadChildren: () =>
+          import(
+            './feature/reportes/dias-promedio-inventario/dias-promedio-inventario-reportes-routing.module'
+          ).then((m) => m.DiasPromedioInventarioReportesRoutingModule),
+      },
     ],
   },
 ];

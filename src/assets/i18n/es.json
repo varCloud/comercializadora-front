@@ -1756,5 +1756,39 @@
       "exportOk": "Reporte de margen bruto exportado correctamente",
       "exportError": "Error al exportar el reporte de margen bruto"
     }
+  },
+  "reportesDiasPromedioInventario": {
+    "title": "Reporte de Días Promedio Inventario",
+    "empty": "No se encontraron datos para los filtros indicados.",
+    "filters": {
+      "tipo": "Tipo",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "actions": {
+      "exportar": "Exportar a CSV"
+    },
+    "columns": {
+      "id": "ID",
+      "descripcion": "Descripción",
+      "codigoBarras": "Código de Barras",
+      "costoProducto": "Costo Producto",
+      "inventarioPromedioPeriodo": "Inventario Promedio Periodo",
+      "costoInvPromedio": "Costo Inventario Promedio",
+      "diasPeriodo": "Días del Periodo",
+      "costoVendido": "Costo Vendido",
+      "diasPromedioInventario": "Días Promedio Inventario",
+      "rotacionInventario": "Rotación Inventario"
+    },
+    "msg": {
+      "loading": "Consultando días promedio inventario…",
+      "loadError": "Error al consultar el reporte de días promedio inventario",
+      "exportando": "Generando reporte de días promedio inventario…",
+      "exportOk": "Reporte de días promedio inventario exportado correctamente",
+      "exportError": "Error al exportar el reporte de días promedio inventario"
+    }
   }
 }
