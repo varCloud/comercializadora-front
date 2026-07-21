@@ -1723,5 +1723,38 @@
       "exportOk": "Reporte de cierres de pedidos especiales exportado correctamente",
       "exportError": "Error al exportar el reporte de cierres de pedidos especiales"
     }
+  },
+  "reportesMargenBruto": {
+    "title": "Reporte de Margen Bruto",
+    "empty": "No se encontraron ventas para los filtros indicados.",
+    "filters": {
+      "tipo": "Tipo",
+      "rangoFechas": "Rango de fechas",
+      "rangoFechasRequerido": "Debe seleccionar fecha de inicio y fecha fin",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "actions": {
+      "exportar": "Exportar a CSV"
+    },
+    "columns": {
+      "id": "ID",
+      "descripcion": "Descripción",
+      "totalVentas": "Total Ventas",
+      "costoVentas": "Costo Ventas",
+      "contribucionMarginal": "Contribución Marginal",
+      "margenBruto": "% Margen Bruto",
+      "codigoBarras": "Código de Barras"
+    },
+    "msg": {
+      "loading": "Consultando margen bruto…",
+      "loadError": "Error al consultar el reporte de margen bruto",
+      "fechasObligatorias": "El rango de fechas es obligatorio para consultar el reporte",
+      "exportando": "Generando reporte de margen bruto…",
+      "exportOk": "Reporte de margen bruto exportado correctamente",
+      "exportError": "Error al exportar el reporte de margen bruto"
+    }
   }
 }

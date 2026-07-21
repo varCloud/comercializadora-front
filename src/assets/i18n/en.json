@@ -1723,5 +1723,38 @@
       "exportOk": "Special orders closings report exported successfully",
       "exportError": "Error exporting the special orders closings report"
     }
+  },
+  "reportesMargenBruto": {
+    "title": "Gross Margin Report",
+    "empty": "No sales found for the given filters.",
+    "filters": {
+      "tipo": "Type",
+      "rangoFechas": "Date range",
+      "rangoFechasRequerido": "You must select a start date and an end date",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "actions": {
+      "exportar": "Export to CSV"
+    },
+    "columns": {
+      "id": "ID",
+      "descripcion": "Description",
+      "totalVentas": "Total Sales",
+      "costoVentas": "Sales Cost",
+      "contribucionMarginal": "Marginal Contribution",
+      "margenBruto": "% Gross Margin",
+      "codigoBarras": "Barcode"
+    },
+    "msg": {
+      "loading": "Loading gross margin…",
+      "loadError": "Error loading the gross margin report",
+      "fechasObligatorias": "The date range is required to query the report",
+      "exportando": "Generating gross margin report…",
+      "exportOk": "Gross margin report exported successfully",
+      "exportError": "Error exporting the gross margin report"
+    }
   }
 }

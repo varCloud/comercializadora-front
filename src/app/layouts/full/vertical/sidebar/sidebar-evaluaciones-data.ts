@@ -167,4 +167,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'cash-banknote',
     route: '/admin/reportes/cierres-pe',
   },
+  {
+    displayName: 'Margen Bruto',
+    iconName: 'chart-infographic',
+    route: '/admin/reportes/margen-bruto',
+  },
 ];

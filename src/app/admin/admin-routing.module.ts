@@ -187,6 +187,13 @@ const routes: Routes = [
             (m) => m.CierresPEReportesRoutingModule,
           ),
       },
+      {
+        path: 'reportes/margen-bruto',
+        loadChildren: () =>
+          import('./feature/reportes/margen-bruto/margen-bruto-reportes-routing.module').then(
+            (m) => m.MargenBrutoReportesRoutingModule,
+          ),
+      },
     ],
   },
 ];
