@@ -1,0 +1,110 @@
+<!-- Card de filtros: Tipo (mat-select, 3 opciones, regla 16) + rango de fechas OPCIONAL
+     (comportamiento estándar de la regla 18: default hoy/hoy visible, no bloquea "Buscar").
+     FE-1/FE-2: datos MOCK deterministas (buildMockData) hasta que FE-3/FE-4 conecten el servicio
+     HTTP real. -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesDropSize.filters.tipo' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="tipo">
+            @for (t of tipoOptions; track t.id) {
+              <mat-option [value]="t.id">{{ t.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-8 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesDropSize.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'reportesDropSize.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'reportesDropSize.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <span *blockUI="'reportesDropSizeExportar'" class="d-inline-block">
+        <button mat-stroked-button color="primary" [disabled]="pag.isEmpty()" (click)="exportar()">
+          <i-tabler name="download" class="icon-18 m-r-4"></i-tabler>
+          {{ 'reportesDropSize.actions.exportar' | translate }}
+        </button>
+      </span>
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'reportesDropSize.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'reportesDropSize.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla del reporte Drop Size (orden 1:1 con el legado `_DropSize.cshtml`). `codigoBarras`
+     solo se incluye en `displayedColumns` para el tipo Producto (ver `columnaCodigoBarras`). -->
+<mat-card class="cardWithShadow" *blockUI="'reportesDropSize'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDropSize.columns.id' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDropSize.columns.id' | translate">{{ i.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDropSize.columns.descripcion' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDropSize.columns.descripcion' | translate">{{ i.descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDropSize.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDropSize.columns.codigoBarras' | translate">{{ i.codigoBarras }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalClientes">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDropSize.columns.totalClientes' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDropSize.columns.totalClientes' | translate">{{ i.totalClientes | number: '1.0-0' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalVentas">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDropSize.columns.totalVentas' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDropSize.columns.totalVentas' | translate">{{ i.totalVentas | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalProductos">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDropSize.columns.totalProductos' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDropSize.columns.totalProductos' | translate">{{ i.totalProductos | number: '1.0-0' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dropSizeVentas">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDropSize.columns.dropSizeVentas' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDropSize.columns.dropSizeVentas' | translate">{{ i.dropSizeVentas | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="dropSizeCantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDropSize.columns.dropSizeCantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDropSize.columns.dropSizeCantidad' | translate">{{ i.dropSizeCantidad | number: '1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'reportesDropSize.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

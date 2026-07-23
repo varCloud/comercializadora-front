@@ -1790,5 +1790,37 @@
       "exportOk": "Reporte de días promedio inventario exportado correctamente",
       "exportError": "Error al exportar el reporte de días promedio inventario"
     }
+  },
+  "reportesDropSize": {
+    "title": "Reporte Drop Size",
+    "empty": "No se encontraron datos para los filtros indicados.",
+    "filters": {
+      "tipo": "Tipo de DropSize",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "actions": {
+      "exportar": "Exportar a CSV"
+    },
+    "columns": {
+      "id": "ID",
+      "descripcion": "Descripción",
+      "codigoBarras": "Código de Barras",
+      "totalClientes": "Total de Clientes",
+      "totalVentas": "Total de Ventas",
+      "totalProductos": "Total de Productos",
+      "dropSizeVentas": "DropSize Ventas",
+      "dropSizeCantidad": "DropSize Cantidad"
+    },
+    "msg": {
+      "loading": "Consultando Drop Size…",
+      "loadError": "Error al consultar el reporte Drop Size",
+      "exportando": "Generando reporte Drop Size…",
+      "exportOk": "Reporte Drop Size exportado correctamente",
+      "exportError": "Error al exportar el reporte Drop Size"
+    }
   }
 }

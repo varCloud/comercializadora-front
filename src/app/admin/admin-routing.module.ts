@@ -201,6 +201,13 @@ const routes: Routes = [
             './feature/reportes/dias-promedio-inventario/dias-promedio-inventario-reportes-routing.module'
           ).then((m) => m.DiasPromedioInventarioReportesRoutingModule),
       },
+      {
+        path: 'reportes/drop-size',
+        loadChildren: () =>
+          import('./feature/reportes/drop-size/drop-size-reportes-routing.module').then(
+            (m) => m.DropSizeReportesRoutingModule,
+          ),
+      },
     ],
   },
 ];

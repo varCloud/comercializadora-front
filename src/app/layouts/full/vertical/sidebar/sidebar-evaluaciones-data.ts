@@ -177,4 +177,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'rotate-clockwise-2',
     route: '/admin/reportes/dias-promedio-inventario',
   },
+  {
+    displayName: 'Drop Size',
+    iconName: 'droplet',
+    route: '/admin/reportes/drop-size',
+  },
 ];

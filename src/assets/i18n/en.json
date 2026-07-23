@@ -1790,5 +1790,37 @@
       "exportOk": "Average inventory days report exported successfully",
       "exportError": "Error exporting the average inventory days report"
     }
+  },
+  "reportesDropSize": {
+    "title": "Drop Size Report",
+    "empty": "No data found for the given filters.",
+    "filters": {
+      "tipo": "Drop Size type",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "actions": {
+      "exportar": "Export to CSV"
+    },
+    "columns": {
+      "id": "ID",
+      "descripcion": "Description",
+      "codigoBarras": "Barcode",
+      "totalClientes": "Total Customers",
+      "totalVentas": "Total Sales",
+      "totalProductos": "Total Products",
+      "dropSizeVentas": "Drop Size Sales",
+      "dropSizeCantidad": "Drop Size Quantity"
+    },
+    "msg": {
+      "loading": "Loading Drop Size…",
+      "loadError": "Error loading the Drop Size report",
+      "exportando": "Generating Drop Size report…",
+      "exportOk": "Drop Size report exported successfully",
+      "exportError": "Error exporting the Drop Size report"
+    }
   }
 }
