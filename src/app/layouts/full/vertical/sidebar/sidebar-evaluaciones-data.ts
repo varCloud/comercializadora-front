@@ -182,4 +182,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'droplet',
     route: '/admin/reportes/drop-size',
   },
+  {
+    displayName: 'Nivel de Servicio Proveedor',
+    iconName: 'truck-delivery',
+    route: '/admin/reportes/nivel-servicio-proveedor',
+  },
 ];

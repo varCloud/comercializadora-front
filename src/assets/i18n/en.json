@@ -1822,5 +1822,34 @@
       "exportOk": "Drop Size report exported successfully",
       "exportError": "Error exporting the Drop Size report"
     }
+  },
+  "reportesNivelServicioProveedor": {
+    "title": "Supplier Service Level Report",
+    "empty": "No suppliers found for the given filters.",
+    "filters": {
+      "rangoFechas": "Date range (optional)",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "actions": {
+      "exportar": "Export to CSV"
+    },
+    "columns": {
+      "idProveedor": "Id",
+      "nombre": "Supplier Name",
+      "totalPedidosCompletos": "Total Correct Orders",
+      "totalPedidosIncompletos": "Total Incomplete Orders",
+      "totalPedidosTotales": "Total Orders",
+      "porcAtendido": "% Fulfilled"
+    },
+    "msg": {
+      "loading": "Loading supplier service level…",
+      "loadError": "Error loading the supplier service level report",
+      "exportando": "Generating supplier service level report…",
+      "exportOk": "Supplier service level report exported successfully",
+      "exportError": "Error exporting the supplier service level report"
+    }
   }
 }

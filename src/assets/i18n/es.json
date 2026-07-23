@@ -1822,5 +1822,34 @@
       "exportOk": "Reporte Drop Size exportado correctamente",
       "exportError": "Error al exportar el reporte Drop Size"
     }
+  },
+  "reportesNivelServicioProveedor": {
+    "title": "Reporte de Nivel de Servicio Proveedor",
+    "empty": "No se encontraron proveedores para los filtros indicados.",
+    "filters": {
+      "rangoFechas": "Rango de fechas (opcional)",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "actions": {
+      "exportar": "Exportar a CSV"
+    },
+    "columns": {
+      "idProveedor": "Id",
+      "nombre": "Nombre Proveedor",
+      "totalPedidosCompletos": "Total Pedidos Correctos",
+      "totalPedidosIncompletos": "Total Pedidos Incompletos",
+      "totalPedidosTotales": "Total Pedidos Totales",
+      "porcAtendido": "% Atendido"
+    },
+    "msg": {
+      "loading": "Consultando nivel de servicio proveedor…",
+      "loadError": "Error al consultar el reporte de nivel de servicio proveedor",
+      "exportando": "Generando reporte de nivel de servicio proveedor…",
+      "exportOk": "Reporte de nivel de servicio proveedor exportado correctamente",
+      "exportError": "Error al exportar el reporte de nivel de servicio proveedor"
+    }
   }
 }

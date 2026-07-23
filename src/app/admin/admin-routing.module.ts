@@ -208,6 +208,13 @@ const routes: Routes = [
             (m) => m.DropSizeReportesRoutingModule,
           ),
       },
+      {
+        path: 'reportes/nivel-servicio-proveedor',
+        loadChildren: () =>
+          import(
+            './feature/reportes/nivel-servicio-proveedor/nivel-servicio-proveedor-reportes-routing.module'
+          ).then((m) => m.NivelServicioProveedorReportesRoutingModule),
+      },
     ],
   },
 ];

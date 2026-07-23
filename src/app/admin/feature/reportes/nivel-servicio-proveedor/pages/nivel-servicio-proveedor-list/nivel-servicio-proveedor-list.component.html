@@ -1,0 +1,93 @@
+<!-- Card de filtros: rango de fechas OPCIONAL (excepción documentada en el componente a la
+     regla 18 estándar — sentido inverso al de margen-bruto: aquí NO hay default hoy/hoy ni
+     Validators.required, así que "Buscar" nunca se deshabilita por falta de fechas; sin fechas
+     = histórico completo). FE-2: datos MOCK, "Buscar"/"Exportar" generan el set local
+     (buildMockData) hasta que FE-3/FE-4 conecten el servicio HTTP real. -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">
+          {{ 'reportesNivelServicioProveedor.filters.rangoFechas' | translate }}
+        </mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'reportesNivelServicioProveedor.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'reportesNivelServicioProveedor.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <span *blockUI="'reportesNivelServicioProveedorExportar'" class="d-inline-block">
+        <button mat-stroked-button color="primary" [disabled]="pag.isEmpty()" (click)="exportar()">
+          <i-tabler name="download" class="icon-18 m-r-4"></i-tabler>
+          {{ 'reportesNivelServicioProveedor.actions.exportar' | translate }}
+        </button>
+      </span>
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'reportesNivelServicioProveedor.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'reportesNivelServicioProveedor.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla del reporte de Nivel de Servicio Proveedor (paridad de columnas con la HU, menos
+     "Total Pedidos Cantidad Mayor" que queda fuera de alcance). Paginación en el cliente
+     (paginarCliente): mock hasta que FE-3/FE-4 conecten el servicio real. -->
+<mat-card class="cardWithShadow" *blockUI="'reportesNivelServicioProveedor'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idProveedor">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesNivelServicioProveedor.columns.idProveedor' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesNivelServicioProveedor.columns.idProveedor' | translate">{{ i.idProveedor }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesNivelServicioProveedor.columns.nombre' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesNivelServicioProveedor.columns.nombre' | translate">{{ i.nombre }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalPedidosCompletos">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesNivelServicioProveedor.columns.totalPedidosCompletos' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesNivelServicioProveedor.columns.totalPedidosCompletos' | translate">{{ i.totalPedidosCompletos | number: '1.0-0' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalPedidosIncompletos">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesNivelServicioProveedor.columns.totalPedidosIncompletos' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesNivelServicioProveedor.columns.totalPedidosIncompletos' | translate">{{ i.totalPedidosIncompletos | number: '1.0-0' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalPedidosTotales">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesNivelServicioProveedor.columns.totalPedidosTotales' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesNivelServicioProveedor.columns.totalPedidosTotales' | translate">{{ i.totalPedidosTotales | number: '1.0-0' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="porcAtendido">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesNivelServicioProveedor.columns.porcAtendido' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesNivelServicioProveedor.columns.porcAtendido' | translate">{{ i.porcAtendido | number: '1.2-2' }}%</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'reportesNivelServicioProveedor.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

@@ -44,6 +44,7 @@ export const URIS_CONFIG = {
     REPORTE_MARGEN_BRUTO: 'margen-bruto',
     REPORTE_DIAS_PROMEDIO_INVENTARIO: 'dias-promedio-inventario',
     REPORTE_DROP_SIZE: 'drop-size',
+    REPORTE_NIVEL_SERVICIO_PROVEEDOR: 'nivel-servicio-proveedor',
     SYNC_DATA:'sync-data',
     PREGUNTAS_ESPECIALES: 'preguntas-especiales',
 };
