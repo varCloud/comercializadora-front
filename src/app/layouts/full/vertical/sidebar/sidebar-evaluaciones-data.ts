@@ -187,4 +187,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'truck-delivery',
     route: '/admin/reportes/nivel-servicio-proveedor',
   },
+  {
+    displayName: 'Devoluciones a Proveedor',
+    iconName: 'transfer-in',
+    route: '/admin/reportes/devoluciones-proveedor',
+  },
 ];

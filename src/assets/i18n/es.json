@@ -1851,5 +1851,42 @@
       "exportOk": "Reporte de nivel de servicio proveedor exportado correctamente",
       "exportError": "Error al exportar el reporte de nivel de servicio proveedor"
     }
+  },
+  "reportesDevolucionesProveedor": {
+    "title": "Reporte de Devoluciones a Proveedor",
+    "empty": "No se encontraron devoluciones para los filtros indicados.",
+    "filters": {
+      "proveedor": "Proveedor",
+      "proveedorPlaceholder": "Todos los proveedores",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "actions": {
+      "exportar": "Exportar a CSV"
+    },
+    "columns": {
+      "fecha": "Fecha",
+      "folioCompra": "Folio Compra",
+      "folioDevolucion": "Folio Devolución",
+      "usuario": "Usuario",
+      "proveedor": "Proveedor",
+      "codigoBarras": "Código de Barras",
+      "linea": "Línea",
+      "producto": "Producto",
+      "cantidadSolicitada": "Cant. Solicitada",
+      "cantidadRecibida": "Cant. Recibida",
+      "cantidadDevuelta": "Cant. Devuelta",
+      "motivoDevolucion": "Motivo Devolución"
+    },
+    "msg": {
+      "loading": "Consultando devoluciones a proveedor…",
+      "loadError": "Error al consultar el reporte de devoluciones a proveedor",
+      "exportando": "Generando reporte de devoluciones a proveedor…",
+      "exportOk": "Reporte de devoluciones a proveedor exportado correctamente",
+      "exportError": "Error al exportar el reporte de devoluciones a proveedor"
+    }
   }
 }

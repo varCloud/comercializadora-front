@@ -215,6 +215,13 @@ const routes: Routes = [
             './feature/reportes/nivel-servicio-proveedor/nivel-servicio-proveedor-reportes-routing.module'
           ).then((m) => m.NivelServicioProveedorReportesRoutingModule),
       },
+      {
+        path: 'reportes/devoluciones-proveedor',
+        loadChildren: () =>
+          import(
+            './feature/reportes/devoluciones-proveedor/devoluciones-proveedor-reportes-routing.module'
+          ).then((m) => m.DevolucionesProveedorReportesRoutingModule),
+      },
     ],
   },
 ];

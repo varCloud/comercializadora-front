@@ -1851,5 +1851,42 @@
       "exportOk": "Supplier service level report exported successfully",
       "exportError": "Error exporting the supplier service level report"
     }
+  },
+  "reportesDevolucionesProveedor": {
+    "title": "Supplier Returns Report",
+    "empty": "No returns found for the given filters.",
+    "filters": {
+      "proveedor": "Supplier",
+      "proveedorPlaceholder": "All suppliers",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "actions": {
+      "exportar": "Export to CSV"
+    },
+    "columns": {
+      "fecha": "Date",
+      "folioCompra": "Purchase Order",
+      "folioDevolucion": "Return Folio",
+      "usuario": "User",
+      "proveedor": "Supplier",
+      "codigoBarras": "Barcode",
+      "linea": "Line",
+      "producto": "Product",
+      "cantidadSolicitada": "Qty. Ordered",
+      "cantidadRecibida": "Qty. Received",
+      "cantidadDevuelta": "Qty. Returned",
+      "motivoDevolucion": "Return Reason"
+    },
+    "msg": {
+      "loading": "Loading supplier returns…",
+      "loadError": "Error loading the supplier returns report",
+      "exportando": "Generating supplier returns report…",
+      "exportOk": "Supplier returns report exported successfully",
+      "exportError": "Error exporting the supplier returns report"
+    }
   }
 }
