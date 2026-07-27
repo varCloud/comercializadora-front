@@ -197,4 +197,9 @@ export const navItemsApp: NavItem[] = [
     iconName: 'transfer-in',
     route: '/admin/reportes/devoluciones-proveedor',
   },
+  {
+    displayName: 'Devoluciones Pedidos Especiales',
+    iconName: 'transfer-out',
+    route: '/admin/reportes/devoluciones-pedidos-especiales',
+  },
 ];

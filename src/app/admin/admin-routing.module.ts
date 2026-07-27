@@ -229,6 +229,13 @@ const routes: Routes = [
             './feature/reportes/devoluciones-proveedor/devoluciones-proveedor-reportes-routing.module'
           ).then((m) => m.DevolucionesProveedorReportesRoutingModule),
       },
+      {
+        path: 'reportes/devoluciones-pedidos-especiales',
+        loadChildren: () =>
+          import(
+            './feature/reportes/devoluciones-pedidos-especiales/devoluciones-pe-reportes-routing.module'
+          ).then((m) => m.DevolucionesPeReportesRoutingModule),
+      },
     ],
   },
 ];

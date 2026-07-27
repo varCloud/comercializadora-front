@@ -1,0 +1,149 @@
+<!-- Card de filtros (equivalente al formulario de búsqueda del legado: # ticket, almacén,
+     usuario/cajero, rango de fechas default hoy/hoy). Sin filtro de Línea de Producto (el SP no
+     lo soporta) ni buscador de texto libre (excepción módulo Reportes, regla 13). FE-4:
+     Buscar/Limpiar/paginación/Exportar disparan ReportesDevolucionesPedidosEspecialesService
+     (ver devoluciones-pe-list.component.ts). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-3 col-sm-6 col-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesDevolucionesPE.filters.ticket' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            type="number"
+            min="0"
+            [formControl]="idPedidoEspecial"
+            [placeholder]="'reportesDevolucionesPE.filters.ticketPlaceholder' | translate"
+          />
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-6 col-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesDevolucionesPE.filters.almacen' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idAlmacen" [placeholder]="'reportesDevolucionesPE.filters.almacenPlaceholder' | translate">
+            <mat-option [value]="null">{{ 'reportesDevolucionesPE.filters.almacenPlaceholder' | translate }}</mat-option>
+            @for (a of almacenes(); track a.id) {
+              <mat-option [value]="a.id">{{ a.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-6 col-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesDevolucionesPE.filters.usuario' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idUsuario)"
+          [fetchPage]="fetchUsuarios"
+          identifier="idUsuario"
+          bindLabel="nombreCompleto"
+          bindValue="idUsuario"
+          placeholder="reportesDevolucionesPE.filters.usuarioPlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-3 col-sm-6 col-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'reportesDevolucionesPE.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'reportesDevolucionesPE.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'reportesDevolucionesPE.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between flex-wrap gap-2">
+      <div class="d-flex flex-wrap gap-2" *blockUI="'reportesDevolucionesPEExportar'">
+        <button mat-stroked-button color="primary" [disabled]="pag.isEmpty()" (click)="exportar()">
+          <i-tabler name="file-download" class="icon-18 m-r-4"></i-tabler>
+          {{ 'reportesDevolucionesPE.actions.exportar' | translate }}
+        </button>
+      </div>
+      <div class="d-flex gap-2">
+        <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+          {{ 'reportesDevolucionesPE.filters.limpiar' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="buscar()">
+          {{ 'reportesDevolucionesPE.filters.buscar' | translate }}
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla del reporte (paridad de columnas con _DevolucionesPedidosEspeciales.cshtml del
+     legado). Paginación server-side vía irLink, filas de la página actual (regla 10). -->
+<mat-card class="cardWithShadow" *blockUI="'reportesDevolucionesPE'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDevolucionesPE.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDevolucionesPE.columns.fecha' | translate">{{ i.fechaAlta | date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tienda">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDevolucionesPE.columns.almacen' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDevolucionesPE.columns.almacen' | translate">{{ i.tienda }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDevolucionesPE.columns.cajero' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDevolucionesPE.columns.cajero' | translate">{{ i.nombreUsuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="idPedidoEspecial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDevolucionesPE.columns.folio' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDevolucionesPE.columns.folio' | translate">{{ i.idPedidoEspecial }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDevolucionesPE.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDevolucionesPE.columns.cliente' | translate">{{ i.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="producto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDevolucionesPE.columns.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDevolucionesPE.columns.producto' | translate">{{ i.producto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDevolucionesPE.columns.unidades' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDevolucionesPE.columns.unidades' | translate">{{ i.cantidad | number: '1.0-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDevolucionesPE.columns.precioVenta' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDevolucionesPE.columns.precioVenta' | translate">{{ i.precioVenta | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesDevolucionesPE.columns.montoTotal' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesDevolucionesPE.columns.montoTotal' | translate">{{ i.montoTotal | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarrasTicket">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'reportesDevolucionesPE.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let i" class="f-s-14" [attr.data-label]="'reportesDevolucionesPE.columns.codigoBarras' | translate">{{ i.codigoBarrasTicket }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'reportesDevolucionesPE.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

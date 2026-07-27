@@ -1932,5 +1932,42 @@
       "exportOk": "Reporte de devoluciones a proveedor exportado correctamente",
       "exportError": "Error al exportar el reporte de devoluciones a proveedor"
     }
+  },
+  "reportesDevolucionesPE": {
+    "title": "Reporte de Devoluciones Pedidos Especiales",
+    "empty": "No hay devoluciones de Pedidos Especiales para mostrar.",
+    "filters": {
+      "ticket": "# Ticket",
+      "ticketPlaceholder": "Todos los tickets",
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Todos los almacenes",
+      "usuario": "Usuario / Cajero",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "fecha": "Fecha",
+      "almacen": "Almacén",
+      "cajero": "Cajero",
+      "folio": "Folio",
+      "cliente": "Cliente",
+      "producto": "Producto",
+      "unidades": "Unidades",
+      "precioVenta": "Precio Venta",
+      "montoTotal": "Monto Total",
+      "codigoBarras": "Código de Barras"
+    },
+    "actions": {
+      "exportar": "Exportar"
+    },
+    "msg": {
+      "loading": "Consultando devoluciones de Pedidos Especiales…",
+      "loadError": "Error al consultar el reporte de devoluciones de Pedidos Especiales",
+      "exportando": "Generando reporte de devoluciones de Pedidos Especiales…"
+    }
   }
 }

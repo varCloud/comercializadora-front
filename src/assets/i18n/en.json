@@ -1932,5 +1932,42 @@
       "exportOk": "Supplier returns report exported successfully",
       "exportError": "Error exporting the supplier returns report"
     }
+  },
+  "reportesDevolucionesPE": {
+    "title": "Special Orders Returns Report",
+    "empty": "No Special Orders returns to display.",
+    "filters": {
+      "ticket": "# Ticket",
+      "ticketPlaceholder": "All tickets",
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "All warehouses",
+      "usuario": "User / Cashier",
+      "usuarioPlaceholder": "All users",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "fecha": "Date",
+      "almacen": "Warehouse",
+      "cajero": "Cashier",
+      "folio": "Folio",
+      "cliente": "Customer",
+      "producto": "Product",
+      "unidades": "Units",
+      "precioVenta": "Sale Price",
+      "montoTotal": "Total Amount",
+      "codigoBarras": "Barcode"
+    },
+    "actions": {
+      "exportar": "Export"
+    },
+    "msg": {
+      "loading": "Loading Special Orders returns…",
+      "loadError": "Error loading the Special Orders returns report",
+      "exportando": "Generating Special Orders returns report…"
+    }
   }
 }
