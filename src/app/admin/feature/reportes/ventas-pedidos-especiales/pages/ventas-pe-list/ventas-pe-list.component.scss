@@ -1,0 +1,6 @@
+// Columna "Ver factura" fija a la derecha (stickyEnd, regla 10): evita que la celda se
+// transparente al hacer scroll horizontal sobre las demás columnas del reporte.
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}

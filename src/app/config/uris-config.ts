@@ -46,6 +46,7 @@ export const URIS_CONFIG = {
     REPORTE_DROP_SIZE: 'drop-size',
     REPORTE_NIVEL_SERVICIO_PROVEEDOR: 'nivel-servicio-proveedor',
     REPORTE_DEVOLUCIONES_PROVEEDOR: 'devoluciones-proveedor',
+    REPORTE_VENTAS_PEDIDOS_ESP: 'ventas-pedidos-especiales',
     SYNC_DATA:'sync-data',
     PREGUNTAS_ESPECIALES: 'preguntas-especiales',
 };

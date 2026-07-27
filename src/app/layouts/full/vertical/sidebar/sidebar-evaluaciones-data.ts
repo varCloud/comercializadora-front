@@ -143,6 +143,11 @@ export const navItemsApp: NavItem[] = [
     route: '/admin/reportes/ventas',
   },
   {
+    displayName: 'Ventas Pedidos Especiales',
+    iconName: 'report-money',
+    route: '/admin/reportes/ventas-pedidos-especiales',
+  },
+  {
     displayName: 'Merma',
     iconName: 'trending-down',
     route: '/admin/reportes/merma',

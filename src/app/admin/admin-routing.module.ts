@@ -153,6 +153,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'reportes/ventas-pedidos-especiales',
+        loadChildren: () =>
+          import(
+            './feature/reportes/ventas-pedidos-especiales/ventas-pe-reportes-routing.module'
+          ).then((m) => m.VentasPeReportesRoutingModule),
+      },
+      {
         path: 'reportes/merma',
         loadChildren: () =>
           import('./feature/reportes/merma/merma-reportes-routing.module').then(

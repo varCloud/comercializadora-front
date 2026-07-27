@@ -1523,6 +1523,50 @@
       "exportando": "Generating sales report…"
     }
   },
+  "reportesVentasPE": {
+    "title": "Special Orders Sales Report",
+    "empty": "No Special Orders sales to display.",
+    "filters": {
+      "cliente": "Customer",
+      "clientePlaceholder": "All customers",
+      "usuario": "User / Cashier",
+      "usuarioPlaceholder": "All users",
+      "rangoFechas": "Date range",
+      "fechaInicio": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "fecha": "Date",
+      "sucursal": "Branch",
+      "tienda": "Store",
+      "cajero": "Cashier",
+      "folio": "Folio",
+      "cliente": "Customer",
+      "codigoBarras": "Barcode",
+      "linea": "Product Line",
+      "producto": "Product",
+      "cantidad": "Quantity",
+      "precioVenta": "Sale Price",
+      "iva": "Tax",
+      "montoTotal": "Total Amount",
+      "costoCompra": "Purchase Cost",
+      "utilidad": "Profit",
+      "margenBruto": "Gross Margin",
+      "formaPago": "Payment Method",
+      "verFactura": "Invoice"
+    },
+    "actions": {
+      "exportar": "Export",
+      "verFactura": "View invoice"
+    },
+    "msg": {
+      "loading": "Loading Special Orders sales…",
+      "loadError": "Error loading the Special Orders sales report",
+      "exportando": "Generating Special Orders sales report…"
+    }
+  },
   "reportesMerma": {
     "title": "Shrinkage Report",
     "empty": "No shrinkage records to display.",

@@ -1523,6 +1523,50 @@
       "exportando": "Generando reporte de ventas…"
     }
   },
+  "reportesVentasPE": {
+    "title": "Reporte de Ventas Pedidos Especiales",
+    "empty": "No hay ventas de Pedidos Especiales para mostrar.",
+    "filters": {
+      "cliente": "Cliente",
+      "clientePlaceholder": "Todos los clientes",
+      "usuario": "Usuario / Cajero",
+      "usuarioPlaceholder": "Todos los usuarios",
+      "rangoFechas": "Rango de fechas",
+      "fechaInicio": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "fecha": "Fecha",
+      "sucursal": "Sucursal",
+      "tienda": "Tienda",
+      "cajero": "Cajero",
+      "folio": "Folio",
+      "cliente": "Cliente",
+      "codigoBarras": "Código de barras",
+      "linea": "Línea de Producto",
+      "producto": "Producto",
+      "cantidad": "Cantidad",
+      "precioVenta": "Precio Venta",
+      "iva": "I.V.A.",
+      "montoTotal": "Monto Total",
+      "costoCompra": "Costo Compra",
+      "utilidad": "Utilidad",
+      "margenBruto": "Margen Bruto",
+      "formaPago": "Forma de Pago",
+      "verFactura": "Factura"
+    },
+    "actions": {
+      "exportar": "Exportar",
+      "verFactura": "Ver factura"
+    },
+    "msg": {
+      "loading": "Consultando ventas de Pedidos Especiales…",
+      "loadError": "Error al consultar el reporte de ventas de Pedidos Especiales",
+      "exportando": "Generando reporte de ventas de Pedidos Especiales…"
+    }
+  },
   "reportesMerma": {
     "title": "Reporte de Merma",
     "empty": "No hay merma para mostrar.",
