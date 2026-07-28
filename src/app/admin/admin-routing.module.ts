@@ -118,6 +118,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'ventas',
+        loadChildren: () =>
+          import('./feature/ventas/ventas-routing.module').then(
+            (m) => m.VentasRoutingModule,
+          ),
+      },
+      {
         path: 'inventario-fisico',
         loadChildren: () =>
           import('./feature/inventario-fisico/inventario-fisico-routing.module').then(

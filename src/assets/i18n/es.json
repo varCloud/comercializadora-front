@@ -577,6 +577,71 @@
       "proveedorCreado": "Proveedor creado. Búscalo en el selector para asignarlo."
     }
   },
+  "ventas": {
+    "title": "Ventas",
+    "pos": {
+      "escanear": "Escanear o buscar producto",
+      "escanearPlaceholder": "Escanea el código de barras o escribe para buscar…",
+      "existencia": "Existencia",
+      "tabla": {
+        "producto": "Producto",
+        "cantidad": "Cantidad",
+        "precioUnitario": "Precio Unitario",
+        "descuento": "Descuento",
+        "importe": "Importe",
+        "acciones": "Acciones",
+        "eliminar": "Eliminar",
+        "vacio": "Escanea o busca un producto para agregarlo al ticket."
+      },
+      "resumen": {
+        "articulos": "Artículos",
+        "subtotal": "Subtotal",
+        "cobrar": "Cobrar",
+        "limpiar": "Limpiar ticket",
+        "ultimoCambio": "Último Cambio"
+      },
+      "msg": {
+        "cargandoCatalogo": "Actualizando productos del almacén…",
+        "errorCatalogo": "Error al cargar el catálogo de productos",
+        "productoNoExiste": "El producto no existe",
+        "cantidadRequerida": "Debe escribir la cantidad de productos que va a agregar.",
+        "sinPrecio": "El producto no tiene un precio configurado.",
+        "sinExistencia": "No existe suficiente producto en inventario.",
+        "ticketVacio": "Debe tener productos agregados para continuar con la venta.",
+        "ventaRealizada": "Venta realizada correctamente."
+      }
+    },
+    "cobro": {
+      "title": "Cobro de venta",
+      "cliente": "Cliente",
+      "clientePlaceholder": "Busca un cliente…",
+      "formaPago": "Forma de pago",
+      "seleccione": "--SELECCIONA--",
+      "clientesAtendidos": "Número de clientes atendidos por ruta",
+      "facturar": "Facturar esta venta",
+      "usoCfdi": "Uso de CFDI",
+      "efectivoRecibido": "Efectivo recibido",
+      "cambio": "Cambio",
+      "subtotal": "Subtotal",
+      "descuentoCliente": "Descuento cliente",
+      "comisionBancaria": "Comisión bancaria",
+      "iva": "IVA",
+      "total": "Total",
+      "cancelar": "Cancelar",
+      "cobrar": "Cobrar",
+      "msg": {
+        "clienteGenericoNoFactura": "Debe seleccionar un cliente diferente al genérico para facturar.",
+        "correoInvalido": "No es posible facturar a un cliente sin correo electrónico válido.",
+        "rfcInvalido": "No es posible facturar a un cliente sin RFC válido.",
+        "clienteRequerido": "Debe seleccionar un cliente.",
+        "formaPagoRequerida": "Debe seleccionar la forma de pago.",
+        "usoCfdiRequerido": "Debe seleccionar el uso de CFDI.",
+        "clientesAtendidosRequerido": "Debe escribir cuántos clientes son atendidos por la ruta.",
+        "efectivoRequerido": "Debe escribir con cuánto efectivo le están pagando.",
+        "efectivoInsuficiente": "El efectivo no alcanza a cubrir el costo total de la venta: {{total}}"
+      }
+    }
+  },
   "produccionLiquidos": {
     "title": "Producción líquidos",
     "empty": "No hay movimientos de carga de mercancía para mostrar.",

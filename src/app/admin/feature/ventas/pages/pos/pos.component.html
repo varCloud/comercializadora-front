@@ -1,0 +1,114 @@
+<div class="row" *blockUI="'pos'">
+  <div class="col-lg-8 col-12">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.pos.escanear' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            #scanInput
+            matInput
+            autocomplete="off"
+            [formControl]="scanControl"
+            [matAutocomplete]="auto"
+            [placeholder]="'ventas.pos.escanearPlaceholder' | translate"
+            (keydown.enter)="agregarPorCodigoBarras(scanControl.value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="barcode" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSugerenciaSeleccionada($event)">
+          @for (p of sugerencias(); track p.idProducto) {
+            <mat-option [value]="p.codigoBarras">
+              {{ p.descripcion }} — {{ p.codigoBarras }}
+              ({{ 'ventas.pos.existencia' | translate }}: {{ p.existencia }})
+            </mat-option>
+          }
+        </mat-autocomplete>
+
+        <div class="table-responsive m-t-16">
+          <table class="w-100 ticket-table">
+            <thead>
+              <tr>
+                <th>{{ 'ventas.pos.tabla.producto' | translate }}</th>
+                <th class="text-center">{{ 'ventas.pos.tabla.cantidad' | translate }}</th>
+                <th class="text-center">{{ 'ventas.pos.tabla.precioUnitario' | translate }}</th>
+                <th class="text-center">{{ 'ventas.pos.tabla.descuento' | translate }}</th>
+                <th class="text-center">{{ 'ventas.pos.tabla.importe' | translate }}</th>
+                <th class="text-center">{{ 'ventas.pos.tabla.acciones' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (linea of ticket(); track linea.idProducto) {
+                <tr>
+                  <td>
+                    {{ linea.descripcion }}
+                    <div class="f-s-12 text-muted">{{ linea.codigoBarras }}</div>
+                  </td>
+                  <td class="text-center">
+                    <input
+                      class="celda-input"
+                      type="number"
+                      [step]="linea.fraccion ? 0.01 : 1"
+                      [min]="linea.fraccion ? 0.01 : 1"
+                      [(ngModel)]="linea.cantidad"
+                      [ngModelOptions]="{ standalone: true }"
+                      (blur)="onCantidadBlur(linea)"
+                    />
+                  </td>
+                  <td class="text-center">{{ linea.precioUnitario | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+                  <td class="text-center">{{ descuentoLinea(linea) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+                  <td class="text-center f-w-600">{{ importeLinea(linea) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+                  <td class="text-center">
+                    <a
+                      class="cursor-pointer"
+                      [style.color]="'#e53935'"
+                      [matTooltip]="'ventas.pos.tabla.eliminar' | translate"
+                      (click)="eliminarLinea(linea.idProducto)"
+                    >
+                      <i-tabler name="trash" class="icon-18"></i-tabler>
+                    </a>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="text-center p-16">{{ 'ventas.pos.tabla.vacio' | translate }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-lg-4 col-12">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <div class="d-flex justify-content-between m-b-8">
+          <span>{{ 'ventas.pos.resumen.articulos' | translate }}</span>
+          <span class="f-w-600">{{ cantidadTotalTicket() }}</span>
+        </div>
+        <div class="d-flex justify-content-between m-b-16">
+          <span class="f-s-18 f-w-600">{{ 'ventas.pos.resumen.subtotal' | translate }}</span>
+          <span class="f-s-24 f-w-700">{{ subtotal() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+
+        <button mat-flat-button color="primary" class="w-100 m-b-8" type="button" (click)="abrirCobro()">
+          {{ 'ventas.pos.resumen.cobrar' | translate }}
+        </button>
+        <button mat-stroked-button color="warn" class="w-100" type="button" (click)="limpiarTicket()">
+          {{ 'ventas.pos.resumen.limpiar' | translate }}
+        </button>
+
+        @if (ultimoCambio() !== null) {
+          <hr class="m-t-16 m-b-16" />
+          <div class="text-center">
+            <div class="f-s-14 text-muted">{{ 'ventas.pos.resumen.ultimoCambio' | translate }}</div>
+            <div class="f-s-22 f-w-700">{{ ultimoCambio() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+.ticket-table {
+  border-collapse: collapse;
+}
+.ticket-table th,
+.ticket-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant, #e5e7eb);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.ticket-table thead th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.ticket-table tbody tr:nth-child(odd) {
+  background: rgba(0, 0, 0, 0.02);
+}
+.celda-input {
+  width: 80px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+.celda-input:focus {
+  border-bottom: 1px solid var(--mat-sys-primary, #5d87ff);
+}

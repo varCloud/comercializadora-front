@@ -577,6 +577,71 @@
       "proveedorCreado": "Supplier created. Search it in the selector to assign it."
     }
   },
+  "ventas": {
+    "title": "Sales",
+    "pos": {
+      "escanear": "Scan or search product",
+      "escanearPlaceholder": "Scan the barcode or type to search…",
+      "existencia": "Stock",
+      "tabla": {
+        "producto": "Product",
+        "cantidad": "Quantity",
+        "precioUnitario": "Unit Price",
+        "descuento": "Discount",
+        "importe": "Amount",
+        "acciones": "Actions",
+        "eliminar": "Delete",
+        "vacio": "Scan or search a product to add it to the ticket."
+      },
+      "resumen": {
+        "articulos": "Items",
+        "subtotal": "Subtotal",
+        "cobrar": "Charge",
+        "limpiar": "Clear ticket",
+        "ultimoCambio": "Last Change"
+      },
+      "msg": {
+        "cargandoCatalogo": "Updating warehouse products…",
+        "errorCatalogo": "Error loading the product catalog",
+        "productoNoExiste": "The product does not exist",
+        "cantidadRequerida": "You must enter the quantity of products to add.",
+        "sinPrecio": "The product does not have a configured price.",
+        "sinExistencia": "There is not enough product in inventory.",
+        "ticketVacio": "You must have products added to continue with the sale.",
+        "ventaRealizada": "Sale completed successfully."
+      }
+    },
+    "cobro": {
+      "title": "Checkout",
+      "cliente": "Customer",
+      "clientePlaceholder": "Search a customer…",
+      "formaPago": "Payment method",
+      "seleccione": "--SELECT--",
+      "clientesAtendidos": "Number of customers served on the route",
+      "facturar": "Invoice this sale",
+      "usoCfdi": "CFDI use",
+      "efectivoRecibido": "Cash received",
+      "cambio": "Change",
+      "subtotal": "Subtotal",
+      "descuentoCliente": "Customer discount",
+      "comisionBancaria": "Bank fee",
+      "iva": "VAT",
+      "total": "Total",
+      "cancelar": "Cancel",
+      "cobrar": "Charge",
+      "msg": {
+        "clienteGenericoNoFactura": "You must select a customer other than the generic one to invoice.",
+        "correoInvalido": "You cannot invoice a customer without a valid email address.",
+        "rfcInvalido": "You cannot invoice a customer without a valid RFC.",
+        "clienteRequerido": "You must select a customer.",
+        "formaPagoRequerida": "You must select the payment method.",
+        "usoCfdiRequerido": "You must select the CFDI use.",
+        "clientesAtendidosRequerido": "You must enter how many customers are served on the route.",
+        "efectivoRequerido": "You must enter the cash amount being paid.",
+        "efectivoInsuficiente": "The cash amount does not cover the sale total: {{total}}"
+      }
+    }
+  },
   "produccionLiquidos": {
     "title": "Liquid production",
     "empty": "No merchandise loading movements to display.",
