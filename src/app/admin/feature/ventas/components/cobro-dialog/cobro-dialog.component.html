@@ -50,7 +50,7 @@
             <mat-form-field appearance="outline" class="w-100 hide-hint">
               <mat-select formControlName="idUsoCFDI" [placeholder]="'ventas.cobro.seleccione' | translate">
                 @for (u of usoCfdiOpciones(); track u.id) {
-                  <mat-option [value]="u.id">{{ u.descripcion }}</mat-option>
+                  <mat-option [value]="u.id">{{ u.clave }} - {{ u.descripcion }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>

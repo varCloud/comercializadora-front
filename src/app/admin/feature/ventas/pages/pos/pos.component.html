@@ -19,9 +19,9 @@
         </mat-form-field>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSugerenciaSeleccionada($event)">
           @for (p of sugerencias(); track p.idProducto) {
-            <mat-option [value]="p.codigoBarras">
+            <mat-option [value]="p.codigoBarras" [disabled]="p.existencia <= 0">
               {{ p.descripcion }} — {{ p.codigoBarras }}
-              ({{ 'ventas.pos.existencia' | translate }}: {{ p.existencia }})
+              ({{ 'ventas.pos.existencia' | translate }}: {{ existenciaLabel(p) }})
             </mat-option>
           }
         </mat-autocomplete>

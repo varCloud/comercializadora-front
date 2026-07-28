@@ -8,15 +8,16 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable, map } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { NotificationService } from 'src/app/services/notification.service';
+import { SesionService } from 'src/app/services/sesion.service';
 import { ENUM_ESTATUS_MODAL, ResultModalModel } from 'src/app/models/result-modal';
 import { Cliente } from 'src/app/admin/models/clientes/cliente';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { SelectPaginadoComponent } from 'src/app/admin/shared/components/select-paginado/select-paginado.component';
 import { validarEmail, validarRfc } from 'src/app/admin/shared/utils/validadores-fiscales';
-import { Catalogo } from 'src/app/admin/models/shared/catalogo';
 import { FormaPago } from 'src/app/admin/models/ventas/forma-pago';
+import { UsoCfdi } from 'src/app/admin/models/ventas/uso-cfdi';
 import { DatosCobroModel } from 'src/app/admin/models/ventas/datos-cobro';
-import { PosCatalogoMockService } from '../../services/pos-catalogo-mock.service';
+import { VentasService } from 'src/app/admin/services/ventas.service';
 
 /** Datos que recibe el modal al abrirse: el subtotal del ticket (ya con descuento por volumen). */
 export interface CobroDialogData {
@@ -24,12 +25,20 @@ export interface CobroDialogData {
 }
 
 const CLIENTE_GENERICO_ID = 1;
+
 /**
- * % de comisión bancaria simulado. En el legado viene de configuración (`#comisionBancaria`,
- * poblado desde `SP_CONSULTA_CONFIGURACION_VENTAS` — Bloque B, aún no migrado). TODO (FE-A5):
- * sustituir por el valor real de configuración cuando exista el endpoint.
+ * La API (`FormaPago`) no trae flags booleanos "esEfectivo"/"esTarjeta" — se derivan por texto
+ * de `nombre` (columna corta del SP, p. ej. "EFECTIVO"/"TARJETA DE CRÉDITO"), mismo criterio
+ * que `esRuta` ya usa para el tipo de cliente. Evita depender de ids mágicos (1/4/18 en el
+ * legado) que podrían no coincidir entre entornos.
  */
-const COMISION_BANCARIA_PORCENTAJE = 3.5;
+function esFormaPagoEfectivo(forma: FormaPago | undefined): boolean {
+  return (forma?.nombre ?? '').trim().toUpperCase() === 'EFECTIVO';
+}
+
+function esFormaPagoTarjeta(forma: FormaPago | undefined): boolean {
+  return (forma?.nombre ?? '').toUpperCase().includes('TARJETA');
+}
 
 /**
  * Modal de cobro del POS (FE-A4). Réplica de `#ModalPrevioVenta` + `calculaTotales()` /
@@ -56,7 +65,8 @@ const COMISION_BANCARIA_PORCENTAJE = 3.5;
 export class CobroDialogComponent implements AfterViewInit {
   private readonly fb = inject(FormBuilder);
   private readonly clientesService = inject(ClientesService);
-  private readonly catalogoMock = inject(PosCatalogoMockService);
+  private readonly ventasService = inject(VentasService);
+  private readonly sesionService = inject(SesionService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly dialogRef = inject(MatDialogRef<CobroDialogComponent>);
@@ -65,7 +75,7 @@ export class CobroDialogComponent implements AfterViewInit {
 
   readonly subtotalTicket = signal(0);
   readonly formasPago = signal<FormaPago[]>([]);
-  readonly usoCfdiOpciones = signal<Catalogo[]>([]);
+  readonly usoCfdiOpciones = signal<UsoCfdi[]>([]);
   readonly clientePreload = signal<unknown[]>([]);
   readonly clienteSeleccionado = signal<Cliente | null>(null);
   readonly enviando = signal(false);
@@ -96,7 +106,7 @@ export class CobroDialogComponent implements AfterViewInit {
     this.formasPago().find((f) => f.id === this.idFormaPagoValue()),
   );
 
-  readonly esEfectivo = computed(() => this.formaPagoSeleccionada()?.esEfectivo ?? true);
+  readonly esEfectivo = computed(() => esFormaPagoEfectivo(this.formaPagoSeleccionada()) || !this.formaPagoSeleccionada());
 
   /** Regla de negocio preservada del legado: se evalúa por texto, no por un flag booleano. */
   readonly esRuta = computed(() =>
@@ -113,11 +123,20 @@ export class CobroDialogComponent implements AfterViewInit {
     this.round2(this.subtotalTicket() - this.descuentoCliente()),
   );
 
+  /**
+   * % de comisión bancaria: viene de la sesión real (`Sesion.comisionBancaria`, ya la trae el
+   * login — SP_CONSULTA_CONFIGURACION_VENTAS del legado). Antes (FE-A3/A4, sin API) era un
+   * valor simulado fijo (3.5); ahora se lee de `SesionService` en vez de hardcodearlo.
+   */
+  private readonly comisionBancariaPorcentaje = computed(
+    () => this.sesionService.sesion()?.comisionBancaria ?? 0,
+  );
+
   /** Comisión bancaria: solo tarjeta (crédito/débito) Y venta NO facturada. */
   readonly comisionBancaria = computed(() => {
     const forma = this.formaPagoSeleccionada();
-    if (!forma?.esTarjeta || this.facturarValue()) return 0;
-    return this.round2(this.subtotalConDescuentoCliente() * (COMISION_BANCARIA_PORCENTAJE / 100));
+    if (!esFormaPagoTarjeta(forma) || this.facturarValue()) return 0;
+    return this.round2(this.subtotalConDescuentoCliente() * (this.comisionBancariaPorcentaje() / 100));
   });
 
   readonly subtotalConComision = computed(() =>
@@ -141,8 +160,28 @@ export class CobroDialogComponent implements AfterViewInit {
   constructor() {
     this.subtotalTicket.set(this.data?.subtotalTicket ?? 0);
 
-    this.catalogoMock.obtenerFormasPago().subscribe((lista) => this.formasPago.set(lista));
-    this.catalogoMock.obtenerUsoCfdi().subscribe((lista) => this.usoCfdiOpciones.set(lista));
+    this.ventasService.obtenerFormasPago().subscribe({
+      next: (lista) => {
+        this.formasPago.set(lista);
+        // Preselecciona la forma de pago "EFECTIVO" real (por texto, no por id mágico — ver
+        // `esFormaPagoEfectivo`). Si el catálogo no la trae, deja el valor inicial del form.
+        const efectivo = lista.find((f) => esFormaPagoEfectivo(f));
+        if (efectivo) {
+          this.cobroForm.controls.idFormaPago.setValue(efectivo.id, { emitEvent: false });
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar las formas de pago', err);
+        this.notify.notify('error', this.translate.instant('ventas.cobro.msg.errorFormasPago'));
+      },
+    });
+    this.ventasService.obtenerUsoCfdi().subscribe({
+      next: (lista) => this.usoCfdiOpciones.set(lista),
+      error: (err) => {
+        console.error('Error al cargar los usos de CFDI', err);
+        this.notify.notify('error', this.translate.instant('ventas.cobro.msg.errorUsoCfdi'));
+      },
+    });
 
     // Cliente genérico preseleccionado (paridad con `$('#idCliente').val("1")` del legado).
     this.clientesService.obtenerPorId(CLIENTE_GENERICO_ID).subscribe((cliente) => {

@@ -1,29 +1,28 @@
-// Forma de pago del modal de cobro. Un archivo = una interfaz + su modelo (regla 11).
+// Forma de pago (catálogo, GET /ventas/catalogos/formas-pago). Mapea 1:1 la entidad
+// `FormaPago` de comercializadora-api. Un archivo = una interfaz + su modelo (regla 11).
 //
-// NOTA (FE-A5 / API-A5): catálogo hoy simulado localmente (`pos-catalogo-mock.service.ts`).
-// La API real (`SP_CONSULTA_FORMA_PAGO`) puede traer ids distintos a los usados aquí —
-// se conservan 1=Efectivo/4=Crédito/18=Débito por paridad con los ids mágicos del legado
-// (EvtVentas.js:1516-1517), a validar/reemplazar cuando exista el catálogo real.
+// NOTA (FE-A5): la API NO expone flags "esEfectivo"/"esTarjeta" (a diferencia del catálogo
+// simulado anterior, que los traía precalculados). El legado (EvtVentas.js) los determinaba
+// comparando el id contra magic numbers (1=Efectivo, 4=Crédito, 18=Débito) — frágil si la BD
+// llega a tener ids distintos. Aquí se derivan por texto de `nombre` (columna corta del SP,
+// p. ej. "EFECTIVO"/"TARJETA") en `cobro-dialog.component.ts` (`esFormaPagoEfectivo`/
+// `esFormaPagoTarjeta`), mismo criterio que ya usa `esRuta` para el tipo de cliente.
 
 export interface FormaPago {
   id: number;
+  /** Nombre corto (p. ej. "EFECTIVO", "TARJETA"). */
+  nombre: string;
   descripcion: string;
-  /** Si es efectivo se habilita la captura de "Efectivo recibido" con cambio en tiempo real. */
-  esEfectivo: boolean;
-  /** Tarjeta de crédito/débito: aplica comisión bancaria cuando la venta NO se factura. */
-  esTarjeta: boolean;
 }
 
 export class FormaPagoModel implements FormaPago {
   id: number;
+  nombre: string;
   descripcion: string;
-  esEfectivo: boolean;
-  esTarjeta: boolean;
 
   constructor(data: Partial<FormaPago> = {}) {
     this.id = data.id ?? 0;
+    this.nombre = data.nombre ?? '';
     this.descripcion = data.descripcion ?? '';
-    this.esEfectivo = data.esEfectivo ?? false;
-    this.esTarjeta = data.esTarjeta ?? false;
   }
 }

@@ -608,7 +608,9 @@
         "sinPrecio": "The product does not have a configured price.",
         "sinExistencia": "There is not enough product in inventory.",
         "ticketVacio": "You must have products added to continue with the sale.",
-        "ventaRealizada": "Sale completed successfully."
+        "ventaRealizada": "Sale completed successfully.",
+        "guardandoVenta": "Saving sale…",
+        "errorGuardarVenta": "Error saving the sale. Please try again."
       }
     },
     "cobro": {
@@ -638,7 +640,9 @@
         "usoCfdiRequerido": "You must select the CFDI use.",
         "clientesAtendidosRequerido": "You must enter how many customers are served on the route.",
         "efectivoRequerido": "You must enter the cash amount being paid.",
-        "efectivoInsuficiente": "The cash amount does not cover the sale total: {{total}}"
+        "efectivoInsuficiente": "The cash amount does not cover the sale total: {{total}}",
+        "errorFormasPago": "Error loading the payment methods.",
+        "errorUsoCfdi": "Error loading the CFDI uses."
       }
     }
   },

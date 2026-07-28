@@ -608,7 +608,9 @@
         "sinPrecio": "El producto no tiene un precio configurado.",
         "sinExistencia": "No existe suficiente producto en inventario.",
         "ticketVacio": "Debe tener productos agregados para continuar con la venta.",
-        "ventaRealizada": "Venta realizada correctamente."
+        "ventaRealizada": "Venta realizada correctamente.",
+        "guardandoVenta": "Guardando venta…",
+        "errorGuardarVenta": "Error al guardar la venta. Intenta de nuevo."
       }
     },
     "cobro": {
@@ -638,7 +640,9 @@
         "usoCfdiRequerido": "Debe seleccionar el uso de CFDI.",
         "clientesAtendidosRequerido": "Debe escribir cuántos clientes son atendidos por la ruta.",
         "efectivoRequerido": "Debe escribir con cuánto efectivo le están pagando.",
-        "efectivoInsuficiente": "El efectivo no alcanza a cubrir el costo total de la venta: {{total}}"
+        "efectivoInsuficiente": "El efectivo no alcanza a cubrir el costo total de la venta: {{total}}",
+        "errorFormasPago": "Error al cargar las formas de pago.",
+        "errorUsoCfdi": "Error al cargar los usos de CFDI."
       }
     }
   },
