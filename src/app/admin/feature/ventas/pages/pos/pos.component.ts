@@ -12,6 +12,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -20,18 +21,33 @@ import { finalize } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ENUM_ESTATUS_MODAL, ResultModalModel } from 'src/app/models/result-modal';
+import { Notificacion } from 'src/app/models/sesion';
 import { ProductoVenta, ProductoVentaModel } from 'src/app/admin/models/ventas/producto-venta';
 import { LineaTicket, LineaTicketModel } from 'src/app/admin/models/ventas/linea-ticket';
+import { LineaDevolucion, LineaDevolucionModel } from 'src/app/admin/models/ventas/linea-devolucion';
 import { DatosCobro } from 'src/app/admin/models/ventas/datos-cobro';
-import { GuardarVentaRequestModel } from 'src/app/admin/models/ventas/guardar-venta-request';
+import {
+  GuardarVentaRequest,
+  GuardarVentaRequestModel,
+} from 'src/app/admin/models/ventas/guardar-venta-request';
 import { VentaDetalleRequestModel } from 'src/app/admin/models/ventas/venta-detalle-request';
 import { TipoVentaId } from 'src/app/admin/models/ventas/tipo-venta';
+import { Venta } from 'src/app/admin/models/ventas/venta';
 import { VentasService } from 'src/app/admin/services/ventas.service';
 import { PosCatalogoService } from '../../services/pos-catalogo.service';
 import {
   CobroDialogComponent,
   CobroDialogData,
 } from '../../components/cobro-dialog/cobro-dialog.component';
+
+/**
+ * Modo activo del ticket (FE-A5b). Réplica de las banderas `esDevolucion`/`esAgregarProductos`
+ * (más "sin bandera" = venta normal) de `EvtVentas.js`, unificadas en un selector de modo en la
+ * misma pantalla (decisión de UI del migrador, la HU lo describe como "modos de la misma
+ * pantalla"). El modo "líquidos/despachadores" del legado NO es un modo de captura: es 100%
+ * automático (columna `cantProductosLiq` de la respuesta de `GuardarVenta`, ver `enviarVenta()`).
+ */
+type ModoPos = 'venta' | 'devolucion' | 'complemento';
 
 /**
  * Pantalla POS — venta (FE-A3/FE-A5a). Réplica de `Views/Ventas/Ventas.cshtml` + `EvtVentas.js`:
@@ -43,8 +59,31 @@ import {
  * FE-A5a conectó esta pantalla a la API real: catálogo (`PosCatalogoService`, compone
  * `ProductosService` + `VentasService.obtenerExistencias()`, API-A6), guardado de venta y
  * catálogos de cobro (`VentasService`). Existencia real desde el inicio: bloquea alta/edición de
- * cantidad por encima de lo disponible y deshabilita productos sin stock en el buscador. Solo
- * cubre el flujo de venta normal — devolución/complemento/líquidos son FE-A5b.
+ * cantidad por encima de lo disponible y deshabilita productos sin stock en el buscador.
+ *
+ * FE-A5b agrega los 3 modos adicionales sobre el mismo ticket (selector `modo`, réplica de las
+ * banderas `esDevolucion`/`esAgregarProductos` del legado):
+ * - **Devolución**: localiza el ticket original por código de barras
+ *   (`VentasService.buscarPorCodigoBarras` + `obtenerPorId`), el cajero marca cantidades a
+ *   devolver por línea (tope = lo comprado), motivo obligatorio, prorrateo de comisión bancaria
+ *   devuelta (réplica de `actualizarSubTotalDevoluciones()`) y guarda directo (sin modal de
+ *   cobro — el legado tampoco cobra en una devolución).
+ * - **Complemento**: localiza el ticket original igual que Devolución, pero el cajero sigue
+ *   escaneando productos NUEVOS al ticket normal; el descuento por volumen (`recalcularTicket()`)
+ *   suma las cantidades ya vendidas en el ticket localizado (réplica exacta de
+ *   `actualizaTicketVenta()` cuando `idVentaComplemento > 0`: solo cuenta para el rango de
+ *   precio, no se re-renderizan como líneas). Al guardar viaja `idVentaComplemento` con
+ *   `tipoVenta = Normal` e `idVenta = 0` — así es como el legado arma el payload en este flujo
+ *   (ver `AbrirModalComplementoVenta()`/`BuscarVentaCodigoBarras()`, que nunca tocan
+ *   `esAgregarProductos`; ese flag pertenece a una pantalla de edición server-rendered aparte,
+ *   fuera del alcance de este POS).
+ * - **Líquidos/despachadores**: NO es un modo de captura (hallazgo de la investigación, ver
+ *   memoria `modulo-ventas-modos-pos.md`). El legado solo usa `EnumTipoVenta.ProductosLiquidos`
+ *   como filtro interno para imprimir un "Ticket para Despachadores" adicional cuando la venta
+ *   normal contiene productos de líneas líquidas (`cantProductosLiq > 0` en la respuesta de
+ *   `GuardarVenta`); la captura decimal ya la cubre el flag `fraccion` (FE-A3). Aquí se muestra
+ *   un aviso informativo tras guardar cuando `cantProductosLiq > 0` (la generación del PDF en sí
+ *   es Bloque D, fuera de esta tarea).
  */
 @Component({
   selector: 'app-pos',
@@ -102,6 +141,26 @@ export class PosComponent implements OnInit, AfterViewInit {
     this.round2(this.ticket().reduce((acc, l) => acc + this.importeLinea(l), 0)),
   );
 
+  // ====================== Modos (FE-A5b): venta / devolución / complemento ======================
+
+  readonly modo = signal<ModoPos>('venta');
+  /** Ticket original localizado por código de barras (modos Devolución/Complemento). */
+  readonly ventaLocalizada = signal<Venta | null>(null);
+  readonly buscandoTicket = signal(false);
+  readonly buscarTicketControl = new FormControl('', { nonNullable: true });
+  readonly motivoDevolucionControl = new FormControl('', { nonNullable: true });
+  /** Líneas del ticket localizado con la cantidad que el cajero marca para devolver (modo Devolución). */
+  readonly lineasDevolucion = signal<LineaDevolucion[]>([]);
+
+  readonly totalADevolver = computed(() =>
+    this.round2(
+      this.lineasDevolucion().reduce(
+        (acc, l) => acc + l.cantidadDevolver * l.detalle.precioVenta + this.comisionDevueltaLinea(l),
+        0,
+      ),
+    ),
+  );
+
   ngOnInit(): void {
     this.cargarCatalogo();
   }
@@ -136,6 +195,9 @@ export class PosComponent implements OnInit, AfterViewInit {
 
   /** Enter sobre el campo de escaneo = flujo de pistola lectora (alta automática, cantidad 1). */
   agregarPorCodigoBarras(codigoRaw: string): void {
+    // En modo Devolución no se escanean productos nuevos: el ticket lo arma la venta localizada.
+    if (this.modo() === 'devolucion') return;
+
     const codigo = (codigoRaw ?? '').trim();
     if (!codigo) {
       this.focusScan();
@@ -307,10 +369,18 @@ export class PosComponent implements OnInit, AfterViewInit {
    * primero el rango de precio propio del producto (si su cantidad cae dentro) y, si no aplica
    * ninguno, el default de mayoreo cuando la cantidad TOTAL del ticket (todas las líneas) es
    * >= 6 artículos.
+   *
+   * Modo Complemento: la cantidad evaluada (umbral de mayoreo y rango por producto) SUMA las
+   * cantidades ya vendidas en el ticket localizado (`extraPorComplemento`), réplica exacta de
+   * `actualizaTicketVenta()` cuando `idVentaComplemento > 0` — esas cantidades cuentan para el
+   * precio pero NO se agregan como líneas visibles del ticket (el legado tampoco las renderiza).
    */
   private recalcularTicket(): void {
     const catalogo = this.catalogo();
-    const cantidadTotalTicket = this.ticket().reduce((acc, l) => acc + l.cantidad, 0);
+    const extraPorComplemento = this.cantidadesComplemento();
+    const cantidadTotalTicket =
+      this.ticket().reduce((acc, l) => acc + l.cantidad, 0) +
+      this.sumaValores(extraPorComplemento);
 
     const actualizadas = this.ticket().map((linea) => {
       const producto = catalogo.find((p) => p.idProducto === linea.idProducto);
@@ -319,16 +389,18 @@ export class PosComponent implements OnInit, AfterViewInit {
       let precioUnitario =
         cantidadTotalTicket >= 6 ? producto.precioMenudeo : producto.precioIndividual;
 
+      const cantidadEvaluada = linea.cantidad + (extraPorComplemento.get(linea.idProducto) ?? 0);
+
       const rangoAplicable = producto.rangos.find(
-        (r) => linea.cantidad >= r.min && linea.cantidad <= r.max,
+        (r) => cantidadEvaluada >= r.min && cantidadEvaluada <= r.max,
       );
 
       if (rangoAplicable) {
         precioUnitario = rangoAplicable.costo;
-      } else if (producto.rangos.length > 0 && linea.cantidad > 6) {
+      } else if (producto.rangos.length > 0 && cantidadEvaluada > 6) {
         // Caso "excede el rango máximo definido": usa el costo del rango de mayor `max`.
         const rangoMax = producto.rangos.reduce((max, r) => (r.max > max.max ? r : max));
-        if (linea.cantidad > rangoMax.max) {
+        if (cantidadEvaluada > rangoMax.max) {
           precioUnitario = rangoMax.costo;
         }
       }
@@ -339,11 +411,36 @@ export class PosComponent implements OnInit, AfterViewInit {
     this.ticket.set(actualizadas);
   }
 
-  // ====================== Cobro ======================
+  /** Cantidades del ticket localizado (modo Complemento), agrupadas por producto. */
+  private cantidadesComplemento(): Map<number, number> {
+    const mapa = new Map<number, number>();
+    if (this.modo() !== 'complemento') return mapa;
+    const venta = this.ventaLocalizada();
+    if (!venta) return mapa;
+    for (const d of venta.detalles) {
+      mapa.set(d.idProducto, (mapa.get(d.idProducto) ?? 0) + d.cantidad);
+    }
+    return mapa;
+  }
+
+  private sumaValores(mapa: Map<number, number>): number {
+    let total = 0;
+    for (const v of mapa.values()) total += v;
+    return total;
+  }
+
+  // ====================== Cobro (modos Venta / Complemento) ======================
 
   abrirCobro(): void {
     if (this.ticket().length === 0) {
       this.notify.notify('warning', this.translate.instant('ventas.pos.msg.ticketVacio'));
+      return;
+    }
+    if (this.modo() === 'complemento' && !this.ventaLocalizada()) {
+      this.notify.notify(
+        'warning',
+        this.translate.instant('ventas.pos.buscarTicket.msg.requeridoComplemento'),
+      );
       return;
     }
 
@@ -364,10 +461,14 @@ export class PosComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /** POST /ventas real. Bloquea doble-submit con `guardandoVenta` + `blockUI` (regla 04). */
+  /**
+   * POST /ventas real (venta normal o complemento). En modo Complemento viaja
+   * `idVentaComplemento` con `idVenta = 0` y `tipoVenta = Normal` — así es como el legado arma
+   * el payload cuando el ticket se localiza vía `BuscarVentaCodigoBarras()` dentro de la pantalla
+   * de venta (no confundir con la pantalla server-rendered `esAgregarProductos=true`, que es un
+   * flujo de edición aparte fuera de alcance).
+   */
   private guardarVenta(datos: DatosCobro): void {
-    if (this.guardandoVenta()) return;
-
     const detalles = this.ticket().map((l) => {
       const costoLinea = this.round2(l.cantidad * l.ultimoCostoCompra);
       return new VentaDetalleRequestModel({
@@ -399,10 +500,209 @@ export class PosComponent implements OnInit, AfterViewInit {
       tipoVenta: TipoVentaId.Normal,
       motivoDevolucion: null,
       idPedidoEspecial: 0,
-      idVentaComplemento: 0,
+      idVentaComplemento: this.modo() === 'complemento' ? this.ventaLocalizada()?.idVenta ?? 0 : 0,
       montoTotalVenta: datos.total,
       montoPagado: datos.efectivoRecibido,
     });
+
+    this.enviarVenta(request, datos.cambio);
+  }
+
+  // ====================== Modos (FE-A5b) ======================
+
+  cambiarModo(event: MatButtonToggleChange): void {
+    const nuevo = event.value as ModoPos;
+    if (this.modo() === nuevo) return;
+    this.modo.set(nuevo);
+    this.limpiarModo();
+  }
+
+  /** Resetea ticket + venta localizada + líneas de devolución al cambiar de modo o tras guardar. */
+  private limpiarModo(): void {
+    this.ticket.set([]);
+    this.ventaLocalizada.set(null);
+    this.lineasDevolucion.set([]);
+    this.buscarTicketControl.setValue('');
+    this.motivoDevolucionControl.setValue('');
+    this.focusScan();
+  }
+
+  /**
+   * Localiza el ticket original por código de barras (modos Devolución/Complemento). Réplica de
+   * `BuscarVentaCodigoBarras()`: `buscarPorCodigoBarras()` devuelve una LISTA (el SP legado no
+   * garantiza unicidad); se toma el primer resultado. La cabecera no trae `detalles` (regla del
+   * contrato, ver `venta.ts`) — se completa con una segunda consulta a `obtenerPorId()`.
+   */
+  buscarTicket(): void {
+    const codigo = this.buscarTicketControl.value.trim();
+    if (!codigo) return;
+
+    this.buscandoTicket.set(true);
+    this.ventasService
+      .buscarPorCodigoBarras(codigo)
+      .pipe(finalize(() => this.buscandoTicket.set(false)))
+      .subscribe({
+        next: (ventas) => {
+          const encontrada = ventas[0];
+          if (!encontrada) {
+            this.notify.notify(
+              'error',
+              this.translate.instant('ventas.pos.buscarTicket.msg.noEncontrado'),
+            );
+            return;
+          }
+          this.cargarVentaLocalizada(encontrada.idVenta);
+        },
+        error: (err) => {
+          console.error('Error al buscar el ticket por código de barras', err);
+          this.notify.notify(
+            'error',
+            this.translate.instant('ventas.pos.buscarTicket.msg.errorBuscar'),
+          );
+        },
+      });
+  }
+
+  private cargarVentaLocalizada(idVenta: number): void {
+    this.ventasService.obtenerPorId(idVenta).subscribe({
+      next: (venta) => {
+        if (!venta) {
+          this.notify.notify(
+            'error',
+            this.translate.instant('ventas.pos.buscarTicket.msg.noEncontrado'),
+          );
+          return;
+        }
+        this.ventaLocalizada.set(venta);
+        this.buscarTicketControl.setValue('');
+
+        if (this.modo() === 'devolucion') {
+          this.lineasDevolucion.set(
+            venta.detalles.map((d) => new LineaDevolucionModel({ detalle: d, cantidadDevolver: 0 })),
+          );
+        } else {
+          // Complemento: no se renderizan líneas nuevas, solo cuenta para el descuento por volumen.
+          this.recalcularTicket();
+        }
+      },
+      error: (err) => {
+        console.error('Error al consultar el ticket localizado', err);
+        this.notify.notify(
+          'error',
+          this.translate.instant('ventas.pos.buscarTicket.msg.errorBuscar'),
+        );
+      },
+    });
+  }
+
+  // ====================== Devolución ======================
+
+  /** Comisión bancaria prorrateada de la línea, réplica de `actualizarSubTotalDevoluciones()`. */
+  comisionDevueltaLinea(linea: LineaDevolucion): number {
+    if (!linea.detalle.cantidad) return 0;
+    return this.round2(
+      (linea.cantidadDevolver * linea.detalle.montoComisionBancaria) / linea.detalle.cantidad,
+    );
+  }
+
+  importeDevolverLinea(linea: LineaDevolucion): number {
+    return this.round2(linea.cantidadDevolver * linea.detalle.precioVenta + this.comisionDevueltaLinea(linea));
+  }
+
+  /** Edición manual de la cantidad a devolver: tope = lo comprado en esa línea (validación dura). */
+  onCantidadDevolverBlur(linea: LineaDevolucion): void {
+    let cantidad = Number(linea.cantidadDevolver);
+
+    if (isNaN(cantidad) || cantidad < 0) {
+      cantidad = 0;
+    }
+
+    const fraccion = this.catalogo().find((p) => p.idProducto === linea.detalle.idProducto)?.fraccion ?? false;
+    cantidad = fraccion ? this.round2(cantidad) : Math.round(cantidad);
+
+    if (cantidad > linea.detalle.cantidad) {
+      this.notify.notify('warning', this.translate.instant('ventas.pos.devolucion.msg.excedeComprado'));
+      cantidad = linea.detalle.cantidad;
+    }
+
+    this.lineasDevolucion.update((lineas) =>
+      lineas.map((l) =>
+        l.detalle.idVentaDetalle === linea.detalle.idVentaDetalle
+          ? new LineaDevolucionModel({ ...l, cantidadDevolver: cantidad })
+          : l,
+      ),
+    );
+  }
+
+  /**
+   * Guarda la devolución directo (sin modal de cobro — el legado tampoco cobra en una
+   * devolución, `montoPagado = 0`). Réplica de `#btnAceptarDevolucion`/`actualizarSubTotalDevoluciones()`.
+   */
+  confirmarDevolucion(): void {
+    const venta = this.ventaLocalizada();
+    if (!venta) return;
+
+    const motivo = this.motivoDevolucionControl.value.trim();
+    if (!motivo) {
+      this.notify.notify('warning', this.translate.instant('ventas.pos.devolucion.msg.motivoRequerido'));
+      return;
+    }
+
+    const lineas = this.lineasDevolucion().filter((l) => l.cantidadDevolver > 0);
+    if (lineas.length === 0) {
+      this.notify.notify(
+        'warning',
+        this.translate.instant('ventas.pos.devolucion.msg.seleccionaProducto'),
+      );
+      return;
+    }
+
+    const detalles = lineas.map((l) => {
+      const idLineaProducto =
+        this.catalogo().find((p) => p.idProducto === l.detalle.idProducto)?.idLineaProducto ?? 0;
+      const costoLinea = this.round2(l.detalle.cantidad * l.detalle.ultimoCostoCompra);
+      return new VentaDetalleRequestModel({
+        idProducto: l.detalle.idProducto,
+        descripcionProducto: l.detalle.descProducto,
+        idLineaProducto,
+        cantidad: l.detalle.cantidad, // cantidad ORIGINAL de la línea (réplica exacta del legado)
+        precio: l.detalle.precioVenta,
+        precioVenta: l.detalle.precioVenta,
+        costo: costoLinea,
+        ganancia: this.round2(l.detalle.monto - costoLinea),
+        descuento: 0,
+        montoTotal: l.detalle.monto,
+        idVentaDetalle: l.detalle.idVentaDetalle,
+        productosDevueltos: l.cantidadDevolver,
+        productosAgregados: 0,
+        ultimoCostoCompra: l.detalle.ultimoCostoCompra,
+      });
+    });
+
+    const request = new GuardarVentaRequestModel({
+      detalles,
+      idCliente: venta.idCliente,
+      formaPago: venta.idFactFormaPago,
+      usoCfdi: venta.idFactUsoCFDI,
+      idVenta: venta.idVenta,
+      aplicaIva: false,
+      numClientesAtendidos: 0,
+      tipoVenta: TipoVentaId.Devolucion,
+      motivoDevolucion: motivo,
+      idPedidoEspecial: 0,
+      idVentaComplemento: 0,
+      montoTotalVenta: this.totalADevolver(),
+      montoPagado: 0, // el legado tampoco cobra en una devolución (efectivo_ = 0)
+    });
+
+    this.enviarVenta(request, null);
+  }
+
+  // ====================== Guardado compartido ======================
+
+  /** POST /ventas compartido por los 3 modos. Bloquea doble-submit (regla 04). */
+  private enviarVenta(request: GuardarVentaRequest, cambio: number | null): void {
+    if (this.guardandoVenta()) return;
 
     this.guardandoVenta.set(true);
     this.blockUI.start(this.translate.instant('ventas.pos.msg.guardandoVenta'));
@@ -415,14 +715,20 @@ export class PosComponent implements OnInit, AfterViewInit {
         }),
       )
       .subscribe({
-        next: (res) => {
+        next: (res: Notificacion<Venta>) => {
           if (res?.estatus === 200) {
-            this.ultimoCambio.set(datos.cambio);
+            if (cambio !== null) this.ultimoCambio.set(cambio);
             this.notify.notify(
               'success',
               res.mensaje || this.translate.instant('ventas.pos.msg.ventaRealizada'),
             );
-            this.ticket.set([]);
+            // Hallazgo de la investigación (ver comentario de clase): "líquidos/despachadores"
+            // no es un modo de captura, es automático — aviso informativo, el PDF es Bloque D.
+            if ((res.modelo?.cantProductosLiq ?? 0) > 0) {
+              this.notify.notify('info', this.translate.instant('ventas.pos.msg.incluyeLiquidos'));
+            }
+            this.modo.set('venta');
+            this.limpiarModo();
             // Réplica de InitSelect2Productos() tras guardar en el legado: refresca el
             // catálogo (existencias/precios cambiaron).
             this.cargarCatalogo();

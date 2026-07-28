@@ -583,6 +583,44 @@
       "escanear": "Scan or search product",
       "escanearPlaceholder": "Scan the barcode or type to search…",
       "existencia": "Stock",
+      "modo": {
+        "venta": "Sale",
+        "devolucion": "Return",
+        "complemento": "Complement"
+      },
+      "buscarTicket": {
+        "label": "Original ticket",
+        "placeholder": "Scan or type the ticket barcode…",
+        "buscar": "Search",
+        "localizado": "Ticket found: {{codigo}} — {{cliente}}",
+        "vacio": "Locate a ticket by barcode to continue.",
+        "msg": {
+          "noEncontrado": "No ticket was found with that barcode.",
+          "errorBuscar": "Error searching the ticket by barcode.",
+          "requeridoComplemento": "You must locate the original ticket before checking out the complement."
+        }
+      },
+      "devolucion": {
+        "motivo": "Return reason",
+        "motivoPlaceholder": "Write the return reason…",
+        "tabla": {
+          "producto": "Product",
+          "cantidadComprada": "Qty. purchased",
+          "cantidadDevolver": "Qty. to return",
+          "comision": "Refunded fee",
+          "importe": "Amount to refund"
+        },
+        "totalDevolver": "Total to refund",
+        "confirmar": "Confirm return",
+        "msg": {
+          "motivoRequerido": "You must write the return reason.",
+          "seleccionaProducto": "You must indicate at least one product to return.",
+          "excedeComprado": "You cannot return more than the purchased quantity."
+        }
+      },
+      "complemento": {
+        "info": "The products you add will count toward this ticket's volume discount."
+      },
       "tabla": {
         "producto": "Product",
         "cantidad": "Quantity",
@@ -610,7 +648,8 @@
         "ticketVacio": "You must have products added to continue with the sale.",
         "ventaRealizada": "Sale completed successfully.",
         "guardandoVenta": "Saving sale…",
-        "errorGuardarVenta": "Error saving the sale. Please try again."
+        "errorGuardarVenta": "Error saving the sale. Please try again.",
+        "incluyeLiquidos": "This ticket includes liquid/dispenser products; generate the corresponding dispenser ticket."
       }
     },
     "cobro": {

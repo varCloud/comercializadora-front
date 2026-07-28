@@ -37,9 +37,9 @@ export class VentasService {
   }
 
   /**
-   * Localiza venta(s) por el código de barras impreso en el ticket (para complementar una venta
-   * ya cerrada — fuera de alcance de esta pantalla, FE-A5b). El SP devuelve una LISTA, no una
-   * sola venta.
+   * Localiza venta(s) por el código de barras impreso en el ticket. Usado por los modos
+   * Devolución y Complemento del POS (FE-A5b) para localizar el ticket original antes de
+   * devolver/agregar productos. El SP devuelve una LISTA, no una sola venta.
    */
   buscarPorCodigoBarras(codigo: string): Observable<Venta[]> {
     return this.http

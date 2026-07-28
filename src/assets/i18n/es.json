@@ -583,6 +583,44 @@
       "escanear": "Escanear o buscar producto",
       "escanearPlaceholder": "Escanea el código de barras o escribe para buscar…",
       "existencia": "Existencia",
+      "modo": {
+        "venta": "Venta",
+        "devolucion": "Devolución",
+        "complemento": "Complemento"
+      },
+      "buscarTicket": {
+        "label": "Ticket original",
+        "placeholder": "Escanea o escribe el código de barras del ticket…",
+        "buscar": "Buscar",
+        "localizado": "Ticket localizado: {{codigo}} — {{cliente}}",
+        "vacio": "Localiza un ticket por código de barras para continuar.",
+        "msg": {
+          "noEncontrado": "No se encontró ningún ticket con ese código de barras.",
+          "errorBuscar": "Error al buscar el ticket por código de barras.",
+          "requeridoComplemento": "Debes localizar el ticket original antes de cobrar el complemento."
+        }
+      },
+      "devolucion": {
+        "motivo": "Motivo de la devolución",
+        "motivoPlaceholder": "Escribe el motivo de la devolución…",
+        "tabla": {
+          "producto": "Producto",
+          "cantidadComprada": "Cant. comprada",
+          "cantidadDevolver": "Cant. a devolver",
+          "comision": "Comisión devuelta",
+          "importe": "Importe a devolver"
+        },
+        "totalDevolver": "Total a devolver",
+        "confirmar": "Confirmar devolución",
+        "msg": {
+          "motivoRequerido": "Debes escribir el motivo de la devolución.",
+          "seleccionaProducto": "Debes indicar al menos un producto a devolver.",
+          "excedeComprado": "No puedes devolver más cantidad de la comprada."
+        }
+      },
+      "complemento": {
+        "info": "Los productos que agregues se sumarán al descuento por volumen de este ticket."
+      },
       "tabla": {
         "producto": "Producto",
         "cantidad": "Cantidad",
@@ -610,7 +648,8 @@
         "ticketVacio": "Debe tener productos agregados para continuar con la venta.",
         "ventaRealizada": "Venta realizada correctamente.",
         "guardandoVenta": "Guardando venta…",
-        "errorGuardarVenta": "Error al guardar la venta. Intenta de nuevo."
+        "errorGuardarVenta": "Error al guardar la venta. Intenta de nuevo.",
+        "incluyeLiquidos": "Este ticket incluye productos líquidos/despachadores; genera el ticket de despachadores correspondiente."
       }
     },
     "cobro": {
