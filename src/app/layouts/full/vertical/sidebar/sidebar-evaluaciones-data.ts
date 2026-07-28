@@ -129,86 +129,93 @@ export const navItemsApp: NavItem[] = [
     route: '/admin/bitacoras',
   },
   {
-    displayName: 'Facturas Ventas',
+    displayName: 'Facturas',
     iconName: 'file-invoice',
-    route: '/admin/facturas',
+    children: [
+      {
+        displayName: 'Ventas',
+        route: '/admin/facturas',
+      },
+      {
+        displayName: 'Pedidos especiales',
+        route: '/admin/facturas-pedidos-especiales',
+      },
+    ],
   },
   {
-    displayName: 'Facturas Pedidos Esp',
-    iconName: 'file-star',
-    route: '/admin/facturas-pedidos-especiales',
-  },
-  {
-    navCap: 'Reportes',
-  },
-  {
-    displayName: 'Inventario',
-    iconName: 'report',
-    route: '/admin/reportes/inventario',
-  },
-  {
-    displayName: 'Ventas',
-    iconName: 'report-money',
-    route: '/admin/reportes/ventas',
-  },
-  {
-    displayName: 'Ventas Pedidos Especiales',
-    iconName: 'report-money',
-    route: '/admin/reportes/ventas-pedidos-especiales',
-  },
-  {
-    displayName: 'Merma',
-    iconName: 'trending-down',
-    route: '/admin/reportes/merma',
-  },
-  {
-    displayName: 'Devoluciones',
-    iconName: 'receipt-refund',
-    route: '/admin/reportes/devolucion',
-  },
-  {
-    displayName: 'Compras',
-    iconName: 'shopping-bag',
-    route: '/admin/reportes/compras',
-  },
-  {
-    displayName: 'Cierres',
-    iconName: 'cash',
-    route: '/admin/reportes/cierres',
-  },
-  {
-    displayName: 'Cierres Pedidos Especiales',
-    iconName: 'cash-banknote',
-    route: '/admin/reportes/cierres-pe',
-  },
-  {
-    displayName: 'Margen Bruto',
-    iconName: 'chart-infographic',
-    route: '/admin/reportes/margen-bruto',
-  },
-  {
-    displayName: 'Días Promedio Inventario',
-    iconName: 'rotate-clockwise-2',
-    route: '/admin/reportes/dias-promedio-inventario',
-  },
-  {
-    displayName: 'Drop Size',
-    iconName: 'droplet',
-    route: '/admin/reportes/drop-size',
-  },
-  {
-    displayName: 'Nivel de Servicio Proveedor',
-    iconName: 'truck-delivery',
-    route: '/admin/reportes/nivel-servicio-proveedor',
-  },
-  {
-    displayName: 'Devoluciones a Proveedor',
-    iconName: 'transfer-in',
-    route: '/admin/reportes/devoluciones-proveedor',
-  },
-  {
-    displayName: 'Devoluciones Pedidos Especiales',
-    iconName: 'transfer-out',
-    route: '/admin/reportes/devoluciones-pedidos-especiales',
+    displayName: 'Reportes',
+    iconName: 'report-analytics',
+    children: [
+      {
+        displayName: 'Inventario',
+        iconName: 'report',
+        route: '/admin/reportes/inventario',
+      },
+      {
+        displayName: 'Ventas',
+        iconName: 'report-money',
+        route: '/admin/reportes/ventas',
+      },
+      {
+        displayName: 'Ventas Pedidos Especiales',
+        iconName: 'report-money',
+        route: '/admin/reportes/ventas-pedidos-especiales',
+      },
+      {
+        displayName: 'Merma',
+        iconName: 'trending-down',
+        route: '/admin/reportes/merma',
+      },
+      {
+        displayName: 'Devoluciones',
+        iconName: 'receipt-refund',
+        route: '/admin/reportes/devolucion',
+      },
+      {
+        displayName: 'Compras',
+        iconName: 'shopping-bag',
+        route: '/admin/reportes/compras',
+      },
+      {
+        displayName: 'Cierres',
+        iconName: 'cash',
+        route: '/admin/reportes/cierres',
+      },
+      {
+        displayName: 'Cierres Pedidos Especiales',
+        iconName: 'cash-banknote',
+        route: '/admin/reportes/cierres-pe',
+      },
+      {
+        displayName: 'Margen Bruto',
+        iconName: 'chart-infographic',
+        route: '/admin/reportes/margen-bruto',
+      },
+      {
+        displayName: 'Días Promedio Inventario',
+        iconName: 'rotate-clockwise-2',
+        route: '/admin/reportes/dias-promedio-inventario',
+      },
+      {
+        displayName: 'Drop Size',
+        iconName: 'droplet',
+        route: '/admin/reportes/drop-size',
+      },
+      {
+        displayName: 'Nivel de Servicio Proveedor',
+        iconName: 'truck-delivery',
+        route: '/admin/reportes/nivel-servicio-proveedor',
+      },
+      {
+        displayName: 'Devoluciones a Proveedor',
+        iconName: 'transfer-in',
+        route: '/admin/reportes/devoluciones-proveedor',
+      },
+      {
+        displayName: 'Devoluciones Pedidos Especiales',
+        iconName: 'transfer-out',
+        route: '/admin/reportes/devoluciones-pedidos-especiales',
+      },
+    ],
   },
 ];
