@@ -90,6 +90,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'consumo-mpl-individual',
+        loadChildren: () =>
+          import('./feature/consumo-mpl-individual/consumo-mpl-individual-routing.module').then(
+            (m) => m.ConsumoMplIndividualRoutingModule,
+          ),
+      },
+      {
         path: 'produccion-liquidos',
         loadChildren: () =>
           import('./feature/produccion-liquidos/produccion-liquidos-routing.module').then(

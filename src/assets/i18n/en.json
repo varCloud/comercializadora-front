@@ -634,6 +634,36 @@
       "loadError": "Error loading MPL consumption"
     }
   },
+  "consumoMplIndividual": {
+    "title": "MPL Individual",
+    "empty": "There are no MPL Individual records to show.",
+    "searchPlaceholder": "Search by product or barcode…",
+    "filters": {
+      "estatus": "Status",
+      "todos": "--ALL--",
+      "rangoFechas": "Date range",
+      "fechaIni": "Start date",
+      "fechaFin": "End date",
+      "limpiar": "Clear",
+      "buscar": "Search"
+    },
+    "columns": {
+      "codigoBarras": "Barcode",
+      "producto": "Product",
+      "cantidad": "Quantity",
+      "cantidadAceptada": "Accepted quantity",
+      "cantidadRestante": "Remaining quantity",
+      "fechaAlta": "Created on",
+      "fechaActualizacion": "Last updated",
+      "estatus": "Status",
+      "ultCostoCompra": "Last purchase cost",
+      "costoProduccion": "Production cost"
+    },
+    "msg": {
+      "loading": "Loading…",
+      "loadError": "Error loading MPL Individual"
+    }
+  },
   "bitacoras": {
     "title": "Logs",
     "empty": "No internal orders to display.",

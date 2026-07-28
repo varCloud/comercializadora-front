@@ -90,9 +90,18 @@ export const navItemsApp: NavItem[] = [
     route: '/admin/produccion-agranel',
   },
   {
-    displayName: 'Consumo de MPL',
+    displayName: 'MPL',
     iconName: 'report-analytics',
-    route: '/admin/consumo-mpl',
+    children: [
+      {
+        displayName: 'MPL Agrupado',
+        route: '/admin/consumo-mpl',
+      },
+      {
+        displayName: 'MPL Individual',
+        route: '/admin/consumo-mpl-individual',
+      },
+    ],
   },
   {
     displayName: 'Producción líquidos',

@@ -634,6 +634,36 @@
       "loadError": "Error al cargar el consumo de MPL"
     }
   },
+  "consumoMplIndividual": {
+    "title": "MPL Individual",
+    "empty": "No hay registros de MPL Individual para mostrar.",
+    "searchPlaceholder": "Buscar por producto o código de barras…",
+    "filters": {
+      "estatus": "Estatus",
+      "todos": "--TODOS--",
+      "rangoFechas": "Rango de fechas",
+      "fechaIni": "Fecha inicio",
+      "fechaFin": "Fecha fin",
+      "limpiar": "Limpiar",
+      "buscar": "Buscar"
+    },
+    "columns": {
+      "codigoBarras": "Código de barras",
+      "producto": "Producto",
+      "cantidad": "Cantidad",
+      "cantidadAceptada": "Cantidad aceptada",
+      "cantidadRestante": "Cantidad restante",
+      "fechaAlta": "Fecha alta",
+      "fechaActualizacion": "Última actualización",
+      "estatus": "Estatus",
+      "ultCostoCompra": "Último costo de compra",
+      "costoProduccion": "Costo de producción"
+    },
+    "msg": {
+      "loading": "Cargando…",
+      "loadError": "Error al cargar MPL Individual"
+    }
+  },
   "bitacoras": {
     "title": "Bitácoras",
     "empty": "No hay pedidos internos para mostrar.",

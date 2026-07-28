@@ -21,6 +21,7 @@ export const URIS_CONFIG = {
     PRODUCCION_TRAPEADORES: 'produccion-trapeadores',
     PRODUCCION_AGRANEL: 'produccion-agranel',
     CONSUMO_MPL: 'consumo-mpl',
+    CONSUMO_MPL_INDIVIDUAL: 'consumo-mpl-individual',
     BITACORAS: 'bitacoras',
     COMPRAS: 'compras',
     FACTURAS: 'facturas',
