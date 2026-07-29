@@ -8,6 +8,7 @@ import { debounceTime, distinctUntilChanged, finalize } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { CONSTANTS } from 'src/app/config/constants';
 import { NotificationService } from 'src/app/services/notification.service';
+import { SesionService } from 'src/app/services/sesion.service';
 import { EMPTY_LINKS } from 'src/app/admin/models/shared/paged-result';
 import { Paginador } from 'src/app/admin/models/shared/paginador';
 import { PaginadorComponent } from 'src/app/admin/shared/components/paginador/paginador.component';
@@ -23,22 +24,32 @@ import { CajaService } from 'src/app/admin/services/caja.service';
 import { ExcesoEfectivoBadgeComponent } from '../../components/exceso-efectivo-badge/exceso-efectivo-badge.component';
 
 /**
- * Pantalla de Retiros / Ingresos de efectivo (FE-B4). Tres pestañas, réplica del legado:
+ * Pantalla de Retiros / Ingresos de efectivo (FE-B4/FE-B5). Tres pestañas, réplica del legado:
  * - **Retiro por exceso**: `#ModalCierreExceso` de `Ventas.cshtml` + `retirarExcesoEfectivo()`
  *   de `EvtVentas.js` — valida en cliente que el monto no exceda lo disponible (tope real es
- *   server-side, esto es solo UX temprana).
+ *   server-side, esto es solo UX temprana). `disponibleParaRetirar` usa `efectivoDisponible`
+ *   directo: el backend real ya lo calcula neto de los retiros del día (no se resta de nuevo).
  * - **Ingreso de efectivo**: `_IngresoEfectivo.cshtml` con `idTipoIngresoEfectivo = 2`
  *   ("Solicitud de efectivo").
  * - **Listado / autorización de retiros**: réplica de `_ObtenerRetirosAutorizacion.cshtml`
  *   (tipo, monto, usuario, estación, estatus, usuario que autorizó, acciones aprobar/rechazar).
- *   La visibilidad por rol (qué filas/acciones ve cada usuario) la aplica el backend real
- *   (API-B4); esta pantalla solo pinta lo que reciba — ver nota en `CajaService.obtenerRetiros`.
  *
- * Paginación LOCAL (regla 10): mientras no hay API real, `CajaService` devuelve la lista
- * completa mockeada; se pagina en memoria igual que `inventario-fisico` (precedente ya
- * aprobado). FE-B5 debe migrar a paginación server-side cuando el endpoint real pagine.
+ * **Elección de endpoint + guarda de rol (FE-B5):** `CajaController` expone DOS listados —
+ * `/retiros` (filtrado por rol: cada usuario ve solo lo propio, salvo Admin/Encargado que ven
+ * todo dentro de su estación) y `/retiros/autorizacion` (sin filtro, ve todo). Aquí se resuelve
+ * así: si el usuario en sesión (`SesionService`, `idRol`) es Admin o Encargado de almacén
+ * (`CONSTANTS.ROLES`), se usa `/retiros/autorizacion` (necesita ver las solicitudes de todos
+ * para poder aprobarlas/rechazarlas) y se muestran los controles de aprobar/rechazar; cualquier
+ * otro rol usa `/retiros` (ya acotado por el backend a lo propio) y solo ve el estatus.
  *
- * ⚠️ Sin integración real (FE-B5): `CajaService` está simulado (ver su cabecera).
+ * **Paginación/búsqueda LOCAL (regla 10, último recurso):** el endpoint real
+ * (`GET /api/caja/retiros[/autorizacion]`) regresa `Notificacion<IEnumerable<Retiro>>` SIN
+ * `links`/`meta` (no pagina) ni acepta texto libre de búsqueda — solo filtros estructurados
+ * (`idTipoRetiro`, `fecha`, `idUsuario`, `idAlmacen`, ver `RetirosFiltro`). Se mantiene la
+ * paginación/búsqueda en memoria (mismo patrón que `inventario-fisico`) porque el SP real no
+ * las soporta; el footer `app-paginador` se conserva (obligatorio aun en modo local). Pendiente
+ * documentado para el backend: `SP_V2_CONSULTA_RETIROS` con `@search`/`@pageNumber`/`@pageSize`
+ * si se quiere cumplir la regla 10/13 sin excepción — ver memoria `modulo-ventas-bloque-b-fe.md`.
  */
 @Component({
   selector: 'app-retiros-ingresos',
@@ -62,11 +73,19 @@ export class RetirosIngresosComponent implements OnInit {
   private readonly cajaService = inject(CajaService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
+  private readonly sesion = inject(SesionService);
 
   @BlockUI('retiros-ingresos') blockUI!: NgBlockUI;
 
   readonly ESTATUS_RETIRO = ESTATUS_RETIRO;
   readonly TipoRetiroId = TipoRetiroId;
+
+  /** Admin/Encargado de almacén: ven y autorizan retiros de todos (ver nota de clase). */
+  readonly esAutorizador = computed(() => {
+    const idRol = this.sesion.sesion()?.idRol ?? 0;
+    return idRol === CONSTANTS.ROLES.ADMIN || idRol === CONSTANTS.ROLES.ENCARGADO_ALMACEN;
+  });
+
   readonly displayedColumns = [
     'tipo',
     'monto',
@@ -83,10 +102,10 @@ export class RetirosIngresosComponent implements OnInit {
   readonly guardandoIngreso = signal(false);
   readonly actualizandoRetiro = signal<number | null>(null);
 
+  /** El backend ya regresa `efectivoDisponible` neto de los retiros del día (ver nota de clase). */
   readonly disponibleParaRetirar = computed(() => {
     const info = this.cajaInfo();
-    if (!info) return 0;
-    return Math.max(0, info.efectivoDisponible - info.retirosHechosDia);
+    return info ? Math.max(0, info.efectivoDisponible) : 0;
   });
 
   readonly retiroForm = this.fb.group({
@@ -122,8 +141,10 @@ export class RetirosIngresosComponent implements OnInit {
 
   private cargarRetiros(): void {
     this.blockUI.start(this.translate.instant('ventas.caja.retiro.msg.cargandoListado'));
-    this.cajaService
-      .obtenerRetiros()
+    const listado$ = this.esAutorizador()
+      ? this.cajaService.obtenerRetirosAutorizacion()
+      : this.cajaService.obtenerRetiros();
+    listado$
       .pipe(finalize(() => this.blockUI.stop()))
       .subscribe({
         next: (res) => {
@@ -243,6 +264,11 @@ export class RetirosIngresosComponent implements OnInit {
     return retiro.estatusRetiro.idStatus === ESTATUS_RETIRO.PENDIENTE;
   }
 
+  /** Solo Admin/Encargado (ver `esAutorizador`) puede aprobar/rechazar un retiro pendiente. */
+  puedeAutorizar(retiro: Retiro): boolean {
+    return this.esPendiente(retiro) && this.esAutorizador();
+  }
+
   aprobar(retiro: Retiro): void {
     this.cambiarEstatusRetiro(retiro, ESTATUS_RETIRO.AUTORIZADO);
   }
@@ -251,11 +277,16 @@ export class RetirosIngresosComponent implements OnInit {
     this.cambiarEstatusRetiro(retiro, ESTATUS_RETIRO.CANCELADO);
   }
 
-  private cambiarEstatusRetiro(retiro: Retiro, idEstatus: number): void {
+  private cambiarEstatusRetiro(retiro: Retiro, idStatus: number): void {
     if (this.actualizandoRetiro()) return;
 
-    const montoAutorizado = idEstatus === ESTATUS_RETIRO.AUTORIZADO ? this.montoAutorizar(retiro) : null;
-    const request = new ActualizarEstatusRetiroRequestModel({ idEstatus, montoAutorizado });
+    // Al rechazar se manda monto 0 (réplica de ActualizarEstatusRetiro() en EvtRetiros.js legado).
+    const monto = idStatus === ESTATUS_RETIRO.AUTORIZADO ? this.montoAutorizar(retiro) : 0;
+    const request = new ActualizarEstatusRetiroRequestModel({
+      idStatus,
+      monto,
+      idTipoRetiro: retiro.tipoRetiro,
+    });
 
     this.actualizandoRetiro.set(retiro.idRetiro);
     this.cajaService

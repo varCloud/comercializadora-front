@@ -20,15 +20,21 @@ import {
 } from '../../components/autorizar-cierre-dialog/autorizar-cierre-dialog.component';
 
 /**
- * Pantalla de Cierre de Caja (FE-B3). Réplica de `Views/Ventas/CierreCajas.cshtml` +
+ * Pantalla de Cierre de Caja (FE-B3/FE-B5). Réplica de `Views/Ventas/CierreCajas.cshtml` +
  * `_CierreDia.cshtml`: resumen de ventas por forma de pago, cancelaciones, devoluciones,
- * retiros y saldo, más la captura de "efectivo entregado en cierre". Si la configuración exige
- * autorización (`ValidaApertura.requiereAutorizacionCierre`), abre
- * {@link AutorizarCierreDialogComponent} antes de cerrar — réplica de
- * `RequiereAutorizacion()`/`ModalAutorizarCierre()` de `EvtVentas.js`, adaptada al contrato
- * nuevo donde usuario/contraseña viajan en la MISMA petición de cierre (ver `CierreRequest`).
+ * retiros y saldo, más la captura de "efectivo entregado en cierre".
  *
- * ⚠️ Sin integración real (FE-B5): `CajaService` está simulado (ver su cabecera).
+ * **Autorización de cierre (FE-B5, adaptado al contrato real):** el legado consulta
+ * `/Ventas/ObtenerConfiguracionVentas` (`RequiereAutorizacion()` en `EvtVentas.js`) ANTES de
+ * decidir si abre el modal. `CajaController` (comercializadora-api) NO expone esa configuración
+ * (`SP_CONSULTA_CONFIGURACION_VENTAS` es interna a `CajaService.CerrarAsync`) — por eso aquí se
+ * intenta el cierre directo primero (sin credenciales); si el backend responde que hace falta un
+ * autorizador (`CajaCierreRequest` sin `usuarioAutoriza`/`contrasena` cuando la config lo exige),
+ * se abre {@link AutorizarCierreDialogComponent} y se reintenta con las credenciales capturadas.
+ * Cuando la autorización NO es requerida, esto resuelve en una sola petición (igual que el
+ * contrato documentado); cuando SÍ es requerida, son dos peticiones de cierre (la primera
+ * rechazada por el servidor, la segunda con credenciales) — no hay una llamada de validación de
+ * contraseña aparte, sigue siendo la MISMA petición de cierre la que valida (ver `CierreRequest`).
  */
 @Component({
   selector: 'app-cierre-caja',
@@ -54,7 +60,6 @@ export class CierreCajaComponent implements OnInit {
   @BlockUI('cierre-caja') blockUI!: NgBlockUI;
 
   readonly cajaInfo = signal<CajaInfo | null>(null);
-  readonly requiereAutorizacion = signal(true);
   readonly guardando = signal(false);
 
   readonly cierreForm = this.fb.group({
@@ -77,11 +82,6 @@ export class CierreCajaComponent implements OnInit {
           this.notify.notify('error', this.translate.instant('ventas.caja.cierre.msg.errorCargar'));
         },
       });
-
-    this.cajaService.validaApertura().subscribe({
-      next: (res) => this.requiereAutorizacion.set(res.requiereAutorizacionCierre),
-      error: (err) => console.error('Error al consultar la configuración de cierre', err),
-    });
   }
 
   /** Botón "Realizar cierre": confirma, valida autorización si aplica y cierra. */
@@ -101,12 +101,7 @@ export class CierreCajaComponent implements OnInit {
       cancelButtonText: this.translate.instant('ventas.caja.cierre.confirm.cancel'),
     }).then((result) => {
       if (!result.isConfirmed) return;
-
-      if (this.requiereAutorizacion()) {
-        this.abrirAutorizacion();
-      } else {
-        this.realizarCierre(null);
-      }
+      this.realizarCierre(null);
     });
   }
 
@@ -124,12 +119,16 @@ export class CierreCajaComponent implements OnInit {
     });
   }
 
+  /**
+   * Intenta el cierre. Si el servidor lo rechaza por falta de autorizador y todavía no se
+   * capturaron credenciales, abre el diálogo y reintenta — ver nota de clase.
+   */
   private realizarCierre(autorizacion: AutorizacionCierre | null): void {
     const efectivoEntregadoEnCierre = Number(this.cierreForm.value.efectivoEntregadoEnCierre ?? 0);
     const request = new CierreRequestModel({
       efectivoEntregadoEnCierre,
       usuarioAutoriza: autorizacion?.usuario ?? null,
-      password: autorizacion?.password ?? null,
+      contrasena: autorizacion?.contrasena ?? null,
     });
 
     this.guardando.set(true);
@@ -150,6 +149,8 @@ export class CierreCajaComponent implements OnInit {
               res.mensaje ?? this.translate.instant('ventas.caja.cierre.msg.exito'),
             );
             this.router.navigate(['/admin/ventas/apertura-caja']);
+          } else if (!autorizacion && this.requiereAutorizador(res?.mensaje ?? null)) {
+            this.abrirAutorizacion();
           } else {
             this.notify.notify(
               'error',
@@ -162,5 +163,15 @@ export class CierreCajaComponent implements OnInit {
           this.notify.notify('error', this.translate.instant('ventas.caja.cierre.msg.error'));
         },
       });
+  }
+
+  /**
+   * Detecta el mensaje que `CajaService.CerrarAsync` (comercializadora-api) regresa cuando la
+   * configuración exige autorizador y no se mandaron credenciales: "Se requiere usuario y
+   * contraseña de un autorizador para cerrar la caja." No hay endpoint que exponga esa bandera
+   * de antemano (ver nota de clase), así que se detecta por el mensaje de rechazo.
+   */
+  private requiereAutorizador(mensaje: string | null): boolean {
+    return !!mensaje && mensaje.toLowerCase().includes('autorizador');
   }
 }

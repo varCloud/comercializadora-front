@@ -1,22 +1,34 @@
-// Payload para aprobar/rechazar un retiro (`PATCH /api/caja/retiros/{id}/estatus`), réplica de
-// `ActualizarEstatusRetiro()` en `EvtVentas.js` (permite ajustar el monto autorizado al
-// aprobar). Un archivo = una interfaz + su modelo (regla 11).
-
-import { ESTATUS_RETIRO } from 'src/app/admin/models/ventas/estatus-retiro';
+// Payload para aprobar/rechazar un retiro (`PATCH /api/caja/retiros/{id}/estatus`). Mapea 1:1
+// `ActualizarEstatusRetiroRequest` de `comercializadora-api`
+// (`Models/Dtos/ActualizarEstatusRetiroRequest.cs`). Un archivo = una interfaz + su modelo
+// (regla 11).
+//
+// FE-B5 (integración real), 3 desajustes corregidos contra el contrato real (el boceto FE-B4/mock
+// usaba `idEstatus`/`montoAutorizado` opcional, sin `idTipoRetiro`):
+// - El campo es `idStatus` (no `idEstatus`).
+// - El campo es `monto` (no `montoAutorizado`) y es **obligatorio** (`float`, no nullable): al
+//   rechazar se manda `0` (réplica de `ActualizarEstatusRetiro()` en `EvtRetiros.js` del legado,
+//   que también manda `0` al cancelar).
+// - `idTipoRetiro` es obligatorio: el SP (`SP_ACTUALIZA_STATUS_RETIROS`) actualiza una tabla
+//   distinta según sea retiro por exceso de efectivo o cierre de día; el `id` de la ruta no basta.
 
 export interface ActualizarEstatusRetiroRequest {
   /** `ESTATUS_RETIRO.AUTORIZADO` (2) o `ESTATUS_RETIRO.CANCELADO` (3). */
-  idEstatus: number;
-  /** Monto autorizado (puede diferir del solicitado); no aplica al rechazar. */
-  montoAutorizado: number | null;
+  idStatus: number;
+  /** Monto autorizado (editable respecto al solicitado); `0` al rechazar. */
+  monto: number;
+  /** `TipoRetiroId.ExcesoEfectivo` (1) o `TipoRetiroId.CierreDia` (2) del retiro que se actualiza. */
+  idTipoRetiro: number;
 }
 
 export class ActualizarEstatusRetiroRequestModel implements ActualizarEstatusRetiroRequest {
-  idEstatus: number;
-  montoAutorizado: number | null;
+  idStatus: number;
+  monto: number;
+  idTipoRetiro: number;
 
   constructor(data: Partial<ActualizarEstatusRetiroRequest> = {}) {
-    this.idEstatus = data.idEstatus ?? ESTATUS_RETIRO.PENDIENTE;
-    this.montoAutorizado = data.montoAutorizado ?? null;
+    this.idStatus = data.idStatus ?? 0;
+    this.monto = data.monto ?? 0;
+    this.idTipoRetiro = data.idTipoRetiro ?? 0;
   }
 }

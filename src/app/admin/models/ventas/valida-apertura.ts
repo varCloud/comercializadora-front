@@ -2,28 +2,26 @@
 // entrada al POS, HU "Apertura y cierre de caja"). Un archivo = una interfaz + su modelo
 // (regla 11).
 //
-// NOTA (sin API real todavía): mapea `GET /api/caja/valida-apertura` según el contrato
-// documentado en `task_ventas.md` (Bloque B); FE-B5 debe verificarla contra la respuesta real.
+// FE-B5 (integración real): `GET /api/caja/valida-apertura` devuelve `Notificacion<int>` puro
+// (SP_VALIDA_APERTURA_CAJAS vía `ICajaRepository.ValidaAperturaAsync`), NO el objeto rico que
+// asumía el boceto inicial (FE-B1/FE-B2, mock). `EsExitoso` (estatus 200) = la estación ya tiene
+// caja abierta hoy; `Modelo`/`idCierre` no se expone y `requiereAutorizacionCierre` tampoco —
+// esa bandera (`SP_CONSULTA_CONFIGURACION_VENTAS`) es interna a `CajaController.Cierre` y no
+// tiene endpoint propio (ver `CajaService.cerrarCaja`/`CierreCajaComponent` para cómo se resuelve
+// sin ella).
 
 export interface ValidaApertura {
   /** True si la estación ya tiene una caja abierta hoy (no debe volver a abrir). */
   tieneCajaAbierta: boolean;
-  idCierre: number | null;
-  /** True si la configuración del sistema exige usuario/contraseña para cerrar (SP_CONSULTA_CONFIGURACION_VENTAS). */
-  requiereAutorizacionCierre: boolean;
   mensaje: string | null;
 }
 
 export class ValidaAperturaModel implements ValidaApertura {
   tieneCajaAbierta: boolean;
-  idCierre: number | null;
-  requiereAutorizacionCierre: boolean;
   mensaje: string | null;
 
   constructor(data: Partial<ValidaApertura> = {}) {
     this.tieneCajaAbierta = data.tieneCajaAbierta ?? false;
-    this.idCierre = data.idCierre ?? null;
-    this.requiereAutorizacionCierre = data.requiereAutorizacionCierre ?? false;
     this.mensaje = data.mensaje ?? null;
   }
 }

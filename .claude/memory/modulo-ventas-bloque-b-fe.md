@@ -54,3 +54,55 @@ Detalles no obvios para FE-B5 (integración):
 Fuera de alcance de esta tarea (documentado, no implementado): guard que redirige a Apertura
 si no hay caja abierta al entrar a Ventas, impresión de ticket tras cada acción (Bloque D),
 filtro real por rol en el listado de retiros (backend, FE-B5).
+
+## FE-B5 — Integración real (2026-07-29)
+
+`CajaService` ya usa `HttpClient` real (`BASE_URL_ADMIN` + `URIS_CONFIG.CAJA`) contra
+`CajaController` de `comercializadora-api`. El contrato real (leído directo del código: DTOs en
+`Models/Dtos/Caja*.cs`, `CajaController.cs`, `CajaService.cs`, `CajaRepository.cs`) difiere del
+boceto FE-B1–FE-B4 (mock) en varios puntos — hallazgos no obvios documentados aquí:
+
+- **`GET /api/caja/valida-apertura` regresa `Notificacion<int>` puro**, no el objeto rico que
+  asumía el mock (`idCierre`/`requiereAutorizacionCierre`). Se simplificó `ValidaApertura` a
+  `{ tieneCajaAbierta, mensaje }` (`tieneCajaAbierta = estatus === 200`).
+- **No existe endpoint que exponga `requiereAutorizacionCierre`** (`SP_CONSULTA_CONFIGURACION_VENTAS`
+  es interno a `CajaService.CerrarAsync` en la API, no está en `CajaController`). El legado sí
+  lo consulta antes (`/Ventas/ObtenerConfiguracionVentas`). Aquí `CierreCajaComponent` intenta el
+  cierre SIN credenciales primero; si el backend rechaza con un mensaje que contiene
+  "autorizador" (`"Se requiere usuario y contraseña de un autorizador..."`), abre
+  `AutorizarCierreDialogComponent` y reintenta con credenciales — 1 petición cuando no se exige
+  autorización, 2 cuando sí (nunca una llamada de validación de password aparte). Es una
+  detección por mensaje (frágil si el texto del mensaje cambia en la API) — si se agrega un
+  endpoint de configuración en el futuro, reemplazar esta heurística.
+- **`CajaCierreRequest` usa `Contrasena` (no `Password`)** y tiene un campo `Monto` que el
+  legado (`EvtVentas.js`, `HacerCierre()`) siempre manda en `0` para el cierre (solo
+  `efectivoEntregadoEnCierre` importa) — replicado igual.
+- **`ActualizarEstatusRetiroRequest` usa `IdStatus`/`Monto`/`IdTipoRetiro`** (no
+  `idEstatus`/`montoAutorizado` opcional como traía el mock) — `IdTipoRetiro` es obligatorio
+  porque el SP actualiza una tabla distinta según sea retiro por exceso o cierre de día. Al
+  rechazar, `monto` se manda en `0` (réplica de `EvtRetiros.js`).
+- **`InfoCierre` (`GET /api/caja/info-cierre`) no trae `retirosHechosDia`**: el campo
+  `EfectivoDisponible` que sí regresa YA VIENE NETO de los retiros del día (misma fórmula que usa
+  `SP_RETIRA_EFECTIVO` para validar el tope, confirmado en `CajaService.RetirarAsync`). Se quitó
+  la resta duplicada en `disponibleParaRetirar` (front) — restar de nuevo hubiera bloqueado
+  retiros válidos. Se usa `retirosExcesoEfectivo` (ya existía) como dato informativo de "cuánto
+  se ha retirado hoy".
+- **`GET /api/caja/retiros` y `/retiros/autorizacion` NO paginan ni aceptan búsqueda de texto
+  libre** (regresan `Notificacion<IEnumerable<Retiro>>` sin `links`/`meta`; solo filtros
+  estructurados `idTipoRetiro`/`fecha`/`idUsuario`/`idAlmacen` vía `RetirosQuery`). Esto choca
+  con la regla 10/13 ("dura, sin excepción aquí") tal como estaba redactada para esta tarea —
+  **se mantiene paginación + búsqueda client-side** (último recurso ya contemplado por la regla
+  10 cuando el SP no soporta paginar) sobre la lista completa que trae el endpoint real. Pendiente
+  para un futuro ajuste de backend: `SP_V2_CONSULTA_RETIROS` con `@search`/`@pageNumber`/`@pageSize`
+  si se quiere cerrar esta brecha sin excepción.
+- **Elección de endpoint + guarda de rol**: `RetirosIngresosComponent` decide entre
+  `obtenerRetiros()` (filtrado por rol, backend acota a lo propio salvo Admin/Encargado) y
+  `obtenerRetirosAutorizacion()` (sin filtro, ve todo) según el rol del usuario en sesión
+  (`SesionService.sesion().idRol`, comparado contra `CONSTANTS.ROLES.ADMIN`/`ENCARGADO_ALMACEN`,
+  nuevo en `config/constants.ts`, réplica de `CajaService.RolAdmin`/`RolEncargadoAlmacen` en la
+  API). Solo Admin/Encargado ven los controles de aprobar/rechazar (`puedeAutorizar()`).
+- **Guard de caja abierta**: nuevo `src/app/guards/caja-abierta.guard.ts` (clase +
+  `CanActivate`, mismo patrón que `AuthGuard`), aplicado SOLO a la ruta raíz de `ventas`
+  (`ventas-routing.module.ts`) — no a apertura/cierre/retiros-ingresos (evita loop). Si la
+  validación falla por error de red, permite la navegación (no bloquea por un error transitorio).
+- `npm run build` verde tras todos los cambios.

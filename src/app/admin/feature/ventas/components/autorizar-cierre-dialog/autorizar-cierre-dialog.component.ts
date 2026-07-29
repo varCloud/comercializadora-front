@@ -9,7 +9,7 @@ import { ENUM_ESTATUS_MODAL, ResultModalModel } from 'src/app/models/result-moda
 /** Datos capturados en el modal: se envían junto al cierre en una sola petición (ver `CierreRequest`). */
 export interface AutorizacionCierre {
   usuario: string;
-  password: string;
+  contrasena: string;
 }
 
 /**
@@ -39,7 +39,7 @@ export class AutorizarCierreDialogComponent {
 
   readonly autorizarCierreForm = this.fb.group({
     usuario: ['', Validators.required],
-    password: ['', Validators.required],
+    contrasena: ['', Validators.required],
   });
 
   autorizar(): void {
@@ -53,7 +53,7 @@ export class AutorizarCierreDialogComponent {
     }
 
     const raw = this.autorizarCierreForm.getRawValue();
-    const datos: AutorizacionCierre = { usuario: raw.usuario ?? '', password: raw.password ?? '' };
+    const datos: AutorizacionCierre = { usuario: raw.usuario ?? '', contrasena: raw.contrasena ?? '' };
     this.dialogRef.close(new ResultModalModel({ status: ENUM_ESTATUS_MODAL.OK, data: datos }));
   }
 

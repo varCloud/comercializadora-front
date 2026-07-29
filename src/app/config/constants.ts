@@ -45,6 +45,14 @@ export const CONSTANTS = {
     SUCURSAL_DEFAULT:{
         ID:1,
         NOMBRE:'Sucursal Uruapan'
+    },
+
+    // Ids de rol fijos usados por guardas de UI (ej. autorización de retiros en Ventas > Caja).
+    // Réplica de `CajaService.RolAdmin`/`RolEncargadoAlmacen` en comercializadora-api ("igual
+    // que en Bitácoras/Ventas").
+    ROLES:{
+        ADMIN:1,
+        ENCARGADO_ALMACEN:2
     }
 
 }

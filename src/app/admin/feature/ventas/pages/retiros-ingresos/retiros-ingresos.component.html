@@ -19,7 +19,7 @@
                   </p>
                   <p class="clearfix">
                     <span class="float-start">{{ 'ventas.caja.retiro.cantidadRetirada' | translate }}</span>
-                    <span class="float-end text-muted">{{ info.retirosHechosDia | currency }}</span>
+                    <span class="float-end text-muted">{{ info.retirosExcesoEfectivo | currency }}</span>
                   </p>
                   <p class="clearfix">
                     <span class="float-start f-w-600">{{ 'ventas.caja.retiro.disponible' | translate }}</span>
@@ -178,7 +178,7 @@
                         class="action-link text-end"
                         [attr.data-label]="'ventas.caja.retiro.columns.acciones' | translate"
                       >
-                        @if (esPendiente(r)) {
+                        @if (puedeAutorizar(r)) {
                           <mat-form-field appearance="outline" class="m-r-10 monto-autorizar-field">
                             <input
                               matInput
@@ -199,6 +199,8 @@
                           <a (click)="rechazar(r)" class="cursor-pointer" [matTooltip]="'ventas.caja.retiro.rechazar' | translate">
                             <i-tabler name="x" class="icon-18 icon-rechazar"></i-tabler>
                           </a>
+                        } @else if (esPendiente(r)) {
+                          {{ 'ventas.caja.retiro.estatus.pendiente' | translate }}
                         } @else {
                           {{ 'ventas.caja.retiro.montoAutorizado' | translate }}: {{ r.montoAutorizado | currency }}
                         }
