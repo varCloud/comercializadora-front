@@ -1,0 +1,19 @@
+// Chip outline de tipo/estatus del retiro (mismo patrón de la regla 10).
+.estatus-chip {
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.monto-autorizar-field {
+  width: 110px;
+}
+
+.icon-aprobar {
+  color: #2e7d32;
+}
+
+.icon-rechazar {
+  color: #e53935;
+}

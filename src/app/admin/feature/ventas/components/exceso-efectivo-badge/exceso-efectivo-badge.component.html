@@ -1,0 +1,24 @@
+<button mat-icon-button [matMenuTriggerFor]="excesoMenu" [matTooltip]="'ventas.caja.badge.tooltip' | translate">
+  @if (total() > 0) {
+    <i-tabler class="d-flex" name="alert-triangle" [matBadge]="total()" matBadgeColor="warn"></i-tabler>
+  } @else {
+    <i-tabler class="d-flex" name="alert-triangle"></i-tabler>
+  }
+</button>
+
+<mat-menu #excesoMenu="matMenu" class="cardWithShadow">
+  <div class="p-x-16 p-y-8">
+    <h6 class="f-s-14 f-w-600 m-0">{{ 'ventas.caja.badge.title' | translate }}</h6>
+  </div>
+
+  @if (total() === 0) {
+    <div class="p-x-16 p-y-8 f-s-14 text-muted">{{ 'ventas.caja.badge.empty' | translate }}</div>
+  } @else {
+    @for (u of usuariosConExceso(); track u.idUsuario) {
+      <button mat-menu-item class="d-flex justify-content-between">
+        <span>{{ u.nombre }}</span>
+        <span class="f-w-600">{{ u.efectivoDisponible | currency }}</span>
+      </button>
+    }
+  }
+</mat-menu>

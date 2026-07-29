@@ -683,6 +683,126 @@
         "errorFormasPago": "Error loading the payment methods.",
         "errorUsoCfdi": "Error loading the CFDI uses."
       }
+    },
+    "caja": {
+      "apertura": {
+        "title": "Cash register opening",
+        "monto": "Opening amount",
+        "abrir": "Open register",
+        "yaAbierta": "This station already has an open cash register.",
+        "irAVentas": "Go to Sales",
+        "irACierre": "Go to Register closing",
+        "msg": {
+          "validando": "Validating cash register opening…",
+          "errorValidar": "Error validating the cash register opening.",
+          "guardando": "Opening register…",
+          "exito": "Register opened successfully.",
+          "error": "Error opening the register. Try again.",
+          "montoRequerido": "You must enter the opening amount."
+        }
+      },
+      "cierre": {
+        "title": "Cash register closing",
+        "resumen": {
+          "apertura": "Register opening:",
+          "ingresos": "Cash deposits:",
+          "totalVentas": "No. Sales:",
+          "ventasContado": "Total cash sales amount:",
+          "ventasTarjeta": "Total card sales amount:",
+          "ventasTransferencias": "Total transfer sales amount:",
+          "ventasOtros": "Total other sales amount:",
+          "ventasCanceladas": "Total canceled sales amount:",
+          "productosDevueltos": "No. Returned products:",
+          "montoDevoluciones": "Total returns amount:",
+          "retiros": "Total withdrawals amount:",
+          "saldoTotal": "Total balance:",
+          "saldoCaja": "Cash on hand:"
+        },
+        "efectivoEntregado": "Cash handed in at closing",
+        "realizarCierre": "Close register",
+        "confirm": {
+          "text": "Are you sure you want to close this station?",
+          "accept": "Accept",
+          "cancel": "Cancel"
+        },
+        "msg": {
+          "cargando": "Loading closing summary…",
+          "errorCargar": "Error loading the closing summary.",
+          "montoRequerido": "You must enter the amount handed in at closing.",
+          "guardando": "Closing register…",
+          "exito": "Register closed successfully.",
+          "error": "Error closing the register. Try again."
+        }
+      },
+      "autorizar": {
+        "title": "Closing authorization",
+        "instrucciones": "This station requires a supervisor's authorization to close the register.",
+        "usuario": "Username",
+        "password": "Password",
+        "cancelar": "Cancel",
+        "autorizar": "Authorize",
+        "msg": {
+          "credencialesRequeridas": "You must enter a username and password to authorize the closing."
+        }
+      },
+      "retiro": {
+        "title": "Cash withdrawals and deposits",
+        "tabRetiro": "Excess withdrawal",
+        "tabListado": "Withdrawals list",
+        "cantidadEfectivo": "Cash amount:",
+        "cantidadRetirada": "Amount withdrawn today:",
+        "disponible": "Available to withdraw:",
+        "monto": "Amount to withdraw",
+        "retirar": "Withdraw",
+        "buscarPlaceholder": "Search by user or station…",
+        "columns": {
+          "tipo": "Type",
+          "monto": "Amount",
+          "usuario": "User",
+          "estacion": "Station",
+          "estatus": "Status",
+          "fecha": "Date",
+          "usuarioAutorizo": "Authorized by",
+          "acciones": "Actions"
+        },
+        "tipo": {
+          "exceso": "Excess cash",
+          "cierre": "Day closing"
+        },
+        "estatus": {
+          "pendiente": "Pending",
+          "autorizado": "Authorized",
+          "cancelado": "Canceled"
+        },
+        "autorizar": "Authorize",
+        "rechazar": "Reject",
+        "montoAutorizado": "Authorized amount",
+        "sinRegistros": "No withdrawals found.",
+        "msg": {
+          "cargandoListado": "Loading withdrawals…",
+          "errorListado": "Error loading the withdrawals list.",
+          "guardando": "Recording withdrawal…",
+          "exito": "Withdrawal recorded successfully.",
+          "error": "Error recording the withdrawal. Try again.",
+          "excedeDisponible": "Only ${{disponible}} is available to withdraw.",
+          "errorEstatus": "Error updating the withdrawal status."
+        }
+      },
+      "ingreso": {
+        "tabIngreso": "Cash deposit",
+        "monto": "Amount to deposit",
+        "ingresar": "Deposit",
+        "msg": {
+          "guardando": "Recording deposit…",
+          "exito": "Cash deposit recorded successfully.",
+          "error": "Error recording the cash deposit. Try again."
+        }
+      },
+      "badge": {
+        "tooltip": "Excess cash",
+        "title": "Excess cash",
+        "empty": "No pending excess cash."
+      }
     }
   },
   "produccionLiquidos": {

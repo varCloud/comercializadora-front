@@ -683,6 +683,126 @@
         "errorFormasPago": "Error al cargar las formas de pago.",
         "errorUsoCfdi": "Error al cargar los usos de CFDI."
       }
+    },
+    "caja": {
+      "apertura": {
+        "title": "Apertura de caja",
+        "monto": "Monto de apertura",
+        "abrir": "Abrir caja",
+        "yaAbierta": "Ya tiene una caja abierta para esta estación.",
+        "irAVentas": "Ir a Ventas",
+        "irACierre": "Ir a Cierre de caja",
+        "msg": {
+          "validando": "Validando apertura de caja…",
+          "errorValidar": "Error al validar la apertura de caja.",
+          "guardando": "Abriendo caja…",
+          "exito": "Caja abierta correctamente.",
+          "error": "Error al abrir la caja. Intenta de nuevo.",
+          "montoRequerido": "Debe escribir el monto de apertura."
+        }
+      },
+      "cierre": {
+        "title": "Cierre de caja",
+        "resumen": {
+          "apertura": "Apertura de caja:",
+          "ingresos": "Ingresos de efectivo:",
+          "totalVentas": "No. Ventas:",
+          "ventasContado": "Monto total ventas contado:",
+          "ventasTarjeta": "Monto total ventas tarjeta:",
+          "ventasTransferencias": "Monto total ventas transferencias:",
+          "ventasOtros": "Monto total ventas otros:",
+          "ventasCanceladas": "Monto total ventas canceladas:",
+          "productosDevueltos": "No. Productos devueltos:",
+          "montoDevoluciones": "Monto total devoluciones:",
+          "retiros": "Monto total retiros:",
+          "saldoTotal": "Saldo total:",
+          "saldoCaja": "Saldo en caja:"
+        },
+        "efectivoEntregado": "Efectivo entregado en cierre",
+        "realizarCierre": "Realizar cierre",
+        "confirm": {
+          "text": "¿Está seguro que desea hacer el cierre de esta estación?",
+          "accept": "Aceptar",
+          "cancel": "Cancelar"
+        },
+        "msg": {
+          "cargando": "Cargando resumen de cierre…",
+          "errorCargar": "Error al consultar el resumen de cierre.",
+          "montoRequerido": "Debe escribir el monto entregado en el cierre.",
+          "guardando": "Realizando cierre…",
+          "exito": "Cierre de caja realizado correctamente.",
+          "error": "Error al realizar el cierre de caja. Intenta de nuevo."
+        }
+      },
+      "autorizar": {
+        "title": "Autorización de cierre",
+        "instrucciones": "Esta estación requiere autorización de un supervisor para cerrar caja.",
+        "usuario": "Usuario",
+        "password": "Contraseña",
+        "cancelar": "Cancelar",
+        "autorizar": "Autorizar",
+        "msg": {
+          "credencialesRequeridas": "Debe ingresar usuario y contraseña para autorizar el cierre."
+        }
+      },
+      "retiro": {
+        "title": "Retiros e ingresos de efectivo",
+        "tabRetiro": "Retiro por exceso",
+        "tabListado": "Listado de retiros",
+        "cantidadEfectivo": "Cantidad en efectivo:",
+        "cantidadRetirada": "Cantidad retirada del día:",
+        "disponible": "Disponible para retirar:",
+        "monto": "Monto a retirar",
+        "retirar": "Retirar",
+        "buscarPlaceholder": "Buscar por usuario o estación…",
+        "columns": {
+          "tipo": "Tipo",
+          "monto": "Monto",
+          "usuario": "Usuario",
+          "estacion": "Estación",
+          "estatus": "Estatus",
+          "fecha": "Fecha",
+          "usuarioAutorizo": "Usuario autorizó",
+          "acciones": "Acciones"
+        },
+        "tipo": {
+          "exceso": "Exceso de efectivo",
+          "cierre": "Cierre de día"
+        },
+        "estatus": {
+          "pendiente": "Pendiente",
+          "autorizado": "Autorizado",
+          "cancelado": "Cancelado"
+        },
+        "autorizar": "Autorizar",
+        "rechazar": "Rechazar",
+        "montoAutorizado": "Monto autorizado",
+        "sinRegistros": "No se encontraron retiros.",
+        "msg": {
+          "cargandoListado": "Cargando retiros…",
+          "errorListado": "Error al consultar el listado de retiros.",
+          "guardando": "Registrando retiro…",
+          "exito": "Retiro registrado correctamente.",
+          "error": "Error al registrar el retiro. Intenta de nuevo.",
+          "excedeDisponible": "Solo tiene ${{disponible}} disponible para retirar.",
+          "errorEstatus": "Error al actualizar el estatus del retiro."
+        }
+      },
+      "ingreso": {
+        "tabIngreso": "Ingreso de efectivo",
+        "monto": "Monto a ingresar",
+        "ingresar": "Ingresar",
+        "msg": {
+          "guardando": "Registrando ingreso…",
+          "exito": "Ingreso de efectivo registrado correctamente.",
+          "error": "Error al registrar el ingreso de efectivo. Intenta de nuevo."
+        }
+      },
+      "badge": {
+        "tooltip": "Exceso de efectivo",
+        "title": "Exceso de efectivo",
+        "empty": "Sin exceso de efectivo pendiente."
+      }
     }
   },
   "produccionLiquidos": {

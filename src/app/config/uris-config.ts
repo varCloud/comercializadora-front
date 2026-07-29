@@ -11,6 +11,7 @@ export const URIS_CONFIG = {
     TIPOS_CLIENTE: 'tipos-cliente',
     PRODUCTOS: 'productos',
     VENTAS: 'ventas',
+    CAJA: 'caja',
     UBICACIONES: 'ubicaciones',
     CODIGOS_BARRAS: 'codigos-barras',
     LINEAS_PRODUCTO: 'lineas-producto',
