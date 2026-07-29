@@ -636,7 +636,9 @@
         "subtotal": "Subtotal",
         "cobrar": "Charge",
         "limpiar": "Clear ticket",
-        "ultimoCambio": "Last Change"
+        "ultimoCambio": "Last Change",
+        "verTicket": "View ticket",
+        "verTicketDespachador": "View dispenser ticket"
       },
       "msg": {
         "cargandoCatalogo": "Updating warehouse products…",
@@ -649,7 +651,8 @@
         "ventaRealizada": "Sale completed successfully.",
         "guardandoVenta": "Saving sale…",
         "errorGuardarVenta": "Error saving the sale. Please try again.",
-        "incluyeLiquidos": "This ticket includes liquid/dispenser products; generate the corresponding dispenser ticket."
+        "incluyeLiquidos": "This ticket includes liquid/dispenser products; generate the corresponding dispenser ticket.",
+        "errorTicket": "Error generating the PDF ticket."
       }
     },
     "cobro": {
@@ -731,8 +734,11 @@
           "montoRequerido": "You must enter the amount handed in at closing.",
           "guardando": "Closing register…",
           "exito": "Register closed successfully.",
-          "error": "Error closing the register. Try again."
-        }
+          "error": "Error closing the register. Try again.",
+          "errorTicket": "Error generating the closing PDF ticket."
+        },
+        "verTicket": "View ticket",
+        "continuar": "Continue"
       },
       "autorizar": {
         "title": "Closing authorization",
@@ -778,6 +784,7 @@
         "rechazar": "Reject",
         "montoAutorizado": "Authorized amount",
         "sinRegistros": "No withdrawals found.",
+        "verTicket": "View ticket",
         "msg": {
           "cargandoListado": "Loading withdrawals…",
           "errorListado": "Error loading the withdrawals list.",
@@ -785,13 +792,15 @@
           "exito": "Withdrawal recorded successfully.",
           "error": "Error recording the withdrawal. Try again.",
           "excedeDisponible": "Only ${{disponible}} is available to withdraw.",
-          "errorEstatus": "Error updating the withdrawal status."
+          "errorEstatus": "Error updating the withdrawal status.",
+          "errorTicket": "Error generating the PDF ticket."
         }
       },
       "ingreso": {
         "tabIngreso": "Cash deposit",
         "monto": "Amount to deposit",
         "ingresar": "Deposit",
+        "verTicket": "View ticket",
         "msg": {
           "guardando": "Recording deposit…",
           "exito": "Cash deposit recorded successfully.",
@@ -839,7 +848,8 @@
         "ver": "View detail",
         "cancelar": "Cancel sale",
         "ajustarIva": "Adjust tax",
-        "devolucionesComplementos": "Returns / complements"
+        "devolucionesComplementos": "Returns / complements",
+        "reimprimirTicket": "Reprint ticket"
       },
       "empty": "No sales found.",
       "confirm": {
@@ -854,7 +864,9 @@
         "loadErrorCanceladas": "Error retrieving the cancelled sales list.",
         "cancelando": "Cancelling sale…",
         "cancelExito": "Sale cancelled successfully.",
-        "cancelError": "Error cancelling the sale."
+        "cancelError": "Error cancelling the sale.",
+        "generandoTicket": "Generating ticket…",
+        "errorTicket": "Error generating the sale's PDF ticket."
       }
     },
     "detalle": {
@@ -903,14 +915,17 @@
         "fecha": "Date",
         "cantidad": "Quantity",
         "monto": "Amount",
-        "observaciones": "Reason"
+        "observaciones": "Reason",
+        "acciones": "Actions"
       },
       "emptyDevoluciones": "This sale has no returns registered.",
       "emptyComplementos": "This sale has no complements registered.",
       "cerrar": "Close",
+      "verTicket": "View ticket",
       "msg": {
         "cargando": "Retrieving returns and complements…",
-        "error": "Error retrieving the sale's returns and complements."
+        "error": "Error retrieving the sale's returns and complements.",
+        "errorTicket": "Error generating the PDF ticket."
       }
     }
   },

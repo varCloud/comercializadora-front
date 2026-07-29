@@ -4,7 +4,26 @@
       <mat-card-content class="p-24">
         <h4 class="f-s-18 f-w-600 m-b-16">{{ 'ventas.caja.cierre.title' | translate }}</h4>
 
-        @if (cajaInfo(); as info) {
+        @if (cierreExitoso()) {
+          <div class="text-center p-24">
+            <i-tabler name="circle-check" class="icon-48" [style.color]="'#13deb9'"></i-tabler>
+            <p class="f-s-16 f-w-600 m-t-16">{{ 'ventas.caja.cierre.msg.exito' | translate }}</p>
+            <button
+              mat-flat-button
+              color="primary"
+              class="m-r-8"
+              type="button"
+              [disabled]="generandoTicket()"
+              (click)="verTicketCierre()"
+            >
+              <i-tabler name="printer" class="icon-18"></i-tabler>
+              {{ 'ventas.caja.cierre.verTicket' | translate }}
+            </button>
+            <button mat-stroked-button color="primary" type="button" (click)="continuar()">
+              {{ 'ventas.caja.cierre.continuar' | translate }}
+            </button>
+          </div>
+        } @else if (cajaInfo(); as info) {
           <div class="row">
             <div class="col-12 col-lg-6">
               <p class="clearfix">

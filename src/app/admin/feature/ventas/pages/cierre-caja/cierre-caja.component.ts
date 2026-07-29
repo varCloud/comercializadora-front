@@ -14,6 +14,7 @@ import { ENUM_ESTATUS_MODAL, ResultModalModel } from 'src/app/models/result-moda
 import { CajaInfo } from 'src/app/admin/models/ventas/caja-info';
 import { CierreRequestModel } from 'src/app/admin/models/ventas/cierre-request';
 import { CajaService } from 'src/app/admin/services/caja.service';
+import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import {
   AutorizacionCierre,
   AutorizarCierreDialogComponent,
@@ -61,6 +62,16 @@ export class CierreCajaComponent implements OnInit {
 
   readonly cajaInfo = signal<CajaInfo | null>(null);
   readonly guardando = signal(false);
+
+  /**
+   * FE-D1 (Bloque D): tras un cierre exitoso, en vez de navegar de inmediato se muestra un
+   * resumen con el botón "Ver ticket" — de otro modo el ticket del cierre sería inalcanzable
+   * (la pantalla se abandona apenas se confirma). `continuar()` hace la navegación que antes
+   * ocurría automáticamente.
+   */
+  readonly cierreExitoso = signal(false);
+  readonly ultimoCierreId = signal<number | null>(null);
+  readonly generandoTicket = signal(false);
 
   readonly cierreForm = this.fb.group({
     efectivoEntregadoEnCierre: [null as number | null, [Validators.required, Validators.min(0)]],
@@ -148,7 +159,8 @@ export class CierreCajaComponent implements OnInit {
               'success',
               res.mensaje ?? this.translate.instant('ventas.caja.cierre.msg.exito'),
             );
-            this.router.navigate(['/admin/ventas/apertura-caja']);
+            this.ultimoCierreId.set(res.modelo ?? null);
+            this.cierreExitoso.set(true);
           } else if (!autorizacion && this.requiereAutorizador(res?.mensaje ?? null)) {
             this.abrirAutorizacion();
           } else {
@@ -163,6 +175,29 @@ export class CierreCajaComponent implements OnInit {
           this.notify.notify('error', this.translate.instant('ventas.caja.cierre.msg.error'));
         },
       });
+  }
+
+  /** "Ver ticket" del cierre recién realizado (ver `ultimoCierreId`). */
+  verTicketCierre(): void {
+    const id = this.ultimoCierreId();
+    if (!id || this.generandoTicket()) return;
+
+    this.generandoTicket.set(true);
+    this.cajaService
+      .obtenerTicketPdf(id, 'cierre')
+      .pipe(finalize(() => this.generandoTicket.set(false)))
+      .subscribe({
+        next: (blob) => abrirPdfBlob(blob),
+        error: (err) => {
+          console.error('Error al generar el ticket PDF del cierre', err);
+          this.notify.notify('error', this.translate.instant('ventas.caja.cierre.msg.errorTicket'));
+        },
+      });
+  }
+
+  /** Navega a Apertura de caja — antes ocurría automáticamente justo tras el cierre exitoso. */
+  continuar(): void {
+    this.router.navigate(['/admin/ventas/apertura-caja']);
   }
 
   /**

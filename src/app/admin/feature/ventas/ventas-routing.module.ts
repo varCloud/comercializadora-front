@@ -7,8 +7,11 @@ import { CajaAbiertaGuard } from 'src/app/guards/caja-abierta.guard';
 // apertura-caja si la estación no tiene caja abierta). Bloque B: apertura/cierre de caja y
 // retiros/ingresos de efectivo — SIN el guard (evita loop de redirección hacia sí mismas).
 // Bloque C: consulta/edición de ventas y ventas canceladas — comparten `VentaListadoComponent`
-// (ver su doc): `data.soloCanceladas` decide el endpoint/acciones habilitadas. El bloque D
-// (menú de producto) agrega la entrada de navegación hacia estas rutas más adelante (FE-D2).
+// (ver su doc): `data.soloCanceladas` decide el endpoint/acciones habilitadas. Bloque D (FE-D2):
+// entrada de menú de producto "Ventas" en `navItemsApp` apuntando a esta ruta raíz (POS);
+// `apertura-caja`/`cierre-caja`/`retiros-ingresos` no tienen entrada propia — son alcanzables
+// solo desde el flujo de POS (redirección de `CajaAbiertaGuard` o botones internos del POS),
+// y `listado`/`canceladas` quedan sin entrada de menú (fuera del alcance de FE-D2).
 const routes: Routes = [
   {
     path: '',

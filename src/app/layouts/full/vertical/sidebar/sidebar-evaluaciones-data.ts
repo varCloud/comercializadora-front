@@ -129,6 +129,11 @@ export const navItemsApp: NavItem[] = [
     route: '/admin/bitacoras',
   },
   {
+    displayName: 'Ventas',
+    iconName: 'receipt-2',
+    route: '/admin/ventas',
+  },
+  {
     displayName: 'Facturas',
     iconName: 'file-invoice',
     children: [

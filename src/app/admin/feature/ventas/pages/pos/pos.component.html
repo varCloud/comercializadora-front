@@ -241,6 +241,34 @@
               <div class="f-s-22 f-w-700">{{ ultimoCambio() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
             </div>
           }
+
+          @if (ultimoTicket(); as ticket) {
+            <hr class="m-t-16 m-b-16" />
+            <button
+              mat-stroked-button
+              color="primary"
+              class="w-100 m-b-8"
+              type="button"
+              [disabled]="generandoTicket()"
+              (click)="verTicket('venta')"
+            >
+              <i-tabler name="printer" class="icon-18"></i-tabler>
+              {{ 'ventas.pos.resumen.verTicket' | translate }}
+            </button>
+            @if (ticket.tieneLiquidos) {
+              <button
+                mat-stroked-button
+                color="primary"
+                class="w-100"
+                type="button"
+                [disabled]="generandoTicket()"
+                (click)="verTicket('despachador')"
+              >
+                <i-tabler name="printer" class="icon-18"></i-tabler>
+                {{ 'ventas.pos.resumen.verTicketDespachador' | translate }}
+              </button>
+            }
+          }
         </mat-card-content>
       </mat-card>
     </div>

@@ -20,7 +20,8 @@ import { RetiroRequestModel } from 'src/app/admin/models/ventas/retiro-request';
 import { IngresoEfectivoRequestModel } from 'src/app/admin/models/ventas/ingreso-efectivo-request';
 import { TipoIngresoEfectivoId } from 'src/app/admin/models/ventas/tipo-ingreso-efectivo';
 import { ActualizarEstatusRetiroRequestModel } from 'src/app/admin/models/ventas/actualizar-estatus-retiro-request';
-import { CajaService } from 'src/app/admin/services/caja.service';
+import { CajaService, TicketCajaTipo } from 'src/app/admin/services/caja.service';
+import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { ExcesoEfectivoBadgeComponent } from '../../components/exceso-efectivo-badge/exceso-efectivo-badge.component';
 
 /**
@@ -101,6 +102,11 @@ export class RetirosIngresosComponent implements OnInit {
   readonly guardandoRetiro = signal(false);
   readonly guardandoIngreso = signal(false);
   readonly actualizandoRetiro = signal<number | null>(null);
+
+  /** Id del último retiro/ingreso registrado en esta sesión de pantalla (FE-D1: ver/reimprimir ticket). */
+  readonly ultimoRetiroId = signal<number | null>(null);
+  readonly ultimoIngresoId = signal<number | null>(null);
+  readonly generandoTicket = signal(false);
 
   /** El backend ya regresa `efectivoDisponible` neto de los retiros del día (ver nota de clase). */
   readonly disponibleParaRetirar = computed(() => {
@@ -194,6 +200,7 @@ export class RetirosIngresosComponent implements OnInit {
         next: (res) => {
           if (res?.estatus === 200) {
             this.notify.notify('success', res.mensaje ?? this.translate.instant('ventas.caja.retiro.msg.exito'));
+            this.ultimoRetiroId.set(res.modelo ?? null);
             this.retiroForm.reset();
             this.cargarInfo();
             this.cargarRetiros();
@@ -236,6 +243,7 @@ export class RetirosIngresosComponent implements OnInit {
         next: (res) => {
           if (res?.estatus === 200) {
             this.notify.notify('success', res.mensaje ?? this.translate.instant('ventas.caja.ingreso.msg.exito'));
+            this.ultimoIngresoId.set(res.modelo ?? null);
             this.ingresoForm.reset();
             this.cargarInfo();
             this.cargarRetiros();
@@ -325,6 +333,48 @@ export class RetirosIngresosComponent implements OnInit {
       default:
         return { texto: this.translate.instant('ventas.caja.retiro.estatus.pendiente'), color: '#ffae1f' };
     }
+  }
+
+  // ====================== Ticket PDF (FE-D1) ======================
+
+  /** "Ver ticket" del retiro por exceso recién registrado (ver `ultimoRetiroId`). */
+  verTicketUltimoRetiro(): void {
+    const id = this.ultimoRetiroId();
+    if (id) this.abrirTicket(id, 'retiro');
+  }
+
+  /** "Ver ticket" del ingreso de efectivo recién registrado (ver `ultimoIngresoId`). */
+  verTicketUltimoIngreso(): void {
+    const id = this.ultimoIngresoId();
+    if (id) this.abrirTicket(id, 'ingreso');
+  }
+
+  /**
+   * "Ver ticket" de una fila del listado: `CierreDia` imprime el ticket de cierre asociado
+   * (`idCierre`); cualquier otro tipo imprime el propio retiro por exceso (`idRetiro`).
+   */
+  verTicketFila(retiro: Retiro): void {
+    if (retiro.tipoRetiro === TipoRetiroId.CierreDia) {
+      this.abrirTicket(retiro.idCierre, 'cierre');
+    } else {
+      this.abrirTicket(retiro.idRetiro, 'retiro');
+    }
+  }
+
+  private abrirTicket(id: number, tipo: TicketCajaTipo): void {
+    if (this.generandoTicket()) return;
+
+    this.generandoTicket.set(true);
+    this.cajaService
+      .obtenerTicketPdf(id, tipo)
+      .pipe(finalize(() => this.generandoTicket.set(false)))
+      .subscribe({
+        next: (blob) => abrirPdfBlob(blob),
+        error: (err) => {
+          console.error('Error al generar el ticket PDF', err);
+          this.notify.notify('error', this.translate.instant('ventas.caja.retiro.msg.errorTicket'));
+        },
+      });
   }
 
   // ====================== Búsqueda + paginación local ======================

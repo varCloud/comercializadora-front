@@ -14,6 +14,9 @@ import { CierreRequest } from 'src/app/admin/models/ventas/cierre-request';
 import { ActualizarEstatusRetiroRequest } from 'src/app/admin/models/ventas/actualizar-estatus-retiro-request';
 import { RetirosFiltro, buildRetirosFiltroParams } from 'src/app/admin/models/ventas/retiros-filtro';
 
+/** Tipos de ticket PDF que expone `GET /caja/{id}/ticket-pdf` (API-D2, Bloque D). */
+export type TicketCajaTipo = 'ingreso' | 'retiro' | 'cierre';
+
 /**
  * Servicio HTTP de Caja / Retiros / Ingresos de efectivo (Bloque B de la feature `ventas`).
  * Consume `CajaController` (comercializadora-api). idUsuario/idEstacion/idAlmacen NUNCA se
@@ -136,5 +139,11 @@ export class CajaService {
     return this.http
       .get<Notificacion<ExcesoEfectivo[]>>(`${this.baseUri}/exceso-efectivo`, { params })
       .pipe(map((res) => (res?.modelo ?? []).map((e) => new ExcesoEfectivoModel(e))));
+  }
+
+  /** PDF del ticket de un movimiento de caja (ingreso/retiro/cierre) — API-D2, Bloque D. */
+  obtenerTicketPdf(id: number, tipo: TicketCajaTipo): Observable<Blob> {
+    const params = new HttpParams().set('tipo', tipo);
+    return this.http.get(`${this.baseUri}/${id}/ticket-pdf`, { params, responseType: 'blob' });
   }
 }

@@ -138,6 +138,9 @@
             <a (click)="verDevolucionesComplementos(v)" class="m-r-10 cursor-pointer" [style.color]="'#5d87ff'" [matTooltip]="'ventas.listado.actions.devolucionesComplementos' | translate">
               <i-tabler name="replace" class="icon-18"></i-tabler>
             </a>
+            <a (click)="reimprimirTicket(v)" class="m-r-10 cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'ventas.listado.actions.reimprimirTicket' | translate">
+              <i-tabler name="printer" class="icon-18"></i-tabler>
+            </a>
             @if (puedeAjustarIva(v)) {
               <a (click)="ajustarIva(v)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'ventas.listado.actions.ajustarIva' | translate">
                 <i-tabler name="receipt-tax" class="icon-18"></i-tabler>

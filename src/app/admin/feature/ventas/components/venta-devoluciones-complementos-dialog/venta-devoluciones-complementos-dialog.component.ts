@@ -4,10 +4,12 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
 import { finalize } from 'rxjs';
+import { TablerIconsModule } from 'angular-tabler-icons';
 import { MaterialModule } from 'src/app/material.module';
 import { NotificationService } from 'src/app/services/notification.service';
 import { VentaDevolucionComplemento } from 'src/app/admin/models/ventas/venta-devolucion-complemento';
 import { VentasService } from 'src/app/admin/services/ventas.service';
+import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 
 /** Datos que recibe el modal al abrirse: el id de la venta consultada. */
 export interface VentaDevolucionesComplementosDialogData {
@@ -24,7 +26,7 @@ export interface VentaDevolucionesComplementosDialogData {
 @Component({
   selector: 'app-venta-devoluciones-complementos-dialog',
   standalone: true,
-  imports: [MaterialModule, TranslatePipe, BlockUIModule, CurrencyPipe, DatePipe],
+  imports: [MaterialModule, TranslatePipe, BlockUIModule, CurrencyPipe, DatePipe, TablerIconsModule],
   templateUrl: './venta-devoluciones-complementos-dialog.component.html',
 })
 export class VentaDevolucionesComplementosDialogComponent implements OnInit {
@@ -38,9 +40,10 @@ export class VentaDevolucionesComplementosDialogComponent implements OnInit {
 
   readonly devoluciones = signal<VentaDevolucionComplemento[]>([]);
   readonly complementos = signal<VentaDevolucionComplemento[]>([]);
+  readonly generandoTicket = signal(false);
 
-  readonly displayedColumnsDevoluciones = ['fechaAlta', 'cantidad', 'montoTotal', 'observaciones'];
-  readonly displayedColumnsComplementos = ['fechaAlta', 'cantidad', 'montoTotal'];
+  readonly displayedColumnsDevoluciones = ['fechaAlta', 'cantidad', 'montoTotal', 'observaciones', 'accion'];
+  readonly displayedColumnsComplementos = ['fechaAlta', 'cantidad', 'montoTotal', 'accion'];
 
   ngOnInit(): void {
     this.blockUI.start(this.translate.instant('ventas.devolucionesComplementos.msg.cargando'));
@@ -61,5 +64,34 @@ export class VentaDevolucionesComplementosDialogComponent implements OnInit {
 
   cerrar(): void {
     this.dialogRef.close();
+  }
+
+  /** "Ver ticket" del ticket de devolución (FE-D1): venta original + `idDevolucion` de la fila. */
+  verTicketDevolucion(item: VentaDevolucionComplemento): void {
+    this.abrirTicket('devolucion', { idDevolucion: item.idDevolucion });
+  }
+
+  /** "Ver ticket" del ticket de complemento (FE-D1): venta original + `idComplemento` de la fila. */
+  verTicketComplemento(item: VentaDevolucionComplemento): void {
+    this.abrirTicket('complemento', { idComplemento: item.idComplemento });
+  }
+
+  private abrirTicket(
+    tipo: 'devolucion' | 'complemento',
+    opts: { idDevolucion?: number; idComplemento?: number },
+  ): void {
+    if (this.generandoTicket()) return;
+
+    this.generandoTicket.set(true);
+    this.ventasService
+      .obtenerTicketPdf(this.data.idVenta, tipo, opts)
+      .pipe(finalize(() => this.generandoTicket.set(false)))
+      .subscribe({
+        next: (blob) => abrirPdfBlob(blob),
+        error: (err) => {
+          console.error('Error al generar el ticket PDF', err);
+          this.notify.notify('error', this.translate.instant('ventas.devolucionesComplementos.msg.errorTicket'));
+        },
+      });
   }
 }

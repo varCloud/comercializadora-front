@@ -20,6 +20,7 @@ import { Venta } from 'src/app/admin/models/ventas/venta';
 import { EstatusVentaId } from 'src/app/admin/models/ventas/estatus-venta';
 import { FormaPago } from 'src/app/admin/models/ventas/forma-pago';
 import { VentasService } from 'src/app/admin/services/ventas.service';
+import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { UsuariosService } from 'src/app/admin/services/usuarios.service';
 import { VentaDetalleDialogComponent } from '../../components/venta-detalle-dialog/venta-detalle-dialog.component';
@@ -87,6 +88,7 @@ export class VentaListadoComponent implements OnInit {
 
   readonly pag = new Paginador<Venta>(CONSTANTS.PAGINATION.PAGE_SIZE);
   readonly formasPago = signal<FormaPago[]>([]);
+  readonly generandoTicket = signal(false);
 
   private search = '';
   private readonly search$ = new Subject<string>();
@@ -204,6 +206,30 @@ export class VentaListadoComponent implements OnInit {
 
   puedeAjustarIva(venta: Venta): boolean {
     return !this.soloCanceladas && venta.estatusVenta === EstatusVentaId.Activa;
+  }
+
+  /** "Reimprimir ticket" (FE-D1): tipo `venta` en el listado activo, `cancelada` en canceladas. */
+  reimprimirTicket(venta: Venta): void {
+    if (this.generandoTicket()) return;
+    const tipo = this.soloCanceladas ? 'cancelada' : 'venta';
+
+    this.generandoTicket.set(true);
+    this.blockUI.start(this.translate.instant('ventas.listado.msg.generandoTicket'));
+    this.ventasService
+      .obtenerTicketPdf(venta.idVenta, tipo)
+      .pipe(
+        finalize(() => {
+          this.generandoTicket.set(false);
+          this.blockUI.stop();
+        }),
+      )
+      .subscribe({
+        next: (blob) => abrirPdfBlob(blob),
+        error: (err) => {
+          console.error('Error al generar el ticket PDF de la venta', err);
+          this.notify.notify('error', this.translate.instant('ventas.listado.msg.errorTicket'));
+        },
+      });
   }
 
   ver(venta: Venta): void {

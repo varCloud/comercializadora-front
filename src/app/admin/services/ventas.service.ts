@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -36,6 +36,18 @@ import {
  * Se combina con `ListarParams` (page/perPage/q/order/sort) al llamar a `listar`/`listarCanceladas`,
  * mismo patrón que `VentaReporteFiltros` en `reportes-ventas.service.ts`.
  */
+/**
+ * Tipos de ticket PDF que expone `GET /ventas/{id}/ticket-pdf` (API-D2, Bloque D). `devolucion`/
+ * `complemento` requieren además `idDevolucion`/`idComplemento` (una venta puede tener varias).
+ */
+export type TicketVentaTipo =
+  | 'venta'
+  | 'cancelada'
+  | 'devolucion'
+  | 'complemento'
+  | 'todos'
+  | 'despachador';
+
 export interface VentasListadoFiltro {
   idCliente?: number | null;
   idUsuario?: number | null;
@@ -170,6 +182,25 @@ export class VentasService {
         `${this.baseUri}/${id}/devoluciones-complementos`,
       )
       .pipe(map((res) => new VentaDevolucionesComplementosResponseModel(res?.modelo ?? {})));
+  }
+
+  /**
+   * PDF del ticket de una venta (API-D2, Bloque D). `idDevolucion`/`idComplemento` son
+   * obligatorios cuando `tipo` es `devolucion`/`complemento` respectivamente (identifican el
+   * ticket específico dentro de la venta, que puede tener varias devoluciones/complementos).
+   */
+  obtenerTicketPdf(
+    idVenta: number,
+    tipo: TicketVentaTipo,
+    opts: { idDevolucion?: number; idComplemento?: number } = {},
+  ): Observable<Blob> {
+    let params = new HttpParams().set('tipo', tipo);
+    if (opts.idDevolucion) params = params.set('idDevolucion', opts.idDevolucion);
+    if (opts.idComplemento) params = params.set('idComplemento', opts.idComplemento);
+    return this.http.get(`${this.baseUri}/${idVenta}/ticket-pdf`, {
+      params,
+      responseType: 'blob',
+    });
   }
 
   private mapPage(res: Notificacion<Venta[]>): PagedResult<Venta> {

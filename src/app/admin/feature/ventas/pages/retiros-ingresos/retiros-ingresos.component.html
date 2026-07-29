@@ -44,6 +44,21 @@
                     {{ 'ventas.caja.retiro.retirar' | translate }}
                   </button>
                 </div>
+
+                @if (ultimoRetiroId(); as idRetiro) {
+                  <div class="text-end m-t-8">
+                    <button
+                      mat-stroked-button
+                      color="primary"
+                      type="button"
+                      [disabled]="generandoTicket()"
+                      (click)="verTicketUltimoRetiro()"
+                    >
+                      <i-tabler name="printer" class="icon-18"></i-tabler>
+                      {{ 'ventas.caja.retiro.verTicket' | translate }}
+                    </button>
+                  </div>
+                }
               </div>
             </div>
           </mat-tab>
@@ -69,6 +84,21 @@
                     {{ 'ventas.caja.ingreso.ingresar' | translate }}
                   </button>
                 </div>
+
+                @if (ultimoIngresoId(); as idIngreso) {
+                  <div class="text-end m-t-8">
+                    <button
+                      mat-stroked-button
+                      color="primary"
+                      type="button"
+                      [disabled]="generandoTicket()"
+                      (click)="verTicketUltimoIngreso()"
+                    >
+                      <i-tabler name="printer" class="icon-18"></i-tabler>
+                      {{ 'ventas.caja.ingreso.verTicket' | translate }}
+                    </button>
+                  </div>
+                }
               </div>
             </div>
           </mat-tab>
@@ -178,6 +208,14 @@
                         class="action-link text-end"
                         [attr.data-label]="'ventas.caja.retiro.columns.acciones' | translate"
                       >
+                        <a
+                          (click)="verTicketFila(r)"
+                          class="m-r-10 cursor-pointer"
+                          [style.color]="'#00838f'"
+                          [matTooltip]="'ventas.caja.retiro.verTicket' | translate"
+                        >
+                          <i-tabler name="printer" class="icon-18"></i-tabler>
+                        </a>
                         @if (puedeAutorizar(r)) {
                           <mat-form-field appearance="outline" class="m-r-10 monto-autorizar-field">
                             <input

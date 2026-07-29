@@ -636,7 +636,9 @@
         "subtotal": "Subtotal",
         "cobrar": "Cobrar",
         "limpiar": "Limpiar ticket",
-        "ultimoCambio": "Último Cambio"
+        "ultimoCambio": "Último Cambio",
+        "verTicket": "Ver ticket",
+        "verTicketDespachador": "Ver ticket despachador"
       },
       "msg": {
         "cargandoCatalogo": "Actualizando productos del almacén…",
@@ -649,7 +651,8 @@
         "ventaRealizada": "Venta realizada correctamente.",
         "guardandoVenta": "Guardando venta…",
         "errorGuardarVenta": "Error al guardar la venta. Intenta de nuevo.",
-        "incluyeLiquidos": "Este ticket incluye productos líquidos/despachadores; genera el ticket de despachadores correspondiente."
+        "incluyeLiquidos": "Este ticket incluye productos líquidos/despachadores; genera el ticket de despachadores correspondiente.",
+        "errorTicket": "Error al generar el ticket PDF."
       }
     },
     "cobro": {
@@ -731,8 +734,11 @@
           "montoRequerido": "Debe escribir el monto entregado en el cierre.",
           "guardando": "Realizando cierre…",
           "exito": "Cierre de caja realizado correctamente.",
-          "error": "Error al realizar el cierre de caja. Intenta de nuevo."
-        }
+          "error": "Error al realizar el cierre de caja. Intenta de nuevo.",
+          "errorTicket": "Error al generar el ticket PDF del cierre."
+        },
+        "verTicket": "Ver ticket",
+        "continuar": "Continuar"
       },
       "autorizar": {
         "title": "Autorización de cierre",
@@ -778,6 +784,7 @@
         "rechazar": "Rechazar",
         "montoAutorizado": "Monto autorizado",
         "sinRegistros": "No se encontraron retiros.",
+        "verTicket": "Ver ticket",
         "msg": {
           "cargandoListado": "Cargando retiros…",
           "errorListado": "Error al consultar el listado de retiros.",
@@ -785,13 +792,15 @@
           "exito": "Retiro registrado correctamente.",
           "error": "Error al registrar el retiro. Intenta de nuevo.",
           "excedeDisponible": "Solo tiene ${{disponible}} disponible para retirar.",
-          "errorEstatus": "Error al actualizar el estatus del retiro."
+          "errorEstatus": "Error al actualizar el estatus del retiro.",
+          "errorTicket": "Error al generar el ticket PDF."
         }
       },
       "ingreso": {
         "tabIngreso": "Ingreso de efectivo",
         "monto": "Monto a ingresar",
         "ingresar": "Ingresar",
+        "verTicket": "Ver ticket",
         "msg": {
           "guardando": "Registrando ingreso…",
           "exito": "Ingreso de efectivo registrado correctamente.",
@@ -839,7 +848,8 @@
         "ver": "Ver detalle",
         "cancelar": "Cancelar venta",
         "ajustarIva": "Ajustar IVA",
-        "devolucionesComplementos": "Devoluciones / complementos"
+        "devolucionesComplementos": "Devoluciones / complementos",
+        "reimprimirTicket": "Reimprimir ticket"
       },
       "empty": "No se encontraron ventas.",
       "confirm": {
@@ -854,7 +864,9 @@
         "loadErrorCanceladas": "Error al consultar el listado de ventas canceladas.",
         "cancelando": "Cancelando venta…",
         "cancelExito": "Venta cancelada correctamente.",
-        "cancelError": "Error al cancelar la venta."
+        "cancelError": "Error al cancelar la venta.",
+        "generandoTicket": "Generando ticket…",
+        "errorTicket": "Error al generar el ticket PDF de la venta."
       }
     },
     "detalle": {
@@ -903,14 +915,17 @@
         "fecha": "Fecha",
         "cantidad": "Cantidad",
         "monto": "Monto",
-        "observaciones": "Motivo"
+        "observaciones": "Motivo",
+        "acciones": "Acciones"
       },
       "emptyDevoluciones": "Esta venta no tiene devoluciones registradas.",
       "emptyComplementos": "Esta venta no tiene complementos registrados.",
       "cerrar": "Cerrar",
+      "verTicket": "Ver ticket",
       "msg": {
         "cargando": "Consultando devoluciones y complementos…",
-        "error": "Error al consultar devoluciones y complementos de la venta."
+        "error": "Error al consultar devoluciones y complementos de la venta.",
+        "errorTicket": "Error al generar el ticket PDF."
       }
     }
   },

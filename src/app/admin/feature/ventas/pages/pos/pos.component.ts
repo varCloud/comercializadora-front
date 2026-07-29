@@ -33,7 +33,8 @@ import {
 import { VentaDetalleRequestModel } from 'src/app/admin/models/ventas/venta-detalle-request';
 import { TipoVentaId } from 'src/app/admin/models/ventas/tipo-venta';
 import { Venta } from 'src/app/admin/models/ventas/venta';
-import { VentasService } from 'src/app/admin/services/ventas.service';
+import { VentasService, TicketVentaTipo } from 'src/app/admin/services/ventas.service';
+import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { PosCatalogoService } from '../../services/pos-catalogo.service';
 import {
   CobroDialogComponent,
@@ -115,6 +116,13 @@ export class PosComponent implements OnInit, AfterViewInit {
   readonly ticket = signal<LineaTicket[]>([]);
   /** Persiste en pantalla después de cerrar el modal de cobro ("Último Cambio" del legado). */
   readonly ultimoCambio = signal<number | null>(null);
+  /**
+   * Ticket de la última venta/complemento cobrado (FE-D1, Bloque D): persiste igual que
+   * `ultimoCambio` para poder ver/reimprimir el PDF sin salir de la pantalla. `tieneLiquidos`
+   * habilita el botón adicional del "Ticket para Despachadores" (ver comentario de clase).
+   */
+  readonly ultimoTicket = signal<{ idVenta: number; tieneLiquidos: boolean } | null>(null);
+  readonly generandoTicket = signal(false);
   /** Bloquea doble-submit del guardado de venta (independiente del `enviando` del modal de cobro). */
   private readonly guardandoVenta = signal(false);
 
@@ -717,7 +725,15 @@ export class PosComponent implements OnInit, AfterViewInit {
       .subscribe({
         next: (res: Notificacion<Venta>) => {
           if (res?.estatus === 200) {
-            if (cambio !== null) this.ultimoCambio.set(cambio);
+            if (cambio !== null) {
+              // Solo el flujo de cobro (venta/complemento) deja ticket para ver/reimprimir;
+              // la devolución no pasa por `abrirCobro()` (ver comentario de clase).
+              this.ultimoCambio.set(cambio);
+              this.ultimoTicket.set({
+                idVenta: res.modelo?.idVenta ?? 0,
+                tieneLiquidos: (res.modelo?.cantProductosLiq ?? 0) > 0,
+              });
+            }
             this.notify.notify(
               'success',
               res.mensaje || this.translate.instant('ventas.pos.msg.ventaRealizada'),
@@ -744,6 +760,26 @@ export class PosComponent implements OnInit, AfterViewInit {
           console.error('Error al guardar la venta', err);
           this.notify.notify('error', this.translate.instant('ventas.pos.msg.errorGuardarVenta'));
           this.focusScan();
+        },
+      });
+  }
+
+  // ====================== Ticket PDF (FE-D1) ======================
+
+  /** "Ver ticket"/"Ticket despachador" tras cobrar (ver `ultimoTicket`). Abre el PDF en pestaña nueva. */
+  verTicket(tipo: TicketVentaTipo = 'venta'): void {
+    const ticket = this.ultimoTicket();
+    if (!ticket || this.generandoTicket()) return;
+
+    this.generandoTicket.set(true);
+    this.ventasService
+      .obtenerTicketPdf(ticket.idVenta, tipo)
+      .pipe(finalize(() => this.generandoTicket.set(false)))
+      .subscribe({
+        next: (blob) => abrirPdfBlob(blob),
+        error: (err) => {
+          console.error('Error al generar el ticket PDF de la venta', err);
+          this.notify.notify('error', this.translate.instant('ventas.pos.msg.errorTicket'));
         },
       });
   }
