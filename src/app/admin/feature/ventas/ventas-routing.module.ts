@@ -5,9 +5,10 @@ import { CajaAbiertaGuard } from 'src/app/guards/caja-abierta.guard';
 // Rutas del dominio Ventas. Pantallas standalone cargadas con loadComponent (regla 06).
 // Bloque A (núcleo de venta): pantalla POS, protegida por CajaAbiertaGuard (FE-B5: redirige a
 // apertura-caja si la estación no tiene caja abierta). Bloque B: apertura/cierre de caja y
-// retiros/ingresos de efectivo — SIN el guard (evita loop de redirección hacia sí mismas). Los
-// bloques C/D (consulta/edición de ventas, tickets PDF + menú) agregan sus propias rutas hijas
-// más adelante.
+// retiros/ingresos de efectivo — SIN el guard (evita loop de redirección hacia sí mismas).
+// Bloque C: consulta/edición de ventas y ventas canceladas — comparten `VentaListadoComponent`
+// (ver su doc): `data.soloCanceladas` decide el endpoint/acciones habilitadas. El bloque D
+// (menú de producto) agrega la entrada de navegación hacia estas rutas más adelante (FE-D2).
 const routes: Routes = [
   {
     path: '',
@@ -35,6 +36,22 @@ const routes: Routes = [
         (m) => m.RetirosIngresosComponent,
       ),
     data: { title: 'Retiros e ingresos de efectivo' },
+  },
+  {
+    path: 'listado',
+    loadComponent: () =>
+      import('./pages/venta-listado/venta-listado.component').then(
+        (m) => m.VentaListadoComponent,
+      ),
+    data: { title: 'Consulta de ventas', soloCanceladas: false },
+  },
+  {
+    path: 'canceladas',
+    loadComponent: () =>
+      import('./pages/venta-listado/venta-listado.component').then(
+        (m) => m.VentaListadoComponent,
+      ),
+    data: { title: 'Ventas canceladas', soloCanceladas: true },
   },
 ];
 

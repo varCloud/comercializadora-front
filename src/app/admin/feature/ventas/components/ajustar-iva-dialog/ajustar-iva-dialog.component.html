@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>{{ 'ventas.iva.title' | translate: { folio: data.venta.idVenta } }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="ivaForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.iva.cliente' | translate }}</mat-label>
+          <app-select-paginado
+            [control]="$any(ivaForm.controls.idCliente)"
+            [fetchPage]="fetchClientes"
+            identifier="idCliente"
+            bindLabel="nombreCompleto"
+            bindValue="idCliente"
+            placeholder="ventas.iva.cliente"
+            [preload]="clientePreload()"
+          ></app-select-paginado>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.iva.formaPago' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100 hide-hint">
+            <mat-select formControlName="idFactFormaPago">
+              @for (f of formasPago(); track f.id) {
+                <mat-option [value]="f.id">{{ f.descripcion }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.iva.usoCfdi' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100 hide-hint">
+            <mat-select formControlName="idFactUsoCfdi">
+              @for (u of usoCfdiOpciones(); track u.id) {
+                <mat-option [value]="u.id">{{ u.clave }} - {{ u.descripcion }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.iva.montoIva' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100 hide-hint">
+            <span matPrefix>$&nbsp;</span>
+            <input matInput type="number" min="0" step="0.01" formControlName="montoIva" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="cerrar()">
+    {{ 'ventas.iva.cancelar' | translate }}
+  </button>
+  <button mat-flat-button color="primary" type="button" [disabled]="guardando()" (click)="guardar()">
+    {{ 'ventas.iva.guardar' | translate }}
+  </button>
+</mat-dialog-actions>

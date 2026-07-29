@@ -1,0 +1,88 @@
+<h2 mat-dialog-title>{{ 'ventas.detalle.title' | translate: { folio: data.idVenta } }}</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'ventaDetalle'">
+  @if (venta(); as v) {
+    <div class="row">
+      <div class="col-sm-6 m-b-16">
+        <span class="f-w-600">{{ 'ventas.detalle.cliente' | translate }}:</span> {{ v.nombreCliente }}
+      </div>
+      <div class="col-sm-6 m-b-16">
+        <span class="f-w-600">{{ 'ventas.detalle.usuario' | translate }}:</span> {{ v.nombreUsuario }}
+      </div>
+      <div class="col-sm-6 m-b-16">
+        <span class="f-w-600">{{ 'ventas.detalle.fecha' | translate }}:</span> {{ v.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}
+      </div>
+      <div class="col-sm-6 m-b-16">
+        <span class="f-w-600">{{ 'ventas.detalle.almacen' | translate }}:</span> {{ v.descripcionAlmacen }}
+      </div>
+      <div class="col-sm-6 m-b-16">
+        <span class="f-w-600">{{ 'ventas.detalle.formaPago' | translate }}:</span> {{ v.descripcionFactFormaPago }}
+      </div>
+      <div class="col-sm-6 m-b-16">
+        <span class="f-w-600">{{ 'ventas.detalle.estatus' | translate }}:</span>
+        @if (v.estatusVenta === EstatusVentaId.Cancelada) {
+          <span class="status-badge status-eliminado">{{ 'ventas.listado.estatus.cancelada' | translate }}</span>
+        } @else {
+          <span class="status-badge status-activo">{{ 'ventas.listado.estatus.activa' | translate }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table mat-table [dataSource]="v.detalles" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="descProducto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.detalle.tabla.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14" [attr.data-label]="'ventas.detalle.tabla.producto' | translate">{{ d.descProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.detalle.tabla.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14 text-right" [attr.data-label]="'ventas.detalle.tabla.cantidad' | translate">{{ d.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.detalle.tabla.precio' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14 text-right" [attr.data-label]="'ventas.detalle.tabla.precio' | translate">{{ d.precioVenta | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.detalle.tabla.importe' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14 text-right" [attr.data-label]="'ventas.detalle.tabla.importe' | translate">{{ d.monto | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <hr class="m-t-8 m-b-16" />
+
+    <div class="row">
+      <div class="col-lg-6"></div>
+      <div class="col-lg-6">
+        @if (v.descuento > 0) {
+          <div class="d-flex justify-content-between">
+            <span>{{ 'ventas.detalle.descuento' | translate }}</span>
+            <span>- {{ v.descuento | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+        }
+        @if (v.montoIVA > 0) {
+          <div class="d-flex justify-content-between">
+            <span>{{ 'ventas.detalle.iva' | translate }}</span>
+            <span>{{ v.montoIVA | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+        }
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="f-s-16 f-w-600">{{ 'ventas.detalle.total' | translate }}</span>
+          <span class="f-s-20 f-w-700">{{ v.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-flat-button color="primary" type="button" (click)="cerrar()">
+    {{ 'ventas.detalle.cerrar' | translate }}
+  </button>
+</mat-dialog-actions>

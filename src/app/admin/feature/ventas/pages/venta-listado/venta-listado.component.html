@@ -1,0 +1,169 @@
+<!-- Card de filtros: buscador libre (regla 13: cliente/usuario/ticket/folio) + filtros
+     estructurados (cliente, usuario, forma de pago, rango de fechas default hoy/hoy, código de
+     barras del ticket). Listado paginado server-side (regla 10, app-paginador). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'ventas.listado.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.listado.filters.cliente' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idCliente)"
+          [fetchPage]="fetchClientes"
+          identifier="idCliente"
+          bindLabel="nombreCompleto"
+          bindValue="idCliente"
+          placeholder="ventas.listado.filters.clientePlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.listado.filters.usuario' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idUsuario)"
+          [fetchPage]="fetchUsuarios"
+          identifier="idUsuario"
+          bindLabel="nombreCompleto"
+          bindValue="idUsuario"
+          placeholder="ventas.listado.filters.usuarioPlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.listado.filters.formaPago' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idFactFormaPago" [placeholder]="'ventas.listado.filters.formaPagoPlaceholder' | translate">
+            <mat-option [value]="null">{{ 'ventas.listado.filters.formaPagoPlaceholder' | translate }}</mat-option>
+            @for (f of formasPago(); track f.id) {
+              <mat-option [value]="f.id">{{ f.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.listado.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'ventas.listado.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'ventas.listado.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.listado.filters.codigoBarrasTicket' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input matInput [formControl]="codigoBarrasTicket" [placeholder]="'ventas.listado.filters.codigoBarrasTicketPlaceholder' | translate" />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'ventas.listado.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'ventas.listado.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="cardWithShadow" *blockUI="'ventaListado'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.listado.columns.folio' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14 text-right" [attr.data-label]="'ventas.listado.columns.folio' | translate">{{ v.idVenta }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.listado.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.fecha' | translate">{{ v.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.listado.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.cliente' | translate">{{ v.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.listado.columns.usuario' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.usuario' | translate">{{ v.nombreUsuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcionFactFormaPago">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.listado.columns.formaPago' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.formaPago' | translate">{{ v.descripcionFactFormaPago }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.listado.columns.total' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14 text-right" [attr.data-label]="'ventas.listado.columns.total' | translate">{{ v.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="estatusVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.listado.columns.estatus' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.estatus' | translate">
+            @if (v.estatusVenta === EstatusVentaId.Cancelada) {
+              <span class="status-badge status-eliminado">{{ 'ventas.listado.estatus.cancelada' | translate }}</span>
+            } @else {
+              <span class="status-badge status-activo">{{ 'ventas.listado.estatus.activa' | translate }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.listado.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="action-link text-right" [attr.data-label]="'ventas.listado.columns.acciones' | translate">
+            <a (click)="ver(v)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'ventas.listado.actions.ver' | translate">
+              <i-tabler name="eye" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="verDevolucionesComplementos(v)" class="m-r-10 cursor-pointer" [style.color]="'#5d87ff'" [matTooltip]="'ventas.listado.actions.devolucionesComplementos' | translate">
+              <i-tabler name="replace" class="icon-18"></i-tabler>
+            </a>
+            @if (puedeAjustarIva(v)) {
+              <a (click)="ajustarIva(v)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'ventas.listado.actions.ajustarIva' | translate">
+                <i-tabler name="receipt-tax" class="icon-18"></i-tabler>
+              </a>
+            }
+            @if (puedeCancelar(v)) {
+              <a (click)="cancelar(v)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'ventas.listado.actions.cancelar' | translate">
+                <i-tabler name="ban" class="icon-18"></i-tabler>
+              </a>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'ventas.listado.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

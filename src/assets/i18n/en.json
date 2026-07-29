@@ -803,6 +803,115 @@
         "title": "Excess cash",
         "empty": "No pending excess cash."
       }
+    },
+    "listado": {
+      "searchPlaceholder": "Search by customer, user, ticket or folio…",
+      "filters": {
+        "cliente": "Customer",
+        "clientePlaceholder": "All customers",
+        "usuario": "User",
+        "usuarioPlaceholder": "All users",
+        "formaPago": "Payment method",
+        "formaPagoPlaceholder": "--ALL--",
+        "rangoFechas": "Date range",
+        "fechaInicio": "Start date",
+        "fechaFin": "End date",
+        "codigoBarrasTicket": "Ticket barcode",
+        "codigoBarrasTicketPlaceholder": "Scan or type the barcode…",
+        "buscar": "Search",
+        "limpiar": "Clear"
+      },
+      "columns": {
+        "folio": "Folio",
+        "fecha": "Date",
+        "cliente": "Customer",
+        "usuario": "User",
+        "formaPago": "Payment method",
+        "total": "Total",
+        "estatus": "Status",
+        "acciones": "Actions"
+      },
+      "estatus": {
+        "activa": "Active",
+        "cancelada": "Cancelled"
+      },
+      "actions": {
+        "ver": "View detail",
+        "cancelar": "Cancel sale",
+        "ajustarIva": "Adjust tax",
+        "devolucionesComplementos": "Returns / complements"
+      },
+      "empty": "No sales found.",
+      "confirm": {
+        "cancelTitle": "Cancel sale",
+        "cancelText": "Are you sure you want to cancel sale {{folio}}? This action cannot be undone.",
+        "accept": "Yes, cancel",
+        "cancel": "No"
+      },
+      "msg": {
+        "loading": "Loading sales…",
+        "loadError": "Error retrieving the sales list.",
+        "loadErrorCanceladas": "Error retrieving the cancelled sales list.",
+        "cancelando": "Cancelling sale…",
+        "cancelExito": "Sale cancelled successfully.",
+        "cancelError": "Error cancelling the sale."
+      }
+    },
+    "detalle": {
+      "title": "Sale detail {{folio}}",
+      "cliente": "Customer",
+      "usuario": "User",
+      "fecha": "Date",
+      "almacen": "Warehouse",
+      "formaPago": "Payment method",
+      "estatus": "Status",
+      "descuento": "Discount",
+      "iva": "Tax",
+      "total": "Total",
+      "cerrar": "Close",
+      "tabla": {
+        "producto": "Product",
+        "cantidad": "Quantity",
+        "precio": "Price",
+        "importe": "Amount"
+      },
+      "msg": {
+        "cargando": "Loading sale detail…",
+        "error": "Error retrieving the sale detail."
+      }
+    },
+    "iva": {
+      "title": "Adjust tax — sale {{folio}}",
+      "cliente": "Customer",
+      "formaPago": "Payment method",
+      "usoCfdi": "CFDI use",
+      "montoIva": "Tax amount",
+      "guardar": "Save",
+      "cancelar": "Cancel",
+      "msg": {
+        "guardando": "Saving tax adjustment…",
+        "exito": "Tax updated successfully.",
+        "error": "Error updating the tax.",
+        "camposRequeridos": "Fill in all the required fields."
+      }
+    },
+    "devolucionesComplementos": {
+      "title": "Returns and complements — sale {{folio}}",
+      "tabDevoluciones": "Returns",
+      "tabComplementos": "Complements",
+      "columns": {
+        "fecha": "Date",
+        "cantidad": "Quantity",
+        "monto": "Amount",
+        "observaciones": "Reason"
+      },
+      "emptyDevoluciones": "This sale has no returns registered.",
+      "emptyComplementos": "This sale has no complements registered.",
+      "cerrar": "Close",
+      "msg": {
+        "cargando": "Retrieving returns and complements…",
+        "error": "Error retrieving the sale's returns and complements."
+      }
     }
   },
   "produccionLiquidos": {

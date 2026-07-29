@@ -803,6 +803,115 @@
         "title": "Exceso de efectivo",
         "empty": "Sin exceso de efectivo pendiente."
       }
+    },
+    "listado": {
+      "searchPlaceholder": "Buscar por cliente, usuario, ticket o folio…",
+      "filters": {
+        "cliente": "Cliente",
+        "clientePlaceholder": "Todos los clientes",
+        "usuario": "Usuario",
+        "usuarioPlaceholder": "Todos los usuarios",
+        "formaPago": "Forma de pago",
+        "formaPagoPlaceholder": "--TODAS--",
+        "rangoFechas": "Rango de fechas",
+        "fechaInicio": "Fecha inicio",
+        "fechaFin": "Fecha fin",
+        "codigoBarrasTicket": "Código de barras del ticket",
+        "codigoBarrasTicketPlaceholder": "Escanea o escribe el código de barras…",
+        "buscar": "Buscar",
+        "limpiar": "Limpiar"
+      },
+      "columns": {
+        "folio": "Folio",
+        "fecha": "Fecha",
+        "cliente": "Cliente",
+        "usuario": "Usuario",
+        "formaPago": "Forma de pago",
+        "total": "Total",
+        "estatus": "Estatus",
+        "acciones": "Acciones"
+      },
+      "estatus": {
+        "activa": "Activa",
+        "cancelada": "Cancelada"
+      },
+      "actions": {
+        "ver": "Ver detalle",
+        "cancelar": "Cancelar venta",
+        "ajustarIva": "Ajustar IVA",
+        "devolucionesComplementos": "Devoluciones / complementos"
+      },
+      "empty": "No se encontraron ventas.",
+      "confirm": {
+        "cancelTitle": "Cancelar venta",
+        "cancelText": "¿Está seguro que desea cancelar la venta {{folio}}? Esta acción no se puede deshacer.",
+        "accept": "Sí, cancelar",
+        "cancel": "No"
+      },
+      "msg": {
+        "loading": "Cargando ventas…",
+        "loadError": "Error al consultar el listado de ventas.",
+        "loadErrorCanceladas": "Error al consultar el listado de ventas canceladas.",
+        "cancelando": "Cancelando venta…",
+        "cancelExito": "Venta cancelada correctamente.",
+        "cancelError": "Error al cancelar la venta."
+      }
+    },
+    "detalle": {
+      "title": "Detalle de venta {{folio}}",
+      "cliente": "Cliente",
+      "usuario": "Usuario",
+      "fecha": "Fecha",
+      "almacen": "Almacén",
+      "formaPago": "Forma de pago",
+      "estatus": "Estatus",
+      "descuento": "Descuento",
+      "iva": "IVA",
+      "total": "Total",
+      "cerrar": "Cerrar",
+      "tabla": {
+        "producto": "Producto",
+        "cantidad": "Cantidad",
+        "precio": "Precio",
+        "importe": "Importe"
+      },
+      "msg": {
+        "cargando": "Cargando detalle de la venta…",
+        "error": "Error al consultar el detalle de la venta."
+      }
+    },
+    "iva": {
+      "title": "Ajustar IVA — venta {{folio}}",
+      "cliente": "Cliente",
+      "formaPago": "Forma de pago",
+      "usoCfdi": "Uso de CFDI",
+      "montoIva": "Monto de IVA",
+      "guardar": "Guardar",
+      "cancelar": "Cancelar",
+      "msg": {
+        "guardando": "Guardando ajuste de IVA…",
+        "exito": "IVA actualizado correctamente.",
+        "error": "Error al actualizar el IVA.",
+        "camposRequeridos": "Complete todos los campos requeridos."
+      }
+    },
+    "devolucionesComplementos": {
+      "title": "Devoluciones y complementos — venta {{folio}}",
+      "tabDevoluciones": "Devoluciones",
+      "tabComplementos": "Complementos",
+      "columns": {
+        "fecha": "Fecha",
+        "cantidad": "Cantidad",
+        "monto": "Monto",
+        "observaciones": "Motivo"
+      },
+      "emptyDevoluciones": "Esta venta no tiene devoluciones registradas.",
+      "emptyComplementos": "Esta venta no tiene complementos registrados.",
+      "cerrar": "Cerrar",
+      "msg": {
+        "cargando": "Consultando devoluciones y complementos…",
+        "error": "Error al consultar devoluciones y complementos de la venta."
+      }
     }
   },
   "produccionLiquidos": {
