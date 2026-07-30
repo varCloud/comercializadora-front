@@ -307,6 +307,77 @@ textarea:disabled:not(.mat-mdc-input-element) {
 //      bottom: 0;
 // }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Tabs (mat-tab-group / mat-button-toggle-group) — estilo delgado con subrayado
+// (REGLA DURA, ver rules/20). Reemplaza el look por defecto de Angular Material (fondo/bordes
+// tipo "pill"/segmented-control, ink-bar grueso, checkmark de selección) por tabs de texto plano
+// con una línea inferior delgada bajo la opción activa. Aplica a TODO el sistema — punto único,
+// NO se reimplementa por componente.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// mat-tab-group
+.mat-mdc-tab-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.mdc-tab {
+  height: 40px;
+  padding: 0 4px;
+  margin-right: 24px;
+  flex-grow: 0;
+  letter-spacing: normal;
+}
+.mdc-tab__text-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+.mdc-tab-indicator__content--underline {
+  border-top-width: 2px;
+}
+
+// mat-button-toggle-group usado como selector de modo/tabs (ej. Venta/Devolución/Complemento
+// del POS): mismo criterio que mat-tab-group arriba — texto plano + subrayado, sin segmented
+// control ni checkmark de selección.
+.mat-button-toggle-group {
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+
+  .mat-button-toggle {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .mat-button-toggle + .mat-button-toggle {
+    border-left: none;
+    margin-left: 24px;
+  }
+
+  .mat-button-toggle-checkbox-wrapper {
+    display: none;
+  }
+
+  .mat-button-toggle-label-content {
+    padding: 0 4px 12px;
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .mat-button-toggle-checked {
+    background: transparent;
+    color: var(--mat-sys-primary, #5d87ff);
+
+    .mat-button-toggle-label-content {
+      font-weight: 600;
+      box-shadow: inset 0 -2px 0 0 var(--mat-sys-primary, #5d87ff);
+    }
+  }
+}
+
 // Tablas apiladas en móvil (cada fila = tarjeta, con etiqueta por celda). Patrón de
 // "responsive mat-table". Aplica la clase `table-stacked-mobile` al <table mat-table> y pon
 // `[attr.data-label]` (encabezado de la columna) en cada <td mat-cell>. Solo afecta bajo el

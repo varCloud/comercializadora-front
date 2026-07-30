@@ -28,7 +28,6 @@ export interface VentaDevolucionesComplementosDialogData {
   standalone: true,
   imports: [MaterialModule, TranslatePipe, BlockUIModule, CurrencyPipe, DatePipe, TablerIconsModule],
   templateUrl: './venta-devoluciones-complementos-dialog.component.html',
-  styleUrl: './venta-devoluciones-complementos-dialog.component.scss',
 })
 export class VentaDevolucionesComplementosDialogComponent implements OnInit {
   private readonly ventasService = inject(VentasService);
