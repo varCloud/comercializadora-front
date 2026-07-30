@@ -155,7 +155,7 @@ export const navItemsApp: NavItem[] = [
       {
         displayName: 'Retiros de Efectivo',
         iconName: 'cash-banknote',
-        route: '/admin/ventas/retiros-efectivo',
+        route: '/admin/ventas/retiros-ingresos',
       },
     ],
   },
