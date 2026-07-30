@@ -15,15 +15,15 @@
                 @if (cajaInfo(); as info) {
                   <p class="clearfix">
                     <span class="float-start">{{ 'ventas.caja.retiro.cantidadEfectivo' | translate }}</span>
-                    <span class="float-end text-muted">{{ info.efectivoDisponible | currency }}</span>
+                    <span class="float-end text-muted">{{ info.efectivoDisponible | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
                   </p>
                   <p class="clearfix">
                     <span class="float-start">{{ 'ventas.caja.retiro.cantidadRetirada' | translate }}</span>
-                    <span class="float-end text-muted">{{ info.retirosExcesoEfectivo | currency }}</span>
+                    <span class="float-end text-muted">{{ info.retirosExcesoEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
                   </p>
                   <p class="clearfix">
                     <span class="float-start f-w-600">{{ 'ventas.caja.retiro.disponible' | translate }}</span>
-                    <span class="float-end f-w-600">{{ disponibleParaRetirar() | currency }}</span>
+                    <span class="float-end f-w-600">{{ disponibleParaRetirar() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
                   </p>
                 }
 
@@ -139,7 +139,7 @@
                         {{ 'ventas.caja.retiro.columns.monto' | translate }}
                       </th>
                       <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.monto' | translate">
-                        {{ r.montoRetiro | currency }}
+                        {{ r.montoRetiro | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
                       </td>
                     </ng-container>
 
@@ -240,7 +240,7 @@
                         } @else if (esPendiente(r)) {
                           {{ 'ventas.caja.retiro.estatus.pendiente' | translate }}
                         } @else {
-                          {{ 'ventas.caja.retiro.montoAutorizado' | translate }}: {{ r.montoAutorizado | currency }}
+                          {{ 'ventas.caja.retiro.montoAutorizado' | translate }}: {{ r.montoAutorizado | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
                         }
                       </td>
                     </ng-container>

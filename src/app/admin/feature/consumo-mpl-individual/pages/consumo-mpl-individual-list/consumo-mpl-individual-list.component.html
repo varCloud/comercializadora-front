@@ -103,12 +103,12 @@
 
         <ng-container matColumnDef="ultimoCostoCompra">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'consumoMplIndividual.columns.ultCostoCompra' | translate }}</th>
-          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMplIndividual.columns.ultCostoCompra' | translate">{{ c.ultimoCostoCompra | currency }}</td>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMplIndividual.columns.ultCostoCompra' | translate">{{ c.ultimoCostoCompra | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="costoProduccion">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'consumoMplIndividual.columns.costoProduccion' | translate }}</th>
-          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMplIndividual.columns.costoProduccion' | translate">{{ c.costoProduccion | currency }}</td>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'consumoMplIndividual.columns.costoProduccion' | translate">{{ c.costoProduccion | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

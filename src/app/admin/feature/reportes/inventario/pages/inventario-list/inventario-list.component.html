@@ -113,7 +113,7 @@
 
         <ng-container matColumnDef="costo">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesInventario.columns.costo' | translate }}</th>
-          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesInventario.columns.costo' | translate">{{ i.costo | currency }}</td>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesInventario.columns.costo' | translate">{{ i.costo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -122,12 +122,12 @@
 
         <ng-container matColumnDef="ultCostoCompra">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.ultCostoCompra' | translate }}</th>
-          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.ultCostoCompra' | translate">{{ i.ultCostoCompra | currency }}</td>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.ultCostoCompra' | translate">{{ i.ultCostoCompra | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="costoMerma">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'reportesMerma.columns.costoMerma' | translate }}</th>
-          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.costoMerma' | translate">{{ i.costoMerma | currency }}</td>
+          <td mat-cell *matCellDef="let i" class="f-s-14 text-right" [attr.data-label]="'reportesMerma.columns.costoMerma' | translate">{{ i.costoMerma | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="ultimoDiaMesCalculo">

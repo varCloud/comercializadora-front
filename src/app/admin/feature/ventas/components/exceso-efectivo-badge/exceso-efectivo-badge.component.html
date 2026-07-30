@@ -17,7 +17,7 @@
     @for (u of usuariosConExceso(); track u.idUsuario) {
       <button mat-menu-item class="d-flex justify-content-between">
         <span>{{ u.nombre }}</span>
-        <span class="f-w-600">{{ u.efectivoDisponible | currency }}</span>
+        <span class="f-w-600">{{ u.efectivoDisponible | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
       </button>
     }
   }

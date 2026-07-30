@@ -89,13 +89,13 @@
           <ng-container matColumnDef="menudeo">
             <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">{{ 'productos.codigosBarras.menudeo' |
               translate }}</th>
-            <td mat-cell *matCellDef="let row" class="f-s-14">{{ (row.precioIndividual ?? 0) | currency }}</td>
+            <td mat-cell *matCellDef="let row" class="f-s-14">{{ (row.precioIndividual ?? 0) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
           </ng-container>
 
           <ng-container matColumnDef="mayoreo">
             <th mat-header-cell *matHeaderCellDef class="f-s-14 f-w-600">{{ 'productos.codigosBarras.mayoreo' |
               translate }}</th>
-            <td mat-cell *matCellDef="let row" class="f-s-14">{{ (row.precioMenudeo ?? 0) | currency }}</td>
+            <td mat-cell *matCellDef="let row" class="f-s-14">{{ (row.precioMenudeo ?? 0) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
           </ng-container>
 
           <ng-container matColumnDef="codigoBarras">
