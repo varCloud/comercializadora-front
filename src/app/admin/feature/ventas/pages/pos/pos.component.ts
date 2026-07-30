@@ -14,6 +14,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
@@ -40,6 +41,14 @@ import {
   CobroDialogComponent,
   CobroDialogData,
 } from '../../components/cobro-dialog/cobro-dialog.component';
+import {
+  ConsultarExistenciasDialogComponent,
+  ConsultarExistenciasDialogData,
+} from '../../components/consultar-existencias-dialog/consultar-existencias-dialog.component';
+import {
+  BuscarPedidoEspecialDialogComponent,
+  BuscarPedidoEspecialResult,
+} from '../../components/buscar-pedido-especial-dialog/buscar-pedido-especial-dialog.component';
 
 /**
  * Modo activo del ticket (FE-A5b). Réplica de las banderas `esDevolucion`/`esAgregarProductos`
@@ -107,6 +116,7 @@ export class PosComponent implements OnInit, AfterViewInit {
   private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
 
   @BlockUI('pos') blockUI!: NgBlockUI;
 
@@ -126,6 +136,13 @@ export class PosComponent implements OnInit, AfterViewInit {
   /** Bloquea doble-submit del guardado de venta (independiente del `enviando` del modal de cobro). */
   private readonly guardandoVenta = signal(false);
 
+  /**
+   * Folio del pedido especial localizado vía "Buscar Pedido Especial" (FE-E4, Bloque E). Viaja
+   * en `GuardarVentaRequest.idPedidoEspecial` al guardar la venta (0 = sin pedido especial).
+   * Se resetea junto con el resto del estado del ticket (`limpiarModo()`/`limpiarTicket()`).
+   */
+  readonly idPedidoEspecialActual = signal(0);
+
   /** idProducto cuyos rangos de precio por volumen ya se consultaron (carga LAZY, ver PosCatalogoService). */
   private readonly rangosResueltos = new Set<number>();
 
@@ -138,6 +155,33 @@ export class PosComponent implements OnInit, AfterViewInit {
     if (!term) return [];
     return this.catalogo()
       .filter((p) => p.descripcion.toUpperCase().includes(term) || p.codigoBarras.includes(term))
+      .slice(0, 15);
+  });
+
+  /**
+   * Buscador de productos por nombre (FE-E2), ADICIONAL al escaneo por código de barras
+   * (`scanControl`/`sugerencias` arriba, que sigue intacto). 100% client-side sobre el mismo
+   * `catalogo()` ya cargado en memoria — sin llamada HTTP nueva (ver Supuesto #4 del Bloque E).
+   * El control acepta tanto texto libre (mientras el usuario escribe) como el `ProductoVenta`
+   * seleccionado (Material setea el value completo al elegir una opción del autocomplete);
+   * `mostrarProducto` (displayWith) resuelve cómo se pinta cada caso en el input.
+   */
+  readonly buscarNombreControl = new FormControl<ProductoVenta | string>('', {
+    nonNullable: true,
+  });
+  private readonly nombreTerm = toSignal(this.buscarNombreControl.valueChanges, {
+    initialValue: '' as ProductoVenta | string,
+  });
+  readonly productoSeleccionadoBuscador = signal<ProductoVenta | null>(null);
+  /** Cantidad del buscador por nombre (FE-E2), editable, default 1 — independiente del escaneo. */
+  cantidadBuscador = 1;
+
+  readonly sugerenciasPorNombre = computed(() => {
+    const valor = this.nombreTerm();
+    const texto = (typeof valor === 'string' ? valor : '').trim().toUpperCase();
+    if (!texto) return [];
+    return this.catalogo()
+      .filter((p) => p.descripcion.toUpperCase().includes(texto))
       .slice(0, 15);
   });
 
@@ -237,6 +281,121 @@ export class PosComponent implements OnInit, AfterViewInit {
 
   private focusScan(): void {
     setTimeout(() => this.scanInputRef?.nativeElement?.focus());
+  }
+
+  // ====================== Buscador por nombre (FE-E2) ======================
+
+  /** `displayWith` del autocomplete: qué se pinta en el input según se esté escribiendo o ya se haya seleccionado. */
+  mostrarProducto(valor: ProductoVenta | string | null): string {
+    if (!valor || typeof valor === 'string') return valor ?? '';
+    return valor.descripcion;
+  }
+
+  onProductoPorNombreSeleccionado(event: MatAutocompleteSelectedEvent): void {
+    this.productoSeleccionadoBuscador.set(event.option.value as ProductoVenta);
+  }
+
+  /** Botón "Agregar": reusa `agregarProducto()` (misma validación de precio/existencia que el escaneo). */
+  agregarDesdeBuscadorNombre(): void {
+    const producto = this.productoSeleccionadoBuscador();
+    if (!producto) {
+      this.notify.notify(
+        'warning',
+        this.translate.instant('ventas.pos.buscarProducto.msg.seleccionaProducto'),
+      );
+      return;
+    }
+
+    this.agregarProducto(producto, Number(this.cantidadBuscador));
+
+    this.buscarNombreControl.setValue('');
+    this.productoSeleccionadoBuscador.set(null);
+    this.cantidadBuscador = 1;
+    this.focusScan();
+  }
+
+  // ====================== Herramientas (FE-E1) ======================
+
+  /** Acceso rápido a Ingreso/Retiro de Efectivo (pantalla ya existente, fuera del POS). */
+  irRetirosIngresos(): void {
+    this.router.navigate(['/admin/ventas/retiros-ingresos']);
+  }
+
+  /** Acceso rápido a Cierre de Caja (pantalla ya existente, fuera del POS). */
+  irCierreCaja(): void {
+    this.router.navigate(['/admin/ventas/cierre-caja']);
+  }
+
+  /** Placeholder puro (Supuesto #1 del Bloque E): sin hardware conectado, solo avisa. */
+  abrirCajonDinero(): void {
+    this.notify.notify('info', this.translate.instant('ventas.pos.herramientas.msg.cajonNoDisponible'));
+  }
+
+  /**
+   * Diálogo "Consultar Existencias" (FE-E3): de solo lectura, no toca el ticket. Se le pasa el
+   * catálogo YA cargado en memoria (`catalogo()`) para que el buscador interno del diálogo
+   * filtre sobre el mismo arreglo, sin disparar una llamada HTTP nueva (regla 00).
+   */
+  abrirConsultarExistencias(): void {
+    const data: ConsultarExistenciasDialogData = { productos: this.catalogo() };
+    this.dialog.open(ConsultarExistenciasDialogComponent, {
+      data,
+      width: '700px',
+      maxWidth: '95vw',
+    });
+  }
+
+  /**
+   * Diálogo "Buscar Pedido Especial" (FE-E4): agrega al ticket TODOS los productos habilitados
+   * del pedido de golpe (réplica de `AgregarPedidoEspecial()` del legado, sin selección
+   * individual). No aplica en modo Devolución (el ticket de ese modo no captura productos
+   * nuevos, mismo criterio que `agregarPorCodigoBarras()`).
+   */
+  abrirBuscarPedidoEspecial(): void {
+    if (this.modo() === 'devolucion') {
+      this.notify.notify(
+        'warning',
+        this.translate.instant('ventas.pos.pedidoEspecial.msg.noDisponibleDevolucion'),
+      );
+      return;
+    }
+
+    const ref = this.dialog.open(BuscarPedidoEspecialDialogComponent, {
+      width: '900px',
+      maxWidth: '95vw',
+    });
+
+    ref.afterClosed().subscribe((res: ResultModalModel) => {
+      if (res?.status !== ENUM_ESTATUS_MODAL.OK) return;
+
+      const { folio, productos } = res.data as BuscarPedidoEspecialResult;
+
+      for (const item of productos) {
+        // Completa los campos que no trae `PedidoEspecialProducto` (idLineaProducto,
+        // ultimoCostoCompra, fraccion, codigoBarras) cruzando por idProducto contra el catálogo
+        // ya cargado del POS — es el mismo producto, evita inventar un endpoint nuevo (regla 00).
+        const enCatalogo = this.catalogo().find((p) => p.idProducto === item.idProducto);
+        const producto = new ProductoVentaModel({
+          idProducto: item.idProducto,
+          descripcion: item.descripcion,
+          codigoBarras: enCatalogo?.codigoBarras ?? '',
+          idLineaProducto: enCatalogo?.idLineaProducto ?? 0,
+          precioIndividual: item.precioIndividual,
+          precioMenudeo: item.precioMenudeo,
+          ultimoCostoCompra: enCatalogo?.ultimoCostoCompra ?? 0,
+          existencia: item.cantidad,
+          fraccion: enCatalogo?.fraccion ?? false,
+          rangos: enCatalogo?.rangos ?? [],
+        });
+
+        // Réplica exacta del legado: cantidad = min(existencia disponible, cantidad aceptada).
+        const cantidad = Math.min(item.cantidad, item.cantidadRecibida);
+        this.agregarProducto(producto, cantidad);
+      }
+
+      this.idPedidoEspecialActual.set(folio);
+      this.focusScan();
+    });
   }
 
   // ====================== Ticket ======================
@@ -357,6 +516,7 @@ export class PosComponent implements OnInit, AfterViewInit {
   /** Sin confirmación, replica el comportamiento del legado (ver Supuestos de la HU). */
   limpiarTicket(): void {
     this.ticket.set([]);
+    this.idPedidoEspecialActual.set(0);
     this.focusScan();
   }
 
@@ -507,7 +667,7 @@ export class PosComponent implements OnInit, AfterViewInit {
       numClientesAtendidos: datos.numClientesAtendidos ?? 0,
       tipoVenta: TipoVentaId.Normal,
       motivoDevolucion: null,
-      idPedidoEspecial: 0,
+      idPedidoEspecial: this.idPedidoEspecialActual(),
       idVentaComplemento: this.modo() === 'complemento' ? this.ventaLocalizada()?.idVenta ?? 0 : 0,
       montoTotalVenta: datos.total,
       montoPagado: datos.efectivoRecibido,
@@ -532,6 +692,7 @@ export class PosComponent implements OnInit, AfterViewInit {
     this.lineasDevolucion.set([]);
     this.buscarTicketControl.setValue('');
     this.motivoDevolucionControl.setValue('');
+    this.idPedidoEspecialActual.set(0);
     this.focusScan();
   }
 

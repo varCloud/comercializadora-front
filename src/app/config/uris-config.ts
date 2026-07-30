@@ -28,6 +28,7 @@ export const URIS_CONFIG = {
     COMPRAS: 'compras',
     FACTURAS: 'facturas',
     FACTURAS_PEDIDOS_ESPECIALES: 'pedidos-especiales',
+    PEDIDOS_ESPECIALES: 'pedidos-especiales',
     EVALUACIONES: 'evaluaciones',
     ROLES: 'roles',
     LAYOUTS: 'layouts',

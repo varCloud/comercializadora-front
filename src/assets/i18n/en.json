@@ -621,6 +621,77 @@
       "complemento": {
         "info": "The products you add will count toward this ticket's volume discount."
       },
+      "herramientas": {
+        "retirosIngresos": "Cash Deposit / Withdrawal",
+        "cierreCaja": "Cash Register Closing",
+        "abrirCajon": "Open Cash Drawer",
+        "consultarExistencias": "Check Stock",
+        "buscarPedidoEspecial": "Search Special Order",
+        "msg": {
+          "cajonNoDisponible": "Feature not available"
+        }
+      },
+      "existencias": {
+        "title": "Check Stock",
+        "buscar": {
+          "label": "Search product",
+          "placeholder": "Type the product name…"
+        },
+        "buscarOtro": "Search another product",
+        "precioIndividual": "Retail price",
+        "precioMenudeo": "Wholesale price",
+        "tabla": {
+          "almacen": "Warehouse",
+          "pasillo": "Aisle",
+          "raq": "Rack",
+          "piso": "Floor",
+          "cantidad": "Quantity"
+        },
+        "sinAcomodar": "Unshelved",
+        "vacio": "This product has no stock registered by location.",
+        "cerrar": "Close",
+        "msg": {
+          "consultando": "Checking stock…",
+          "error": "Error checking the product's stock."
+        }
+      },
+      "pedidoEspecial": {
+        "title": "Search Special Order",
+        "folio": "Order number",
+        "folioPlaceholder": "Type the order number…",
+        "buscar": "Search",
+        "tabla": {
+          "producto": "Product",
+          "cantidadRecibida": "Received qty.",
+          "existencia": "Stock",
+          "precioIndividual": "Retail price",
+          "precioMenudeo": "Wholesale price",
+          "estatus": "Status"
+        },
+        "habilitado": "Enabled",
+        "inhabilitado": "Disabled",
+        "existenciaMenor": "Stock quantity lower than requested",
+        "vacio": "This special order has no available products.",
+        "cancelar": "Cancel",
+        "agregarTodos": "Add all enabled",
+        "msg": {
+          "folioRequerido": "You must enter the special order number.",
+          "buscando": "Searching special order…",
+          "error": "Error searching for the special order.",
+          "sinHabilitados": "This special order has no enabled products to add.",
+          "noDisponibleDevolucion": "Not available in Return mode."
+        }
+      },
+      "buscarProducto": {
+        "label": "Search product by name",
+        "placeholder": "Type the product name…",
+        "cantidad": "Quantity",
+        "agregar": "Add",
+        "leyenda": "D: Available, E: In stock, S/A: Unshelved, R: Reserved, B: Blocked, ME: Retail price, MA: Wholesale price",
+        "msg": {
+          "seleccionaProducto": "Select a product from the list before adding it."
+        }
+      },
       "tabla": {
         "producto": "Product",
         "cantidad": "Quantity",
@@ -636,6 +707,7 @@
         "subtotal": "Subtotal",
         "cobrar": "Charge",
         "limpiar": "Clear ticket",
+        "pedidoEspecial": "Special Order",
         "ultimoCambio": "Last Change",
         "verTicket": "View ticket",
         "verTicketDespachador": "View dispenser ticket"

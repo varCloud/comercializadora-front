@@ -23,6 +23,10 @@ import {
   PreciosProductoModel,
 } from 'src/app/admin/models/productos/precios-producto';
 import { GuardarPreciosRequest } from 'src/app/admin/models/productos/guardar-precios-request';
+import {
+  UbicacionProducto,
+  UbicacionProductoModel,
+} from 'src/app/admin/models/ventas/ubicacion-producto';
 
 /**
  * Servicio HTTP del módulo de Productos. Consume la API nueva (comercializadora-api).
@@ -115,6 +119,20 @@ export class ProductosService {
   /** Guarda precios base + rangos de mayoreo de un producto. */
   guardarPrecios(idProducto: number, request: GuardarPreciosRequest): Observable<Notificacion<string>> {
     return this.http.put<Notificacion<string>>(`${this.baseUri}/${idProducto}/precios`, request);
+  }
+
+  /**
+   * Existencia física por ubicación de un producto ("Consultar Existencias" del POS, feature
+   * Ventas Bloque E). Una fila por ubicación física (no agregado). `idSucursal` opcional: se
+   * omite a propósito (negocio opera una sola sucursal — Uruapan, regla 15 — no hace falta
+   * exponer un selector para filtrar por sucursal en este diálogo). Los precios se consultan
+   * aparte con {@link obtenerPrecios} (ya migrado, no se duplica aquí, regla 00).
+   */
+  obtenerUbicaciones(idProducto: number, idSucursal?: number): Observable<UbicacionProducto[]> {
+    const params = idSucursal ? new HttpParams().set('idSucursal', idSucursal) : undefined;
+    return this.http
+      .get<Notificacion<UbicacionProducto[]>>(`${this.baseUri}/${idProducto}/ubicaciones`, { params })
+      .pipe(map((res) => (res?.modelo ?? []).map((u) => new UbicacionProductoModel(u))));
   }
 
   /**

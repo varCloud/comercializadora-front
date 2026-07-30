@@ -1,14 +1,48 @@
 <div class="row" *blockUI="'pos'">
-  <div class="col-12">
-    <mat-button-toggle-group
-      class="m-b-16"
-      [value]="modo()"
-      (change)="cambiarModo($event)"
-    >
+  <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-8 m-b-16">
+    <mat-button-toggle-group [value]="modo()" (change)="cambiarModo($event)">
       <mat-button-toggle value="venta">{{ 'ventas.pos.modo.venta' | translate }}</mat-button-toggle>
       <mat-button-toggle value="devolucion">{{ 'ventas.pos.modo.devolucion' | translate }}</mat-button-toggle>
       <mat-button-toggle value="complemento">{{ 'ventas.pos.modo.complemento' | translate }}</mat-button-toggle>
     </mat-button-toggle-group>
+
+    <div class="d-flex gap-16 align-items-center">
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.retirosIngresos' | translate"
+        (click)="irRetirosIngresos()"
+      >
+        <i-tabler name="cash-banknote" class="icon-22"></i-tabler>
+      </a>
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.cierreCaja' | translate"
+        (click)="irCierreCaja()"
+      >
+        <i-tabler name="lock" class="icon-22"></i-tabler>
+      </a>
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.abrirCajon' | translate"
+        (click)="abrirCajonDinero()"
+      >
+        <i-tabler name="box" class="icon-22"></i-tabler>
+      </a>
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.consultarExistencias' | translate"
+        (click)="abrirConsultarExistencias()"
+      >
+        <i-tabler name="map-pin" class="icon-22"></i-tabler>
+      </a>
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.buscarPedidoEspecial' | translate"
+        (click)="abrirBuscarPedidoEspecial()"
+      >
+        <i-tabler name="clipboard-list" class="icon-22"></i-tabler>
+      </a>
+    </div>
   </div>
 
   @if (modo() !== 'venta') {
@@ -159,6 +193,51 @@
             }
           </mat-autocomplete>
 
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8 m-t-16">{{ 'ventas.pos.buscarProducto.label' | translate }}</mat-label>
+          <div class="d-flex gap-8 align-items-start flex-wrap">
+            <mat-form-field appearance="outline" class="flex-1-auto hide-hint">
+              <input
+                matInput
+                autocomplete="off"
+                [formControl]="buscarNombreControl"
+                [matAutocomplete]="autoNombre"
+                [placeholder]="'ventas.pos.buscarProducto.placeholder' | translate"
+              />
+              <mat-icon matSuffix>
+                <i-tabler name="search" class="icon-20"></i-tabler>
+              </mat-icon>
+            </mat-form-field>
+            <mat-autocomplete
+              #autoNombre="matAutocomplete"
+              [displayWith]="mostrarProducto"
+              (optionSelected)="onProductoPorNombreSeleccionado($event)"
+            >
+              @for (p of sugerenciasPorNombre(); track p.idProducto) {
+                <mat-option [value]="p" [disabled]="p.existencia <= 0">
+                  {{ p.descripcion }} — {{ p.codigoBarras }}
+                  ({{ 'ventas.pos.existencia' | translate }}: {{ existenciaLabel(p) }})
+                </mat-option>
+              }
+            </mat-autocomplete>
+
+            <mat-form-field appearance="outline" class="hide-hint buscador-cantidad">
+              <input
+                matInput
+                type="number"
+                min="0.01"
+                step="0.01"
+                [placeholder]="'ventas.pos.buscarProducto.cantidad' | translate"
+                [(ngModel)]="cantidadBuscador"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" type="button" (click)="agregarDesdeBuscadorNombre()">
+              {{ 'ventas.pos.buscarProducto.agregar' | translate }}
+            </button>
+          </div>
+          <div class="f-s-12 text-muted m-b-16">{{ 'ventas.pos.buscarProducto.leyenda' | translate }}</div>
+
           <div class="table-responsive m-t-16">
             <table class="w-100 ticket-table">
               <thead>
@@ -222,6 +301,12 @@
             <span>{{ 'ventas.pos.resumen.articulos' | translate }}</span>
             <span class="f-w-600">{{ cantidadTotalTicket() }}</span>
           </div>
+          @if (idPedidoEspecialActual() > 0) {
+            <div class="d-flex justify-content-between m-b-8">
+              <span>{{ 'ventas.pos.resumen.pedidoEspecial' | translate }}</span>
+              <span class="f-w-600">{{ idPedidoEspecialActual() }}</span>
+            </div>
+          }
           <div class="d-flex justify-content-between m-b-16">
             <span class="f-s-18 f-w-600">{{ 'ventas.pos.resumen.subtotal' | translate }}</span>
             <span class="f-s-24 f-w-700">{{ subtotal() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>

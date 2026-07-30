@@ -621,6 +621,77 @@
       "complemento": {
         "info": "Los productos que agregues se sumarán al descuento por volumen de este ticket."
       },
+      "herramientas": {
+        "retirosIngresos": "Ingreso / Retiro de Efectivo",
+        "cierreCaja": "Cierre de Caja",
+        "abrirCajon": "Abrir Cajón de Dinero",
+        "consultarExistencias": "Consultar Existencias",
+        "buscarPedidoEspecial": "Buscar Pedido Especial",
+        "msg": {
+          "cajonNoDisponible": "Función no disponible"
+        }
+      },
+      "existencias": {
+        "title": "Consultar Existencias",
+        "buscar": {
+          "label": "Buscar producto",
+          "placeholder": "Escribe el nombre del producto…"
+        },
+        "buscarOtro": "Buscar otro producto",
+        "precioIndividual": "Precio Individual",
+        "precioMenudeo": "Precio Menudeo",
+        "tabla": {
+          "almacen": "Almacén",
+          "pasillo": "Pasillo",
+          "raq": "Rack",
+          "piso": "Piso",
+          "cantidad": "Cantidad"
+        },
+        "sinAcomodar": "Sin Acomodar",
+        "vacio": "Este producto no tiene existencias registradas por ubicación.",
+        "cerrar": "Cerrar",
+        "msg": {
+          "consultando": "Consultando existencias…",
+          "error": "Error al consultar las existencias del producto."
+        }
+      },
+      "pedidoEspecial": {
+        "title": "Buscar Pedido Especial",
+        "folio": "Folio del pedido",
+        "folioPlaceholder": "Escribe el folio…",
+        "buscar": "Buscar",
+        "tabla": {
+          "producto": "Producto",
+          "cantidadRecibida": "Cant. Recibida",
+          "existencia": "Existencia",
+          "precioIndividual": "Precio Individual",
+          "precioMenudeo": "Precio Menudeo",
+          "estatus": "Estatus"
+        },
+        "habilitado": "Habilitado",
+        "inhabilitado": "Inhabilitado",
+        "existenciaMenor": "Cantidad en existencia menor a la solicitada",
+        "vacio": "Este pedido especial no tiene productos disponibles.",
+        "cancelar": "Cancelar",
+        "agregarTodos": "Agregar todos los habilitados",
+        "msg": {
+          "folioRequerido": "Debes escribir el folio del pedido especial.",
+          "buscando": "Buscando pedido especial…",
+          "error": "Error al buscar el pedido especial.",
+          "sinHabilitados": "Este pedido especial no tiene productos habilitados para agregar.",
+          "noDisponibleDevolucion": "No disponible en modo Devolución."
+        }
+      },
+      "buscarProducto": {
+        "label": "Buscar producto por nombre",
+        "placeholder": "Escribe el nombre del producto…",
+        "cantidad": "Cantidad",
+        "agregar": "Agregar",
+        "leyenda": "D: Disponible, E: En existencia, S/A: Sin acomodar, R: Resguardo, B: Bloqueo, ME: Precio menudeo, MA: Precio mayoreo",
+        "msg": {
+          "seleccionaProducto": "Selecciona un producto de la lista antes de agregarlo."
+        }
+      },
       "tabla": {
         "producto": "Producto",
         "cantidad": "Cantidad",
@@ -636,6 +707,7 @@
         "subtotal": "Subtotal",
         "cobrar": "Cobrar",
         "limpiar": "Limpiar ticket",
+        "pedidoEspecial": "Pedido Especial",
         "ultimoCambio": "Último Cambio",
         "verTicket": "Ver ticket",
         "verTicketDespachador": "Ver ticket despachador"
