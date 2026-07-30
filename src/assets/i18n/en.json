@@ -957,14 +957,22 @@
         "cancelar": "Cancel sale",
         "ajustarIva": "Adjust tax",
         "devolucionesComplementos": "Returns / complements",
-        "reimprimirTicket": "Reprint ticket"
+        "reimprimirTicket": "Reprint ticket",
+        "verFactura": "View invoice",
+        "cancelarFactura": "Cancel invoice",
+        "estatusFactura": "Invoice cancellation status",
+        "ticketDespachador": "Dispatcher ticket",
+        "devolverProductos": "Return products",
+        "agregarProductos": "Add products"
       },
       "empty": "No sales found.",
       "confirm": {
         "cancelTitle": "Cancel sale",
         "cancelText": "Are you sure you want to cancel sale {{folio}}? This action cannot be undone.",
         "accept": "Yes, cancel",
-        "cancel": "No"
+        "cancel": "No",
+        "cancelFacturaTitle": "Cancel invoice",
+        "cancelFacturaText": "Are you sure you want to cancel the invoice for sale {{folio}}? This action cannot be undone."
       },
       "msg": {
         "loading": "Loading sales…",
@@ -974,7 +982,13 @@
         "cancelExito": "Sale cancelled successfully.",
         "cancelError": "Error cancelling the sale.",
         "generandoTicket": "Generating ticket…",
-        "errorTicket": "Error generating the sale's PDF ticket."
+        "errorTicket": "Error generating the sale's PDF ticket.",
+        "cancelandoFactura": "Cancelling invoice…",
+        "cancelFacturaExito": "Invoice cancelled successfully.",
+        "cancelFacturaError": "Error cancelling the invoice.",
+        "consultandoEstatusFactura": "Checking cancellation status…",
+        "estatusFacturaConsultado": "Cancellation status checked successfully.",
+        "errorEstatusFactura": "Error checking the invoice cancellation status."
       }
     },
     "detalle": {

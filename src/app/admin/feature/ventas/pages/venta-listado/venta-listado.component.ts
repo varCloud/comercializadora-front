@@ -1,6 +1,6 @@
 import { CurrencyPipe, DatePipe, formatDate } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -13,6 +13,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { CONSTANTS } from 'src/app/config/constants';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ENUM_ESTATUS_MODAL } from 'src/app/models/result-modal';
+import { SesionService } from 'src/app/services/sesion.service';
 import { Paginador } from 'src/app/admin/models/shared/paginador';
 import { PaginadorComponent } from 'src/app/admin/shared/components/paginador/paginador.component';
 import { SelectPaginadoComponent } from 'src/app/admin/shared/components/select-paginado/select-paginado.component';
@@ -23,6 +24,10 @@ import { VentasService } from 'src/app/admin/services/ventas.service';
 import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { UsuariosService } from 'src/app/admin/services/usuarios.service';
+import { FacturasService } from 'src/app/admin/services/facturas.service';
+import { EstatusFacturaId } from 'src/app/admin/models/facturas/estatus-factura';
+import { CancelarFacturaRequestModel } from 'src/app/admin/models/facturas/cancelar-factura-request';
+import { EstatusCancelacionRequestModel } from 'src/app/admin/models/facturas/estatus-cancelacion-request';
 import { VentaDetalleDialogComponent } from '../../components/venta-detalle-dialog/venta-detalle-dialog.component';
 import { AjustarIvaDialogComponent } from '../../components/ajustar-iva-dialog/ajustar-iva-dialog.component';
 import { VentaDevolucionesComplementosDialogComponent } from '../../components/venta-devoluciones-complementos-dialog/venta-devoluciones-complementos-dialog.component';
@@ -60,9 +65,12 @@ import { VentaDevolucionesComplementosDialogComponent } from '../../components/v
 })
 export class VentaListadoComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly ventasService = inject(VentasService);
+  private readonly facturasService = inject(FacturasService);
   private readonly clientesService = inject(ClientesService);
   private readonly usuariosService = inject(UsuariosService);
+  private readonly sesionService = inject(SesionService);
   private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
@@ -71,6 +79,7 @@ export class VentaListadoComponent implements OnInit {
   @BlockUI('ventaListado') blockUI!: NgBlockUI;
 
   readonly EstatusVentaId = EstatusVentaId;
+  readonly EstatusFacturaId = EstatusFacturaId;
 
   /** `true` en la ruta `/ventas/canceladas` (ver nota de clase). */
   readonly soloCanceladas = this.route.snapshot.data['soloCanceladas'] === true;
@@ -204,8 +213,153 @@ export class VentaListadoComponent implements OnInit {
     return !this.soloCanceladas && venta.estatusVenta === EstatusVentaId.Activa;
   }
 
+  /**
+   * FE-2: además del estatus de la venta, "Ajustar IVA" (= "Generar Factura" del legado) no
+   * debe quedar disponible si la venta ya tiene una factura vigente o pendiente de cancelar
+   * (`idEstatusFactura` distinto de "sin factura"/"cancelada").
+   */
   puedeAjustarIva(venta: Venta): boolean {
-    return !this.soloCanceladas && venta.estatusVenta === EstatusVentaId.Activa;
+    return (
+      !this.soloCanceladas &&
+      venta.estatusVenta === EstatusVentaId.Activa &&
+      (venta.idEstatusFactura === 0 || venta.idEstatusFactura === EstatusFacturaId.Cancelada)
+    );
+  }
+
+  // ====================== Facturación (FE-1) ======================
+
+  puedeVerFactura(venta: Venta): boolean {
+    return venta.idEstatusFactura === EstatusFacturaId.Facturada;
+  }
+
+  puedeCancelarFactura(venta: Venta): boolean {
+    return venta.idEstatusFactura === EstatusFacturaId.Facturada;
+  }
+
+  puedeConsultarEstatusFactura(venta: Venta): boolean {
+    return venta.idEstatusFactura === EstatusFacturaId.PendienteDeCancelacion;
+  }
+
+  verFactura(venta: Venta): void {
+    if (!venta.rutaFactura) return;
+    window.open(venta.rutaFactura, '_blank');
+  }
+
+  cancelarFactura(venta: Venta): void {
+    Swal.fire({
+      title: this.translate.instant('ventas.listado.confirm.cancelFacturaTitle'),
+      text: this.translate.instant('ventas.listado.confirm.cancelFacturaText', { folio: venta.idVenta }),
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: this.translate.instant('ventas.listado.confirm.accept'),
+      cancelButtonText: this.translate.instant('ventas.listado.confirm.cancel'),
+    }).then((result) => {
+      if (!result.isConfirmed) return;
+      this.blockUI.start(this.translate.instant('ventas.listado.msg.cancelandoFactura'));
+      this.facturasService
+        .cancelar(new CancelarFacturaRequestModel({ idVenta: venta.idVenta }))
+        .pipe(finalize(() => this.blockUI.stop()))
+        .subscribe({
+          next: (res) => {
+            if (res?.estatus === 200) {
+              this.notify.notify(
+                'success',
+                res.mensaje ?? this.translate.instant('ventas.listado.msg.cancelFacturaExito'),
+              );
+              this.cargar();
+            } else {
+              this.notify.notify(
+                'error',
+                res?.mensaje ?? this.translate.instant('ventas.listado.msg.cancelFacturaError'),
+              );
+            }
+          },
+          error: (err) => {
+            console.error('Error al cancelar la factura', err);
+            this.notify.notify('error', this.translate.instant('ventas.listado.msg.cancelFacturaError'));
+          },
+        });
+    });
+  }
+
+  consultarEstatusFactura(venta: Venta): void {
+    this.blockUI.start(this.translate.instant('ventas.listado.msg.consultandoEstatusFactura'));
+    this.facturasService
+      .consultarEstatusCancelacion(
+        new EstatusCancelacionRequestModel({ id: venta.idVenta, esPedidoEspecial: false }),
+      )
+      .pipe(finalize(() => this.blockUI.stop()))
+      .subscribe({
+        next: (res) => {
+          this.notify.notify(
+            res?.estatus === 200 ? 'success' : 'error',
+            res?.mensaje ?? this.translate.instant('ventas.listado.msg.estatusFacturaConsultado'),
+          );
+          this.cargar();
+        },
+        error: (err) => {
+          console.error('Error al consultar el estatus de cancelación de la factura', err);
+          this.notify.notify('error', this.translate.instant('ventas.listado.msg.errorEstatusFactura'));
+        },
+      });
+  }
+
+  // ====================== Ticket despachadores (FE-3) ======================
+
+  puedeTicketDespachador(venta: Venta): boolean {
+    return venta.cantProductosLiq > 0;
+  }
+
+  ticketDespachador(venta: Venta): void {
+    if (this.generandoTicket()) return;
+
+    this.generandoTicket.set(true);
+    this.blockUI.start(this.translate.instant('ventas.listado.msg.generandoTicket'));
+    this.ventasService
+      .obtenerTicketPdf(venta.idVenta, 'despachador')
+      .pipe(
+        finalize(() => {
+          this.generandoTicket.set(false);
+          this.blockUI.stop();
+        }),
+      )
+      .subscribe({
+        next: (blob) => abrirPdfBlob(blob),
+        error: (err) => {
+          console.error('Error al generar el ticket de despachadores', err);
+          this.notify.notify('error', this.translate.instant('ventas.listado.msg.errorTicket'));
+        },
+      });
+  }
+
+  // ====================== Devolver / agregar productos (FE-5) ======================
+
+  /**
+   * Réplica de la condición legado "Devolver Productos": solo dentro de la ventana de días
+   * configurada (`Sesion.diasParaHacerComplementos`) y mientras la venta no tenga ya una
+   * factura vigente. Nunca en el listado de Ventas Canceladas.
+   */
+  puedeDevolverProductos(venta: Venta): boolean {
+    if (this.soloCanceladas) return false;
+    const dias = this.sesionService.sesion()?.diasParaHacerComplementos ?? 0;
+    return venta.diasPasadosVentaInicial <= dias && venta.idEstatusFactura !== EstatusFacturaId.Facturada;
+  }
+
+  /** "Agregar Productos": misma ventana que Devolver + que la venta admita complementos. */
+  puedeAgregarProductos(venta: Venta): boolean {
+    return this.puedeDevolverProductos(venta) && venta.puedeHacerComplementos;
+  }
+
+  devolverProductos(venta: Venta): void {
+    this.router.navigate(['/admin/ventas'], {
+      queryParams: { idVenta: venta.idVenta, modo: 'devolucion' },
+    });
+  }
+
+  agregarProductos(venta: Venta): void {
+    this.router.navigate(['/admin/ventas'], {
+      queryParams: { idVenta: venta.idVenta, modo: 'complemento' },
+    });
   }
 
   /** "Reimprimir ticket" (FE-D1): tipo `venta` en el listado activo, `cancelada` en canceladas. */
@@ -238,6 +392,15 @@ export class VentaListadoComponent implements OnInit {
       width: '900px',
       maxWidth: '95vw',
     });
+  }
+
+  /**
+   * FE-4: réplica de la condición legado "Ver Detalle Tickets" (`productosDevueltos > 0 ||
+   * productosAgregados > 0`). Antes se mostraba siempre; ahora solo si la venta ya tiene
+   * devoluciones o complementos registrados.
+   */
+  puedeVerDevolucionesComplementos(venta: Venta): boolean {
+    return venta.productosDevueltos > 0 || venta.productosAgregados > 0;
   }
 
   verDevolucionesComplementos(venta: Venta): void {

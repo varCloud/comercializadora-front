@@ -957,14 +957,22 @@
         "cancelar": "Cancelar venta",
         "ajustarIva": "Ajustar IVA",
         "devolucionesComplementos": "Devoluciones / complementos",
-        "reimprimirTicket": "Reimprimir ticket"
+        "reimprimirTicket": "Reimprimir ticket",
+        "verFactura": "Ver factura",
+        "cancelarFactura": "Cancelar factura",
+        "estatusFactura": "Estatus de factura",
+        "ticketDespachador": "Ticket despachadores",
+        "devolverProductos": "Devolver productos",
+        "agregarProductos": "Agregar productos"
       },
       "empty": "No se encontraron ventas.",
       "confirm": {
         "cancelTitle": "Cancelar venta",
         "cancelText": "¿Está seguro que desea cancelar la venta {{folio}}? Esta acción no se puede deshacer.",
         "accept": "Sí, cancelar",
-        "cancel": "No"
+        "cancel": "No",
+        "cancelFacturaTitle": "Cancelar factura",
+        "cancelFacturaText": "¿Está seguro que desea cancelar la factura de la venta {{folio}}? Esta acción no se puede deshacer."
       },
       "msg": {
         "loading": "Cargando ventas…",
@@ -974,7 +982,13 @@
         "cancelExito": "Venta cancelada correctamente.",
         "cancelError": "Error al cancelar la venta.",
         "generandoTicket": "Generando ticket…",
-        "errorTicket": "Error al generar el ticket PDF de la venta."
+        "errorTicket": "Error al generar el ticket PDF de la venta.",
+        "cancelandoFactura": "Cancelando factura…",
+        "cancelFacturaExito": "Factura cancelada correctamente.",
+        "cancelFacturaError": "Error al cancelar la factura.",
+        "consultandoEstatusFactura": "Consultando estatus de cancelación…",
+        "estatusFacturaConsultado": "Estatus de cancelación consultado correctamente.",
+        "errorEstatusFactura": "Error al consultar el estatus de cancelación de la factura."
       }
     },
     "detalle": {

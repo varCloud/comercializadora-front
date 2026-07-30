@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
@@ -118,6 +119,7 @@ export class PosComponent implements OnInit, AfterViewInit {
   private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
+  private readonly route = inject(ActivatedRoute);
 
   @BlockUI('pos') blockUI!: NgBlockUI;
 
@@ -216,6 +218,28 @@ export class PosComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.cargarCatalogo();
+    this.cargarDesdeQueryParams();
+  }
+
+  /**
+   * FE-6: si se llega desde el listado de ventas con `?idVenta=&modo=devolucion|complemento`
+   * (acciones "Devolver Productos"/"Agregar Productos" de `VentaListadoComponent`), fija el
+   * modo y carga esa venta automáticamente por el mismo camino que `buscarTicket()`, sin que el
+   * cajero tenga que teclear el código de barras. Se lee el snapshot (no una suscripción
+   * reactiva) a propósito: solo debe dispararse una vez al entrar, nunca de nuevo si el cajero
+   * cambia de modo manualmente después (`cambiarModo()` ya limpia el estado en ese caso).
+   */
+  private cargarDesdeQueryParams(): void {
+    const params = this.route.snapshot.queryParamMap;
+    const modoParam = params.get('modo');
+    const idVenta = Number(params.get('idVenta'));
+
+    if ((modoParam !== 'devolucion' && modoParam !== 'complemento') || !idVenta || idVenta <= 0) {
+      return;
+    }
+
+    this.modo.set(modoParam);
+    this.cargarVentaLocalizada(idVenta);
   }
 
   ngAfterViewInit(): void {

@@ -135,12 +135,19 @@
             <a (click)="ver(v)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'ventas.listado.actions.ver' | translate">
               <i-tabler name="eye" class="icon-18"></i-tabler>
             </a>
-            <a (click)="verDevolucionesComplementos(v)" class="m-r-10 cursor-pointer" [style.color]="'#5d87ff'" [matTooltip]="'ventas.listado.actions.devolucionesComplementos' | translate">
-              <i-tabler name="replace" class="icon-18"></i-tabler>
-            </a>
+            @if (puedeVerDevolucionesComplementos(v)) {
+              <a (click)="verDevolucionesComplementos(v)" class="m-r-10 cursor-pointer" [style.color]="'#5d87ff'" [matTooltip]="'ventas.listado.actions.devolucionesComplementos' | translate">
+                <i-tabler name="replace" class="icon-18"></i-tabler>
+              </a>
+            }
             <a (click)="reimprimirTicket(v)" class="m-r-10 cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'ventas.listado.actions.reimprimirTicket' | translate">
               <i-tabler name="printer" class="icon-18"></i-tabler>
             </a>
+            @if (puedeTicketDespachador(v)) {
+              <a (click)="ticketDespachador(v)" class="m-r-10 cursor-pointer" [style.color]="'#8d6e63'" [matTooltip]="'ventas.listado.actions.ticketDespachador' | translate">
+                <i-tabler name="truck-delivery" class="icon-18"></i-tabler>
+              </a>
+            }
             @if (puedeAjustarIva(v)) {
               <a (click)="ajustarIva(v)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'ventas.listado.actions.ajustarIva' | translate">
                 <i-tabler name="receipt-tax" class="icon-18"></i-tabler>
@@ -149,6 +156,31 @@
             @if (puedeCancelar(v)) {
               <a (click)="cancelar(v)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'ventas.listado.actions.cancelar' | translate">
                 <i-tabler name="ban" class="icon-18"></i-tabler>
+              </a>
+            }
+            @if (puedeVerFactura(v)) {
+              <a (click)="verFactura(v)" class="m-r-10 cursor-pointer" [style.color]="'#7c4dff'" [matTooltip]="'ventas.listado.actions.verFactura' | translate">
+                <i-tabler name="file-invoice" class="icon-18"></i-tabler>
+              </a>
+            }
+            @if (puedeCancelarFactura(v)) {
+              <a (click)="cancelarFactura(v)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'ventas.listado.actions.cancelarFactura' | translate">
+                <i-tabler name="file-x" class="icon-18"></i-tabler>
+              </a>
+            }
+            @if (puedeConsultarEstatusFactura(v)) {
+              <a (click)="consultarEstatusFactura(v)" class="m-r-10 cursor-pointer" [style.color]="'#ffae1f'" [matTooltip]="'ventas.listado.actions.estatusFactura' | translate">
+                <i-tabler name="file-search" class="icon-18"></i-tabler>
+              </a>
+            }
+            @if (puedeDevolverProductos(v)) {
+              <a (click)="devolverProductos(v)" class="m-r-10 cursor-pointer" [style.color]="'#fa896b'" [matTooltip]="'ventas.listado.actions.devolverProductos' | translate">
+                <i-tabler name="arrow-back-up" class="icon-18"></i-tabler>
+              </a>
+            }
+            @if (puedeAgregarProductos(v)) {
+              <a (click)="agregarProductos(v)" class="m-r-10 cursor-pointer" [style.color]="'#13deb9'" [matTooltip]="'ventas.listado.actions.agregarProductos' | translate">
+                <i-tabler name="shopping-cart-plus" class="icon-18"></i-tabler>
               </a>
             }
           </td>
