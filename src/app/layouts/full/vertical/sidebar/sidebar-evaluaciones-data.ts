@@ -131,7 +131,33 @@ export const navItemsApp: NavItem[] = [
   {
     displayName: 'Ventas',
     iconName: 'receipt-2',
-    route: '/admin/ventas',
+    children: [
+      {
+        displayName: 'Nueva Venta',
+        iconName: 'shopping-cart-plus',
+        route: '/admin/ventas',
+      },
+      {
+        displayName: 'Editar Ventas',
+        iconName: 'edit',
+        route: '/admin/ventas/editar',
+      },
+      {
+        displayName: 'Ventas Canceladas',
+        iconName: 'file-x',
+        route: '/admin/ventas/canceladas',
+      },
+      {
+        displayName: 'Facturas',
+        iconName: 'file-invoice',
+        route: '/admin/ventas/facturas',
+      },
+      {
+        displayName: 'Retiros de Efectivo',
+        iconName: 'cash-banknote',
+        route: '/admin/ventas/retiros-efectivo',
+      },
+    ],
   },
   {
     displayName: 'Facturas',
