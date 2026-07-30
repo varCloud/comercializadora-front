@@ -622,7 +622,8 @@
         "info": "Los productos que agregues se sumarán al descuento por volumen de este ticket."
       },
       "herramientas": {
-        "retirosIngresos": "Ingreso / Retiro de Efectivo",
+        "ingresoEfectivo": "Ingreso de Efectivo",
+        "retiroExceso": "Retiro de Exceso de Efectivo",
         "cierreCaja": "Cierre de Caja",
         "abrirCajon": "Abrir Cajón de Dinero",
         "consultarExistencias": "Consultar Existencias",
@@ -766,7 +767,6 @@
         "abrir": "Abrir caja",
         "yaAbierta": "Ya tiene una caja abierta para esta estación.",
         "irAVentas": "Ir a Ventas",
-        "irACierre": "Ir a Cierre de caja",
         "msg": {
           "validando": "Validando apertura de caja…",
           "errorValidar": "Error al validar la apertura de caja.",
@@ -795,6 +795,7 @@
         },
         "efectivoEntregado": "Efectivo entregado en cierre",
         "realizarCierre": "Realizar cierre",
+        "cerrar": "Cerrar",
         "confirm": {
           "text": "¿Está seguro que desea hacer el cierre de esta estación?",
           "accept": "Aceptar",
@@ -824,15 +825,22 @@
         }
       },
       "retiro": {
-        "title": "Retiros e ingresos de efectivo",
-        "tabRetiro": "Retiro por exceso",
-        "tabListado": "Listado de retiros",
+        "title": "Retiros",
+        "buscarRetiros": "Buscar Retiros",
         "cantidadEfectivo": "Cantidad en efectivo:",
         "cantidadRetirada": "Cantidad retirada del día:",
         "disponible": "Disponible para retirar:",
         "monto": "Monto a retirar",
         "retirar": "Retirar",
-        "buscarPlaceholder": "Buscar por usuario o estación…",
+        "filtros": {
+          "tipoRetiro": "Tipo Retiro",
+          "tipoRetiroTodos": "-- TODOS --",
+          "almacen": "Almacen",
+          "almacenTodos": "--TODOS--",
+          "usuario": "Usuarios",
+          "usuarioTodos": "---TODOS---",
+          "fecha": "Fecha"
+        },
         "columns": {
           "tipo": "Tipo",
           "monto": "Monto",
@@ -869,6 +877,8 @@
         }
       },
       "ingreso": {
+        "title": "Ingreso de Efectivo",
+        "guardar": "Guardar",
         "tabIngreso": "Ingreso de efectivo",
         "monto": "Monto a ingresar",
         "ingresar": "Ingresar",
@@ -877,6 +887,32 @@
           "guardando": "Registrando ingreso…",
           "exito": "Ingreso de efectivo registrado correctamente.",
           "error": "Error al registrar el ingreso de efectivo. Intenta de nuevo."
+        }
+      },
+      "retiroExcesoDialog": {
+        "title": "Cierre de Caja por Exceso de Efectivo:",
+        "resumen": {
+          "apertura": "Apertura de Caja:",
+          "ingresos": "Ingresos de Efectivo (Solicitud):",
+          "ventasDelDia": "Ventas del día:",
+          "montoVentas": "Monto de Ventas:",
+          "cantidadEfectivo": "Cantidad en Efectivo:",
+          "cantidadRetirada": "Cantidad Retirada del día:"
+        },
+        "montoARetirar": "Cantidad a Retirar:",
+        "retirarDinero": "Retirar Dinero",
+        "sinRetirosHoy": "No existen retiros el día de hoy.",
+        "columns": {
+          "id": "Id",
+          "monto": "Monto",
+          "usuario": "Usuario",
+          "estacion": "Estación",
+          "fecha": "Fecha",
+          "reimprimir": "Reimprimir"
+        },
+        "cerrar": "Cerrar",
+        "msg": {
+          "cargando": "Cargando retiros del día…"
         }
       },
       "badge": {

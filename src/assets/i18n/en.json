@@ -622,7 +622,8 @@
         "info": "The products you add will count toward this ticket's volume discount."
       },
       "herramientas": {
-        "retirosIngresos": "Cash Deposit / Withdrawal",
+        "ingresoEfectivo": "Cash Deposit",
+        "retiroExceso": "Cash Excess Withdrawal",
         "cierreCaja": "Cash Register Closing",
         "abrirCajon": "Open Cash Drawer",
         "consultarExistencias": "Check Stock",
@@ -766,7 +767,6 @@
         "abrir": "Open register",
         "yaAbierta": "This station already has an open cash register.",
         "irAVentas": "Go to Sales",
-        "irACierre": "Go to Register closing",
         "msg": {
           "validando": "Validating cash register opening…",
           "errorValidar": "Error validating the cash register opening.",
@@ -795,6 +795,7 @@
         },
         "efectivoEntregado": "Cash handed in at closing",
         "realizarCierre": "Close register",
+        "cerrar": "Close",
         "confirm": {
           "text": "Are you sure you want to close this station?",
           "accept": "Accept",
@@ -824,15 +825,22 @@
         }
       },
       "retiro": {
-        "title": "Cash withdrawals and deposits",
-        "tabRetiro": "Excess withdrawal",
-        "tabListado": "Withdrawals list",
+        "title": "Withdrawals",
+        "buscarRetiros": "Search Withdrawals",
         "cantidadEfectivo": "Cash amount:",
         "cantidadRetirada": "Amount withdrawn today:",
         "disponible": "Available to withdraw:",
         "monto": "Amount to withdraw",
         "retirar": "Withdraw",
-        "buscarPlaceholder": "Search by user or station…",
+        "filtros": {
+          "tipoRetiro": "Withdrawal Type",
+          "tipoRetiroTodos": "-- ALL --",
+          "almacen": "Warehouse",
+          "almacenTodos": "--ALL--",
+          "usuario": "Users",
+          "usuarioTodos": "---ALL---",
+          "fecha": "Date"
+        },
         "columns": {
           "tipo": "Type",
           "monto": "Amount",
@@ -869,6 +877,8 @@
         }
       },
       "ingreso": {
+        "title": "Cash Deposit",
+        "guardar": "Save",
         "tabIngreso": "Cash deposit",
         "monto": "Amount to deposit",
         "ingresar": "Deposit",
@@ -877,6 +887,32 @@
           "guardando": "Recording deposit…",
           "exito": "Cash deposit recorded successfully.",
           "error": "Error recording the cash deposit. Try again."
+        }
+      },
+      "retiroExcesoDialog": {
+        "title": "Cash Register Closing (Excess Cash):",
+        "resumen": {
+          "apertura": "Opening Amount:",
+          "ingresos": "Cash Deposits (Requested):",
+          "ventasDelDia": "Sales Today:",
+          "montoVentas": "Sales Amount:",
+          "cantidadEfectivo": "Cash on Hand:",
+          "cantidadRetirada": "Withdrawn Today:"
+        },
+        "montoARetirar": "Amount to Withdraw:",
+        "retirarDinero": "Withdraw Cash",
+        "sinRetirosHoy": "There are no withdrawals today.",
+        "columns": {
+          "id": "Id",
+          "monto": "Amount",
+          "usuario": "User",
+          "estacion": "Station",
+          "fecha": "Date",
+          "reimprimir": "Reprint"
+        },
+        "cerrar": "Close",
+        "msg": {
+          "cargando": "Loading today's withdrawals…"
         }
       },
       "badge": {

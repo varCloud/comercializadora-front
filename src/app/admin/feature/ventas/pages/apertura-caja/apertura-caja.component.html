@@ -13,9 +13,6 @@
             <button mat-flat-button color="primary" (click)="irAVentas()">
               {{ 'ventas.caja.apertura.irAVentas' | translate }}
             </button>
-            <button mat-stroked-button (click)="irACierre()">
-              {{ 'ventas.caja.apertura.irACierre' | translate }}
-            </button>
           </div>
         } @else {
           <form [formGroup]="aperturaForm" class="row m-t-8">
@@ -27,7 +24,7 @@
                   }}</mat-label>
                   <mat-form-field appearance="outline" class="w-100">
                     <span matPrefix>$&nbsp;</span>
-                    <input matInput type="number" min="0.01" step="0.01" formControlName="monto" />
+                    <input matInput type="number" min="0" step="0.01" formControlName="monto" />
                     @if (aperturaForm.controls.monto.hasError('required') && aperturaForm.controls.monto.touched) {
                       <mat-error>{{ 'ventas.caja.apertura.msg.montoRequerido' | translate }}</mat-error>
                     }

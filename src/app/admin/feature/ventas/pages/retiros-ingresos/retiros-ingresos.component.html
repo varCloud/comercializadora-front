@@ -1,265 +1,202 @@
-<div class="row" *blockUI="'retiros-ingresos'">
+<div class="row">
   <div class="col-12">
-    <mat-card class="cardWithShadow">
-      <mat-card-content class="p-24">
-        <div class="d-flex align-items-center justify-content-between m-b-16">
-          <h4 class="f-s-18 f-w-600 m-0">{{ 'ventas.caja.retiro.title' | translate }}</h4>
-          <app-exceso-efectivo-badge></app-exceso-efectivo-badge>
-        </div>
-
-        <mat-tab-group>
-          <!-- ====================== Retiro por exceso de efectivo ====================== -->
-          <mat-tab [label]="'ventas.caja.retiro.tabRetiro' | translate">
-            <div class="row m-t-16">
-              <div class="col-12 col-lg-6">
-                @if (cajaInfo(); as info) {
-                  <p class="clearfix">
-                    <span class="float-start">{{ 'ventas.caja.retiro.cantidadEfectivo' | translate }}</span>
-                    <span class="float-end text-muted">{{ info.efectivoDisponible | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
-                  </p>
-                  <p class="clearfix">
-                    <span class="float-start">{{ 'ventas.caja.retiro.cantidadRetirada' | translate }}</span>
-                    <span class="float-end text-muted">{{ info.retirosExcesoEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
-                  </p>
-                  <p class="clearfix">
-                    <span class="float-start f-w-600">{{ 'ventas.caja.retiro.disponible' | translate }}</span>
-                    <span class="float-end f-w-600">{{ disponibleParaRetirar() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
-                  </p>
-                }
-
-                <form [formGroup]="retiroForm" class="row m-t-16">
-                  <div class="col-12 m-b-16">
-                    <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{
-                      'ventas.caja.retiro.monto' | translate
-                    }}</mat-label>
-                    <mat-form-field appearance="outline" class="w-100">
-                      <span matPrefix>$&nbsp;</span>
-                      <input matInput type="number" min="0.01" step="0.01" formControlName="monto" />
-                    </mat-form-field>
-                  </div>
-                </form>
-
-                <div class="text-end">
-                  <button mat-flat-button color="primary" [disabled]="guardandoRetiro()" (click)="registrarRetiro()">
-                    {{ 'ventas.caja.retiro.retirar' | translate }}
-                  </button>
-                </div>
-
-                @if (ultimoRetiroId(); as idRetiro) {
-                  <div class="text-end m-t-8">
-                    <button
-                      mat-stroked-button
-                      color="primary"
-                      type="button"
-                      [disabled]="generandoTicket()"
-                      (click)="verTicketUltimoRetiro()"
-                    >
-                      <i-tabler name="printer" class="icon-18"></i-tabler>
-                      {{ 'ventas.caja.retiro.verTicket' | translate }}
-                    </button>
-                  </div>
-                }
-              </div>
-            </div>
-          </mat-tab>
-
-          <!-- ====================== Ingreso de efectivo ====================== -->
-          <mat-tab [label]="'ventas.caja.ingreso.tabIngreso' | translate">
-            <div class="row m-t-16">
-              <div class="col-12 col-lg-6">
-                <form [formGroup]="ingresoForm" class="row">
-                  <div class="col-12 m-b-16">
-                    <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{
-                      'ventas.caja.ingreso.monto' | translate
-                    }}</mat-label>
-                    <mat-form-field appearance="outline" class="w-100">
-                      <span matPrefix>$&nbsp;</span>
-                      <input matInput type="number" min="0.01" step="0.01" formControlName="monto" />
-                    </mat-form-field>
-                  </div>
-                </form>
-
-                <div class="text-end">
-                  <button mat-flat-button color="primary" [disabled]="guardandoIngreso()" (click)="registrarIngreso()">
-                    {{ 'ventas.caja.ingreso.ingresar' | translate }}
-                  </button>
-                </div>
-
-                @if (ultimoIngresoId(); as idIngreso) {
-                  <div class="text-end m-t-8">
-                    <button
-                      mat-stroked-button
-                      color="primary"
-                      type="button"
-                      [disabled]="generandoTicket()"
-                      (click)="verTicketUltimoIngreso()"
-                    >
-                      <i-tabler name="printer" class="icon-18"></i-tabler>
-                      {{ 'ventas.caja.ingreso.verTicket' | translate }}
-                    </button>
-                  </div>
-                }
-              </div>
-            </div>
-          </mat-tab>
-
-          <!-- ====================== Listado / autorización de retiros ====================== -->
-          <mat-tab [label]="'ventas.caja.retiro.tabListado' | translate">
-            <div class="row m-t-16">
-              <div class="col-12">
-                <mat-form-field appearance="outline" class="w-100 m-b-8">
-                  <input
-                    matInput
-                    [formControl]="searchControl"
-                    [placeholder]="'ventas.caja.retiro.buscarPlaceholder' | translate"
-                  />
-                  <i-tabler matSuffix name="search" class="icon-18"></i-tabler>
-                </mat-form-field>
-              </div>
-
-              <div class="col-12">
-                <div class="table-responsive">
-                  <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
-                    <ng-container matColumnDef="tipo">
-                      <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-                        {{ 'ventas.caja.retiro.columns.tipo' | translate }}
-                      </th>
-                      <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.tipo' | translate">
-                        <span
-                          class="estatus-chip"
-                          [style.color]="tipoRetiroBadge(r).color"
-                          [style.borderColor]="tipoRetiroBadge(r).color"
-                          >{{ tipoRetiroBadge(r).texto }}</span
-                        >
-                      </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="monto">
-                      <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-                        {{ 'ventas.caja.retiro.columns.monto' | translate }}
-                      </th>
-                      <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.monto' | translate">
-                        {{ r.montoRetiro | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
-                      </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="usuario">
-                      <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-                        {{ 'ventas.caja.retiro.columns.usuario' | translate }}
-                      </th>
-                      <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.usuario' | translate">
-                        {{ r.nombreUsuario }}
-                      </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="estacion">
-                      <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-                        {{ 'ventas.caja.retiro.columns.estacion' | translate }}
-                      </th>
-                      <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.estacion' | translate">
-                        {{ r.nombreEstacion }}
-                      </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="estatus">
-                      <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-                        {{ 'ventas.caja.retiro.columns.estatus' | translate }}
-                      </th>
-                      <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.estatus' | translate">
-                        <span
-                          class="estatus-chip"
-                          [style.color]="estatusBadge(r).color"
-                          [style.borderColor]="estatusBadge(r).color"
-                          >{{ estatusBadge(r).texto }}</span
-                        >
-                      </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="fecha">
-                      <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-                        {{ 'ventas.caja.retiro.columns.fecha' | translate }}
-                      </th>
-                      <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.fecha' | translate">
-                        {{ r.fechaAlta | date: 'short' }}
-                      </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="usuarioAutorizo">
-                      <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-                        {{ 'ventas.caja.retiro.columns.usuarioAutorizo' | translate }}
-                      </th>
-                      <td
-                        mat-cell
-                        *matCellDef="let r"
-                        class="f-s-14"
-                        [attr.data-label]="'ventas.caja.retiro.columns.usuarioAutorizo' | translate"
-                      >
-                        {{ r.nombreUsuarioAut || '—' }}
-                      </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="acciones" stickyEnd>
-                      <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
-                        {{ 'ventas.caja.retiro.columns.acciones' | translate }}
-                      </th>
-                      <td
-                        mat-cell
-                        *matCellDef="let r"
-                        class="action-link text-end"
-                        [attr.data-label]="'ventas.caja.retiro.columns.acciones' | translate"
-                      >
-                        <a
-                          (click)="verTicketFila(r)"
-                          class="m-r-10 cursor-pointer"
-                          [style.color]="'#00838f'"
-                          [matTooltip]="'ventas.caja.retiro.verTicket' | translate"
-                        >
-                          <i-tabler name="printer" class="icon-18"></i-tabler>
-                        </a>
-                        @if (puedeAutorizar(r)) {
-                          <mat-form-field appearance="outline" class="m-r-10 monto-autorizar-field">
-                            <input
-                              matInput
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              [value]="montoAutorizar(r)"
-                              (input)="onMontoAutorizarChange(r, $any($event.target).value)"
-                            />
-                          </mat-form-field>
-                          <a
-                            (click)="aprobar(r)"
-                            class="m-r-10 cursor-pointer"
-                            [matTooltip]="'ventas.caja.retiro.autorizar' | translate"
-                          >
-                            <i-tabler name="check" class="icon-18 icon-aprobar"></i-tabler>
-                          </a>
-                          <a (click)="rechazar(r)" class="cursor-pointer" [matTooltip]="'ventas.caja.retiro.rechazar' | translate">
-                            <i-tabler name="x" class="icon-18 icon-rechazar"></i-tabler>
-                          </a>
-                        } @else if (esPendiente(r)) {
-                          {{ 'ventas.caja.retiro.estatus.pendiente' | translate }}
-                        } @else {
-                          {{ 'ventas.caja.retiro.montoAutorizado' | translate }}: {{ r.montoAutorizado | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
-                        }
-                      </td>
-                    </ng-container>
-
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-                  </table>
-
-                  @if (pag.isEmpty()) {
-                    <div class="text-center p-24 text-muted">{{ 'ventas.caja.retiro.sinRegistros' | translate }}</div>
-                  }
-                </div>
-
-                <app-paginador [paginador]="pag" (navegar)="navegar($event)" (perPageChange)="onPerPage($event)"></app-paginador>
-              </div>
-            </div>
-          </mat-tab>
-        </mat-tab-group>
-      </mat-card-content>
-    </mat-card>
+    <h4 class="f-s-18 f-w-600 m-b-16">{{ 'ventas.caja.retiro.title' | translate }}</h4>
   </div>
 </div>
+
+<!-- Card de filtros (réplica de Retiros.cshtml): Tipo Retiro, Almacén, Usuario, Fecha. -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <h4 class="f-s-16 f-w-600 m-b-16">{{ 'ventas.caja.retiro.buscarRetiros' | translate }}</h4>
+
+    <div class="row">
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.caja.retiro.filtros.tipoRetiro' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idTipoRetiro" [placeholder]="'ventas.caja.retiro.filtros.tipoRetiroTodos' | translate">
+            <mat-option [value]="null">{{ 'ventas.caja.retiro.filtros.tipoRetiroTodos' | translate }}</mat-option>
+            <mat-option [value]="TipoRetiroId.ExcesoEfectivo">{{ 'ventas.caja.retiro.tipo.exceso' | translate }}</mat-option>
+            <mat-option [value]="TipoRetiroId.CierreDia">{{ 'ventas.caja.retiro.tipo.cierre' | translate }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.caja.retiro.filtros.almacen' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-select [formControl]="idAlmacen" [placeholder]="'ventas.caja.retiro.filtros.almacenTodos' | translate">
+            <mat-option [value]="null">{{ 'ventas.caja.retiro.filtros.almacenTodos' | translate }}</mat-option>
+            @for (a of almacenes(); track a.id) {
+              <mat-option [value]="a.id">{{ a.descripcion }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.caja.retiro.filtros.usuario' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idUsuario)"
+          [fetchPage]="fetchUsuarios"
+          identifier="idUsuarioRetiro"
+          bindLabel="nombreCompleto"
+          bindValue="idUsuario"
+          placeholder="ventas.caja.retiro.filtros.usuarioTodos"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-3 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.caja.retiro.filtros.fecha' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input matInput [matDatepicker]="fechaPicker" [formControl]="fecha" />
+          <mat-datepicker-toggle matIconSuffix [for]="fechaPicker"></mat-datepicker-toggle>
+          <mat-datepicker #fechaPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'ventas.listado.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'ventas.listado.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de retiros (réplica de _ObtenerRetirosAutorizacion.cshtml). -->
+<mat-card class="cardWithShadow" *blockUI="'retirosIngresos'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            {{ 'ventas.caja.retiro.columns.tipo' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.tipo' | translate">
+            <span
+              class="estatus-chip"
+              [style.color]="tipoRetiroBadge(r).color"
+              [style.borderColor]="tipoRetiroBadge(r).color"
+              >{{ tipoRetiroBadge(r).texto }}</span
+            >
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            {{ 'ventas.caja.retiro.columns.monto' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.monto' | translate">
+            {{ r.montoRetiro | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="usuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            {{ 'ventas.caja.retiro.columns.usuario' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.usuario' | translate">
+            {{ r.nombreUsuario }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estacion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            {{ 'ventas.caja.retiro.columns.estacion' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.estacion' | translate">
+            {{ r.nombreEstacion }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estatus">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            {{ 'ventas.caja.retiro.columns.estatus' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.estatus' | translate">
+            <span
+              class="estatus-chip"
+              [style.color]="estatusBadge(r).color"
+              [style.borderColor]="estatusBadge(r).color"
+              >{{ estatusBadge(r).texto }}</span
+            >
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            {{ 'ventas.caja.retiro.columns.fecha' | translate }}
+          </th>
+          <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'ventas.caja.retiro.columns.fecha' | translate">
+            {{ r.fechaAlta | date: 'short' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="usuarioAutorizo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            {{ 'ventas.caja.retiro.columns.usuarioAutorizo' | translate }}
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let r"
+            class="f-s-14"
+            [attr.data-label]="'ventas.caja.retiro.columns.usuarioAutorizo' | translate"
+          >
+            {{ r.nombreUsuarioAut || '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">
+            {{ 'ventas.caja.retiro.columns.acciones' | translate }}
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let r"
+            class="action-link text-end"
+            [attr.data-label]="'ventas.caja.retiro.columns.acciones' | translate"
+          >
+            @if (puedeAutorizar(r)) {
+              <mat-form-field appearance="outline" class="m-r-10 monto-autorizar-field">
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [value]="montoAutorizar(r)"
+                  (input)="onMontoAutorizarChange(r, $any($event.target).value)"
+                />
+              </mat-form-field>
+              <a
+                (click)="aprobar(r)"
+                class="m-r-10 cursor-pointer"
+                [matTooltip]="'ventas.caja.retiro.autorizar' | translate"
+              >
+                <i-tabler name="check" class="icon-18 icon-aprobar"></i-tabler>
+              </a>
+              <a (click)="rechazar(r)" class="cursor-pointer" [matTooltip]="'ventas.caja.retiro.rechazar' | translate">
+                <i-tabler name="x" class="icon-18 icon-rechazar"></i-tabler>
+              </a>
+            } @else if (esPendiente(r)) {
+              {{ 'ventas.caja.retiro.estatus.pendiente' | translate }}
+            } @else {
+              {{ 'ventas.caja.retiro.montoAutorizado' | translate }}: {{ r.montoAutorizado | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+
+      @if (pag.isEmpty()) {
+        <div class="text-center p-24 text-muted">{{ 'ventas.caja.retiro.sinRegistros' | translate }}</div>
+      }
+    </div>
+
+    <app-paginador [paginador]="pag" (navegar)="navegar($event)" (perPageChange)="onPerPage($event)"></app-paginador>
+  </mat-card-content>
+</mat-card>

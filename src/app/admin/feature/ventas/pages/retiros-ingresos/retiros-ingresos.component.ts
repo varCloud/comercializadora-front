@@ -1,56 +1,48 @@
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, formatDate } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
-import { debounceTime, distinctUntilChanged, finalize } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { CONSTANTS } from 'src/app/config/constants';
 import { NotificationService } from 'src/app/services/notification.service';
 import { SesionService } from 'src/app/services/sesion.service';
 import { EMPTY_LINKS } from 'src/app/admin/models/shared/paged-result';
+import { Catalogo } from 'src/app/admin/models/shared/catalogo';
 import { Paginador } from 'src/app/admin/models/shared/paginador';
 import { PaginadorComponent } from 'src/app/admin/shared/components/paginador/paginador.component';
-import { CajaInfo } from 'src/app/admin/models/ventas/caja-info';
+import { SelectPaginadoComponent } from 'src/app/admin/shared/components/select-paginado/select-paginado.component';
 import { Retiro } from 'src/app/admin/models/ventas/retiro';
 import { TipoRetiroId } from 'src/app/admin/models/ventas/tipo-retiro';
 import { ESTATUS_RETIRO } from 'src/app/admin/models/ventas/estatus-retiro';
-import { RetiroRequestModel } from 'src/app/admin/models/ventas/retiro-request';
-import { IngresoEfectivoRequestModel } from 'src/app/admin/models/ventas/ingreso-efectivo-request';
-import { TipoIngresoEfectivoId } from 'src/app/admin/models/ventas/tipo-ingreso-efectivo';
+import { RetirosFiltro } from 'src/app/admin/models/ventas/retiros-filtro';
 import { ActualizarEstatusRetiroRequestModel } from 'src/app/admin/models/ventas/actualizar-estatus-retiro-request';
-import { CajaService, TicketCajaTipo } from 'src/app/admin/services/caja.service';
-import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
-import { ExcesoEfectivoBadgeComponent } from '../../components/exceso-efectivo-badge/exceso-efectivo-badge.component';
+import { CajaService } from 'src/app/admin/services/caja.service';
+import { UsuariosService } from 'src/app/admin/services/usuarios.service';
 
 /**
- * Pantalla de Retiros / Ingresos de efectivo (FE-B4/FE-B5). Tres pestañas, réplica del legado:
- * - **Retiro por exceso**: `#ModalCierreExceso` de `Ventas.cshtml` + `retirarExcesoEfectivo()`
- *   de `EvtVentas.js` — valida en cliente que el monto no exceda lo disponible (tope real es
- *   server-side, esto es solo UX temprana). `disponibleParaRetirar` usa `efectivoDisponible`
- *   directo: el backend real ya lo calcula neto de los retiros del día (no se resta de nuevo).
- * - **Ingreso de efectivo**: `_IngresoEfectivo.cshtml` con `idTipoIngresoEfectivo = 2`
- *   ("Solicitud de efectivo").
- * - **Listado / autorización de retiros**: réplica de `_ObtenerRetirosAutorizacion.cshtml`
- *   (tipo, monto, usuario, estación, estatus, usuario que autorizó, acciones aprobar/rechazar).
+ * Pantalla "Retiros" (réplica de `Views/Ventas/Retiros.cshtml` +
+ * `_ObtenerRetirosAutorizacion.cshtml`): SOLO un listado con filtros estructurados (Tipo Retiro,
+ * Almacén, Usuario, Fecha) + Buscar/Limpiar y la tabla de autorización. El legado NO tiene tabs
+ * ni resumen de caja ni formularios de retiro/ingreso en esta vista — esos son modales aparte
+ * dentro del POS (`RetiroExcesoDialogComponent`/`IngresoEfectivoDialogComponent`).
  *
- * **Elección de endpoint + guarda de rol (FE-B5):** `CajaController` expone DOS listados —
- * `/retiros` (filtrado por rol: cada usuario ve solo lo propio, salvo Admin/Encargado que ven
- * todo dentro de su estación) y `/retiros/autorizacion` (sin filtro, ve todo). Aquí se resuelve
- * así: si el usuario en sesión (`SesionService`, `idRol`) es Admin o Encargado de almacén
- * (`CONSTANTS.ROLES`), se usa `/retiros/autorizacion` (necesita ver las solicitudes de todos
- * para poder aprobarlas/rechazarlas) y se muestran los controles de aprobar/rechazar; cualquier
- * otro rol usa `/retiros` (ya acotado por el backend a lo propio) y solo ve el estatus.
+ * **Elección de endpoint + guarda de rol:** `CajaController` expone DOS listados — `/retiros`
+ * (filtrado por rol: cada usuario ve solo lo propio, salvo Admin/Encargado que ven todo dentro
+ * de su estación) y `/retiros/autorizacion` (sin filtro, ve todo). Si el usuario en sesión
+ * (`SesionService`, `idRol`) es Admin o Encargado de almacén (`CONSTANTS.ROLES`), se usa
+ * `/retiros/autorizacion` (necesita ver las solicitudes de todos para poder aprobarlas/
+ * rechazarlas) y se muestran los controles de aprobar/rechazar; cualquier otro rol usa
+ * `/retiros` (ya acotado por el backend a lo propio) y solo ve el estatus.
  *
- * **Paginación/búsqueda LOCAL (regla 10, último recurso):** el endpoint real
+ * **Paginación LOCAL (regla 10, último recurso):** el endpoint real
  * (`GET /api/caja/retiros[/autorizacion]`) regresa `Notificacion<IEnumerable<Retiro>>` SIN
- * `links`/`meta` (no pagina) ni acepta texto libre de búsqueda — solo filtros estructurados
- * (`idTipoRetiro`, `fecha`, `idUsuario`, `idAlmacen`, ver `RetirosFiltro`). Se mantiene la
- * paginación/búsqueda en memoria (mismo patrón que `inventario-fisico`) porque el SP real no
- * las soporta; el footer `app-paginador` se conserva (obligatorio aun en modo local). Pendiente
- * documentado para el backend: `SP_V2_CONSULTA_RETIROS` con `@search`/`@pageNumber`/`@pageSize`
- * si se quiere cumplir la regla 10/13 sin excepción — ver memoria `modulo-ventas-bloque-b-fe.md`.
+ * `links`/`meta` (no pagina). Se mantiene la paginación en memoria (mismo patrón que
+ * `cierre-list`/`inventario-fisico`); el footer `app-paginador` se conserva (obligatorio aun en
+ * modo local).
  */
 @Component({
   selector: 'app-retiros-ingresos',
@@ -58,25 +50,26 @@ import { ExcesoEfectivoBadgeComponent } from '../../components/exceso-efectivo-b
   imports: [
     ReactiveFormsModule,
     MaterialModule,
+    MatNativeDateModule,
     TablerIconsModule,
     TranslatePipe,
     BlockUIModule,
     CurrencyPipe,
     DatePipe,
     PaginadorComponent,
-    ExcesoEfectivoBadgeComponent,
+    SelectPaginadoComponent,
   ],
   templateUrl: './retiros-ingresos.component.html',
   styleUrl: './retiros-ingresos.component.scss',
 })
 export class RetirosIngresosComponent implements OnInit {
-  private readonly fb = inject(FormBuilder);
   private readonly cajaService = inject(CajaService);
+  private readonly usuariosService = inject(UsuariosService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly sesion = inject(SesionService);
 
-  @BlockUI('retiros-ingresos') blockUI!: NgBlockUI;
+  @BlockUI('retirosIngresos') blockUI!: NgBlockUI;
 
   readonly ESTATUS_RETIRO = ESTATUS_RETIRO;
   readonly TipoRetiroId = TipoRetiroId;
@@ -98,164 +91,74 @@ export class RetirosIngresosComponent implements OnInit {
     'acciones',
   ];
 
-  readonly cajaInfo = signal<CajaInfo | null>(null);
-  readonly guardandoRetiro = signal(false);
-  readonly guardandoIngreso = signal(false);
   readonly actualizandoRetiro = signal<number | null>(null);
 
-  /** Id del último retiro/ingreso registrado en esta sesión de pantalla (FE-D1: ver/reimprimir ticket). */
-  readonly ultimoRetiroId = signal<number | null>(null);
-  readonly ultimoIngresoId = signal<number | null>(null);
-  readonly generandoTicket = signal(false);
+  // ====================== Filtros (réplica de Retiros.cshtml) ======================
 
-  /** El backend ya regresa `efectivoDisponible` neto de los retiros del día (ver nota de clase). */
-  readonly disponibleParaRetirar = computed(() => {
-    const info = this.cajaInfo();
-    return info ? Math.max(0, info.efectivoDisponible) : 0;
-  });
+  readonly almacenes = signal<Catalogo[]>([]);
+  readonly idTipoRetiro = new FormControl<number | null>(null);
+  readonly idAlmacen = new FormControl<number | null>(null);
+  readonly idUsuario = new FormControl<number | null>(null);
+  readonly fecha = new FormControl<Date | null>(null);
 
-  readonly retiroForm = this.fb.group({
-    monto: [null as number | null, [Validators.required, Validators.min(0.01)]],
-  });
-
-  readonly ingresoForm = this.fb.group({
-    monto: [null as number | null, [Validators.required, Validators.min(0.01)]],
-  });
+  readonly fetchUsuarios = (q: string, page: number): Observable<unknown[]> =>
+    this.usuariosService.buscarPaginado(q, page);
 
   // ====================== Listado (paginación local, regla 10) ======================
 
   private retirosCompletos: Retiro[] = [];
   readonly pag = new Paginador<Retiro>(CONSTANTS.PAGINATION.PAGE_SIZE);
-  readonly searchControl = new FormControl('', { nonNullable: true });
   /** Monto editable por fila antes de autorizar (paridad con el input inline del legado). */
   private readonly montosAutorizar = new Map<number, number>();
 
   ngOnInit(): void {
-    this.cargarInfo();
+    this.usuariosService.obtenerAlmacenes(CONSTANTS.SUCURSAL_DEFAULT.ID).subscribe({
+      next: (a) => this.almacenes.set(a),
+      error: (err) => console.error('Error al cargar catálogo de almacenes', err),
+    });
+
     this.cargarRetiros();
-    this.searchControl.valueChanges
-      .pipe(debounceTime(350), distinctUntilChanged())
-      .subscribe(() => this.setLocalPage(1));
   }
 
-  private cargarInfo(): void {
-    this.cajaService.obtenerInfoCierre().subscribe({
-      next: (res) => this.cajaInfo.set(res),
-      error: (err) => console.error('Error al consultar el resumen de caja', err),
-    });
+  private get filtro(): RetirosFiltro {
+    const fecha = this.fecha.value;
+    return {
+      idTipoRetiro: this.idTipoRetiro.value,
+      idAlmacen: this.idAlmacen.value,
+      idUsuario: this.idUsuario.value,
+      fecha: fecha ? formatDate(fecha, 'yyyy-MM-dd', 'en-US') : null,
+    };
   }
 
   private cargarRetiros(): void {
     this.blockUI.start(this.translate.instant('ventas.caja.retiro.msg.cargandoListado'));
     const listado$ = this.esAutorizador()
-      ? this.cajaService.obtenerRetirosAutorizacion()
-      : this.cajaService.obtenerRetiros();
-    listado$
-      .pipe(finalize(() => this.blockUI.stop()))
-      .subscribe({
-        next: (res) => {
-          this.retirosCompletos = res;
-          this.setLocalPage(1);
-        },
-        error: (err) => {
-          console.error('Error al consultar el listado de retiros', err);
-          this.notify.notify('error', this.translate.instant('ventas.caja.retiro.msg.errorListado'));
-        },
-      });
-  }
-
-  // ====================== Retiro por exceso de efectivo ======================
-
-  registrarRetiro(): void {
-    if (this.retiroForm.invalid || this.guardandoRetiro()) {
-      this.retiroForm.markAllAsTouched();
-      return;
-    }
-
-    const monto = Number(this.retiroForm.value.monto ?? 0);
-    const disponible = this.disponibleParaRetirar();
-
-    // Validación en cliente (UX temprana); el tope real lo valida el servidor (API-B4).
-    if (monto > disponible) {
-      this.notify.notify(
-        'warning',
-        this.translate.instant('ventas.caja.retiro.msg.excedeDisponible', {
-          disponible: disponible.toFixed(2),
-        }),
-      );
-      return;
-    }
-
-    this.guardandoRetiro.set(true);
-    this.blockUI.start(this.translate.instant('ventas.caja.retiro.msg.guardando'));
-    this.cajaService
-      .registrarRetiro(new RetiroRequestModel({ monto }))
-      .pipe(
-        finalize(() => {
-          this.guardandoRetiro.set(false);
-          this.blockUI.stop();
-        }),
-      )
-      .subscribe({
-        next: (res) => {
-          if (res?.estatus === 200) {
-            this.notify.notify('success', res.mensaje ?? this.translate.instant('ventas.caja.retiro.msg.exito'));
-            this.ultimoRetiroId.set(res.modelo ?? null);
-            this.retiroForm.reset();
-            this.cargarInfo();
-            this.cargarRetiros();
-          } else {
-            this.notify.notify('error', res?.mensaje ?? this.translate.instant('ventas.caja.retiro.msg.error'));
-          }
-        },
-        error: (err) => {
-          console.error('Error al registrar el retiro por exceso de efectivo', err);
-          this.notify.notify('error', this.translate.instant('ventas.caja.retiro.msg.error'));
-        },
-      });
-  }
-
-  // ====================== Ingreso de efectivo ======================
-
-  registrarIngreso(): void {
-    if (this.ingresoForm.invalid || this.guardandoIngreso()) {
-      this.ingresoForm.markAllAsTouched();
-      return;
-    }
-
-    const monto = Number(this.ingresoForm.value.monto ?? 0);
-    const request = new IngresoEfectivoRequestModel({
-      monto,
-      idTipoIngresoEfectivo: TipoIngresoEfectivoId.SolicitudEfectivo,
+      ? this.cajaService.obtenerRetirosAutorizacion(this.filtro)
+      : this.cajaService.obtenerRetiros(this.filtro);
+    listado$.pipe(finalize(() => this.blockUI.stop())).subscribe({
+      next: (res) => {
+        this.retirosCompletos = res;
+        this.setLocalPage(1);
+      },
+      error: (err) => {
+        console.error('Error al consultar el listado de retiros', err);
+        this.notify.notify('error', this.translate.instant('ventas.caja.retiro.msg.errorListado'));
+      },
     });
+  }
 
-    this.guardandoIngreso.set(true);
-    this.blockUI.start(this.translate.instant('ventas.caja.ingreso.msg.guardando'));
-    this.cajaService
-      .registrarIngreso(request)
-      .pipe(
-        finalize(() => {
-          this.guardandoIngreso.set(false);
-          this.blockUI.stop();
-        }),
-      )
-      .subscribe({
-        next: (res) => {
-          if (res?.estatus === 200) {
-            this.notify.notify('success', res.mensaje ?? this.translate.instant('ventas.caja.ingreso.msg.exito'));
-            this.ultimoIngresoId.set(res.modelo ?? null);
-            this.ingresoForm.reset();
-            this.cargarInfo();
-            this.cargarRetiros();
-          } else {
-            this.notify.notify('error', res?.mensaje ?? this.translate.instant('ventas.caja.ingreso.msg.error'));
-          }
-        },
-        error: (err) => {
-          console.error('Error al registrar el ingreso de efectivo', err);
-          this.notify.notify('error', this.translate.instant('ventas.caja.ingreso.msg.error'));
-        },
-      });
+  /** Botón "Buscar": aplica los filtros del formulario. */
+  buscar(): void {
+    this.cargarRetiros();
+  }
+
+  /** Botón "Limpiar": todos los filtros vuelven a "Todos" y se vuelve a consultar. */
+  limpiarFiltros(): void {
+    this.idTipoRetiro.reset(null);
+    this.idAlmacen.reset(null);
+    this.idUsuario.reset(null);
+    this.fecha.reset(null);
+    this.cargarRetiros();
   }
 
   // ====================== Aprobación / rechazo de retiros ======================
@@ -335,49 +238,7 @@ export class RetirosIngresosComponent implements OnInit {
     }
   }
 
-  // ====================== Ticket PDF (FE-D1) ======================
-
-  /** "Ver ticket" del retiro por exceso recién registrado (ver `ultimoRetiroId`). */
-  verTicketUltimoRetiro(): void {
-    const id = this.ultimoRetiroId();
-    if (id) this.abrirTicket(id, 'retiro');
-  }
-
-  /** "Ver ticket" del ingreso de efectivo recién registrado (ver `ultimoIngresoId`). */
-  verTicketUltimoIngreso(): void {
-    const id = this.ultimoIngresoId();
-    if (id) this.abrirTicket(id, 'ingreso');
-  }
-
-  /**
-   * "Ver ticket" de una fila del listado: `CierreDia` imprime el ticket de cierre asociado
-   * (`idCierre`); cualquier otro tipo imprime el propio retiro por exceso (`idRetiro`).
-   */
-  verTicketFila(retiro: Retiro): void {
-    if (retiro.tipoRetiro === TipoRetiroId.CierreDia) {
-      this.abrirTicket(retiro.idCierre, 'cierre');
-    } else {
-      this.abrirTicket(retiro.idRetiro, 'retiro');
-    }
-  }
-
-  private abrirTicket(id: number, tipo: TicketCajaTipo): void {
-    if (this.generandoTicket()) return;
-
-    this.generandoTicket.set(true);
-    this.cajaService
-      .obtenerTicketPdf(id, tipo)
-      .pipe(finalize(() => this.generandoTicket.set(false)))
-      .subscribe({
-        next: (blob) => abrirPdfBlob(blob),
-        error: (err) => {
-          console.error('Error al generar el ticket PDF', err);
-          this.notify.notify('error', this.translate.instant('ventas.caja.retiro.msg.errorTicket'));
-        },
-      });
-  }
-
-  // ====================== Búsqueda + paginación local ======================
+  // ====================== Paginación local ======================
 
   navegar(pagina: string): void {
     this.setLocalPage(parseInt(pagina, 10) || 1);
@@ -388,17 +249,9 @@ export class RetirosIngresosComponent implements OnInit {
     this.setLocalPage(1);
   }
 
-  private filtrados(): Retiro[] {
-    const term = this.searchControl.value.trim().toUpperCase();
-    if (!term) return this.retirosCompletos;
-    return this.retirosCompletos.filter(
-      (r) => r.nombreUsuario.toUpperCase().includes(term) || r.nombreEstacion.toUpperCase().includes(term),
-    );
-  }
-
   /** Corta la página `pagina` de la lista en memoria y sintetiza links/meta del paginador. */
   private setLocalPage(pagina: number): void {
-    const lista = this.filtrados();
+    const lista = this.retirosCompletos;
     const perPage = this.pag.perPage();
     const total = lista.length;
     const lastPage = Math.max(1, Math.ceil(total / perPage));

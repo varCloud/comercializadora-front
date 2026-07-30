@@ -1,7 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -18,56 +18,46 @@ import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import {
   AutorizacionCierre,
   AutorizarCierreDialogComponent,
-} from '../../components/autorizar-cierre-dialog/autorizar-cierre-dialog.component';
+} from '../autorizar-cierre-dialog/autorizar-cierre-dialog.component';
 
 /**
- * Pantalla de Cierre de Caja (FE-B3/FE-B5). Réplica de `Views/Ventas/CierreCajas.cshtml` +
- * `_CierreDia.cshtml`: resumen de ventas por forma de pago, cancelaciones, devoluciones,
- * retiros y saldo, más la captura de "efectivo entregado en cierre".
+ * Diálogo "Cierre de Caja fin de Día" del POS (réplica de `#ModalCierre` de `Ventas.cshtml` +
+ * `_CierreDia.cshtml`, `AbrirModalCierreDia()`/`HacerCierre()` de `EvtVentas.js`): igual que
+ * "Consultar Existencias"/"Ingreso de Efectivo"/"Retiro de Exceso", el legado lo abre como modal
+ * DENTRO de la propia vista de ventas, nunca navegando a otra pantalla — antes era una pantalla
+ * ruteada aparte (`/admin/ventas/cierre-caja`), ahora vive aquí.
  *
- * **Autorización de cierre (FE-B5, adaptado al contrato real):** el legado consulta
- * `/Ventas/ObtenerConfiguracionVentas` (`RequiereAutorizacion()` en `EvtVentas.js`) ANTES de
- * decidir si abre el modal. `CajaController` (comercializadora-api) NO expone esa configuración
- * (`SP_CONSULTA_CONFIGURACION_VENTAS` es interna a `CajaService.CerrarAsync`) — por eso aquí se
+ * **Autorización de cierre:** el legado consulta `/Ventas/ObtenerConfiguracionVentas`
+ * (`RequiereAutorizacion()`) ANTES de decidir si abre el modal de autorización.
+ * `CajaController` (comercializadora-api) no expone esa configuración por separado — por eso se
  * intenta el cierre directo primero (sin credenciales); si el backend responde que hace falta un
- * autorizador (`CajaCierreRequest` sin `usuarioAutoriza`/`contrasena` cuando la config lo exige),
- * se abre {@link AutorizarCierreDialogComponent} y se reintenta con las credenciales capturadas.
- * Cuando la autorización NO es requerida, esto resuelve en una sola petición (igual que el
- * contrato documentado); cuando SÍ es requerida, son dos peticiones de cierre (la primera
- * rechazada por el servidor, la segunda con credenciales) — no hay una llamada de validación de
- * contraseña aparte, sigue siendo la MISMA petición de cierre la que valida (ver `CierreRequest`).
+ * autorizador, se abre {@link AutorizarCierreDialogComponent} y se reintenta con las credenciales
+ * capturadas.
  */
 @Component({
-  selector: 'app-cierre-caja',
+  selector: 'app-cierre-dia-dialog',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MaterialModule,
-    TablerIconsModule,
-    TranslatePipe,
-    BlockUIModule,
-    CurrencyPipe,
-  ],
-  templateUrl: './cierre-caja.component.html',
+  imports: [ReactiveFormsModule, MaterialModule, TablerIconsModule, TranslatePipe, BlockUIModule, CurrencyPipe],
+  templateUrl: './cierre-dia-dialog.component.html',
 })
-export class CierreCajaComponent implements OnInit {
+export class CierreDiaDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly cajaService = inject(CajaService);
   private readonly dialog = inject(MatDialog);
+  private readonly dialogRef = inject(MatDialogRef<CierreDiaDialogComponent>);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
 
-  @BlockUI('cierre-caja') blockUI!: NgBlockUI;
+  @BlockUI('cierreDiaDialog') blockUI!: NgBlockUI;
 
   readonly cajaInfo = signal<CajaInfo | null>(null);
   readonly guardando = signal(false);
 
   /**
-   * FE-D1 (Bloque D): tras un cierre exitoso, en vez de navegar de inmediato se muestra un
-   * resumen con el botón "Ver ticket" — de otro modo el ticket del cierre sería inalcanzable
-   * (la pantalla se abandona apenas se confirma). `continuar()` hace la navegación que antes
-   * ocurría automáticamente.
+   * Tras un cierre exitoso, en vez de cerrar el modal de inmediato se muestra un resumen con el
+   * botón "Ver ticket" — de otro modo el ticket del cierre sería inalcanzable. `continuar()`
+   * cierra el diálogo y navega a Apertura de caja (la estación ya no tiene caja abierta).
    */
   readonly cierreExitoso = signal(false);
   readonly ultimoCierreId = signal<number | null>(null);
@@ -95,7 +85,7 @@ export class CierreCajaComponent implements OnInit {
       });
   }
 
-  /** Botón "Realizar cierre": confirma, valida autorización si aplica y cierra. */
+  /** Botón "Hacer Cierre de Día": confirma, valida autorización si aplica y cierra. */
   confirmarCierre(): void {
     if (this.cierreForm.invalid || this.guardando()) {
       this.cierreForm.markAllAsTouched();
@@ -195,9 +185,14 @@ export class CierreCajaComponent implements OnInit {
       });
   }
 
-  /** Navega a Apertura de caja — antes ocurría automáticamente justo tras el cierre exitoso. */
+  /** Cierra el diálogo y navega a Apertura de caja (la estación ya no tiene caja abierta). */
   continuar(): void {
+    this.dialogRef.close();
     this.router.navigate(['/admin/ventas/apertura-caja']);
+  }
+
+  cerrar(): void {
+    this.dialogRef.close();
   }
 
   /**

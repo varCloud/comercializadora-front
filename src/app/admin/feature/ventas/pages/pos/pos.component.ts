@@ -14,7 +14,6 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
@@ -49,6 +48,9 @@ import {
   BuscarPedidoEspecialDialogComponent,
   BuscarPedidoEspecialResult,
 } from '../../components/buscar-pedido-especial-dialog/buscar-pedido-especial-dialog.component';
+import { IngresoEfectivoDialogComponent } from '../../components/ingreso-efectivo-dialog/ingreso-efectivo-dialog.component';
+import { RetiroExcesoDialogComponent } from '../../components/retiro-exceso-dialog/retiro-exceso-dialog.component';
+import { CierreDiaDialogComponent } from '../../components/cierre-dia-dialog/cierre-dia-dialog.component';
 
 /**
  * Modo activo del ticket (FE-A5b). Réplica de las banderas `esDevolucion`/`esAgregarProductos`
@@ -116,7 +118,6 @@ export class PosComponent implements OnInit, AfterViewInit {
   private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
-  private readonly router = inject(Router);
 
   @BlockUI('pos') blockUI!: NgBlockUI;
 
@@ -316,14 +317,29 @@ export class PosComponent implements OnInit, AfterViewInit {
 
   // ====================== Herramientas (FE-E1) ======================
 
-  /** Acceso rápido a Ingreso/Retiro de Efectivo (pantalla ya existente, fuera del POS). */
-  irRetirosIngresos(): void {
-    this.router.navigate(['/admin/ventas/retiros-ingresos']);
+  /**
+   * Diálogo "Ingreso de Efectivo" (réplica de `AbrirModalIngresoEfectivo()`): igual que
+   * "Consultar Existencias", el legado lo abre como modal DENTRO de la propia vista de ventas,
+   * nunca navegando a otra pantalla.
+   */
+  abrirIngresoEfectivo(): void {
+    this.dialog.open(IngresoEfectivoDialogComponent, { width: '500px', maxWidth: '95vw' });
   }
 
-  /** Acceso rápido a Cierre de Caja (pantalla ya existente, fuera del POS). */
-  irCierreCaja(): void {
-    this.router.navigate(['/admin/ventas/cierre-caja']);
+  /**
+   * Diálogo "Cierre de Caja por Exceso de Efectivo" (réplica de
+   * `AbrirModalCierreCajaExcedentes()`): mismo criterio que arriba, modal dentro del POS.
+   */
+  abrirRetiroExceso(): void {
+    this.dialog.open(RetiroExcesoDialogComponent, { width: '900px', maxWidth: '95vw' });
+  }
+
+  /**
+   * Diálogo "Cierre de Caja fin de Día" (réplica de `AbrirModalCierreDia()`): mismo criterio que
+   * arriba, modal dentro del POS (antes navegaba a una pantalla aparte).
+   */
+  abrirCierreCaja(): void {
+    this.dialog.open(CierreDiaDialogComponent, { width: '900px', maxWidth: '95vw', disableClose: true });
   }
 
   /** Placeholder puro (Supuesto #1 del Bloque E): sin hardware conectado, solo avisa. */

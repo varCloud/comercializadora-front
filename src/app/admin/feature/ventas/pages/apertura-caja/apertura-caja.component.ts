@@ -42,7 +42,7 @@ export class AperturaCajaComponent implements OnInit {
   readonly guardando = signal(false);
 
   readonly aperturaForm = this.fb.group({
-    monto: [null as number | null, [Validators.required, Validators.min(0.01)]],
+    monto: [null as number | null, [Validators.required, Validators.min(0)]],
   });
 
   ngOnInit(): void {
@@ -65,10 +65,6 @@ export class AperturaCajaComponent implements OnInit {
 
   irAVentas(): void {
     this.router.navigate(['/admin/ventas']);
-  }
-
-  irACierre(): void {
-    this.router.navigate(['/admin/ventas/cierre-caja']);
   }
 
   abrirCaja(): void {

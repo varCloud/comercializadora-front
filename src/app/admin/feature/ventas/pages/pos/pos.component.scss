@@ -1,3 +1,48 @@
+// Selector de modo (Venta/Devolución/Complemento) con estilo de tabs delgadas (subrayado), en
+// vez del segmented-control con bordes/checkmark por defecto de mat-button-toggle-group.
+// Angular Material no expone estas clases fuera de ::ng-deep; se acota con :host para no
+// filtrarse a otros componentes (regla 01: mínimo y local).
+:host ::ng-deep .mat-button-toggle-group {
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+
+  .mat-button-toggle {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .mat-button-toggle + .mat-button-toggle {
+    border-left: none;
+    margin-left: 24px;
+  }
+
+  .mat-button-toggle-checkbox-wrapper {
+    display: none;
+  }
+
+  .mat-button-toggle-label-content {
+    padding: 0 4px 12px;
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .mat-button-toggle-checked {
+    background: transparent;
+    color: var(--mat-sys-primary, #5d87ff);
+
+    .mat-button-toggle-label-content {
+      font-weight: 600;
+      box-shadow: inset 0 -2px 0 0 var(--mat-sys-primary, #5d87ff);
+    }
+  }
+}
+
 .ticket-table {
   border-collapse: collapse;
 }

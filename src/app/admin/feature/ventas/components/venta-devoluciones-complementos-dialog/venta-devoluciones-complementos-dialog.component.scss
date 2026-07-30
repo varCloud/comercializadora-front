@@ -1,0 +1,25 @@
+// Tabs delgadas con subrayado fino (sin el fondo/tamaño por defecto de Angular Material).
+// Angular Material no expone estas clases fuera de ::ng-deep; se acota con :host para no
+// filtrarse a otros componentes (regla 01: mínimo y local).
+:host ::ng-deep {
+  .mat-mdc-tab-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .mdc-tab {
+    height: 40px;
+    padding: 0 4px;
+    margin-right: 24px;
+    flex-grow: 0;
+    letter-spacing: normal;
+  }
+
+  .mdc-tab__text-label {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .mdc-tab-indicator__content--underline {
+    border-top-width: 2px;
+  }
+}

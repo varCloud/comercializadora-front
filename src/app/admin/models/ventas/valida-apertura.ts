@@ -7,8 +7,8 @@
 // asumía el boceto inicial (FE-B1/FE-B2, mock). `EsExitoso` (estatus 200) = la estación ya tiene
 // caja abierta hoy; `Modelo`/`idCierre` no se expone y `requiereAutorizacionCierre` tampoco —
 // esa bandera (`SP_CONSULTA_CONFIGURACION_VENTAS`) es interna a `CajaController.Cierre` y no
-// tiene endpoint propio (ver `CajaService.cerrarCaja`/`CierreCajaComponent` para cómo se resuelve
-// sin ella).
+// tiene endpoint propio (ver `CajaService.cerrarCaja`/`CierreDiaDialogComponent` para cómo se
+// resuelve sin ella).
 
 export interface ValidaApertura {
   /** True si la estación ya tiene una caja abierta hoy (no debe volver a abrir). */

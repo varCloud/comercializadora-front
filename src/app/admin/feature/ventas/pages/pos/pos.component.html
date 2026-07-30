@@ -9,15 +9,36 @@
     <div class="d-flex gap-16 align-items-center">
       <a
         class="cursor-pointer"
-        [matTooltip]="'ventas.pos.herramientas.retirosIngresos' | translate"
-        (click)="irRetirosIngresos()"
+        [matTooltip]="'ventas.pos.herramientas.consultarExistencias' | translate"
+        (click)="abrirConsultarExistencias()"
+      >
+        <i-tabler name="map-pin" class="icon-22"></i-tabler>
+      </a>
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.ingresoEfectivo' | translate"
+        (click)="abrirIngresoEfectivo()"
+      >
+        <i-tabler name="cash" class="icon-22"></i-tabler>
+      </a>
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.buscarPedidoEspecial' | translate"
+        (click)="abrirBuscarPedidoEspecial()"
+      >
+        <i-tabler name="clipboard-list" class="icon-22"></i-tabler>
+      </a>
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.retiroExceso' | translate"
+        (click)="abrirRetiroExceso()"
       >
         <i-tabler name="cash-banknote" class="icon-22"></i-tabler>
       </a>
       <a
         class="cursor-pointer"
         [matTooltip]="'ventas.pos.herramientas.cierreCaja' | translate"
-        (click)="irCierreCaja()"
+        (click)="abrirCierreCaja()"
       >
         <i-tabler name="lock" class="icon-22"></i-tabler>
       </a>
@@ -27,20 +48,6 @@
         (click)="abrirCajonDinero()"
       >
         <i-tabler name="box" class="icon-22"></i-tabler>
-      </a>
-      <a
-        class="cursor-pointer"
-        [matTooltip]="'ventas.pos.herramientas.consultarExistencias' | translate"
-        (click)="abrirConsultarExistencias()"
-      >
-        <i-tabler name="map-pin" class="icon-22"></i-tabler>
-      </a>
-      <a
-        class="cursor-pointer"
-        [matTooltip]="'ventas.pos.herramientas.buscarPedidoEspecial' | translate"
-        (click)="abrirBuscarPedidoEspecial()"
-      >
-        <i-tabler name="clipboard-list" class="icon-22"></i-tabler>
       </a>
     </div>
   </div>

@@ -1,0 +1,107 @@
+<h2 mat-dialog-title>{{ 'ventas.caja.cierre.title' | translate }}</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'cierreDiaDialog'">
+  @if (cierreExitoso()) {
+    <div class="text-center p-24">
+      <i-tabler name="circle-check" class="icon-48" [style.color]="'#13deb9'"></i-tabler>
+      <p class="f-s-16 f-w-600 m-t-16">{{ 'ventas.caja.cierre.msg.exito' | translate }}</p>
+      <button
+        mat-flat-button
+        color="primary"
+        class="m-r-8 text-nowrap"
+        type="button"
+        [disabled]="generandoTicket()"
+        (click)="verTicketCierre()"
+      >
+        <i-tabler name="printer" class="icon-18"></i-tabler>
+        {{ 'ventas.caja.cierre.verTicket' | translate }}
+      </button>
+      <button mat-stroked-button color="primary" class="text-nowrap" type="button" (click)="continuar()">
+        {{ 'ventas.caja.cierre.continuar' | translate }}
+      </button>
+    </div>
+  } @else if (cajaInfo(); as info) {
+    <div class="row">
+      <div class="col-12 col-lg-6">
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.apertura' | translate }}</span>
+          <span class="float-end text-muted">{{ info.montoApertura | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.ingresos' | translate }}</span>
+          <span class="float-end text-muted">{{ info.montoIngresosEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.totalVentas' | translate }}</span>
+          <span class="float-end text-muted">{{ info.totalVentas }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.ventasContado' | translate }}</span>
+          <span class="float-end text-muted">{{ info.montoVentasContado | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.ventasTarjeta' | translate }}</span>
+          <span class="float-end text-muted">{{ info.montoVentasTarjeta | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.ventasTransferencias' | translate }}</span>
+          <span class="float-end text-muted">{{ info.montoVentasTransferencias | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.ventasOtros' | translate }}</span>
+          <span class="float-end text-muted">{{ info.montoVentasOtros | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.ventasCanceladas' | translate }}</span>
+          <span class="float-end text-muted">{{ info.montoVentasCanceladas | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.productosDevueltos' | translate }}</span>
+          <span class="float-end text-muted">{{ info.productosDevueltos }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.montoDevoluciones' | translate }}</span>
+          <span class="float-end text-muted">{{ info.montoTotalDevoluciones | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start">{{ 'ventas.caja.cierre.resumen.retiros' | translate }}</span>
+          <span class="float-end text-muted">{{ info.retirosExcesoEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start f-w-600">{{ 'ventas.caja.cierre.resumen.saldoTotal' | translate }}</span>
+          <span class="float-end f-w-600">{{ info.montoCierre | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+        <p class="clearfix">
+          <span class="float-start f-w-600">{{ 'ventas.caja.cierre.resumen.saldoCaja' | translate }}</span>
+          <span class="float-end f-w-600">{{ info.efectivoDisponible | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </p>
+
+        <form [formGroup]="cierreForm" class="row m-t-16">
+          <div class="col-12 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{
+              'ventas.caja.cierre.efectivoEntregado' | translate
+            }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <span matPrefix>$&nbsp;</span>
+              <input matInput type="number" min="0" step="0.01" formControlName="efectivoEntregadoEnCierre" />
+            </mat-form-field>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  @if (!cierreExitoso()) {
+    <button mat-stroked-button color="warn" class="text-nowrap" type="button" (click)="cerrar()">
+      {{ 'ventas.caja.cierre.cerrar' | translate }}
+    </button>
+    <button mat-flat-button color="primary" class="text-nowrap" [disabled]="guardando()" (click)="confirmarCierre()">
+      {{ 'ventas.caja.cierre.realizarCierre' | translate }}
+    </button>
+  }
+</mat-dialog-actions>
