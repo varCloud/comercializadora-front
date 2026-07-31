@@ -941,6 +941,8 @@
         "cliente": "Customer",
         "usuario": "User",
         "formaPago": "Payment method",
+        "cantidad": "Quantity",
+        "codigoBarras": "Barcode",
         "total": "Total",
         "estatus": "Status",
         "acciones": "Actions"
@@ -960,7 +962,8 @@
         "estatusFactura": "Invoice cancellation status",
         "ticketDespachador": "Dispatcher ticket",
         "devolverProductos": "Return products",
-        "agregarProductos": "Add products"
+        "agregarProductos": "Add products",
+        "exportar": "Export"
       },
       "empty": "No sales found.",
       "confirm": {
@@ -985,7 +988,8 @@
         "cancelFacturaError": "Error cancelling the invoice.",
         "consultandoEstatusFactura": "Checking cancellation status…",
         "estatusFacturaConsultado": "Cancellation status checked successfully.",
-        "errorEstatusFactura": "Error checking the invoice cancellation status."
+        "errorEstatusFactura": "Error checking the invoice cancellation status.",
+        "exportando": "Exporting sales…"
       }
     },
     "detalle": {

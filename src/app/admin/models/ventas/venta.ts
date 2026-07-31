@@ -13,6 +13,9 @@ export interface Venta {
   idUsuario: number;
   nombreUsuario: string;
 
+  /** Cantidad total de productos de la venta (columna "Cantidad" del listado, regla 10). */
+  cantidad: number;
+
   montoTotal: number;
   montoIVA: number;
   descuento: number;
@@ -73,6 +76,8 @@ export class VentaModel implements Venta {
   idUsuario: number;
   nombreUsuario: string;
 
+  cantidad: number;
+
   montoTotal: number;
   montoIVA: number;
   descuento: number;
@@ -124,6 +129,8 @@ export class VentaModel implements Venta {
     this.fechaAlta = data.fechaAlta ?? '';
     this.idUsuario = data.idUsuario ?? 0;
     this.nombreUsuario = data.nombreUsuario ?? '';
+
+    this.cantidad = data.cantidad ?? 0;
 
     this.montoTotal = data.montoTotal ?? 0;
     this.montoIVA = data.montoIVA ?? 0;

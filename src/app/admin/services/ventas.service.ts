@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { catchError, from, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { URIS_CONFIG } from 'src/app/config/uris-config';
 import { Notificacion } from 'src/app/models/sesion';
+import { NotificationService } from 'src/app/services/notification.service';
 import {
   EMPTY_LINKS,
   EMPTY_META,
@@ -58,6 +59,20 @@ export interface VentasListadoFiltro {
 }
 
 /**
+ * Filtros de `GET /ventas/exportar` (FE-4): MISMOS filtros de {@link VentasListadoFiltro} +
+ * `q` (búsqueda libre del listado, no forma parte de `VentasListadoFiltro` porque `listar`/
+ * `listarCanceladas` la reciben vía `ListarParams.q`). `page`/`perPage` no aplican (el export
+ * siempre trae todas las filas que matchean el filtro). `idStatusVenta`/`idAlmacen` los resuelve
+ * el backend del JWT/rol, igual que en el listado — nunca se mandan desde aquí.
+ */
+export interface VentasExportarFiltro extends VentasListadoFiltro {
+  q?: string | null;
+}
+
+/** Nombre de archivo por defecto si la API no expone `Content-Disposition` (ver nota abajo). */
+const NOMBRE_EXPORT_VENTAS = 'ventas';
+
+/**
  * Servicio HTTP del dominio Ventas. Consume `VentasController` (comercializadora-api): núcleo
  * de venta (POS, Bloque A) + consulta/edición de ventas y ventas canceladas (Bloque C).
  * idUsuario/idEstacion/idAlmacen/idRol NUNCA se mandan desde aquí: los resuelve el backend a
@@ -66,6 +81,7 @@ export interface VentasListadoFiltro {
 @Injectable({ providedIn: 'root' })
 export class VentasService {
   private readonly http = inject(HttpClient);
+  private readonly notify = inject(NotificationService);
   private readonly baseUri = `${environment.BASE_URL_ADMIN}/${URIS_CONFIG.VENTAS}`;
 
   /** Registra la venta (SP_REALIZA_VENTA). Devuelve la Notificacion completa (estatus/mensaje). */
@@ -161,6 +177,108 @@ export class VentasService {
   /** Navega a una URL de paginación (link first/prev/next/last), sirve a ambos listados. */
   irLink(url: string): Observable<PagedResult<Venta>> {
     return this.http.get<Notificacion<Venta[]>>(url).pipe(map((res) => this.mapPage(res)));
+  }
+
+  /**
+   * Exporta a CSV con los MISMOS filtros del listado activo (FE-4, `GET /ventas/exportar`).
+   * Reusa EXACTAMENTE el patrón dual `Descarga`/`Diferido` ya establecido por
+   * `ReportesVentasService.exportar`/`ReportesInventarioService.exportar` (sniff de
+   * `Content-Type` sobre un blob, ver esos archivos para el detalle documentado): si el total de
+   * filas es ≤ umbral responde el archivo CSV (descarga inmediata); si lo supera, responde `200
+   * Notificacion<string>` (se difiere y se envía por correo) — llega como Blob por el
+   * `responseType: 'blob'` fijo, se convierte a texto y se parsea. Los errores (400: sin correo
+   * destino configurado / falla el SP) también llegan con `error.error` como Blob por el mismo
+   * motivo. Solo exporta ventas activas (`idStatusVenta` lo fija el backend, no es filtro aquí),
+   * así que el componente solo debe ofrecer este botón fuera del modo "Ventas canceladas".
+   */
+  exportar(filtros: VentasExportarFiltro = {}): Observable<void> {
+    const params = this.buildExportarParams(filtros);
+    return this.http
+      .get(`${this.baseUri}/exportar`, {
+        params,
+        observe: 'response',
+        responseType: 'blob',
+      })
+      .pipe(
+        switchMap((res) => this.procesarRespuestaExportacion(res)),
+        catchError((err: HttpErrorResponse) => this.procesarErrorExportacion(err)),
+      );
+  }
+
+  private buildExportarParams(filtros: VentasExportarFiltro): HttpParams {
+    let params = new HttpParams();
+    const q = (filtros.q ?? '').toString().trim();
+    if (q) params = params.set('q', q);
+    if (filtros.idCliente) params = params.set('idCliente', filtros.idCliente);
+    if (filtros.idUsuario) params = params.set('idUsuario', filtros.idUsuario);
+    if (filtros.idFactFormaPago) params = params.set('idFactFormaPago', filtros.idFactFormaPago);
+    if (filtros.codigoBarrasTicket) params = params.set('codigoBarrasTicket', filtros.codigoBarrasTicket);
+    if (filtros.fechaInicio) params = params.set('fechaInicio', filtros.fechaInicio);
+    if (filtros.fechaFin) params = params.set('fechaFin', filtros.fechaFin);
+    return params;
+  }
+
+  private procesarRespuestaExportacion(res: HttpResponse<Blob>): Observable<void> {
+    const blob = res.body;
+    const contentType = res.headers.get('Content-Type') ?? '';
+
+    if (!blob || contentType.includes('application/json')) {
+      // Diferido: el cuerpo es el JSON de Notificacion<string>, envuelto en un Blob.
+      return from((blob ?? new Blob()).text()).pipe(
+        map((texto) => {
+          const notificacion = this.parseNotificacion(texto);
+          this.notify.notify('info', notificacion?.mensaje ?? 'El reporte se enviará por correo.');
+        }),
+      );
+    }
+
+    // Descarga inmediata.
+    this.descargarArchivo(blob, res.headers.get('Content-Disposition'));
+    return of(void 0);
+  }
+
+  private procesarErrorExportacion(err: HttpErrorResponse): Observable<never> {
+    const errorBlob = err.error instanceof Blob ? err.error : null;
+    if (errorBlob) {
+      return from(errorBlob.text()).pipe(
+        switchMap((texto) => {
+          const notificacion = this.parseNotificacion(texto);
+          this.notify.notify('error', notificacion?.mensaje ?? 'No fue posible generar el reporte.');
+          return throwError(() => err);
+        }),
+      );
+    }
+    this.notify.notify('error', 'No fue posible generar el reporte.');
+    return throwError(() => err);
+  }
+
+  private parseNotificacion(texto: string): Notificacion<string> | null {
+    try {
+      return JSON.parse(texto) as Notificacion<string>;
+    } catch {
+      return null;
+    }
+  }
+
+  private descargarArchivo(blob: Blob, contentDisposition: string | null): void {
+    const nombreArchivo = this.extraerNombreArchivo(contentDisposition) ?? this.nombrePorDefecto();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private extraerNombreArchivo(contentDisposition: string | null): string | null {
+    if (!contentDisposition) return null;
+    const match = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(contentDisposition);
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+
+  private nombrePorDefecto(): string {
+    const fecha = new Date().toISOString().slice(0, 10); // yyyy-MM-dd
+    return `${NOMBRE_EXPORT_VENTAS}_${fecha}.csv`;
   }
 
   /** Cancela una venta (SP_ELIMINA_VENTA). Sin body: `idUsuario` lo toma el backend del JWT. */

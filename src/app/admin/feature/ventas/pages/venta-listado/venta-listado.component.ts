@@ -1,5 +1,5 @@
 import { CurrencyPipe, DatePipe, formatDate } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -63,7 +63,7 @@ import { VentaDevolucionesComplementosDialogComponent } from '../../components/v
   templateUrl: './venta-listado.component.html',
   styleUrl: './venta-listado.component.scss',
 })
-export class VentaListadoComponent implements OnInit {
+export class VentaListadoComponent implements OnInit, AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly ventasService = inject(VentasService);
@@ -77,6 +77,16 @@ export class VentaListadoComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   @BlockUI('ventaListado') blockUI!: NgBlockUI;
+  /** Bloque propio para la exportación (FE-4), no bloquea/depende del listado (patrón de
+   *  `ReportesVentasService`/`ventas-list.component.ts`). */
+  @BlockUI('ventaListadoExportar') blockUIExportar!: NgBlockUI;
+
+  /**
+   * FE-3: réplica de `$('#codigoBarrasTicket').focus()` del legado al entrar a la pantalla
+   * "Editar Ventas" — mismo patrón `focusScan()` que `pos.component.ts`. Solo se dispara una
+   * vez (`ngAfterViewInit`), nunca vuelve a robar el foco después.
+   */
+  @ViewChild('codigoBarrasTicketInput') private readonly codigoBarrasTicketInputRef?: ElementRef<HTMLInputElement>;
 
   readonly EstatusVentaId = EstatusVentaId;
   readonly EstatusFacturaId = EstatusFacturaId;
@@ -90,6 +100,8 @@ export class VentaListadoComponent implements OnInit {
     'nombreCliente',
     'nombreUsuario',
     'descripcionFactFormaPago',
+    'cantidad',
+    'codigoBarrasTicket',
     'montoTotal',
     'estatusVenta',
     'action',
@@ -134,6 +146,19 @@ export class VentaListadoComponent implements OnInit {
     });
 
     this.cargar();
+  }
+
+  ngAfterViewInit(): void {
+    this.focusScan();
+  }
+
+  /**
+   * Autofocus en el campo "Código de barras" al entrar a la pantalla (FE-3). Se dispara una
+   * sola vez desde `ngAfterViewInit`; no se vuelve a invocar, así que no interfiere si el
+   * usuario ya está interactuando con otro campo.
+   */
+  private focusScan(): void {
+    setTimeout(() => this.codigoBarrasTicketInputRef?.nativeElement?.focus());
   }
 
   private get filtro() {
@@ -206,6 +231,24 @@ export class VentaListadoComponent implements OnInit {
     this.codigoBarrasTicket.reset();
     this.rangoFechasForm.reset({ inicio: this.hoy, fin: this.hoy });
     this.cargar();
+  }
+
+  /**
+   * FE-4: exporta el listado con los MISMOS filtros/búsqueda actualmente aplicados en pantalla
+   * (`GET /ventas/exportar`). Solo disponible fuera del modo "Ventas canceladas": el endpoint
+   * solo exporta ventas activas (mismo alcance que `listar`), así que no tiene sentido ofrecerlo
+   * en `/ventas/canceladas` (no exportaría lo que el usuario está viendo). `VentasService.
+   * exportar` ya resuelve la respuesta dual (descarga inmediata vs. aviso de envío diferido) y
+   * notifica éxito/error; este método solo dispara la llamada y loguea errores técnicos.
+   */
+  exportar(): void {
+    this.blockUIExportar.start(this.translate.instant('ventas.listado.msg.exportando'));
+    this.ventasService
+      .exportar({ q: this.search, ...this.filtro })
+      .pipe(finalize(() => this.blockUIExportar.stop()))
+      .subscribe({
+        error: (err) => console.error('Error al exportar el listado de ventas', err),
+      });
   }
 
   /** Cancelar/ajustar IVA solo aplica a ventas activas, y nunca en el listado de canceladas. */

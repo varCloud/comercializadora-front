@@ -941,6 +941,8 @@
         "cliente": "Cliente",
         "usuario": "Usuario",
         "formaPago": "Forma de pago",
+        "cantidad": "Cantidad",
+        "codigoBarras": "Código de barras",
         "total": "Total",
         "estatus": "Estatus",
         "acciones": "Acciones"
@@ -960,7 +962,8 @@
         "estatusFactura": "Estatus de factura",
         "ticketDespachador": "Ticket despachadores",
         "devolverProductos": "Devolver productos",
-        "agregarProductos": "Agregar productos"
+        "agregarProductos": "Agregar productos",
+        "exportar": "Exportar"
       },
       "empty": "No se encontraron ventas.",
       "confirm": {
@@ -985,7 +988,8 @@
         "cancelFacturaError": "Error al cancelar la factura.",
         "consultandoEstatusFactura": "Consultando estatus de cancelación…",
         "estatusFacturaConsultado": "Estatus de cancelación consultado correctamente.",
-        "errorEstatusFactura": "Error al consultar el estatus de cancelación de la factura."
+        "errorEstatusFactura": "Error al consultar el estatus de cancelación de la factura.",
+        "exportando": "Exportando ventas…"
       }
     },
     "detalle": {

@@ -68,18 +68,28 @@
       <div class="col-lg-4 col-sm-12 m-b-12">
         <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.listado.filters.codigoBarrasTicket' | translate }}</mat-label>
         <mat-form-field appearance="outline" class="w-100 hide-hint">
-          <input matInput [formControl]="codigoBarrasTicket" [placeholder]="'ventas.listado.filters.codigoBarrasTicketPlaceholder' | translate" />
+          <input #codigoBarrasTicketInput matInput [formControl]="codigoBarrasTicket" [placeholder]="'ventas.listado.filters.codigoBarrasTicketPlaceholder' | translate" />
         </mat-form-field>
       </div>
     </div>
 
-    <div class="d-flex justify-content-end gap-2">
-      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
-        {{ 'ventas.listado.filters.limpiar' | translate }}
-      </button>
-      <button mat-flat-button color="primary" (click)="buscar()">
-        {{ 'ventas.listado.filters.buscar' | translate }}
-      </button>
+    <div class="d-flex justify-content-between flex-wrap gap-2">
+      @if (!soloCanceladas) {
+        <div class="d-flex flex-wrap gap-2" *blockUI="'ventaListadoExportar'">
+          <button mat-stroked-button color="primary" (click)="exportar()">
+            <i-tabler name="file-download" class="icon-18 m-r-4"></i-tabler>
+            {{ 'ventas.listado.actions.exportar' | translate }}
+          </button>
+        </div>
+      }
+      <div class="d-flex flex-wrap gap-2">
+        <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+          {{ 'ventas.listado.filters.limpiar' | translate }}
+        </button>
+        <button mat-flat-button color="primary" (click)="buscar()">
+          {{ 'ventas.listado.filters.buscar' | translate }}
+        </button>
+      </div>
     </div>
   </mat-card-content>
 </mat-card>
@@ -111,6 +121,16 @@
         <ng-container matColumnDef="descripcionFactFormaPago">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.listado.columns.formaPago' | translate }}</th>
           <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.formaPago' | translate">{{ v.descripcionFactFormaPago }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.listado.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14 text-right" [attr.data-label]="'ventas.listado.columns.cantidad' | translate">{{ v.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarrasTicket">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.listado.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.codigoBarras' | translate">{{ v.codigoBarrasTicket }}</td>
         </ng-container>
 
         <ng-container matColumnDef="montoTotal">
