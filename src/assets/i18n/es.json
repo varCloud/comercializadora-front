@@ -952,6 +952,7 @@
         "cancelada": "Cancelada"
       },
       "actions": {
+        "menu": "Acciones",
         "ver": "Ver detalle",
         "cancelar": "Cancelar venta",
         "ajustarIva": "Ajustar IVA",

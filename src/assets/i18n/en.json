@@ -952,6 +952,7 @@
         "cancelada": "Cancelled"
       },
       "actions": {
+        "menu": "Actions",
         "ver": "View detail",
         "cancelar": "Cancel sale",
         "ajustarIva": "Adjust tax",

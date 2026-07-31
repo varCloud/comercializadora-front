@@ -29,6 +29,36 @@ Las acciones de fila van como **iconos Tabler**, no botones de texto:
 </td>
 ```
 
+### Excepción — muchas acciones condicionales por fila → menú desplegable "Acciones"
+
+Cuando una fila puede tener **más de ~5 acciones posibles** (aunque la mayoría sean
+condicionales y no todas se muestren a la vez), una fila de iconos sueltos se satura. En ese
+caso usa un botón único **"Acciones"** (`mat-flat-button color="primary"`) con
+`[matMenuTriggerFor]` que abre un `<mat-menu>` — cada acción es un `mat-menu-item` con su
+ícono Tabler (mismo color por acción que ya usarías en la fila) + texto de la acción, en vez de
+solo el ícono con tooltip:
+
+```html
+<button mat-flat-button color="primary" [matMenuTriggerFor]="menuAcciones">
+  {{ 'feature.actions.menu' | translate }}
+  <i-tabler name="chevron-down" class="icon-18"></i-tabler>
+</button>
+<mat-menu #menuAcciones="matMenu">
+  @if (puedeVer(row)) {
+    <button mat-menu-item (click)="ver(row)">
+      <i-tabler name="eye" class="icon-18 m-r-8" [style.color]="'#2e7d32'"></i-tabler>
+      <span>{{ 'feature.actions.ver' | translate }}</span>
+    </button>
+  }
+  <!-- ...una entrada por acción, mismas condiciones @if que ya tendrías por fila -->
+</mat-menu>
+```
+
+`MatMenuModule` ya está exportado por `MaterialModule`, no hace falta importarlo aparte.
+Ejemplo real: `venta-listado` (listado "Editar Ventas", hasta 10 acciones condicionales por
+fila — réplica del dropdown "Acciones" del legado, que ya resolvía este mismo problema de
+saturación).
+
 - Iconos vía `<i-tabler name="…" class="icon-18">`. En componentes **standalone** importa
   `TablerIconsModule` (los iconos ya se registran globalmente con `.pick` en `app.module`).
 - Importa el barrel `MaterialModule` (`src/app/material.module.ts`) en vez de cada `Mat*Module`.
