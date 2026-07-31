@@ -167,14 +167,22 @@
                   <span>{{ 'ventas.listado.actions.devolucionesComplementos' | translate }}</span>
                 </button>
               }
-              <button mat-menu-item (click)="reimprimirTicket(v)">
+              <button mat-menu-item (click)="imprimirTicket(v)">
                 <i-tabler name="printer" class="icon-18 m-r-8" [style.color]="'#00838f'"></i-tabler>
-                <span>{{ 'ventas.listado.actions.reimprimirTicket' | translate }}</span>
+                <span>{{ 'ventas.listado.actions.imprimirTicket' | translate }}</span>
+              </button>
+              <button mat-menu-item (click)="verTicket(v)">
+                <i-tabler name="eye" class="icon-18 m-r-8" [style.color]="'#00838f'"></i-tabler>
+                <span>{{ 'ventas.listado.actions.verTicket' | translate }}</span>
               </button>
               @if (puedeTicketDespachador(v)) {
-                <button mat-menu-item (click)="ticketDespachador(v)">
+                <button mat-menu-item (click)="imprimirTicketDespachador(v)">
                   <i-tabler name="truck-delivery" class="icon-18 m-r-8" [style.color]="'#8d6e63'"></i-tabler>
-                  <span>{{ 'ventas.listado.actions.ticketDespachador' | translate }}</span>
+                  <span>{{ 'ventas.listado.actions.imprimirTicketDespachador' | translate }}</span>
+                </button>
+                <button mat-menu-item (click)="verTicketDespachador(v)">
+                  <i-tabler name="eye" class="icon-18 m-r-8" [style.color]="'#8d6e63'"></i-tabler>
+                  <span>{{ 'ventas.listado.actions.verTicketDespachador' | translate }}</span>
                 </button>
               }
               @if (puedeAjustarIva(v)) {

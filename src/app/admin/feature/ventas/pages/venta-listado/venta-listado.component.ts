@@ -21,7 +21,7 @@ import { Venta } from 'src/app/admin/models/ventas/venta';
 import { EstatusVentaId } from 'src/app/admin/models/ventas/estatus-venta';
 import { FormaPago } from 'src/app/admin/models/ventas/forma-pago';
 import { VentasService } from 'src/app/admin/services/ventas.service';
-import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
+import { abrirPdfBlob, imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { UsuariosService } from 'src/app/admin/services/usuarios.service';
 import { FacturasService } from 'src/app/admin/services/facturas.service';
@@ -358,7 +358,15 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
     return venta.cantProductosLiq > 0;
   }
 
-  ticketDespachador(venta: Venta): void {
+  verTicketDespachador(venta: Venta): void {
+    this.generarTicketDespachador(venta, abrirPdfBlob);
+  }
+
+  imprimirTicketDespachador(venta: Venta): void {
+    this.generarTicketDespachador(venta, imprimirPdfBlob);
+  }
+
+  private generarTicketDespachador(venta: Venta, accion: (blob: Blob) => void): void {
     if (this.generandoTicket()) return;
 
     this.generandoTicket.set(true);
@@ -372,7 +380,7 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
         }),
       )
       .subscribe({
-        next: (blob) => abrirPdfBlob(blob),
+        next: accion,
         error: (err) => {
           console.error('Error al generar el ticket de despachadores', err);
           this.notify.notify('error', this.translate.instant('ventas.listado.msg.errorTicket'));
@@ -410,8 +418,16 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /** "Reimprimir ticket" (FE-D1): tipo `venta` en el listado activo, `cancelada` en canceladas. */
-  reimprimirTicket(venta: Venta): void {
+  /** "Ver Ticket" / "Imprimir Ticket" (FE-D1): tipo `venta` en el listado activo, `cancelada` en canceladas. */
+  verTicket(venta: Venta): void {
+    this.generarTicket(venta, abrirPdfBlob);
+  }
+
+  imprimirTicket(venta: Venta): void {
+    this.generarTicket(venta, imprimirPdfBlob);
+  }
+
+  private generarTicket(venta: Venta, accion: (blob: Blob) => void): void {
     if (this.generandoTicket()) return;
     const tipo = this.soloCanceladas ? 'cancelada' : 'venta';
 
@@ -426,7 +442,7 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
         }),
       )
       .subscribe({
-        next: (blob) => abrirPdfBlob(blob),
+        next: accion,
         error: (err) => {
           console.error('Error al generar el ticket PDF de la venta', err);
           this.notify.notify('error', this.translate.instant('ventas.listado.msg.errorTicket'));
