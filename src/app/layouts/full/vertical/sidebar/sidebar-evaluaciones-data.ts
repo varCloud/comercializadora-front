@@ -140,7 +140,7 @@ export const navItemsApp: NavItem[] = [
       {
         displayName: 'Editar Ventas',
         iconName: 'edit',
-        route: '/admin/ventas/editar',
+        route: '/admin/ventas/listado',
       },
       {
         displayName: 'Ventas Canceladas',
@@ -150,7 +150,7 @@ export const navItemsApp: NavItem[] = [
       {
         displayName: 'Facturas',
         iconName: 'file-invoice',
-        route: '/admin/ventas/facturas',
+        route: '/admin/facturas',
       },
       {
         displayName: 'Retiros de Efectivo',
