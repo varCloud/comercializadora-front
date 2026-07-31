@@ -60,7 +60,7 @@ import { CierreDiaDialogComponent } from '../../components/cierre-dia-dialog/cie
  * pantalla"). El modo "líquidos/despachadores" del legado NO es un modo de captura: es 100%
  * automático (columna `cantProductosLiq` de la respuesta de `GuardarVenta`, ver `enviarVenta()`).
  */
-type ModoPos = 'venta' | 'devolucion' | 'complemento';
+type ModoPos = 'venta' | 'devolucion' | 'complemento' | 'agregar-productos';
 
 /**
  * Pantalla POS — venta (FE-A3/FE-A5a). Réplica de `Views/Ventas/Ventas.cshtml` + `EvtVentas.js`:
@@ -87,9 +87,17 @@ type ModoPos = 'venta' | 'devolucion' | 'complemento';
  *   `actualizaTicketVenta()` cuando `idVentaComplemento > 0`: solo cuenta para el rango de
  *   precio, no se re-renderizan como líneas). Al guardar viaja `idVentaComplemento` con
  *   `tipoVenta = Normal` e `idVenta = 0` — así es como el legado arma el payload en este flujo
- *   (ver `AbrirModalComplementoVenta()`/`BuscarVentaCodigoBarras()`, que nunca tocan
- *   `esAgregarProductos`; ese flag pertenece a una pantalla de edición server-rendered aparte,
- *   fuera del alcance de este POS).
+ *   (ver `AbrirModalComplementoVenta()`/`BuscarVentaCodigoBarras()`). Este modo se activa con el
+ *   toggle manual "Complemento" de esta misma pantalla.
+ * - **Agregar Productos** (submodo `'agregar-productos'`): comparte la MISMA UI de captura que
+ *   Complemento (localiza el ticket por `idVenta`, permite escanear productos nuevos, el
+ *   descuento por volumen suma las cantidades ya vendidas del ticket localizado), pero corresponde
+ *   a un flujo LEGADO DISTINTO: `_ObtenerVentas.cshtml` → `EvtVentas.js:952-966`
+ *   (`esAgregarProductos` / `TipoVentaId.AgregarProductosVenta`), que EDITA la venta original
+ *   agregándole líneas nuevas. Al guardar viaja `tipoVenta = TipoVentaId.AgregarProductosVenta`,
+ *   `idVenta = <venta localizada>` e `idVentaComplemento = 0`. Solo se alcanza vía el botón
+ *   "Agregar Productos" del listado de ventas (`?idVenta=&modo=agregar-productos`); NO es
+ *   seleccionable manualmente en el `mat-button-toggle-group`.
  * - **Líquidos/despachadores**: NO es un modo de captura (hallazgo de la investigación, ver
  *   memoria `modulo-ventas-modos-pos.md`). El legado solo usa `EnumTipoVenta.ProductosLiquidos`
  *   como filtro interno para imprimir un "Ticket para Despachadores" adicional cuando la venta
@@ -149,42 +157,28 @@ export class PosComponent implements OnInit, AfterViewInit {
   /** idProducto cuyos rangos de precio por volumen ya se consultaron (carga LAZY, ver PosCatalogoService). */
   private readonly rangosResueltos = new Set<number>();
 
-  readonly scanControl = new FormControl('', { nonNullable: true });
-  private readonly scanTerm = toSignal(this.scanControl.valueChanges, { initialValue: '' });
+  /**
+   * Un solo control para escanear (pistola lectora) O buscar por nombre/código sin pistola. El
+   * valor es texto mientras se escribe/escanea; al SELECCIONAR una opción del autocomplete pasa
+   * a ser el `ProductoVenta` completo (`mostrarProducto` lo pinta con su descripción). Cuando el
+   * valor es un objeto, `agregarSeleccionado()` (botón "Agregar") usa `cantidadManual` en vez del
+   * alta automática de cantidad 1 de la pistola lectora.
+   */
+  readonly scanControl = new FormControl<ProductoVenta | string>('', { nonNullable: true });
+  private readonly scanTerm = toSignal(this.scanControl.valueChanges, {
+    initialValue: '' as ProductoVenta | string,
+  });
+  readonly productoSeleccionado = signal<ProductoVenta | null>(null);
+  /** Cantidad para el alta manual (sin pistola lectora), editable, default 1. */
+  cantidadManual = 1;
 
   /** Sugerencias de autocompletado local (buscador por descripción/código, alcance de la HU). */
   readonly sugerencias = computed(() => {
-    const term = this.scanTerm().trim().toUpperCase();
+    const valor = this.scanTerm();
+    const term = (typeof valor === 'string' ? valor : '').trim().toUpperCase();
     if (!term) return [];
     return this.catalogo()
       .filter((p) => p.descripcion.toUpperCase().includes(term) || p.codigoBarras.includes(term))
-      .slice(0, 15);
-  });
-
-  /**
-   * Buscador de productos por nombre (FE-E2), ADICIONAL al escaneo por código de barras
-   * (`scanControl`/`sugerencias` arriba, que sigue intacto). 100% client-side sobre el mismo
-   * `catalogo()` ya cargado en memoria — sin llamada HTTP nueva (ver Supuesto #4 del Bloque E).
-   * El control acepta tanto texto libre (mientras el usuario escribe) como el `ProductoVenta`
-   * seleccionado (Material setea el value completo al elegir una opción del autocomplete);
-   * `mostrarProducto` (displayWith) resuelve cómo se pinta cada caso en el input.
-   */
-  readonly buscarNombreControl = new FormControl<ProductoVenta | string>('', {
-    nonNullable: true,
-  });
-  private readonly nombreTerm = toSignal(this.buscarNombreControl.valueChanges, {
-    initialValue: '' as ProductoVenta | string,
-  });
-  readonly productoSeleccionadoBuscador = signal<ProductoVenta | null>(null);
-  /** Cantidad del buscador por nombre (FE-E2), editable, default 1 — independiente del escaneo. */
-  cantidadBuscador = 1;
-
-  readonly sugerenciasPorNombre = computed(() => {
-    const valor = this.nombreTerm();
-    const texto = (typeof valor === 'string' ? valor : '').trim().toUpperCase();
-    if (!texto) return [];
-    return this.catalogo()
-      .filter((p) => p.descripcion.toUpperCase().includes(texto))
       .slice(0, 15);
   });
 
@@ -222,19 +216,25 @@ export class PosComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * FE-6: si se llega desde el listado de ventas con `?idVenta=&modo=devolucion|complemento`
-   * (acciones "Devolver Productos"/"Agregar Productos" de `VentaListadoComponent`), fija el
-   * modo y carga esa venta automáticamente por el mismo camino que `buscarTicket()`, sin que el
-   * cajero tenga que teclear el código de barras. Se lee el snapshot (no una suscripción
-   * reactiva) a propósito: solo debe dispararse una vez al entrar, nunca de nuevo si el cajero
-   * cambia de modo manualmente después (`cambiarModo()` ya limpia el estado en ese caso).
+   * FE-6: si se llega desde el listado de ventas con
+   * `?idVenta=&modo=devolucion|complemento|agregar-productos` (acciones "Devolver
+   * Productos"/"Agregar Productos" de `VentaListadoComponent`), fija el modo y carga esa venta
+   * automáticamente por el mismo camino que `buscarTicket()`, sin que el cajero tenga que
+   * teclear el código de barras. Se lee el snapshot (no una suscripción reactiva) a propósito:
+   * solo debe dispararse una vez al entrar, nunca de nuevo si el cajero cambia de modo
+   * manualmente después (`cambiarModo()` ya limpia el estado en ese caso). `'agregar-productos'`
+   * solo llega por este camino (query param); nunca se selecciona manualmente en el toggle.
    */
   private cargarDesdeQueryParams(): void {
     const params = this.route.snapshot.queryParamMap;
     const modoParam = params.get('modo');
     const idVenta = Number(params.get('idVenta'));
 
-    if ((modoParam !== 'devolucion' && modoParam !== 'complemento') || !idVenta || idVenta <= 0) {
+    if (
+      (modoParam !== 'devolucion' && modoParam !== 'complemento' && modoParam !== 'agregar-productos') ||
+      !idVenta ||
+      idVenta <= 0
+    ) {
       return;
     }
 
@@ -265,9 +265,52 @@ export class PosComponent implements OnInit, AfterViewInit {
 
   // ====================== Escaneo / búsqueda ======================
 
-  /** Selección desde el autocompletado: agrega igual que el escaneo (cantidad 1). */
+  /**
+   * Selección desde el autocompletado: NO agrega de inmediato — deja el producto elegido en
+   * `productoSeleccionado` (el input lo pinta con su descripción vía `mostrarProducto`) para que
+   * el cajero confirme/ajuste `cantidadManual` y presione "Agregar". Necesario para el flujo SIN
+   * pistola lectora (búsqueda manual por nombre), donde no siempre se quiere cantidad 1.
+   */
   onSugerenciaSeleccionada(event: MatAutocompleteSelectedEvent): void {
-    this.agregarPorCodigoBarras(String(event.option.value));
+    this.productoSeleccionado.set(event.option.value as ProductoVenta);
+  }
+
+  /** `displayWith` del autocomplete: qué se pinta en el input según se esté escribiendo o ya se haya seleccionado. */
+  mostrarProducto(valor: ProductoVenta | string | null): string {
+    if (!valor || typeof valor === 'string') return valor ?? '';
+    return valor.descripcion;
+  }
+
+  /**
+   * Enter sobre el campo único: si ya hay un producto SELECCIONADO del autocomplete (flujo sin
+   * pistola), Enter equivale al botón "Agregar" con `cantidadManual`. Si el valor sigue siendo
+   * texto (pistola lectora escaneando un código completo), sigue el flujo de alta automática
+   * cantidad 1 de siempre.
+   */
+  onEnterProducto(): void {
+    const valor = this.scanControl.value;
+    if (valor && typeof valor === 'object') {
+      this.agregarSeleccionado();
+      return;
+    }
+    this.agregarPorCodigoBarras(valor);
+  }
+
+  /** Botón "Agregar" (o Enter con producto ya seleccionado): reusa `agregarConRangos()`. */
+  agregarSeleccionado(): void {
+    const producto = this.productoSeleccionado();
+    if (!producto) {
+      this.notify.notify(
+        'warning',
+        this.translate.instant('ventas.pos.buscarProducto.msg.seleccionaProducto'),
+      );
+      return;
+    }
+
+    this.agregarConRangos(producto, Number(this.cantidadManual));
+
+    this.productoSeleccionado.set(null);
+    this.cantidadManual = 1;
   }
 
   /** Enter sobre el campo de escaneo = flujo de pistola lectora (alta automática, cantidad 1). */
@@ -306,37 +349,6 @@ export class PosComponent implements OnInit, AfterViewInit {
 
   private focusScan(): void {
     setTimeout(() => this.scanInputRef?.nativeElement?.focus());
-  }
-
-  // ====================== Buscador por nombre (FE-E2) ======================
-
-  /** `displayWith` del autocomplete: qué se pinta en el input según se esté escribiendo o ya se haya seleccionado. */
-  mostrarProducto(valor: ProductoVenta | string | null): string {
-    if (!valor || typeof valor === 'string') return valor ?? '';
-    return valor.descripcion;
-  }
-
-  onProductoPorNombreSeleccionado(event: MatAutocompleteSelectedEvent): void {
-    this.productoSeleccionadoBuscador.set(event.option.value as ProductoVenta);
-  }
-
-  /** Botón "Agregar": reusa `agregarProducto()` (misma validación de precio/existencia que el escaneo). */
-  agregarDesdeBuscadorNombre(): void {
-    const producto = this.productoSeleccionadoBuscador();
-    if (!producto) {
-      this.notify.notify(
-        'warning',
-        this.translate.instant('ventas.pos.buscarProducto.msg.seleccionaProducto'),
-      );
-      return;
-    }
-
-    this.agregarProducto(producto, Number(this.cantidadBuscador));
-
-    this.buscarNombreControl.setValue('');
-    this.productoSeleccionadoBuscador.set(null);
-    this.cantidadBuscador = 1;
-    this.focusScan();
   }
 
   // ====================== Herramientas (FE-E1) ======================
@@ -441,16 +453,23 @@ export class PosComponent implements OnInit, AfterViewInit {
   // ====================== Ticket ======================
 
   /**
-   * Antes de agregar un producto por primera vez al ticket, resuelve sus rangos de precio por
-   * volumen reales (`GET /productos/{id}/precios`, LAZY y cacheado — no hay endpoint bulk en la
-   * API, ver `pos-catalogo.service.ts`). Si el producto ya se resolvió antes (mismo ticket o
-   * escaneos previos), no vuelve a pedirlo.
+   * Agrega el producto AL INSTANTE (réplica del legado: el cajero no espera nada entre escanear
+   * y ver la línea en el ticket) y, si sus rangos de precio por volumen aún no se resolvieron en
+   * esta sesión, los pide en segundo plano (`GET /productos/{id}/precios`, LAZY y cacheado — no
+   * hay endpoint bulk en la API, ver `pos-catalogo.service.ts`) y recalcula el ticket cuando
+   * lleguen. Antes esta llamada BLOQUEABA el alta hasta que la respuesta volvía (regresión
+   * detectada por el usuario comparando contra el legado: "tarda unos segundos en agregar
+   * productos"); el precio mostrado antes de resolver rangos usa el umbral genérico de mayoreo
+   * (precioIndividual/precioMenudeo por cantidad total, igual que sin rangos propios) y se ajusta
+   * solo si aplica un rango específico — la validación de existencia real sigue ocurriendo aquí
+   * mismo contra `catalogo()` ya cargado (sin llamada de red), y `GuardarVenta` revalida en el
+   * servidor al cobrar, así que no hay ventana insegura, solo una corrección de precio casi
+   * instantánea si el producto tiene un rango propio.
    */
   private agregarConRangos(producto: ProductoVenta, cantidad: number): void {
-    if (this.rangosResueltos.has(producto.idProducto)) {
-      this.completarAgregado(producto, cantidad);
-      return;
-    }
+    this.completarAgregado(producto, cantidad);
+
+    if (this.rangosResueltos.has(producto.idProducto)) return;
 
     this.posCatalogo.obtenerRangosProducto(producto.idProducto).subscribe({
       next: (rangos) => {
@@ -460,15 +479,13 @@ export class PosComponent implements OnInit, AfterViewInit {
             p.idProducto === producto.idProducto ? new ProductoVentaModel({ ...p, rangos }) : p,
           ),
         );
-        const actualizado = this.catalogo().find((p) => p.idProducto === producto.idProducto) ?? producto;
-        this.completarAgregado(actualizado, cantidad);
+        this.recalcularTicket();
       },
       error: (err) => {
         // No bloquea la venta: sin rangos propios, recalcularTicket() usa el umbral genérico
         // de mayoreo (precioIndividual/precioMenudeo según cantidad total >= 6).
         console.error('Error al consultar precios por volumen del producto', err);
         this.rangosResueltos.add(producto.idProducto); // evita reintentos en cada escaneo
-        this.completarAgregado(producto, cantidad);
       },
     });
   }
@@ -557,6 +574,9 @@ export class PosComponent implements OnInit, AfterViewInit {
   limpiarTicket(): void {
     this.ticket.set([]);
     this.idPedidoEspecialActual.set(0);
+    this.scanControl.setValue('');
+    this.productoSeleccionado.set(null);
+    this.cantidadManual = 1;
     this.focusScan();
   }
 
@@ -568,8 +588,20 @@ export class PosComponent implements OnInit, AfterViewInit {
     return this.round2((linea.precioBase - linea.precioUnitario) * linea.cantidad);
   }
 
+  /**
+   * Réplica de `descripcionConExistencias` del legado (SP_CONSULTA_PRODUCTOS, bloque
+   * `@idUsuario > 0`, verificado contra sys.sql_modules en BD real): desglose D/E/SA/R/B +
+   * precios, o "(S/E)" si no hay existencia total. Antes solo mostraba `p.existencia` (un
+   * número), muy por debajo del detalle que el cajero ve en el sistema legado — hallazgo de
+   * usuario comparando ambos buscadores lado a lado.
+   */
   existenciaLabel(p: ProductoVenta): string {
-    return String(p.existencia);
+    if (!p.existenciaTotal || p.existenciaTotal <= 0) return '(S/E)';
+    const precio = (v: number) => v.toFixed(2);
+    return (
+      `( D:${p.existencia} / E:${p.existenciaTotal} / SA:${p.sinAcomodar} / R:${p.resguardo} / ` +
+      `B:${p.bloqueo} / ME:${precio(p.precioIndividual)} / MA:${precio(p.precioMenudeo)})`
+    );
   }
 
   /**
@@ -619,10 +651,10 @@ export class PosComponent implements OnInit, AfterViewInit {
     this.ticket.set(actualizadas);
   }
 
-  /** Cantidades del ticket localizado (modo Complemento), agrupadas por producto. */
+  /** Cantidades del ticket localizado (modos Complemento/Agregar Productos), agrupadas por producto. */
   private cantidadesComplemento(): Map<number, number> {
     const mapa = new Map<number, number>();
-    if (this.modo() !== 'complemento') return mapa;
+    if (this.modo() !== 'complemento' && this.modo() !== 'agregar-productos') return mapa;
     const venta = this.ventaLocalizada();
     if (!venta) return mapa;
     for (const d of venta.detalles) {
@@ -644,7 +676,7 @@ export class PosComponent implements OnInit, AfterViewInit {
       this.notify.notify('warning', this.translate.instant('ventas.pos.msg.ticketVacio'));
       return;
     }
-    if (this.modo() === 'complemento' && !this.ventaLocalizada()) {
+    if ((this.modo() === 'complemento' || this.modo() === 'agregar-productos') && !this.ventaLocalizada()) {
       this.notify.notify(
         'warning',
         this.translate.instant('ventas.pos.buscarTicket.msg.requeridoComplemento'),
@@ -670,11 +702,15 @@ export class PosComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * POST /ventas real (venta normal o complemento). En modo Complemento viaja
-   * `idVentaComplemento` con `idVenta = 0` y `tipoVenta = Normal` — así es como el legado arma
-   * el payload cuando el ticket se localiza vía `BuscarVentaCodigoBarras()` dentro de la pantalla
-   * de venta (no confundir con la pantalla server-rendered `esAgregarProductos=true`, que es un
-   * flujo de edición aparte fuera de alcance).
+   * POST /ventas real (venta normal, complemento o agregar-productos). El payload difiere según
+   * el modo:
+   * - **Complemento**: `idVentaComplemento` = venta localizada, `idVenta = 0`,
+   *   `tipoVenta = Normal` — así arma el legado el payload cuando el ticket se localiza vía
+   *   `BuscarVentaCodigoBarras()` dentro de la pantalla de venta.
+   * - **Agregar Productos**: `idVenta` = venta localizada, `idVentaComplemento = 0`,
+   *   `tipoVenta = TipoVentaId.AgregarProductosVenta` — réplica del flujo real del legado
+   *   (`EvtVentas.js:952-966`), que edita la venta original agregándole líneas nuevas.
+   * - **Venta**: `idVenta = 0`, `idVentaComplemento = 0`, `tipoVenta = Normal`.
    */
   private guardarVenta(datos: DatosCobro): void {
     const detalles = this.ticket().map((l) => {
@@ -697,18 +733,21 @@ export class PosComponent implements OnInit, AfterViewInit {
       });
     });
 
+    const esAgregarProductos = this.modo() === 'agregar-productos';
+    const esComplemento = this.modo() === 'complemento';
+
     const request = new GuardarVentaRequestModel({
       detalles,
       idCliente: datos.idCliente,
       formaPago: datos.idFormaPago,
       usoCfdi: datos.idUsoCFDI ?? 0,
-      idVenta: 0,
+      idVenta: esAgregarProductos ? this.ventaLocalizada()?.idVenta ?? 0 : 0,
       aplicaIva: datos.facturar,
       numClientesAtendidos: datos.numClientesAtendidos ?? 0,
-      tipoVenta: TipoVentaId.Normal,
+      tipoVenta: esAgregarProductos ? TipoVentaId.AgregarProductosVenta : TipoVentaId.Normal,
       motivoDevolucion: null,
       idPedidoEspecial: this.idPedidoEspecialActual(),
-      idVentaComplemento: this.modo() === 'complemento' ? this.ventaLocalizada()?.idVenta ?? 0 : 0,
+      idVentaComplemento: esComplemento ? this.ventaLocalizada()?.idVenta ?? 0 : 0,
       montoTotalVenta: datos.total,
       montoPagado: datos.efectivoRecibido,
     });
@@ -733,6 +772,9 @@ export class PosComponent implements OnInit, AfterViewInit {
     this.buscarTicketControl.setValue('');
     this.motivoDevolucionControl.setValue('');
     this.idPedidoEspecialActual.set(0);
+    this.scanControl.setValue('');
+    this.productoSeleccionado.set(null);
+    this.cantidadManual = 1;
     this.focusScan();
   }
 

@@ -582,7 +582,6 @@
     "pos": {
       "escanear": "Escanear o buscar producto",
       "escanearPlaceholder": "Escanea el código de barras o escribe para buscar…",
-      "existencia": "Existencia",
       "modo": {
         "venta": "Venta",
         "devolucion": "Devolución",
@@ -684,8 +683,6 @@
         }
       },
       "buscarProducto": {
-        "label": "Buscar producto por nombre",
-        "placeholder": "Escribe el nombre del producto…",
         "cantidad": "Cantidad",
         "agregar": "Agregar",
         "leyenda": "D: Disponible, E: En existencia, S/A: Sin acomodar, R: Resguardo, B: Bloqueo, ME: Precio menudeo, MA: Precio mayoreo",

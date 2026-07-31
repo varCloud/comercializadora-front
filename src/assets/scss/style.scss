@@ -337,14 +337,23 @@ textarea:disabled:not(.mat-mdc-input-element) {
 // mat-button-toggle-group usado como selector de modo/tabs (ej. Venta/Devolución/Complemento
 // del POS): mismo criterio que mat-tab-group arriba — texto plano + subrayado, sin segmented
 // control ni checkmark de selección.
-.mat-button-toggle-group {
+// NOTA (2026-07-31): este bloque vivía antes como `:host ::ng-deep .mat-button-toggle-group`
+// dentro de cada componente. Al centralizarlo aquí como clase global plana se perdió la
+// especificidad extra que daba el host scoping de Angular, y el look por defecto de Material
+// (fondo/bordes tipo pill) volvió a ganarle a `.mat-button-toggle-button` — el <button> interno
+// real donde Material pinta fondo/borde, distinto del custom element `.mat-button-toggle` que
+// este bloque ya cubría. Se agrega `.mat-button-toggle-button` explícito + doblado de clase
+// (`.mat-button-toggle-group.mat-button-toggle-group`) para recuperar la especificidad sin volver
+// a acoplar el estilo a un componente (regla 20 sigue exigiendo que esto sea global).
+.mat-button-toggle-group.mat-button-toggle-group {
   border: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 0;
   background: transparent;
   box-shadow: none;
 
-  .mat-button-toggle {
+  .mat-button-toggle,
+  .mat-button-toggle-button {
     background: transparent;
     border: none;
     border-radius: 0;
@@ -354,6 +363,10 @@ textarea:disabled:not(.mat-mdc-input-element) {
   .mat-button-toggle + .mat-button-toggle {
     border-left: none;
     margin-left: 24px;
+
+    .mat-button-toggle-button {
+      border-left: none;
+    }
   }
 
   .mat-button-toggle-checkbox-wrapper {
@@ -368,8 +381,10 @@ textarea:disabled:not(.mat-mdc-input-element) {
   }
 
   .mat-button-toggle-checked {
-    background: transparent;
-    color: var(--mat-sys-primary, #5d87ff);
+    .mat-button-toggle-button {
+      background: transparent;
+      color: var(--mat-sys-primary, #5d87ff);
+    }
 
     .mat-button-toggle-label-content {
       font-weight: 600;

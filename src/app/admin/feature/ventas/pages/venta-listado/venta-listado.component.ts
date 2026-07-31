@@ -216,28 +216,33 @@ export class VentaListadoComponent implements OnInit {
   /**
    * FE-2: además del estatus de la venta, "Ajustar IVA" (= "Generar Factura" del legado) no
    * debe quedar disponible si la venta ya tiene una factura vigente o pendiente de cancelar
-   * (`idEstatusFactura` distinto de "sin factura"/"cancelada").
+   * (`idEstatusFactura` distinto de "sin factura"/"cancelada"), ni si la venta ya tiene
+   * devoluciones/complementos (`tieneCompleODev`, réplica de la guardia de
+   * `modalFacturar()`/`EvtConsultaVentas.js:484` del legado — hallazgo de verificación,
+   * ver `.claude/docs/feature/editar_venta/verificacion_editar_venta.md`).
    */
   puedeAjustarIva(venta: Venta): boolean {
     return (
       !this.soloCanceladas &&
       venta.estatusVenta === EstatusVentaId.Activa &&
-      (venta.idEstatusFactura === 0 || venta.idEstatusFactura === EstatusFacturaId.Cancelada)
+      (venta.idEstatusFactura === 0 || venta.idEstatusFactura === EstatusFacturaId.Cancelada) &&
+      !venta.tieneCompleODev
     );
   }
 
   // ====================== Facturación (FE-1) ======================
 
+  /** Réplica estricta: `_ObtenerVentasCanceladas.cshtml` nunca muestra acciones de factura. */
   puedeVerFactura(venta: Venta): boolean {
-    return venta.idEstatusFactura === EstatusFacturaId.Facturada;
+    return !this.soloCanceladas && venta.idEstatusFactura === EstatusFacturaId.Facturada;
   }
 
   puedeCancelarFactura(venta: Venta): boolean {
-    return venta.idEstatusFactura === EstatusFacturaId.Facturada;
+    return !this.soloCanceladas && venta.idEstatusFactura === EstatusFacturaId.Facturada;
   }
 
   puedeConsultarEstatusFactura(venta: Venta): boolean {
-    return venta.idEstatusFactura === EstatusFacturaId.PendienteDeCancelacion;
+    return !this.soloCanceladas && venta.idEstatusFactura === EstatusFacturaId.PendienteDeCancelacion;
   }
 
   verFactura(venta: Venta): void {
@@ -358,7 +363,7 @@ export class VentaListadoComponent implements OnInit {
 
   agregarProductos(venta: Venta): void {
     this.router.navigate(['/admin/ventas'], {
-      queryParams: { idVenta: venta.idVenta, modo: 'complemento' },
+      queryParams: { idVenta: venta.idVenta, modo: 'agregar-productos' },
     });
   }
 

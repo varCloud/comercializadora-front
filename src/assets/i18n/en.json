@@ -582,7 +582,6 @@
     "pos": {
       "escanear": "Scan or search product",
       "escanearPlaceholder": "Scan the barcode or type to search…",
-      "existencia": "Stock",
       "modo": {
         "venta": "Sale",
         "devolucion": "Return",
@@ -684,8 +683,6 @@
         }
       },
       "buscarProducto": {
-        "label": "Search product by name",
-        "placeholder": "Type the product name…",
         "cantidad": "Quantity",
         "agregar": "Add",
         "leyenda": "D: Available, E: In stock, S/A: Unshelved, R: Reserved, B: Blocked, ME: Retail price, MA: Wholesale price",

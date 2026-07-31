@@ -50,14 +50,14 @@ export class PosCatalogoService {
       map(([productos, existencias]) => {
         const existenciaPorProducto = this.indexarExistencias(existencias);
         return productos.map((p) =>
-          this.mapProductoVenta(p, existenciaPorProducto.get(p.idProducto) ?? 0),
+          this.mapProductoVenta(p, existenciaPorProducto.get(p.idProducto)),
         );
       }),
     );
   }
 
-  private indexarExistencias(existencias: ExistenciaProducto[]): Map<number, number> {
-    return new Map(existencias.map((e) => [e.idProducto, e.cantidad]));
+  private indexarExistencias(existencias: ExistenciaProducto[]): Map<number, ExistenciaProducto> {
+    return new Map(existencias.map((e) => [e.idProducto, e]));
   }
 
   /**
@@ -77,7 +77,7 @@ export class PosCatalogoService {
     return obs$;
   }
 
-  private mapProductoVenta(p: Producto, existencia: number): ProductoVenta {
+  private mapProductoVenta(p: Producto, existencia: ExistenciaProducto | undefined): ProductoVenta {
     return new ProductoVentaModel({
       idProducto: p.idProducto,
       descripcion: p.descripcion,
@@ -86,7 +86,11 @@ export class PosCatalogoService {
       precioIndividual: p.precioIndividual ?? 0,
       precioMenudeo: p.precioMenudeo ?? 0,
       ultimoCostoCompra: p.ultimoCostoCompra ?? 0,
-      existencia,
+      existencia: existencia?.cantidad ?? 0,
+      existenciaTotal: existencia?.existenciaTotal ?? 0,
+      sinAcomodar: existencia?.sinAcomodar ?? 0,
+      resguardo: existencia?.resguardo ?? 0,
+      bloqueo: existencia?.bloqueo ?? 0,
       fraccion: p.fraccion,
       rangos: [],
     });

@@ -33,6 +33,14 @@ export interface ProductoVenta {
   ultimoCostoCompra: number;
   /** Existencia disponible en almacén (0 si el producto no aparece en `GET /ventas/existencias`). */
   existencia: number;
+  /** Existencia total (D+SA+R+B). Réplica del "E:" de `descripcionConExistencias` del legado. */
+  existenciaTotal: number;
+  /** Existencia en piso "sin acomodar". Réplica del "SA:" del legado. */
+  sinAcomodar: number;
+  /** Existencia en piso de resguardo. Réplica del "R:" del legado. */
+  resguardo: number;
+  /** Existencia en piso bloqueado. Réplica del "B:" del legado. */
+  bloqueo: number;
   /** Permite cantidad decimal (legado: idUnidadMedida Kilogramo/Gramo/Litro/Mililitro). */
   fraccion: boolean;
   /** Rangos propios de precio por volumen del producto (cargados LAZY, ver nota arriba). */
@@ -48,6 +56,10 @@ export class ProductoVentaModel implements ProductoVenta {
   precioMenudeo: number;
   ultimoCostoCompra: number;
   existencia: number;
+  existenciaTotal: number;
+  sinAcomodar: number;
+  resguardo: number;
+  bloqueo: number;
   fraccion: boolean;
   rangos: RangoPrecio[];
 
@@ -60,6 +72,10 @@ export class ProductoVentaModel implements ProductoVenta {
     this.precioMenudeo = data.precioMenudeo ?? 0;
     this.ultimoCostoCompra = data.ultimoCostoCompra ?? 0;
     this.existencia = data.existencia ?? 0;
+    this.existenciaTotal = data.existenciaTotal ?? 0;
+    this.sinAcomodar = data.sinAcomodar ?? 0;
+    this.resguardo = data.resguardo ?? 0;
+    this.bloqueo = data.bloqueo ?? 0;
     this.fraccion = data.fraccion ?? false;
     this.rangos = (data.rangos ?? []).map((r) => new RangoPrecioModel(r));
   }

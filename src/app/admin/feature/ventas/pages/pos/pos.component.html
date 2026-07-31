@@ -169,7 +169,7 @@
     <div class="col-lg-8 col-12">
       <mat-card class="cardWithShadow">
         <mat-card-content class="p-24">
-          @if (modo() === 'complemento') {
+          @if (modo() === 'complemento' || modo() === 'agregar-productos') {
             <div class="m-b-16 f-s-14 text-muted d-flex align-items-center gap-8">
               <i-tabler name="info-circle" class="icon-18"></i-tabler>
               {{ 'ventas.pos.complemento.info' | translate }}
@@ -177,52 +177,29 @@
           }
 
           <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'ventas.pos.escanear' | translate }}</mat-label>
-          <mat-form-field appearance="outline" class="w-100 hide-hint">
-            <input
-              #scanInput
-              matInput
-              autocomplete="off"
-              [formControl]="scanControl"
-              [matAutocomplete]="auto"
-              [placeholder]="'ventas.pos.escanearPlaceholder' | translate"
-              (keydown.enter)="agregarPorCodigoBarras(scanControl.value)"
-            />
-            <mat-icon matSuffix>
-              <i-tabler name="barcode" class="icon-20"></i-tabler>
-            </mat-icon>
-          </mat-form-field>
-          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSugerenciaSeleccionada($event)">
-            @for (p of sugerencias(); track p.idProducto) {
-              <mat-option [value]="p.codigoBarras" [disabled]="p.existencia <= 0">
-                {{ p.descripcion }} — {{ p.codigoBarras }}
-                ({{ 'ventas.pos.existencia' | translate }}: {{ existenciaLabel(p) }})
-              </mat-option>
-            }
-          </mat-autocomplete>
-
-          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8 m-t-16">{{ 'ventas.pos.buscarProducto.label' | translate }}</mat-label>
           <div class="d-flex gap-8 align-items-start flex-wrap">
             <mat-form-field appearance="outline" class="flex-1-auto hide-hint">
               <input
+                #scanInput
                 matInput
                 autocomplete="off"
-                [formControl]="buscarNombreControl"
-                [matAutocomplete]="autoNombre"
-                [placeholder]="'ventas.pos.buscarProducto.placeholder' | translate"
+                [formControl]="scanControl"
+                [matAutocomplete]="auto"
+                [placeholder]="'ventas.pos.escanearPlaceholder' | translate"
+                (keydown.enter)="onEnterProducto()"
               />
               <mat-icon matSuffix>
-                <i-tabler name="search" class="icon-20"></i-tabler>
+                <i-tabler name="barcode" class="icon-20"></i-tabler>
               </mat-icon>
             </mat-form-field>
             <mat-autocomplete
-              #autoNombre="matAutocomplete"
+              #auto="matAutocomplete"
               [displayWith]="mostrarProducto"
-              (optionSelected)="onProductoPorNombreSeleccionado($event)"
+              (optionSelected)="onSugerenciaSeleccionada($event)"
             >
-              @for (p of sugerenciasPorNombre(); track p.idProducto) {
+              @for (p of sugerencias(); track p.idProducto) {
                 <mat-option [value]="p" [disabled]="p.existencia <= 0">
-                  {{ p.descripcion }} — {{ p.codigoBarras }}
-                  ({{ 'ventas.pos.existencia' | translate }}: {{ existenciaLabel(p) }})
+                  {{ p.descripcion }} - {{ existenciaLabel(p) }}
                 </mat-option>
               }
             </mat-autocomplete>
@@ -234,12 +211,12 @@
                 min="0.01"
                 step="0.01"
                 [placeholder]="'ventas.pos.buscarProducto.cantidad' | translate"
-                [(ngModel)]="cantidadBuscador"
+                [(ngModel)]="cantidadManual"
                 [ngModelOptions]="{ standalone: true }"
               />
             </mat-form-field>
 
-            <button mat-flat-button color="primary" type="button" (click)="agregarDesdeBuscadorNombre()">
+            <button mat-flat-button color="primary" type="button" (click)="agregarSeleccionado()">
               {{ 'ventas.pos.buscarProducto.agregar' | translate }}
             </button>
           </div>

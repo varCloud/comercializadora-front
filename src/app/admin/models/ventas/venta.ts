@@ -37,6 +37,13 @@ export interface Venta {
   esAgregarProductos: boolean;
   productosDevueltos: number;
   productosAgregados: number;
+  /**
+   * Réplica de la columna calculada del legado (`SP_CONSULTA_VENTA`/`SP_V2_CONSULTA_VENTAS_EDITAR`):
+   * true si la venta tiene al menos una línea Devuelta o Complemento/Agregado. NO equivale a
+   * `productosDevueltos`/`productosAgregados` > 0 (verificado no redundante en BD real). Solo
+   * viene poblado en el listado (`GET /ventas`, Bloque C).
+   */
+  tieneCompleODev: boolean;
 
   idAlmacen: number;
   descAlmacen: string;
@@ -90,6 +97,7 @@ export class VentaModel implements Venta {
   esAgregarProductos: boolean;
   productosDevueltos: number;
   productosAgregados: number;
+  tieneCompleODev: boolean;
 
   idAlmacen: number;
   descAlmacen: string;
@@ -141,6 +149,7 @@ export class VentaModel implements Venta {
     this.esAgregarProductos = data.esAgregarProductos ?? false;
     this.productosDevueltos = data.productosDevueltos ?? 0;
     this.productosAgregados = data.productosAgregados ?? 0;
+    this.tieneCompleODev = data.tieneCompleODev ?? false;
 
     this.idAlmacen = data.idAlmacen ?? 0;
     this.descAlmacen = data.descAlmacen ?? '';
