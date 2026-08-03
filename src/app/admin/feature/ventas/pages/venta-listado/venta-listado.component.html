@@ -74,14 +74,12 @@
     </div>
 
     <div class="d-flex justify-content-between flex-wrap gap-2">
-      @if (!soloCanceladas) {
-        <div class="d-flex flex-wrap gap-2" *blockUI="'ventaListadoExportar'">
-          <button mat-stroked-button color="primary" (click)="exportar()">
-            <i-tabler name="file-download" class="icon-18 m-r-4"></i-tabler>
-            {{ 'ventas.listado.actions.exportar' | translate }}
-          </button>
-        </div>
-      }
+      <div class="d-flex flex-wrap gap-2" *blockUI="'ventaListadoExportar'">
+        <button mat-stroked-button color="primary" (click)="exportar()">
+          <i-tabler name="file-download" class="icon-18 m-r-4"></i-tabler>
+          {{ 'ventas.listado.actions.exportar' | translate }}
+        </button>
+      </div>
       <div class="d-flex flex-wrap gap-2">
         <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
           {{ 'ventas.listado.filters.limpiar' | translate }}

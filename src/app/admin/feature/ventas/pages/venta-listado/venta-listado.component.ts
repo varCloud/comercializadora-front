@@ -234,21 +234,23 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * FE-4: exporta el listado con los MISMOS filtros/búsqueda actualmente aplicados en pantalla
-   * (`GET /ventas/exportar`). Solo disponible fuera del modo "Ventas canceladas": el endpoint
-   * solo exporta ventas activas (mismo alcance que `listar`), así que no tiene sentido ofrecerlo
-   * en `/ventas/canceladas` (no exportaría lo que el usuario está viendo). `VentasService.
-   * exportar` ya resuelve la respuesta dual (descarga inmediata vs. aviso de envío diferido) y
-   * notifica éxito/error; este método solo dispara la llamada y loguea errores técnicos.
+   * Exporta el listado con los MISMOS filtros/búsqueda actualmente aplicados en pantalla.
+   * Elige el endpoint según el modo de pantalla: `exportarCanceladas` (`GET
+   * /ventas/canceladas/exportar`) en modo "Ventas canceladas", `exportar` (`GET
+   * /ventas/exportar`) en modo "Ventas" (activas) — el estatus lo fija el backend en ambos
+   * casos, nunca es un parámetro del cliente. `VentasService` ya resuelve la respuesta dual
+   * (descarga inmediata vs. aviso de envío diferido) y notifica éxito/error; este método solo
+   * dispara la llamada y loguea errores técnicos.
    */
   exportar(): void {
     this.blockUIExportar.start(this.translate.instant('ventas.listado.msg.exportando'));
-    this.ventasService
-      .exportar({ q: this.search, ...this.filtro })
-      .pipe(finalize(() => this.blockUIExportar.stop()))
-      .subscribe({
-        error: (err) => console.error('Error al exportar el listado de ventas', err),
-      });
+    const filtros = { q: this.search, ...this.filtro };
+    const exportar$ = this.soloCanceladas
+      ? this.ventasService.exportarCanceladas(filtros)
+      : this.ventasService.exportar(filtros);
+    exportar$.pipe(finalize(() => this.blockUIExportar.stop())).subscribe({
+      error: (err) => console.error('Error al exportar el listado de ventas', err),
+    });
   }
 
   /** Cancelar/ajustar IVA solo aplica a ventas activas, y nunca en el listado de canceladas. */

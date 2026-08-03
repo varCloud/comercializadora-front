@@ -205,6 +205,26 @@ export class VentasService {
       );
   }
 
+  /**
+   * Exporta a CSV el listado de VENTAS CANCELADAS (`GET /ventas/canceladas/exportar`).
+   * Copia literal de {@link exportar} (mismo patrón dual descarga/diferido, mismos filtros
+   * {@link VentasExportarFiltro}): la única diferencia es la URL — el estatus (Cancelada) lo
+   * fija el backend, nunca es parámetro del cliente.
+   */
+  exportarCanceladas(filtros: VentasExportarFiltro = {}): Observable<void> {
+    const params = this.buildExportarParams(filtros);
+    return this.http
+      .get(`${this.baseUri}/canceladas/exportar`, {
+        params,
+        observe: 'response',
+        responseType: 'blob',
+      })
+      .pipe(
+        switchMap((res) => this.procesarRespuestaExportacion(res)),
+        catchError((err: HttpErrorResponse) => this.procesarErrorExportacion(err)),
+      );
+  }
+
   private buildExportarParams(filtros: VentasExportarFiltro): HttpParams {
     let params = new HttpParams();
     const q = (filtros.q ?? '').toString().trim();
