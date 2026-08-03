@@ -1,0 +1,240 @@
+<div class="row" *blockUI="'nuevo-pedido'">
+  <div class="col-12">
+    <h3 class="f-w-600 m-b-16">{{ 'pedidosEspeciales.nuevoPedido.title' | translate }}</h3>
+  </div>
+
+  <div class="col-lg-8 col-12">
+    <mat-card class="cardWithShadow m-b-16">
+      <mat-card-content class="p-24">
+        <form [formGroup]="nuevoPedidoForm" class="row m-t-8">
+          <div class="col-12">
+            <div class="row">
+              <div class="col-sm-6 m-b-16">
+                <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.cliente' | translate }}</mat-label>
+                <app-select-paginado
+                  [control]="$any(nuevoPedidoForm.controls.idCliente)"
+                  [fetchPage]="fetchClientes"
+                  identifier="idCliente"
+                  bindLabel="nombreCompleto"
+                  bindValue="idCliente"
+                  placeholder="pedidosEspeciales.nuevoPedido.clientePlaceholder"
+                  [preload]="clientePreload()"
+                  (selected)="onClienteSeleccionado($event)"
+                ></app-select-paginado>
+              </div>
+
+              <div class="col-sm-6 m-b-16">
+                <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.almacen' | translate }}</mat-label>
+                <mat-form-field appearance="outline" class="w-100 hide-hint">
+                  <mat-select formControlName="idAlmacen" [placeholder]="'pedidosEspeciales.nuevoPedido.almacenPlaceholder' | translate">
+                    @for (a of almacenes(); track a.id) {
+                      <mat-option [value]="a.id">{{ a.descripcion }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-6 m-b-16">
+                <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.formaPago' | translate }}</mat-label>
+                <mat-form-field appearance="outline" class="w-100 hide-hint">
+                  <mat-select formControlName="idFormaPago" [placeholder]="'pedidosEspeciales.nuevoPedido.seleccione' | translate">
+                    @for (f of formasPago(); track f.id) {
+                      <mat-option [value]="f.id">{{ f.descripcion }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="col-sm-6 m-b-16 d-flex align-items-center">
+                <mat-checkbox formControlName="facturar" (change)="onFacturarChange($event)">
+                  {{ 'pedidosEspeciales.nuevoPedido.facturar' | translate }}
+                </mat-checkbox>
+              </div>
+
+              @if (facturarValue()) {
+                <div class="col-sm-6 m-b-16">
+                  <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.usoCfdi' | translate }}</mat-label>
+                  <mat-form-field appearance="outline" class="w-100 hide-hint">
+                    <mat-select formControlName="idUsoCFDI" [placeholder]="'pedidosEspeciales.nuevoPedido.seleccione' | translate">
+                      @for (u of usoCfdiOpciones(); track u.id) {
+                        <mat-option [value]="u.id">{{ u.descripcion }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              }
+            </div>
+          </div>
+        </form>
+
+        <hr class="m-b-16" />
+
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.buscarProducto.label' | translate }}</mat-label>
+        <div class="d-flex gap-8 align-items-start flex-wrap">
+          <mat-form-field appearance="outline" class="flex-1-auto hide-hint">
+            <input
+              #buscarProductoInput
+              matInput
+              autocomplete="off"
+              [formControl]="buscarProductoControl"
+              [matAutocomplete]="auto"
+              [placeholder]="'pedidosEspeciales.nuevoPedido.buscarProducto.placeholder' | translate"
+            />
+            <mat-icon matSuffix>
+              <i-tabler name="search" class="icon-20"></i-tabler>
+            </mat-icon>
+          </mat-form-field>
+          <mat-autocomplete
+            #auto="matAutocomplete"
+            [displayWith]="mostrarProducto"
+            (optionSelected)="onSugerenciaProductoSeleccionada($event.option.value)"
+          >
+            @for (p of sugerenciasProductos(); track p.idProducto) {
+              <mat-option [value]="p">{{ p.descripcion }}</mat-option>
+            }
+          </mat-autocomplete>
+
+          <mat-form-field appearance="outline" class="hide-hint buscador-cantidad">
+            <input
+              matInput
+              type="number"
+              min="0.01"
+              step="0.01"
+              [placeholder]="'pedidosEspeciales.nuevoPedido.buscarProducto.cantidad' | translate"
+              [(ngModel)]="cantidadManual"
+              [ngModelOptions]="{ standalone: true }"
+            />
+          </mat-form-field>
+
+          <button mat-flat-button color="primary" type="button" (click)="agregarProducto()">
+            {{ 'pedidosEspeciales.nuevoPedido.buscarProducto.agregar' | translate }}
+          </button>
+        </div>
+
+        <div class="table-responsive m-t-16">
+          <table class="w-100 table-stacked-mobile">
+            <thead>
+              <tr>
+                <th class="f-s-16 f-w-600">{{ 'pedidosEspeciales.nuevoPedido.tabla.producto' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.nuevoPedido.tabla.cantidad' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.nuevoPedido.tabla.precio' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.nuevoPedido.tabla.existencia' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.nuevoPedido.tabla.importe' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.nuevoPedido.tabla.acciones' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (partida of partidas(); track partida.idProducto) {
+                <tr>
+                  <td [attr.data-label]="'pedidosEspeciales.nuevoPedido.tabla.producto' | translate" class="f-s-14">
+                    {{ partida.descripcion }}
+                    <div class="f-s-12 text-muted">{{ partida.codigoBarras }}</div>
+                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.nuevoPedido.tabla.cantidad' | translate" class="f-s-14 text-center">
+                    <input
+                      class="celda-input"
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      [(ngModel)]="partida.cantidad"
+                      [ngModelOptions]="{ standalone: true }"
+                      (blur)="onCantidadPartidaBlur(partida)"
+                    />
+                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.nuevoPedido.tabla.precio' | translate" class="f-s-14 text-center">
+                    {{ partida.precio | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
+                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.nuevoPedido.tabla.existencia' | translate" class="f-s-14 text-center">
+                    @if (partida.existencia < 0) {
+                      <span class="text-muted">{{ 'pedidosEspeciales.nuevoPedido.tabla.existenciaPendiente' | translate }}</span>
+                    } @else if (partida.inhabilitado) {
+                      <span [style.color]="'#e53935'" [matTooltip]="'pedidosEspeciales.nuevoPedido.tabla.sinExistencia' | translate">
+                        {{ 'pedidosEspeciales.nuevoPedido.tabla.sinExistencia' | translate }}
+                      </span>
+                    } @else {
+                      {{ partida.existencia }}
+                    }
+                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.nuevoPedido.tabla.importe' | translate" class="f-s-14 text-center f-w-600">
+                    {{ importePartida(partida) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
+                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.nuevoPedido.tabla.acciones' | translate" class="f-s-14 text-center">
+                    <a
+                      class="cursor-pointer"
+                      [style.color]="'#e53935'"
+                      [matTooltip]="'pedidosEspeciales.nuevoPedido.tabla.eliminar' | translate"
+                      (click)="eliminarPartida(partida.idProducto)"
+                    >
+                      <i-tabler name="trash" class="icon-18"></i-tabler>
+                    </a>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="text-center p-16">{{ 'pedidosEspeciales.nuevoPedido.tabla.vacio' | translate }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="col-lg-4 col-12">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <div class="d-flex justify-content-between m-b-8">
+          <span>{{ 'pedidosEspeciales.nuevoPedido.resumen.subtotal' | translate }}</span>
+          <span class="f-w-600">{{ subtotal() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+
+        @if (facturarValue()) {
+          <div class="d-flex justify-content-between align-items-center m-b-8">
+            <span>{{ 'pedidosEspeciales.nuevoPedido.resumen.iva' | translate }}</span>
+            @if (!ajustandoIva()) {
+              <span class="d-flex align-items-center gap-8">
+                <span class="f-w-600">{{ iva() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+                <a class="cursor-pointer" [matTooltip]="'pedidosEspeciales.nuevoPedido.resumen.ajustarIva' | translate" (click)="abrirAjusteIva()">
+                  <i-tabler name="edit" class="icon-16"></i-tabler>
+                </a>
+              </span>
+            }
+          </div>
+
+          @if (ajustandoIva()) {
+            <div class="d-flex gap-8 align-items-center m-b-16">
+              <mat-form-field appearance="outline" class="w-100 hide-hint">
+                <span matPrefix>$&nbsp;</span>
+                <input
+                  matInput
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  [ngModel]="iva()"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="onIvaAjustadoChange($event)"
+                />
+              </mat-form-field>
+              <a class="cursor-pointer" [matTooltip]="'pedidosEspeciales.nuevoPedido.resumen.cancelarAjuste' | translate" (click)="cancelarAjusteIva()">
+                <i-tabler name="x" class="icon-18"></i-tabler>
+              </a>
+            </div>
+          }
+        }
+
+        <div class="d-flex justify-content-between m-b-16">
+          <span class="f-s-18 f-w-600">{{ 'pedidosEspeciales.nuevoPedido.resumen.total' | translate }}</span>
+          <span class="f-s-24 f-w-700">{{ total() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+
+        <button mat-flat-button color="primary" class="w-100 m-b-8" type="button" (click)="guardar()" [disabled]="guardando()">
+          {{ 'pedidosEspeciales.nuevoPedido.resumen.guardar' | translate }}
+        </button>
+        <button mat-stroked-button color="warn" class="w-100" type="button" (click)="limpiar()">
+          {{ 'pedidosEspeciales.nuevoPedido.resumen.limpiar' | translate }}
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

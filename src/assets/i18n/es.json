@@ -2477,5 +2477,65 @@
       "loadError": "Error al consultar el reporte de devoluciones de Pedidos Especiales",
       "exportando": "Generando reporte de devoluciones de Pedidos Especiales…"
     }
+  },
+  "pedidosEspeciales": {
+    "nuevoPedido": {
+      "title": "Nuevo Pedido Especial",
+      "cliente": "Cliente",
+      "clientePlaceholder": "Selecciona un cliente…",
+      "almacen": "Almacén",
+      "almacenPlaceholder": "Selecciona un almacén…",
+      "formaPago": "Forma de pago",
+      "facturar": "Facturar",
+      "usoCfdi": "Uso de CFDI",
+      "seleccione": "Selecciona una opción",
+      "buscarProducto": {
+        "label": "Buscar producto",
+        "placeholder": "Escribe para buscar un producto…",
+        "cantidad": "Cantidad",
+        "agregar": "Agregar",
+        "msg": {
+          "seleccionaProducto": "Selecciona un producto de la lista antes de agregarlo.",
+          "cantidadRequerida": "Debes indicar una cantidad mayor a cero."
+        }
+      },
+      "tabla": {
+        "producto": "Producto",
+        "cantidad": "Cantidad",
+        "precio": "Precio",
+        "existencia": "Existencia",
+        "existenciaPendiente": "Pendiente de consultar",
+        "sinExistencia": "Sin existencia",
+        "importe": "Importe",
+        "acciones": "Acciones",
+        "eliminar": "Eliminar",
+        "vacio": "Busca y agrega productos al pedido."
+      },
+      "resumen": {
+        "subtotal": "Subtotal",
+        "iva": "IVA",
+        "ajustarIva": "Ajustar IVA",
+        "cancelarAjuste": "Cancelar ajuste",
+        "total": "Total",
+        "guardar": "Guardar pedido",
+        "limpiar": "Limpiar"
+      },
+      "msg": {
+        "clienteRequerido": "Debes seleccionar un cliente.",
+        "almacenRequerido": "Debes seleccionar un almacén.",
+        "formaPagoRequerida": "Debes seleccionar una forma de pago.",
+        "usoCfdiRequerido": "Debes seleccionar un uso de CFDI para facturar.",
+        "sinProductos": "Agrega al menos un producto al pedido.",
+        "loadError": "Error al cargar los catálogos del pedido especial.",
+        "preciosError": "No fue posible obtener el precio del producto seleccionado.",
+        "guardando": "Guardando pedido especial…",
+        "guardadoOk": "Pedido especial guardado correctamente.",
+        "saveFallback": "No fue posible guardar el pedido especial.",
+        "saveError": "Ocurrió un error al guardar el pedido especial.",
+        "ivaFallback": "El pedido se guardó, pero no fue posible ajustar sus datos fiscales.",
+        "ivaError": "Ocurrió un error al ajustar los datos fiscales del pedido.",
+        "ticketError": "No fue posible generar el ticket del pedido."
+      }
+    }
   }
 }

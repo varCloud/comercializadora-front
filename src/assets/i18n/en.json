@@ -2477,5 +2477,65 @@
       "loadError": "Error loading the Special Orders returns report",
       "exportando": "Generating Special Orders returns report…"
     }
+  },
+  "pedidosEspeciales": {
+    "nuevoPedido": {
+      "title": "New Special Order",
+      "cliente": "Customer",
+      "clientePlaceholder": "Select a customer…",
+      "almacen": "Warehouse",
+      "almacenPlaceholder": "Select a warehouse…",
+      "formaPago": "Payment method",
+      "facturar": "Invoice",
+      "usoCfdi": "CFDI usage",
+      "seleccione": "Select an option",
+      "buscarProducto": {
+        "label": "Search product",
+        "placeholder": "Type to search a product…",
+        "cantidad": "Quantity",
+        "agregar": "Add",
+        "msg": {
+          "seleccionaProducto": "Select a product from the list before adding it.",
+          "cantidadRequerida": "You must enter a quantity greater than zero."
+        }
+      },
+      "tabla": {
+        "producto": "Product",
+        "cantidad": "Quantity",
+        "precio": "Price",
+        "existencia": "Stock",
+        "existenciaPendiente": "Pending lookup",
+        "sinExistencia": "No stock",
+        "importe": "Amount",
+        "acciones": "Actions",
+        "eliminar": "Remove",
+        "vacio": "Search and add products to the order."
+      },
+      "resumen": {
+        "subtotal": "Subtotal",
+        "iva": "VAT",
+        "ajustarIva": "Adjust VAT",
+        "cancelarAjuste": "Cancel adjustment",
+        "total": "Total",
+        "guardar": "Save order",
+        "limpiar": "Clear"
+      },
+      "msg": {
+        "clienteRequerido": "You must select a customer.",
+        "almacenRequerido": "You must select a warehouse.",
+        "formaPagoRequerida": "You must select a payment method.",
+        "usoCfdiRequerido": "You must select a CFDI usage to invoice.",
+        "sinProductos": "Add at least one product to the order.",
+        "loadError": "Error loading the special order catalogs.",
+        "preciosError": "Could not get the price for the selected product.",
+        "guardando": "Saving special order…",
+        "guardadoOk": "Special order saved successfully.",
+        "saveFallback": "Could not save the special order.",
+        "saveError": "An error occurred while saving the special order.",
+        "ivaFallback": "The order was saved, but its tax data could not be adjusted.",
+        "ivaError": "An error occurred while adjusting the order's tax data.",
+        "ticketError": "Could not generate the order's ticket."
+      }
+    }
   }
 }

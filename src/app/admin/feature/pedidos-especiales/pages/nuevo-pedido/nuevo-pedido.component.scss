@@ -1,0 +1,15 @@
+// Estilos mínimos locales (regla 01): réplica de los mismos usados en el ticket del POS
+// (pos.component.scss) para la celda editable de cantidad y el campo de cantidad del buscador.
+.celda-input {
+  width: 80px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+.celda-input:focus {
+  border-bottom: 1px solid var(--mat-sys-primary, #5d87ff);
+}
+.buscador-cantidad {
+  width: 110px;
+}

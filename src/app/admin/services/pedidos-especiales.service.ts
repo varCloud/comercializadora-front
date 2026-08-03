@@ -1,16 +1,33 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { URIS_CONFIG } from 'src/app/config/uris-config';
 import { Notificacion } from 'src/app/models/sesion';
 import { PedidoEspecialProducto } from 'src/app/admin/models/ventas/pedido-especial-producto';
+import { FormaPago, FormaPagoModel } from 'src/app/admin/models/ventas/forma-pago';
+import { UsoCfdi, UsoCfdiModel } from 'src/app/admin/models/ventas/uso-cfdi';
+import { GuardarPedidoEspecialRequest } from 'src/app/admin/models/pedidos-especiales/guardar-pedido-especial-request';
+import { GuardarIvaPedidoEspecialRequest } from 'src/app/admin/models/pedidos-especiales/guardar-iva-pedido-especial-request';
+import { PedidoEspecial } from 'src/app/admin/models/pedidos-especiales/pedido-especial';
+import {
+  ExistenciaProductoAlmacen,
+  ExistenciaProductoAlmacenModel,
+} from 'src/app/admin/models/pedidos-especiales/existencia-producto-almacen';
 
 /**
- * Servicio HTTP de "Buscar Pedido Especial" del POS (feature Ventas, Bloque E gap-fix).
- * Consume `PedidosEspecialesController` (comercializadora-api), controlador propio (NO el
- * anidado `api/facturas/pedidos-especiales` de `FacturasService`, que es un dominio distinto).
- * `idUsuario`/`idAlmacen` NUNCA se mandan desde aquí: el backend los resuelve del JWT.
+ * Servicio HTTP de Pedidos Especiales. Consume `PedidosEspecialesController`
+ * (comercializadora-api), controlador propio (NO el anidado `api/facturas/pedidos-especiales`
+ * de `FacturasService`, que es un dominio distinto): "Buscar Pedido Especial" del POS (feature
+ * Ventas, Bloque E gap-fix) + núcleo "Nuevo Pedido"/alta (feature Pedidos Especiales, Bloque A).
+ * `idUsuario`/`idEstacion`/`idAlmacen` NUNCA se mandan desde aquí: el backend los resuelve del
+ * JWT (idUsuario/idEstacion) o viajan explícitos solo cuando el SP los requiere por línea
+ * (idAlmacen en `GuardarPedidoEspecialRequest.productos`/`existencia`).
+ *
+ * Catálogos/servicios de otras features que esta pantalla REUSA (regla 00, no se duplican
+ * aquí): clientes (`ClientesService.listar`), búsqueda/precios de producto y almacenes de la
+ * sucursal (`ProductosService`/`UbicacionesService`) — se inyectan directo en
+ * `NuevoPedidoComponent`, no en este servicio.
  */
 @Injectable({ providedIn: 'root' })
 export class PedidosEspecialesService {
@@ -26,5 +43,59 @@ export class PedidosEspecialesService {
    */
   obtenerProductos(folio: number): Observable<Notificacion<PedidoEspecialProducto[]>> {
     return this.http.get<Notificacion<PedidoEspecialProducto[]>>(`${this.baseUri}/${folio}/productos`);
+  }
+
+  // ====================== Bloque A: alta ("Nuevo Pedido") ======================
+
+  /** Alta de un pedido especial (SP_GUARDA_PEDIDO_ESPECIAL_V2). `idUsuario`/`idEstacion` del JWT. */
+  guardarPedido(request: GuardarPedidoEspecialRequest): Observable<Notificacion<PedidoEspecial>> {
+    return this.http.post<Notificacion<PedidoEspecial>>(this.baseUri, request);
+  }
+
+  /**
+   * Existencia de un producto puntual en un almacén puntual (SP_CONSULTA_EXISTENCIA_PRODUCTO_ALMACEN).
+   * Devuelve la `Notificacion` completa: cuando no hay coincidencia la API puede responder
+   * `modelo: null` (el componente lo trata como "sin existencia").
+   */
+  consultarExistencia(
+    idProducto: number,
+    idAlmacen: number,
+  ): Observable<Notificacion<ExistenciaProductoAlmacen>> {
+    const params = new HttpParams().set('idProducto', idProducto).set('idAlmacen', idAlmacen);
+    return this.http
+      .get<Notificacion<ExistenciaProductoAlmacen>>(`${this.baseUri}/existencia`, { params })
+      .pipe(
+        map((res) => ({
+          ...res,
+          modelo: res?.modelo ? new ExistenciaProductoAlmacenModel(res.modelo) : res?.modelo,
+        })),
+      );
+  }
+
+  /** Catálogo de formas de pago (SP_CONSULTA_FORMA_PAGO; mismo SP/entidad que Ventas). */
+  obtenerFormasPago(): Observable<FormaPago[]> {
+    return this.http
+      .get<Notificacion<FormaPago[]>>(`${this.baseUri}/formas-pago`)
+      .pipe(map((res) => (res?.modelo ?? []).map((f) => new FormaPagoModel(f))));
+  }
+
+  /** Catálogo de usos de CFDI (SP_CONSULTA_USO_CFDI; mismo SP/entidad que Ventas). */
+  obtenerUsosCfdi(): Observable<UsoCfdi[]> {
+    return this.http
+      .get<Notificacion<UsoCfdi[]>>(`${this.baseUri}/usos-cfdi`)
+      .pipe(map((res) => (res?.modelo ?? []).map((u) => new UsoCfdiModel(u))));
+  }
+
+  /** Ajusta datos fiscales de un pedido especial antes de facturar (SP_GUARDA_IVA_PEDIDO_ESPECIAL_V2). */
+  guardarIva(
+    folio: number,
+    request: GuardarIvaPedidoEspecialRequest,
+  ): Observable<Notificacion<PedidoEspecial>> {
+    return this.http.put<Notificacion<PedidoEspecial>>(`${this.baseUri}/${folio}/iva`, request);
+  }
+
+  /** PDF del ticket de alta de un pedido especial (QuestPDF + ZXing, sin temporales en disco). */
+  obtenerTicket(folio: number): Observable<Blob> {
+    return this.http.get(`${this.baseUri}/${folio}/ticket`, { responseType: 'blob' });
   }
 }

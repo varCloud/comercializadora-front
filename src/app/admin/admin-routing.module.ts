@@ -153,6 +153,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'pedidos-especiales',
+        loadChildren: () =>
+          import('./feature/pedidos-especiales/pedidos-especiales-routing.module').then(
+            (m) => m.PedidosEspecialesRoutingModule,
+          ),
+      },
+      {
         path: 'reportes/inventario',
         loadChildren: () =>
           import('./feature/reportes/inventario/inventario-reportes-routing.module').then(

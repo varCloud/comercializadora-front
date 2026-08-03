@@ -160,6 +160,41 @@ export const navItemsApp: NavItem[] = [
     ],
   },
   {
+    displayName: 'Pedidos Especiales',
+    iconName: 'clipboard-list',
+    children: [
+      {
+        displayName: 'Nuevo Pedido',
+        iconName: 'clipboard-plus',
+        route: '/admin/pedidos-especiales/nuevo',
+      },
+      {
+        // Pendiente: Bloque B de la feature `pedidos_especiales` (FE-B4).
+        displayName: 'Entregar Pedido',
+        iconName: 'truck-delivery',
+        disabled: true,
+      },
+      {
+        // Pendiente: Bloque C de la feature `pedidos_especiales` (FE-C5).
+        displayName: 'Pedidos en Ruta',
+        iconName: 'route',
+        disabled: true,
+      },
+      {
+        // Pendiente: Bloque C de la feature `pedidos_especiales` (FE-C5).
+        displayName: 'Cotizaciones',
+        iconName: 'file-dollar',
+        disabled: true,
+      },
+      {
+        // Pendiente: Bloque D de la feature `pedidos_especiales` (FE-D5).
+        displayName: 'Consultar Pedidos',
+        iconName: 'file-search',
+        disabled: true,
+      },
+    ],
+  },
+  {
     displayName: 'Facturas',
     iconName: 'file-invoice',
     children: [
