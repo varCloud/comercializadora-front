@@ -1,0 +1,16 @@
+// Estilos mínimos locales (regla 01): réplica de los mismos usados en el ticket de "Nuevo
+// Pedido" (nuevo-pedido.component.scss) para las celdas editables de la tabla de confirmación.
+.celda-input {
+  width: 80px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+.celda-input:focus {
+  border-bottom: 1px solid var(--mat-sys-primary, #5d87ff);
+}
+.celda-input.w-100 {
+  width: 100%;
+  text-align: left;
+}

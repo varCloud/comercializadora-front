@@ -1,0 +1,96 @@
+<div class="row" *blockUI="'confirmar-productos'">
+  <div class="col-12">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <div class="d-flex justify-content-between align-items-center m-b-16">
+          <h3 class="f-w-600 m-0">
+            {{ 'pedidosEspeciales.confirmarProductos.title' | translate }} #{{ folio() }}
+          </h3>
+          <span class="f-s-18 f-w-700">
+            {{ 'pedidosEspeciales.confirmarProductos.subtotal' | translate }}
+            {{ subtotal() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
+          </span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="w-100 table-stacked-mobile">
+            <thead>
+              <tr>
+                <th class="f-s-16 f-w-600">{{ 'pedidosEspeciales.confirmarProductos.tabla.producto' | translate }}</th>
+                <th class="f-s-16 f-w-600">{{ 'pedidosEspeciales.confirmarProductos.tabla.almacen' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.solicitada' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.atendida' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.rechazada' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.aceptada' | translate }}</th>
+                <th class="f-s-16 f-w-600">{{ 'pedidosEspeciales.confirmarProductos.tabla.observaciones' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.eliminar' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (producto of productos(); track producto.idPedidoEspecialDetalle) {
+                <tr>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.producto' | translate" class="f-s-14">
+                    {{ producto.descripcion }}
+                    <div class="f-s-12 text-muted">{{ producto.cantidadAceptada * producto.precioVenta | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
+                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.almacen' | translate" class="f-s-14">{{ producto.almacen }}</td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.solicitada' | translate" class="f-s-14 text-center">{{ producto.cantidadSolicitada }}</td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.atendida' | translate" class="f-s-14 text-center">{{ producto.cantidadAtendida }}</td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.rechazada' | translate" class="f-s-14 text-center">{{ producto.cantidadRechazada }}</td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.aceptada' | translate" class="f-s-14 text-center">
+                    <input
+                      class="celda-input"
+                      type="number"
+                      min="0"
+                      step="1"
+                      [ngModel]="producto.cantidadAceptada"
+                      [ngModelOptions]="{ standalone: true }"
+                      (ngModelChange)="onCantidadAceptadaChange(producto, $event)"
+                    />
+                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.observaciones' | translate" class="f-s-14">
+                    <input
+                      class="celda-input w-100"
+                      type="text"
+                      [ngModel]="producto.observacionesConfirmar"
+                      [ngModelOptions]="{ standalone: true }"
+                      (ngModelChange)="onObservacionesChange(producto, $event)"
+                      [placeholder]="'pedidosEspeciales.confirmarProductos.tabla.observacionesPlaceholder' | translate"
+                    />
+                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.eliminar' | translate" class="f-s-14 text-center">
+                    <a
+                      class="cursor-pointer"
+                      [style.color]="'#e53935'"
+                      [matTooltip]="'pedidosEspeciales.confirmarProductos.tabla.eliminar' | translate"
+                      (click)="eliminarProducto(producto)"
+                    >
+                      <i-tabler name="trash" class="icon-18"></i-tabler>
+                    </a>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="8" class="text-center p-16">{{ 'pedidosEspeciales.confirmarProductos.tabla.vacio' | translate }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <hr class="m-t-16 m-b-16" />
+
+        <div class="d-flex justify-content-end gap-2">
+          <button mat-stroked-button color="warn" type="button" (click)="cancelar()">
+            <i-tabler name="x" class="icon-18 m-r-4"></i-tabler>
+            {{ 'pedidosEspeciales.confirmarProductos.cancelar' | translate }}
+          </button>
+          <button mat-flat-button color="primary" type="button" (click)="guardar()">
+            <i-tabler name="credit-card" class="icon-18 m-r-4"></i-tabler>
+            {{ 'pedidosEspeciales.confirmarProductos.guardar' | translate }}
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

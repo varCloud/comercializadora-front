@@ -14,6 +14,12 @@ import {
   ExistenciaProductoAlmacen,
   ExistenciaProductoAlmacenModel,
 } from 'src/app/admin/models/pedidos-especiales/existencia-producto-almacen';
+import {
+  PedidoEspecialPendiente,
+  PedidoEspecialPendienteModel,
+} from 'src/app/admin/models/pedidos-especiales/pedido-especial-pendiente';
+import { ProductoConfirmar, ProductoConfirmarModel } from 'src/app/admin/models/pedidos-especiales/producto-confirmar';
+import { GuardarConfirmacionRequest } from 'src/app/admin/models/pedidos-especiales/guardar-confirmacion-request';
 
 /**
  * Servicio HTTP de Pedidos Especiales. Consume `PedidosEspecialesController`
@@ -97,5 +103,58 @@ export class PedidosEspecialesService {
   /** PDF del ticket de alta de un pedido especial (QuestPDF + ZXing, sin temporales en disco). */
   obtenerTicket(folio: number): Observable<Blob> {
     return this.http.get(`${this.baseUri}/${folio}/ticket`, { responseType: 'blob' });
+  }
+
+  // ====================== Bloque B: "Entregar Pedido" / "Confirmar Productos" ======================
+
+  /**
+   * Pedidos especiales pendientes de entrega (SP_CONSULTA_PEDIDOS_ESPECIALES_V2). Los tres
+   * filtros son opcionales, igual que el legado (0/sin valor = sin filtrar). **No pagina
+   * server-side** (el SP legado no pagina) — `EntregarPedidoComponent` aplica paginación +
+   * filtro de Cliente/Usuario/búsqueda en cliente sobre el resultado (regla 10, último recurso).
+   */
+  obtenerPendientesEntrega(
+    idPedidoEspecial = 0,
+    fechaIni: string | null = null,
+    fechaFin: string | null = null,
+  ): Observable<PedidoEspecialPendiente[]> {
+    let params = new HttpParams();
+    if (idPedidoEspecial) params = params.set('idPedidoEspecial', idPedidoEspecial);
+    if (fechaIni) params = params.set('fechaIni', fechaIni);
+    if (fechaFin) params = params.set('fechaFin', fechaFin);
+
+    return this.http
+      .get<Notificacion<PedidoEspecialPendiente[]>>(`${this.baseUri}/pendientes-entrega`, { params })
+      .pipe(map((res) => (res?.modelo ?? []).map((p) => new PedidoEspecialPendienteModel(p))));
+  }
+
+  /** Productos de un pedido especial para "Confirmar Productos" (SP_CONSULTA_PEDIDOS_ESPECIALES_DETALLE_V2). */
+  obtenerProductosConfirmar(folio: number): Observable<ProductoConfirmar[]> {
+    return this.http
+      .get<Notificacion<ProductoConfirmar[]>>(`${this.baseUri}/${folio}/productos-confirmar`)
+      .pipe(map((res) => (res?.modelo ?? []).map((p) => new ProductoConfirmarModel(p))));
+  }
+
+  /**
+   * Confirma los productos entregados de un pedido especial (SP_CONFIRMAR_PRODUCTOS_PEDIDOS_ESPECIALES_V2).
+   * También resuelve aceptar/rechazar y la liquidación de pedidos en ruta — no hay endpoint
+   * "aceptar/rechazar" separado (ver `GuardarConfirmacionRequest`). `idUsuarioEntrega` siempre
+   * lo resuelve el backend del JWT.
+   */
+  guardarConfirmacion(folio: number, request: GuardarConfirmacionRequest): Observable<Notificacion<string>> {
+    return this.http.post<Notificacion<string>>(`${this.baseUri}/${folio}/confirmacion`, request);
+  }
+
+  /** Cancela un pedido especial completo (SP_CANCELAR_PEDIDO_ESPECIAL_V2). */
+  cancelarPedido(folio: number): Observable<Notificacion<string>> {
+    return this.http.post<Notificacion<string>>(`${this.baseUri}/${folio}/cancelar`, null);
+  }
+
+  /**
+   * PDF del ticket de almacén ("para despachadores"): una página por almacén destino del
+   * pedido. Mismo patrón QuestPDF + ZXing sin temporales que `obtenerTicket`.
+   */
+  obtenerTicketAlmacen(folio: number): Observable<Blob> {
+    return this.http.get(`${this.baseUri}/${folio}/ticket-almacen`, { responseType: 'blob' });
   }
 }

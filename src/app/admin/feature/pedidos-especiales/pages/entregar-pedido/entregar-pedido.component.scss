@@ -1,0 +1,6 @@
+// Evita que la columna de acciones (stickyEnd, regla 10) se vea transparente al hacer scroll
+// horizontal en la tabla.
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}

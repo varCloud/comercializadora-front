@@ -169,10 +169,9 @@ export const navItemsApp: NavItem[] = [
         route: '/admin/pedidos-especiales/nuevo',
       },
       {
-        // Pendiente: Bloque B de la feature `pedidos_especiales` (FE-B4).
         displayName: 'Entregar Pedido',
         iconName: 'truck-delivery',
-        disabled: true,
+        route: '/admin/pedidos-especiales/entregar-pedido',
       },
       {
         // Pendiente: Bloque C de la feature `pedidos_especiales` (FE-C5).

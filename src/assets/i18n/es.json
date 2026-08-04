@@ -2536,6 +2536,129 @@
         "ivaError": "Ocurrió un error al ajustar los datos fiscales del pedido.",
         "ticketError": "No fue posible generar el ticket del pedido."
       }
+    },
+    "entregarPedido": {
+      "title": "Entregar Pedido Especial",
+      "filters": {
+        "cliente": "Cliente",
+        "clientePlaceholder": "Selecciona un cliente…",
+        "usuario": "Usuario",
+        "usuarioPlaceholder": "Selecciona un usuario…",
+        "rangoFechas": "Rango de Fechas",
+        "fechaInicio": "Fecha inicio",
+        "fechaFin": "Fecha fin",
+        "limpiar": "Limpiar",
+        "buscar": "Buscar"
+      },
+      "searchLabel": "Buscar",
+      "searchPlaceholder": "Buscar pedidos…",
+      "columns": {
+        "folio": "#",
+        "cliente": "Cliente",
+        "monto": "Monto",
+        "productos": "# Productos",
+        "usuario": "Usuario",
+        "fecha": "Fecha Alta",
+        "acciones": "Acciones"
+      },
+      "actions": {
+        "entregar": "Entregar",
+        "verTicket": "Ver ticket",
+        "cancelar": "Cancelar pedido"
+      },
+      "empty": "No hay pedidos pendientes de entrega.",
+      "msg": {
+        "cargandoListado": "Consultando pedidos pendientes de entrega…",
+        "errorListado": "Error al consultar los pedidos pendientes de entrega.",
+        "ticketError": "No fue posible generar el ticket de almacén del pedido.",
+        "cancelando": "Cancelando pedido especial…",
+        "cancelarOk": "Pedido especial cancelado correctamente.",
+        "cancelarFallback": "No fue posible cancelar el pedido especial.",
+        "cancelarError": "Ocurrió un error al cancelar el pedido especial."
+      },
+      "confirm": {
+        "cancelarTitle": "¿Cancelar pedido especial?",
+        "cancelarText": "Se cancelará el pedido especial #{{folio}}.",
+        "accept": "Sí, cancelar",
+        "cancel": "No"
+      }
+    },
+    "confirmarProductos": {
+      "title": "Confirmar Productos del Pedido",
+      "subtotal": "Subtotal:",
+      "tabla": {
+        "producto": "Producto",
+        "almacen": "Almacén",
+        "solicitada": "Solicitada",
+        "atendida": "Atendida",
+        "rechazada": "Rechazada",
+        "aceptada": "Aceptada",
+        "observaciones": "Observaciones",
+        "observacionesPlaceholder": "Motivo si no acepta la cantidad completa…",
+        "eliminar": "Eliminar",
+        "vacio": "No hay productos por confirmar."
+      },
+      "cancelar": "Cancelar",
+      "guardar": "Guardar",
+      "msg": {
+        "cantidadExcedeAtendida": "La cantidad aceptada no puede exceder la cantidad atendida.",
+        "observacionesRequeridas": "Debes indicar observaciones si no aceptas toda la cantidad atendida.",
+        "sinProductosAceptados": "Debes aceptar al menos un producto para continuar.",
+        "cargando": "Cargando productos del pedido…",
+        "loadError": "Error al cargar los productos del pedido especial.",
+        "guardando": "Guardando confirmación de productos…",
+        "guardadoOk": "Confirmación de productos guardada correctamente.",
+        "saveFallback": "No fue posible guardar la confirmación de productos.",
+        "saveError": "Ocurrió un error al guardar la confirmación de productos."
+      }
+    },
+    "entregarPedidoDialog": {
+      "title": "Entregar Pedido Especial",
+      "entregadoA": {
+        "label": "Entregado a:",
+        "cliente": "Entregado a Cliente",
+        "ruteo": "Entregado a Encargado de Ruteo",
+        "taxi": "Entregado a Taxi",
+        "nombre": "Nombre",
+        "rfc": "RFC",
+        "correo": "Email",
+        "tipoCliente": "Tipo de Cliente",
+        "usuarioRuteo": "Encargado de Ruteo",
+        "usuarioRuteoPlaceholder": "Selecciona un usuario…",
+        "observacionesRuta": "Observaciones (Pedido en Ruta)",
+        "usuarioTaxi": "Usuario de Taxi",
+        "usuarioTaxiPlaceholder": "Selecciona un usuario…",
+        "numeroUnidad": "Número de Unidad"
+      },
+      "formaPago": "Forma de Pago",
+      "seleccione": "Selecciona una opción",
+      "facturar": "Facturar este Pedido Especial",
+      "usoCfdi": "Uso del CFDI",
+      "tipoPago": {
+        "label": "Tipo de Pago:",
+        "liquidado": "Liquidado",
+        "credito": "A Crédito",
+        "creditoConAbono": "Crédito con Abono"
+      },
+      "efectivo": "Efectivo",
+      "cambio": "Cambio",
+      "subtotal": "Subtotal:",
+      "iva": "I.V.A.",
+      "total": "Total",
+      "cerrar": "Cerrar",
+      "aceptar": "Aceptar",
+      "msg": {
+        "errorFormasPago": "Error al cargar las formas de pago.",
+        "errorUsoCfdi": "Error al cargar los usos de CFDI.",
+        "destinatarioRequerido": "Debe elegir a quién va a entregar el Pedido Especial.",
+        "usuarioRuteoRequerido": "Debe elegir el usuario Encargado de Ruteo que recibe el Pedido Especial.",
+        "usuarioTaxiRequerido": "Debe elegir el usuario de Taxi que recibe el Pedido Especial.",
+        "formaPagoRequerida": "Debes seleccionar una forma de pago.",
+        "usoCfdiRequerido": "Debes seleccionar un uso de CFDI para facturar.",
+        "tipoPagoRequerido": "Debe elegir el tipo de pago.",
+        "efectivoRequerido": "Debe escribir con cuánto efectivo le están pagando.",
+        "efectivoInsuficiente": "El efectivo no alcanza a cubrir el costo total del pedido: {{total}}"
+      }
     }
   }
 }

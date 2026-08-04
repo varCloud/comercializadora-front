@@ -2536,6 +2536,129 @@
         "ivaError": "An error occurred while adjusting the order's tax data.",
         "ticketError": "Could not generate the order's ticket."
       }
+    },
+    "entregarPedido": {
+      "title": "Deliver Special Order",
+      "filters": {
+        "cliente": "Customer",
+        "clientePlaceholder": "Select a customer…",
+        "usuario": "User",
+        "usuarioPlaceholder": "Select a user…",
+        "rangoFechas": "Date Range",
+        "fechaInicio": "Start date",
+        "fechaFin": "End date",
+        "limpiar": "Clear",
+        "buscar": "Search"
+      },
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search orders…",
+      "columns": {
+        "folio": "#",
+        "cliente": "Customer",
+        "monto": "Amount",
+        "productos": "# Products",
+        "usuario": "User",
+        "fecha": "Created",
+        "acciones": "Actions"
+      },
+      "actions": {
+        "entregar": "Deliver",
+        "verTicket": "View ticket",
+        "cancelar": "Cancel order"
+      },
+      "empty": "There are no orders pending delivery.",
+      "msg": {
+        "cargandoListado": "Loading orders pending delivery…",
+        "errorListado": "Error loading the orders pending delivery.",
+        "ticketError": "Could not generate the order's warehouse ticket.",
+        "cancelando": "Cancelling special order…",
+        "cancelarOk": "Special order cancelled successfully.",
+        "cancelarFallback": "Could not cancel the special order.",
+        "cancelarError": "An error occurred while cancelling the special order."
+      },
+      "confirm": {
+        "cancelarTitle": "Cancel special order?",
+        "cancelarText": "Special order #{{folio}} will be cancelled.",
+        "accept": "Yes, cancel",
+        "cancel": "No"
+      }
+    },
+    "confirmarProductos": {
+      "title": "Confirm Order Products",
+      "subtotal": "Subtotal:",
+      "tabla": {
+        "producto": "Product",
+        "almacen": "Warehouse",
+        "solicitada": "Requested",
+        "atendida": "Fulfilled",
+        "rechazada": "Rejected",
+        "aceptada": "Accepted",
+        "observaciones": "Notes",
+        "observacionesPlaceholder": "Reason if not accepting the full quantity…",
+        "eliminar": "Remove",
+        "vacio": "There are no products to confirm."
+      },
+      "cancelar": "Cancel",
+      "guardar": "Save",
+      "msg": {
+        "cantidadExcedeAtendida": "The accepted quantity cannot exceed the fulfilled quantity.",
+        "observacionesRequeridas": "You must add notes if you don't accept the full fulfilled quantity.",
+        "sinProductosAceptados": "You must accept at least one product to continue.",
+        "cargando": "Loading order products…",
+        "loadError": "Error loading the special order's products.",
+        "guardando": "Saving product confirmation…",
+        "guardadoOk": "Product confirmation saved successfully.",
+        "saveFallback": "Could not save the product confirmation.",
+        "saveError": "An error occurred while saving the product confirmation."
+      }
+    },
+    "entregarPedidoDialog": {
+      "title": "Deliver Special Order",
+      "entregadoA": {
+        "label": "Delivered to:",
+        "cliente": "Delivered to Customer",
+        "ruteo": "Delivered to Routing Manager",
+        "taxi": "Delivered to Taxi",
+        "nombre": "Name",
+        "rfc": "Tax ID",
+        "correo": "Email",
+        "tipoCliente": "Customer Type",
+        "usuarioRuteo": "Routing Manager",
+        "usuarioRuteoPlaceholder": "Select a user…",
+        "observacionesRuta": "Notes (Order on Route)",
+        "usuarioTaxi": "Taxi User",
+        "usuarioTaxiPlaceholder": "Select a user…",
+        "numeroUnidad": "Unit Number"
+      },
+      "formaPago": "Payment Method",
+      "seleccione": "Select an option",
+      "facturar": "Invoice this Special Order",
+      "usoCfdi": "CFDI Use",
+      "tipoPago": {
+        "label": "Payment Type:",
+        "liquidado": "Paid in full",
+        "credito": "On Credit",
+        "creditoConAbono": "Credit with Down Payment"
+      },
+      "efectivo": "Cash",
+      "cambio": "Change",
+      "subtotal": "Subtotal:",
+      "iva": "Tax",
+      "total": "Total",
+      "cerrar": "Close",
+      "aceptar": "Accept",
+      "msg": {
+        "errorFormasPago": "Error loading payment methods.",
+        "errorUsoCfdi": "Error loading CFDI uses.",
+        "destinatarioRequerido": "You must choose who will receive the Special Order.",
+        "usuarioRuteoRequerido": "You must choose the Routing Manager who receives the Special Order.",
+        "usuarioTaxiRequerido": "You must choose the Taxi user who receives the Special Order.",
+        "formaPagoRequerida": "You must select a payment method.",
+        "usoCfdiRequerido": "You must select a CFDI use to invoice.",
+        "tipoPagoRequerido": "You must choose the payment type.",
+        "efectivoRequerido": "You must enter how much cash they are paying with.",
+        "efectivoInsuficiente": "The cash amount is not enough to cover the order total: {{total}}"
+      }
     }
   }
 }

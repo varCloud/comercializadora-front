@@ -1,0 +1,142 @@
+<div class="row">
+  <div class="col-12">
+    <h3 class="f-w-600 m-b-16">{{ 'pedidosEspeciales.entregarPedido.title' | translate }}</h3>
+  </div>
+</div>
+
+<!-- Filtros (equivalente al formulario "Buscar Pedidos a Entregar" del legado). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedido.filters.cliente' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idCliente)"
+          [fetchPage]="fetchClientes"
+          identifier="idCliente"
+          bindLabel="nombreCompleto"
+          bindValue="idCliente"
+          placeholder="pedidosEspeciales.entregarPedido.filters.clientePlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedido.filters.usuario' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idUsuario)"
+          [fetchPage]="fetchUsuarios"
+          identifier="idUsuario"
+          bindLabel="usuario"
+          bindValue="idUsuario"
+          placeholder="pedidosEspeciales.entregarPedido.filters.usuarioPlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedido.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="rangoFechasPicker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'pedidosEspeciales.entregarPedido.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'pedidosEspeciales.entregarPedido.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangoFechasPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangoFechasPicker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedido.searchLabel' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'pedidosEspeciales.entregarPedido.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'pedidosEspeciales.entregarPedido.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'pedidosEspeciales.entregarPedido.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de pedidos pendientes de entrega (mismas columnas que _ObtenerEntregarPedidos.cshtml). -->
+<mat-card class="cardWithShadow" *blockUI="'entregar-pedido'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idPedidoEspecial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.entregarPedido.columns.folio' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.entregarPedido.columns.folio' | translate">{{ p.idPedidoEspecial }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.entregarPedido.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.entregarPedido.columns.cliente' | translate">{{ p.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.entregarPedido.columns.monto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.entregarPedido.columns.monto' | translate">{{ p.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.entregarPedido.columns.productos' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.entregarPedido.columns.productos' | translate">{{ p.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.entregarPedido.columns.usuario' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.entregarPedido.columns.usuario' | translate">{{ p.nombreUsuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.entregarPedido.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.entregarPedido.columns.fecha' | translate">{{ p.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.entregarPedido.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="action-link text-right" [attr.data-label]="'pedidosEspeciales.entregarPedido.columns.acciones' | translate">
+            @if (p.puedeEntregar) {
+              <a (click)="entregar(p)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'pedidosEspeciales.entregarPedido.actions.entregar' | translate">
+                <i-tabler name="truck-delivery" class="icon-18"></i-tabler>
+              </a>
+            }
+            <a (click)="verTicket(p)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'pedidosEspeciales.entregarPedido.actions.verTicket' | translate">
+              <i-tabler name="eye" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="cancelar(p)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'pedidosEspeciales.entregarPedido.actions.cancelar' | translate">
+              <i-tabler name="x" class="icon-18"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'pedidosEspeciales.entregarPedido.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

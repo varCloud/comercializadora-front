@@ -1,0 +1,169 @@
+<h2 mat-dialog-title>{{ 'pedidosEspeciales.entregarPedidoDialog.title' | translate }} #{{ data.folio }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="entregaForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+        <!-- Entregado a -->
+        <div class="col-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.label' | translate }}</mat-label>
+        </div>
+
+        <div class="col-sm-4 m-b-16">
+          <mat-checkbox formControlName="entregadoACliente">
+            {{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.cliente' | translate }}
+          </mat-checkbox>
+        </div>
+        <div class="col-sm-4 m-b-16">
+          <mat-checkbox formControlName="entregadoARuteo" (change)="onEntregadoARuteoChange($event.checked)">
+            {{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.ruteo' | translate }}
+          </mat-checkbox>
+        </div>
+        <div class="col-sm-4 m-b-16">
+          <mat-checkbox formControlName="entregadoATaxi" (change)="onEntregadoATaxiChange($event.checked)">
+            {{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.taxi' | translate }}
+          </mat-checkbox>
+        </div>
+
+        @if (data.cliente) {
+          <div class="col-12 m-b-16">
+            <div class="f-s-14"><strong>{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.nombre' | translate }}:</strong> {{ data.cliente.nombreCompleto }}</div>
+            <div class="f-s-14"><strong>{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.rfc' | translate }}:</strong> {{ data.cliente.rfc }}</div>
+            <div class="f-s-14"><strong>{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.correo' | translate }}:</strong> {{ data.cliente.correo }}</div>
+            <div class="f-s-14"><strong>{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.tipoCliente' | translate }}:</strong> {{ data.cliente.tipoClienteDescripcion }}</div>
+          </div>
+        }
+
+        @if (entregadoARuteoValue()) {
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.usuarioRuteo' | translate }}</mat-label>
+            <app-select-paginado
+              [control]="$any(entregaForm.controls.idUsuarioRuteo)"
+              [fetchPage]="fetchUsuarios"
+              identifier="idUsuario"
+              bindLabel="nombreCompleto"
+              bindValue="idUsuario"
+              placeholder="pedidosEspeciales.entregarPedidoDialog.entregadoA.usuarioRuteoPlaceholder"
+            ></app-select-paginado>
+          </div>
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.observacionesRuta' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100 hide-hint">
+              <input matInput type="text" formControlName="observacionesPedidoRuta" />
+            </mat-form-field>
+          </div>
+        }
+
+        @if (entregadoATaxiValue()) {
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.usuarioTaxi' | translate }}</mat-label>
+            <app-select-paginado
+              [control]="$any(entregaForm.controls.idUsuarioTaxi)"
+              [fetchPage]="fetchUsuarios"
+              identifier="idUsuario"
+              bindLabel="nombreCompleto"
+              bindValue="idUsuario"
+              placeholder="pedidosEspeciales.entregarPedidoDialog.entregadoA.usuarioTaxiPlaceholder"
+            ></app-select-paginado>
+          </div>
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.entregadoA.numeroUnidad' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100 hide-hint">
+              <input matInput type="text" formControlName="numeroUnidadTaxi" />
+            </mat-form-field>
+          </div>
+        }
+
+        <div class="col-12"><hr class="m-t-4 m-b-16" /></div>
+
+        <!-- Forma de pago / facturar -->
+        <div class="col-sm-6 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.formaPago' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100 hide-hint">
+            <mat-select formControlName="idFormaPago" [placeholder]="'pedidosEspeciales.entregarPedidoDialog.seleccione' | translate">
+              @for (f of formasPago(); track f.id) {
+                <mat-option [value]="f.id">{{ f.descripcion }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-sm-6 m-b-16 d-flex align-items-center">
+          <mat-checkbox formControlName="facturar" (change)="onFacturarChange($event.checked)">
+            {{ 'pedidosEspeciales.entregarPedidoDialog.facturar' | translate }}
+          </mat-checkbox>
+        </div>
+
+        @if (facturarValue()) {
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.usoCfdi' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100 hide-hint">
+              <mat-select formControlName="idUsoCFDI" [placeholder]="'pedidosEspeciales.entregarPedidoDialog.seleccione' | translate">
+                @for (u of usoCfdiOpciones(); track u.id) {
+                  <mat-option [value]="u.id">{{ u.clave }} - {{ u.descripcion }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        }
+
+        <!-- Tipo de pago -->
+        <div class="col-12">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.tipoPago.label' | translate }}</mat-label>
+          <mat-radio-group formControlName="tipoPago" class="d-flex gap-3 flex-wrap">
+            <mat-radio-button value="liquidado">{{ 'pedidosEspeciales.entregarPedidoDialog.tipoPago.liquidado' | translate }}</mat-radio-button>
+            <mat-radio-button value="credito">{{ 'pedidosEspeciales.entregarPedidoDialog.tipoPago.credito' | translate }}</mat-radio-button>
+            <mat-radio-button value="creditoConAbono">{{ 'pedidosEspeciales.entregarPedidoDialog.tipoPago.creditoConAbono' | translate }}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        @if (requiereEfectivo()) {
+          <div class="col-sm-6 m-b-16 m-t-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.efectivo' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100 hide-hint">
+              <span matPrefix>$&nbsp;</span>
+              <input matInput type="number" min="0" step="0.01" formControlName="efectivo" />
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-6 m-b-16 m-t-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.entregarPedidoDialog.cambio' | translate }}</mat-label>
+            <div class="f-s-24 f-w-700">{{ cambio() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </form>
+
+  <hr class="m-t-8 m-b-16" />
+
+  <div class="row">
+    <div class="col-lg-6"></div>
+    <div class="col-lg-6">
+      <div class="d-flex justify-content-between">
+        <span>{{ 'pedidosEspeciales.entregarPedidoDialog.subtotal' | translate }}</span>
+        <span>{{ data.subtotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      @if (iva() > 0) {
+        <div class="d-flex justify-content-between">
+          <span>{{ 'pedidosEspeciales.entregarPedidoDialog.iva' | translate }}</span>
+          <span>{{ iva() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+      }
+      <hr class="m-t-8 m-b-8" />
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="f-s-16 f-w-600">{{ 'pedidosEspeciales.entregarPedidoDialog.total' | translate }}</span>
+        <span class="f-s-20 f-w-700">{{ total() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="cancelar()">
+    {{ 'pedidosEspeciales.entregarPedidoDialog.cerrar' | translate }}
+  </button>
+  <button mat-flat-button color="primary" type="button" [disabled]="enviando()" (click)="aceptar()">
+    {{ 'pedidosEspeciales.entregarPedidoDialog.aceptar' | translate }}
+  </button>
+</mat-dialog-actions>
