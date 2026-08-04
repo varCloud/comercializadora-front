@@ -20,6 +20,8 @@ import {
 } from 'src/app/admin/models/pedidos-especiales/pedido-especial-pendiente';
 import { ProductoConfirmar, ProductoConfirmarModel } from 'src/app/admin/models/pedidos-especiales/producto-confirmar';
 import { GuardarConfirmacionRequest } from 'src/app/admin/models/pedidos-especiales/guardar-confirmacion-request';
+import { PedidoEnRuta, PedidoEnRutaModel } from 'src/app/admin/models/pedidos-especiales/pedido-en-ruta';
+import { Cotizacion, CotizacionModel } from 'src/app/admin/models/pedidos-especiales/cotizacion';
 
 /**
  * Servicio HTTP de Pedidos Especiales. Consume `PedidosEspecialesController`
@@ -156,5 +158,42 @@ export class PedidosEspecialesService {
    */
   obtenerTicketAlmacen(folio: number): Observable<Blob> {
     return this.http.get(`${this.baseUri}/${folio}/ticket-almacen`, { responseType: 'blob' });
+  }
+
+  // ====================== Bloque C: "Pedidos en Ruta" / "Cotizaciones" ======================
+
+  /**
+   * Pedidos especiales en ruta (SP_CONSULTA_PEDIDOS_EN_RUTA_V2). Los tres filtros son
+   * opcionales, igual que el legado (0/sin valor = sin filtrar). El SP filtra internamente
+   * `idEstatusPedidoEspecial in (9) and liquidado = 0`. **No pagina server-side** —
+   * `PedidosEnRutaComponent` aplica paginación + filtro de Usuario/búsqueda en cliente sobre
+   * el resultado (regla 10, último recurso).
+   */
+  obtenerEnRuta(
+    idUsuarioRuteo = 0,
+    fechaIni: string | null = null,
+    fechaFin: string | null = null,
+  ): Observable<PedidoEnRuta[]> {
+    let params = new HttpParams();
+    if (idUsuarioRuteo) params = params.set('idUsuarioRuteo', idUsuarioRuteo);
+    if (fechaIni) params = params.set('fechaIni', fechaIni);
+    if (fechaFin) params = params.set('fechaFin', fechaFin);
+
+    return this.http
+      .get<Notificacion<PedidoEnRuta[]>>(`${this.baseUri}/en-ruta`, { params })
+      .pipe(map((res) => (res?.modelo ?? []).map((p) => new PedidoEnRutaModel(p))));
+  }
+
+  /**
+   * Cotizaciones de pedidos especiales de los últimos 8 días
+   * (SP_OBTENER_COTIZACIONES_PEDIDOS_ESPECIALES). Sin parámetros: el SP filtra internamente
+   * `idEstatusPedidoEspecial = 2` y la ventana de 8 días. **No pagina server-side** —
+   * `CotizacionesComponent` aplica paginación + búsqueda en cliente sobre el resultado
+   * (regla 10, último recurso).
+   */
+  obtenerCotizaciones(): Observable<Cotizacion[]> {
+    return this.http
+      .get<Notificacion<Cotizacion[]>>(`${this.baseUri}/cotizaciones`)
+      .pipe(map((res) => (res?.modelo ?? []).map((c) => new CotizacionModel(c))));
   }
 }

@@ -28,6 +28,20 @@ const routes: Routes = [
       ),
     data: { title: 'Confirmar Productos' },
   },
+  {
+    path: 'pedidos-en-ruta',
+    loadComponent: () =>
+      import('./pages/pedidos-en-ruta/pedidos-en-ruta.component').then(
+        (m) => m.PedidosEnRutaComponent,
+      ),
+    data: { title: 'Pedidos en Ruta' },
+  },
+  {
+    path: 'cotizaciones',
+    loadComponent: () =>
+      import('./pages/cotizaciones/cotizaciones.component').then((m) => m.CotizacionesComponent),
+    data: { title: 'Cotizaciones' },
+  },
 ];
 
 @NgModule({

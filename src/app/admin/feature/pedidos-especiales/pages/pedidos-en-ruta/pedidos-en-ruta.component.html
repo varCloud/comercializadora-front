@@ -1,0 +1,114 @@
+<div class="row">
+  <div class="col-12">
+    <h3 class="f-w-600 m-b-16">{{ 'pedidosEspeciales.pedidosEnRuta.title' | translate }}</h3>
+  </div>
+</div>
+
+<!-- Filtros (equivalente al formulario "Buscar Pedidos en Ruta" del legado; el rango de fechas
+     está deshabilitado en el legado, no se replica aquí). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.pedidosEnRuta.filters.usuario' | translate }}</mat-label>
+        <app-select-paginado
+          [control]="$any(idUsuario)"
+          [fetchPage]="fetchUsuarios"
+          identifier="idUsuario"
+          bindLabel="usuario"
+          bindValue="idUsuario"
+          placeholder="pedidosEspeciales.pedidosEnRuta.filters.usuarioPlaceholder"
+        ></app-select-paginado>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.pedidosEnRuta.searchLabel' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'pedidosEspeciales.pedidosEnRuta.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'pedidosEspeciales.pedidosEnRuta.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'pedidosEspeciales.pedidosEnRuta.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de pedidos en ruta (mismas columnas que _ObtenerPedidosEnRuta.cshtml). -->
+<mat-card class="cardWithShadow" *blockUI="'pedidos-en-ruta'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idPedidoEspecial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.pedidosEnRuta.columns.folio' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.folio' | translate">{{ p.idPedidoEspecial }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.pedidosEnRuta.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.cliente' | translate">{{ p.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.pedidosEnRuta.columns.monto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.monto' | translate">{{ p.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.pedidosEnRuta.columns.productos' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.productos' | translate">{{ p.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.pedidosEnRuta.columns.usuario' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.usuario' | translate">{{ p.nombreUsuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.pedidosEnRuta.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.fecha' | translate">{{ p.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <!-- Acciones: réplica del dropdown "Acciones" del legado (Liquidar Pedido + Ver Ticket;
+             "Ver Productos"/"Imprimir Ticket" quedan fuera de este bloque, ver pendientes). -->
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.pedidosEnRuta.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="action-link text-right" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.acciones' | translate">
+            <a (click)="liquidar(p)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'pedidosEspeciales.pedidosEnRuta.actions.liquidar' | translate">
+              <i-tabler name="cash" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="verTicket(p)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'pedidosEspeciales.pedidosEnRuta.actions.verTicket' | translate">
+              <i-tabler name="eye" class="icon-18"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'pedidosEspeciales.pedidosEnRuta.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

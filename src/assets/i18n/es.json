@@ -2612,6 +2612,53 @@
         "saveError": "Ocurrió un error al guardar la confirmación de productos."
       }
     },
+    "pedidosEnRuta": {
+      "title": "Pedidos en Ruta",
+      "filters": {
+        "usuario": "Usuario",
+        "usuarioPlaceholder": "Selecciona un usuario…",
+        "limpiar": "Limpiar",
+        "buscar": "Buscar"
+      },
+      "searchLabel": "Buscar",
+      "searchPlaceholder": "Buscar pedidos…",
+      "columns": {
+        "folio": "#",
+        "cliente": "Cliente",
+        "monto": "Monto",
+        "productos": "# Productos",
+        "usuario": "Usuario",
+        "fecha": "Fecha Alta",
+        "acciones": "Acciones"
+      },
+      "actions": {
+        "liquidar": "Liquidar Pedido",
+        "verTicket": "Ver ticket"
+      },
+      "empty": "No hay pedidos en ruta.",
+      "msg": {
+        "cargandoListado": "Consultando pedidos en ruta…",
+        "errorListado": "Error al consultar los pedidos en ruta.",
+        "ticketError": "No fue posible generar el ticket de almacén del pedido."
+      }
+    },
+    "cotizaciones": {
+      "title": "Cotizaciones",
+      "searchLabel": "Buscar",
+      "searchPlaceholder": "Buscar cotizaciones…",
+      "columns": {
+        "folio": "No. Cotización",
+        "fecha": "Fecha",
+        "cliente": "Cliente",
+        "cantidad": "Cantidad",
+        "monto": "Monto Total"
+      },
+      "empty": "No hay cotizaciones.",
+      "msg": {
+        "cargandoListado": "Consultando cotizaciones…",
+        "errorListado": "Error al consultar las cotizaciones."
+      }
+    },
     "entregarPedidoDialog": {
       "title": "Entregar Pedido Especial",
       "entregadoA": {

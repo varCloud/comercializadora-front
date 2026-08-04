@@ -1,0 +1,74 @@
+<div class="row">
+  <div class="col-12">
+    <h3 class="f-w-600 m-b-16">{{ 'pedidosEspeciales.cotizaciones.title' | translate }}</h3>
+  </div>
+</div>
+
+<!-- Buscador (regla 13); el legado no tiene formulario de filtros para esta pantalla. -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.cotizaciones.searchLabel' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'pedidosEspeciales.cotizaciones.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de cotizaciones (mismas columnas que Cotizaciones.cshtml; sin columna "Editar", ver
+     pendiente: fuera de alcance de este bloque). -->
+<mat-card class="cardWithShadow" *blockUI="'cotizaciones'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idPedidoEspecial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.cotizaciones.columns.folio' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.cotizaciones.columns.folio' | translate">{{ c.idPedidoEspecial }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.cotizaciones.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'pedidosEspeciales.cotizaciones.columns.fecha' | translate">{{ c.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.cotizaciones.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'pedidosEspeciales.cotizaciones.columns.cliente' | translate">{{ c.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.cotizaciones.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.cotizaciones.columns.cantidad' | translate">{{ c.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.cotizaciones.columns.monto' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.cotizaciones.columns.monto' | translate">{{ c.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'pedidosEspeciales.cotizaciones.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

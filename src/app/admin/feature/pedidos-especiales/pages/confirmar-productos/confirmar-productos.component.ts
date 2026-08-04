@@ -60,6 +60,14 @@ export class ConfirmarProductosComponent implements OnInit {
   readonly folio = signal(0);
   readonly cliente = signal<Cliente | null>(null);
   readonly productos = signal<ProductoConfirmar[]>([]);
+  /**
+   * `true` cuando se llega a esta pantalla desde "Liquidar Pedido" de "Pedidos en Ruta"
+   * (Bloque C, `PedidosEnRutaComponent.liquidar()`), vía query param `esPedidoEnRuta=true`
+   * (réplica de `Url.Action("ConfirmarProductos", ..., new { idPedidoEspecial,
+   * esPedidoEnRuta = true, idCliente })`). `false` (default) cuando se llega desde "Entregar
+   * Pedido" (Bloque B). Se propaga tal cual al `GuardarConfirmacionRequest`.
+   */
+  readonly esPedidoEnRuta = signal(false);
 
   /** Subtotal = Σ (cantidadAceptada × precioVenta). Sin recálculo por rango de mayoreo todavía
    *  (ver TODO en `EntregarPedidoEspecialDialogComponent`: depende de `ObtenerPrecios_` real). */
@@ -71,6 +79,7 @@ export class ConfirmarProductosComponent implements OnInit {
     const folio = Number(this.route.snapshot.paramMap.get('folio'));
     const idCliente = Number(this.route.snapshot.queryParamMap.get('idCliente'));
     this.folio.set(folio);
+    this.esPedidoEnRuta.set(this.route.snapshot.queryParamMap.get('esPedidoEnRuta') === 'true');
 
     this.cargarProductos(folio);
 
@@ -202,10 +211,9 @@ export class ConfirmarProductosComponent implements OnInit {
       idFactUsoCfdi: resultado.facturar ? (resultado.idUsoCFDI ?? 0) : 0,
       observacionesPedidoRuta: resultado.entregadoARuteo ? resultado.observacionesPedidoRuta : null,
       idUsuarioRuteo: resultado.entregadoARuteo ? (resultado.idUsuarioRuteo ?? 0) : 0,
-      // Esta pantalla solo cubre la confirmación inicial de entrega, no la liquidación
-      // posterior de un pedido ya enviado a ruta (pantalla "Pedidos en Ruta", Bloque C, fuera
-      // de alcance) — ver nota del modelo `GuardarConfirmacionRequest`.
-      esPedidoEnRuta: false,
+      // `true` cuando se llega desde "Liquidar Pedido" de "Pedidos en Ruta" (Bloque C, query
+      // param `esPedidoEnRuta`); `false` para la confirmación inicial de entrega (Bloque B).
+      esPedidoEnRuta: this.esPedidoEnRuta(),
     });
 
     this.blockUI.start(this.translate.instant('pedidosEspeciales.confirmarProductos.msg.guardando'));

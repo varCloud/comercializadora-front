@@ -2612,6 +2612,53 @@
         "saveError": "An error occurred while saving the product confirmation."
       }
     },
+    "pedidosEnRuta": {
+      "title": "Orders in Transit",
+      "filters": {
+        "usuario": "User",
+        "usuarioPlaceholder": "Select a user…",
+        "limpiar": "Clear",
+        "buscar": "Search"
+      },
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search orders…",
+      "columns": {
+        "folio": "#",
+        "cliente": "Customer",
+        "monto": "Amount",
+        "productos": "# Products",
+        "usuario": "User",
+        "fecha": "Created",
+        "acciones": "Actions"
+      },
+      "actions": {
+        "liquidar": "Settle Order",
+        "verTicket": "View ticket"
+      },
+      "empty": "There are no orders in transit.",
+      "msg": {
+        "cargandoListado": "Loading orders in transit…",
+        "errorListado": "Error loading the orders in transit.",
+        "ticketError": "Could not generate the order's warehouse ticket."
+      }
+    },
+    "cotizaciones": {
+      "title": "Quotes",
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search quotes…",
+      "columns": {
+        "folio": "Quote #",
+        "fecha": "Date",
+        "cliente": "Customer",
+        "cantidad": "Quantity",
+        "monto": "Total Amount"
+      },
+      "empty": "There are no quotes.",
+      "msg": {
+        "cargandoListado": "Loading quotes…",
+        "errorListado": "Error loading the quotes."
+      }
+    },
     "entregarPedidoDialog": {
       "title": "Deliver Special Order",
       "entregadoA": {

@@ -15,11 +15,12 @@
 // - Si se entrega a Encargado de Ruteo (`entregadoARuteo`), el legado **sobrescribe** lo
 //   anterior con `idEstatusPedidoEspecial = 9` ("Pedido en Ruta"), sin importar el tipo de pago.
 //
-// `esPedidoEnRuta` se manda siempre `false` desde esta pantalla: en el legado ese flag
-// distingue la confirmación inicial (esta pantalla) de la **liquidación posterior** de un
-// pedido ya enviado a ruta (pantalla "Pedidos en Ruta", Bloque C, fuera de alcance de esta
-// tarea) — solo en ese segundo paso el backend calcula `idUsuarioLiquida`. Ver duda para el
-// revisor en la salida de la tarea.
+// `esPedidoEnRuta` distingue la confirmación inicial de entrega (Bloque B,
+// `ConfirmarProductosComponent` llegando desde "Entregar Pedido" → `false`) de la
+// **liquidación posterior** de un pedido ya enviado a ruta (Bloque C, "Pedidos en Ruta" →
+// "Liquidar Pedido" → `true`, propagado vía query param `esPedidoEnRuta` de la navegación de
+// `PedidosEnRutaComponent.liquidar()`). Solo en el segundo caso el backend calcula
+// `idUsuarioLiquida`.
 
 import {
   ConfirmacionProductoRequest,
