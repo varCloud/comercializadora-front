@@ -1,0 +1,111 @@
+<h2 mat-dialog-title>{{ 'pedidoEspecialDetalleDialog.title' | translate }} #{{ pedido.idPedidoEspecial }}</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'pedidoEspecialDetalle'">
+  <div class="row m-b-16">
+    <div class="col-sm-4 m-b-8">
+      <span class="text-muted f-s-12 d-block">{{ 'pedidoEspecialDetalleDialog.cliente' | translate }}</span>
+      <span class="f-w-600">{{ pedido.nombreCliente }}</span>
+    </div>
+    <div class="col-sm-4 m-b-8">
+      <span class="text-muted f-s-12 d-block">{{ 'pedidoEspecialDetalleDialog.usuario' | translate }}</span>
+      <span class="f-w-600">{{ pedido.nombreUsuario }}</span>
+    </div>
+    <div class="col-sm-4 m-b-8">
+      <span class="text-muted f-s-12 d-block">{{ 'pedidoEspecialDetalleDialog.fecha' | translate }}</span>
+      <span class="f-w-600">{{ pedido.fechaAlta }}</span>
+    </div>
+    <div class="col-sm-4 m-b-8">
+      <span class="text-muted f-s-12 d-block">{{ 'pedidoEspecialDetalleDialog.estatus' | translate }}</span>
+      <span class="f-w-600">{{ pedido.estatusPedidoEspecial }}</span>
+    </div>
+    <div class="col-sm-4 m-b-8">
+      <span class="text-muted f-s-12 d-block">{{ 'pedidoEspecialDetalleDialog.montoTotal' | translate }}</span>
+      <span class="f-w-600">{{ pedido.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+    </div>
+    <div class="col-sm-4 m-b-8">
+      <span class="text-muted f-s-12 d-block">{{ 'pedidoEspecialDetalleDialog.codigoBarras' | translate }}</span>
+      <span class="f-w-600">{{ pedido.codigoBarras }}</span>
+    </div>
+    @if (pedido.observaciones) {
+      <div class="col-12 m-b-8">
+        <span class="text-muted f-s-12 d-block">{{ 'pedidoEspecialDetalleDialog.observaciones' | translate }}</span>
+        <span class="f-w-600">{{ pedido.observaciones }}</span>
+      </div>
+    }
+  </div>
+
+  @if (cargado() && productos().length === 0) {
+    <p class="text-center m-t-16 m-b-16">{{ 'pedidoEspecialDetalleDialog.empty' | translate }}</p>
+  } @else {
+    <div class="table-responsive">
+      <table mat-table [dataSource]="productos()" class="w-100">
+        <ng-container matColumnDef="idPedidoEspecialDetalle">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidoEspecialDetalleDialog.columns.detalle' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14">{{ p.idPedidoEspecialDetalle }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidoEspecialDetalleDialog.columns.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14">{{ p.descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="almacen">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidoEspecialDetalleDialog.columns.almacen' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14">{{ p.almacen }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidoEspecialDetalleDialog.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center">{{ p.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadAtendida">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidoEspecialDetalleDialog.columns.atendida' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center">{{ p.cantidadAtendida }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadRechazada">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidoEspecialDetalleDialog.columns.rechazada' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center">{{ p.cantidadRechazada }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadAceptada">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidoEspecialDetalleDialog.columns.aceptada' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center">{{ p.cantidadAceptada }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidoEspecialDetalleDialog.columns.monto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right">{{ p.monto | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidoEspecialDetalleDialog.columns.precio' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right">{{ p.precioVenta | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="estatusPedidoEspecialDetalle">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidoEspecialDetalleDialog.columns.estatus' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14">{{ p.estatusPedidoEspecialDetalle }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="verBitacora()">
+    <i-tabler name="history" class="icon-18 m-r-4"></i-tabler>
+    {{ 'pedidoEspecialDetalleDialog.verBitacora' | translate }}
+  </button>
+  @if (pedido.puedeDevolver) {
+    <button mat-flat-button color="primary" (click)="registrarDevolucion()">
+      <i-tabler name="arrow-back-up" class="icon-18 m-r-4"></i-tabler>
+      {{ 'pedidoEspecialDetalleDialog.registrarDevolucion' | translate }}
+    </button>
+  }
+  <button mat-stroked-button color="warn" (click)="cerrar()">{{ 'pedidoEspecialDetalleDialog.cerrar' | translate }}</button>
+</mat-dialog-actions>

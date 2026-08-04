@@ -2659,6 +2659,137 @@
         "errorListado": "Error loading the quotes."
       }
     },
+    "consultarPedidos": {
+      "title": "Search Orders",
+      "searchPlaceholder": "Search by order #, customer, user, or notes…",
+      "filters": {
+        "cliente": "Customer",
+        "clientePlaceholder": "Select a customer…",
+        "usuario": "User",
+        "usuarioPlaceholder": "Select a user…",
+        "estatus": "Status",
+        "estatusPlaceholder": "Select a status…",
+        "rangoFechas": "Date Range",
+        "fechaInicio": "Start date",
+        "fechaFin": "End date",
+        "codigoBarras": "Barcode",
+        "codigoBarrasPlaceholder": "Ticket barcode…",
+        "limpiar": "Clear",
+        "buscar": "Search"
+      },
+      "columns": {
+        "folio": "Order #",
+        "fecha": "Date",
+        "cliente": "Customer",
+        "usuario": "User",
+        "cantidad": "Quantity",
+        "monto": "Total Amount",
+        "estatus": "Status",
+        "facturado": "Invoiced",
+        "liquidado": "Settled",
+        "codigoBarras": "Barcode",
+        "observaciones": "Notes",
+        "acciones": "Actions"
+      },
+      "si": "YES",
+      "no": "NO",
+      "actions": {
+        "menu": "Actions",
+        "verDetalle": "View Detail",
+        "verTicketAlmacen": "View Warehouse Ticket",
+        "tickets": "Tickets",
+        "registrarDevolucion": "Return Products",
+        "cancelar": "Cancel"
+      },
+      "empty": "No special orders were found.",
+      "msg": {
+        "cargandoListado": "Searching special orders…",
+        "errorListado": "Error searching the special orders.",
+        "ticketError": "Could not generate the order's warehouse ticket.",
+        "cancelando": "Cancelling special order…",
+        "cancelarOk": "Special order cancelled successfully.",
+        "cancelarFallback": "Could not cancel the special order.",
+        "cancelarError": "An error occurred while cancelling the special order."
+      },
+      "confirm": {
+        "cancelarTitle": "Cancel special order?",
+        "cancelarText": "Special order #{{folio}} will be cancelled and all its products returned.",
+        "accept": "Yes, cancel",
+        "cancel": "No"
+      }
+    },
+    "pedidoEspecialDetalleDialog": {
+      "title": "Special Order Detail",
+      "cliente": "Customer",
+      "usuario": "User",
+      "fecha": "Date",
+      "estatus": "Status",
+      "montoTotal": "Total Amount",
+      "codigoBarras": "Barcode",
+      "observaciones": "Notes",
+      "columns": {
+        "detalle": "Detail #",
+        "producto": "Product",
+        "almacen": "Warehouse",
+        "cantidad": "Quantity",
+        "atendida": "Fulfilled",
+        "rechazada": "Rejected",
+        "aceptada": "Accepted",
+        "monto": "Amount",
+        "precio": "Sale Price",
+        "estatus": "Status"
+      },
+      "empty": "This special order has no products.",
+      "verBitacora": "View Log",
+      "registrarDevolucion": "Register Return",
+      "cerrar": "Close",
+      "msg": {
+        "loadError": "Error loading the special order detail."
+      }
+    },
+    "registrarDevolucionDialog": {
+      "title": "Return Special Order Products",
+      "columns": {
+        "idProducto": "Product Id",
+        "producto": "Product",
+        "almacen": "Warehouse",
+        "precio": "Price",
+        "cantidad": "Quantity",
+        "total": "Total",
+        "devolver": "Items to return"
+      },
+      "motivo": "Enter the Reason for the Return",
+      "motivoPlaceholder": "Reason for the return…",
+      "totalADevolver": "Total to Return",
+      "empty": "This special order has no products available to return.",
+      "cancelar": "Cancel",
+      "realizar": "Register Return",
+      "msg": {
+        "loadError": "Error loading the special order products.",
+        "excedeCantidad": "You cannot return more than what was purchased.",
+        "sinProductos": "You must select at least one product to return.",
+        "motivoRequerido": "You must enter the reason for the return.",
+        "guardando": "Registering return…",
+        "guardadoOk": "Return registered successfully.",
+        "saveFallback": "Could not register the return.",
+        "saveError": "An error occurred while registering the return."
+      }
+    },
+    "ticketsPedidoEspecialDialog": {
+      "title": "Ticket Detail",
+      "columns": {
+        "folio": "Ticket #",
+        "tipo": "Type",
+        "fecha": "Date",
+        "cantidad": "Quantity",
+        "monto": "Total Amount"
+      },
+      "empty": "This special order has no tickets registered.",
+      "cerrar": "Close",
+      "msg": {
+        "loadError": "Error loading the special order tickets."
+      }
+    },
     "entregarPedidoDialog": {
       "title": "Deliver Special Order",
       "entregadoA": {

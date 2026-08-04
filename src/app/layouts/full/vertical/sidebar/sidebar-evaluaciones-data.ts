@@ -184,10 +184,9 @@ export const navItemsApp: NavItem[] = [
         route: '/admin/pedidos-especiales/cotizaciones',
       },
       {
-        // Pendiente: Bloque D de la feature `pedidos_especiales` (FE-D5).
         displayName: 'Consultar Pedidos',
         iconName: 'file-search',
-        disabled: true,
+        route: '/admin/pedidos-especiales/consultar-pedidos',
       },
     ],
   },

@@ -1,0 +1,214 @@
+<div class="row">
+  <div class="col-12">
+    <h3 class="f-w-600 m-b-16">{{ 'pedidosEspeciales.consultarPedidos.title' | translate }}</h3>
+  </div>
+</div>
+
+<!-- Filtros (réplica del formulario "Buscar pedidos especiales" del legado) + buscador libre (regla 13). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'pedidosEspeciales.consultarPedidos.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.consultarPedidos.filters.cliente' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idCliente"
+          [items]="clientes()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'pedidosEspeciales.consultarPedidos.filters.clientePlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.consultarPedidos.filters.usuario' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idUsuario"
+          [items]="usuarios()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'pedidosEspeciales.consultarPedidos.filters.usuarioPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.consultarPedidos.filters.estatus' | translate }}</mat-label>
+        <ng-select
+          [formControl]="idEstatusPedidoEspecial"
+          [items]="estatus()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [placeholder]="'pedidosEspeciales.consultarPedidos.filters.estatusPlaceholder' | translate"
+        ></ng-select>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.consultarPedidos.filters.rangoFechas' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <mat-date-range-input [formGroup]="rangoFechasForm" [rangePicker]="picker" [max]="hoy">
+            <input matStartDate formControlName="inicio" [placeholder]="'pedidosEspeciales.consultarPedidos.filters.fechaInicio' | translate" />
+            <input matEndDate formControlName="fin" [placeholder]="'pedidosEspeciales.consultarPedidos.filters.fechaFin' | translate" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+
+      <div class="col-lg-4 col-sm-12 m-b-12">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.consultarPedidos.filters.codigoBarras' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input matInput [formControl]="codigoBarras" [placeholder]="'pedidosEspeciales.consultarPedidos.filters.codigoBarrasPlaceholder' | translate" />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button mat-stroked-button color="warn" (click)="limpiarFiltros()">
+        {{ 'pedidosEspeciales.consultarPedidos.filters.limpiar' | translate }}
+      </button>
+      <button mat-flat-button color="primary" (click)="buscar()">
+        {{ 'pedidosEspeciales.consultarPedidos.filters.buscar' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de pedidos especiales históricos (mismas columnas que onSuccessPedidosEspeciales). -->
+<mat-card class="cardWithShadow" *blockUI="'consultar-pedidos'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idPedidoEspecial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.consultarPedidos.columns.folio' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.folio' | translate">{{ p.idPedidoEspecial }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaAlta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.consultarPedidos.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.fecha' | translate">{{ p.fechaAlta }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.consultarPedidos.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.cliente' | translate">{{ p.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreUsuario">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.consultarPedidos.columns.usuario' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.usuario' | translate">{{ p.nombreUsuario }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.consultarPedidos.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.cantidad' | translate">{{ p.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.consultarPedidos.columns.monto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.monto' | translate">{{ p.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="estatusPedidoEspecial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.consultarPedidos.columns.estatus' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.estatus' | translate">
+            <span class="rol-chip" [style.color]="estatusColor(p.idEstatusPedidoEspecial)" [style.borderColor]="estatusColor(p.idEstatusPedidoEspecial)">{{ p.estatusPedidoEspecial }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="facturado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.consultarPedidos.columns.facturado' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.facturado' | translate">
+            @if (p.facturado === 'SI') {
+              <span class="status-badge status-activo">{{ 'pedidosEspeciales.consultarPedidos.si' | translate }}</span>
+            } @else {
+              <span class="status-badge status-eliminado">{{ 'pedidosEspeciales.consultarPedidos.no' | translate }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="liquidado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.consultarPedidos.columns.liquidado' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.liquidado' | translate">
+            @if (p.liquidado) {
+              <span class="status-badge status-activo">{{ 'pedidosEspeciales.consultarPedidos.si' | translate }}</span>
+            } @else {
+              <span class="status-badge status-eliminado">{{ 'pedidosEspeciales.consultarPedidos.no' | translate }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="codigoBarras">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.consultarPedidos.columns.codigoBarras' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.codigoBarras' | translate">{{ p.codigoBarras }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="observaciones">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.consultarPedidos.columns.observaciones' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.observaciones' | translate">{{ p.observaciones }}</td>
+        </ng-container>
+
+        <!-- Acciones: réplica del dropdown "Acciones" del legado (regla 10, excepción de menú por muchas acciones condicionales). -->
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.consultarPedidos.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="text-right" [attr.data-label]="'pedidosEspeciales.consultarPedidos.columns.acciones' | translate">
+            <button mat-flat-button color="primary" class="f-s-13" [matMenuTriggerFor]="menuAcciones">
+              {{ 'pedidosEspeciales.consultarPedidos.actions.menu' | translate }}
+              <i-tabler name="chevron-down" class="icon-18"></i-tabler>
+            </button>
+            <mat-menu #menuAcciones="matMenu">
+              <button mat-menu-item (click)="verDetalle(p)">
+                <i-tabler name="eye" class="icon-18 m-r-8" [style.color]="'#2e7d32'"></i-tabler>
+                <span>{{ 'pedidosEspeciales.consultarPedidos.actions.verDetalle' | translate }}</span>
+              </button>
+              <button mat-menu-item (click)="verTicketAlmacen(p)">
+                <i-tabler name="printer" class="icon-18 m-r-8" [style.color]="'#1e88e5'"></i-tabler>
+                <span>{{ 'pedidosEspeciales.consultarPedidos.actions.verTicketAlmacen' | translate }}</span>
+              </button>
+              @if (p.existeTicket) {
+                <button mat-menu-item (click)="verTickets(p)">
+                  <i-tabler name="list" class="icon-18 m-r-8" [style.color]="'#00838f'"></i-tabler>
+                  <span>{{ 'pedidosEspeciales.consultarPedidos.actions.tickets' | translate }}</span>
+                </button>
+              }
+              @if (p.puedeDevolver) {
+                <button mat-menu-item (click)="registrarDevolucion(p)">
+                  <i-tabler name="arrow-back-up" class="icon-18 m-r-8" [style.color]="'#fa896b'"></i-tabler>
+                  <span>{{ 'pedidosEspeciales.consultarPedidos.actions.registrarDevolucion' | translate }}</span>
+                </button>
+                <button mat-menu-item (click)="cancelar(p)">
+                  <i-tabler name="ban" class="icon-18 m-r-8" [style.color]="'#e53935'"></i-tabler>
+                  <span>{{ 'pedidosEspeciales.consultarPedidos.actions.cancelar' | translate }}</span>
+                </button>
+              }
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'pedidosEspeciales.consultarPedidos.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

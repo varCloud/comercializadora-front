@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>{{ 'ticketsPedidoEspecialDialog.title' | translate }} #{{ data.folio }}</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'ticketsPedidoEspecial'">
+  @if (cargado() && tickets().length === 0) {
+    <p class="text-center m-t-16 m-b-16">{{ 'ticketsPedidoEspecialDialog.empty' | translate }}</p>
+  } @else {
+    <div class="table-responsive">
+      <table mat-table [dataSource]="tickets()" class="w-100">
+        <ng-container matColumnDef="idTicketPedidoEspecial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ticketsPedidoEspecialDialog.columns.folio' | translate }}</th>
+          <td mat-cell *matCellDef="let t" class="f-s-14">{{ t.idTicketPedidoEspecial }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoTicket">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ticketsPedidoEspecialDialog.columns.tipo' | translate }}</th>
+          <td mat-cell *matCellDef="let t" class="f-s-14">{{ t.tipoTicket }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaTicket">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ticketsPedidoEspecialDialog.columns.fecha' | translate }}</th>
+          <td mat-cell *matCellDef="let t" class="f-s-14">{{ t.fechaTicket }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ticketsPedidoEspecialDialog.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let t" class="f-s-14 text-right">{{ t.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ticketsPedidoEspecialDialog.columns.monto' | translate }}</th>
+          <td mat-cell *matCellDef="let t" class="f-s-14 text-right">{{ t.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>{{ 'ticketsPedidoEspecialDialog.cerrar' | translate }}</button>
+</mat-dialog-actions>

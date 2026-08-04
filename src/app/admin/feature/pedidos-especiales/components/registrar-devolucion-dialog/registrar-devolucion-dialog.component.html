@@ -1,0 +1,82 @@
+<h2 mat-dialog-title>{{ 'registrarDevolucionDialog.title' | translate }} #{{ data.folio }}</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'registrarDevolucion'">
+  @if (cargado() && lineas().length === 0) {
+    <p class="text-center m-t-16 m-b-16">{{ 'registrarDevolucionDialog.empty' | translate }}</p>
+  } @else {
+    <div class="table-responsive">
+      <table mat-table [dataSource]="lineas()" class="w-100">
+        <ng-container matColumnDef="idProducto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'registrarDevolucionDialog.columns.idProducto' | translate }}</th>
+          <td mat-cell *matCellDef="let l" class="f-s-14">{{ l.producto.idProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'registrarDevolucionDialog.columns.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let l" class="f-s-14">{{ l.producto.descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="almacen">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'registrarDevolucionDialog.columns.almacen' | translate }}</th>
+          <td mat-cell *matCellDef="let l" class="f-s-14">{{ l.producto.almacen }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'registrarDevolucionDialog.columns.precio' | translate }}</th>
+          <td mat-cell *matCellDef="let l" class="f-s-14 text-right">{{ l.producto.precioVenta | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'registrarDevolucionDialog.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let l" class="f-s-14 text-right">{{ l.producto.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'registrarDevolucionDialog.columns.total' | translate }}</th>
+          <td mat-cell *matCellDef="let l" class="f-s-14 text-right">{{ l.producto.monto | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadDevuelta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'registrarDevolucionDialog.columns.devolver' | translate }}</th>
+          <td mat-cell *matCellDef="let l" class="f-s-14 text-center">
+            <mat-form-field appearance="outline" class="w-100 hide-hint cantidad-devuelta-field">
+              <input
+                matInput
+                type="number"
+                min="0"
+                [max]="l.producto.cantidad"
+                [step]="l.producto.fraccion ? 0.01 : 1"
+                [ngModel]="l.cantidadDevuelta"
+                (ngModelChange)="onCantidadDevueltaChange(l, $event)"
+              />
+            </mat-form-field>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['idProducto', 'descripcion', 'almacen', 'precioVenta', 'cantidad', 'monto', 'cantidadDevuelta']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['idProducto', 'descripcion', 'almacen', 'precioVenta', 'cantidad', 'monto', 'cantidadDevuelta']"></tr>
+      </table>
+    </div>
+
+    <form [formGroup]="devolucionForm" class="row m-t-16">
+      <div class="col-sm-6 m-b-16">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'registrarDevolucionDialog.motivo' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input matInput formControlName="motivoDevolucion" [placeholder]="'registrarDevolucionDialog.motivoPlaceholder' | translate" />
+        </mat-form-field>
+      </div>
+      <div class="col-sm-6 m-b-16 text-right">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'registrarDevolucionDialog.totalADevolver' | translate }}</mat-label>
+        <h3 class="f-w-600 m-0">{{ totalADevolver() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</h3>
+      </div>
+    </form>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" (click)="cancelar()">{{ 'registrarDevolucionDialog.cancelar' | translate }}</button>
+  <button mat-flat-button color="primary" (click)="guardar()">
+    <i-tabler name="arrow-back-up" class="icon-18 m-r-4"></i-tabler>
+    {{ 'registrarDevolucionDialog.realizar' | translate }}
+  </button>
+</mat-dialog-actions>

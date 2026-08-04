@@ -22,6 +22,24 @@ import { ProductoConfirmar, ProductoConfirmarModel } from 'src/app/admin/models/
 import { GuardarConfirmacionRequest } from 'src/app/admin/models/pedidos-especiales/guardar-confirmacion-request';
 import { PedidoEnRuta, PedidoEnRutaModel } from 'src/app/admin/models/pedidos-especiales/pedido-en-ruta';
 import { Cotizacion, CotizacionModel } from 'src/app/admin/models/pedidos-especiales/cotizacion';
+import {
+  PedidoEspecialHistorico,
+  PedidoEspecialHistoricoModel,
+} from 'src/app/admin/models/pedidos-especiales/pedido-especial-historico';
+import {
+  PedidoEspecialDetalle,
+  PedidoEspecialDetalleModel,
+} from 'src/app/admin/models/pedidos-especiales/pedido-especial-detalle';
+import { RealizarDevolucionRequest } from 'src/app/admin/models/pedidos-especiales/realizar-devolucion-request';
+import {
+  TicketPedidoEspecialResumen,
+  TicketPedidoEspecialResumenModel,
+} from 'src/app/admin/models/pedidos-especiales/ticket-pedido-especial-resumen';
+import {
+  ConfiguracionPedidoEspecial,
+  ConfiguracionPedidoEspecialModel,
+} from 'src/app/admin/models/pedidos-especiales/configuracion-pedido-especial';
+import { Catalogo, CatalogoModel } from 'src/app/admin/models/shared/catalogo';
 
 /**
  * Servicio HTTP de Pedidos Especiales. Consume `PedidosEspecialesController`
@@ -195,5 +213,103 @@ export class PedidosEspecialesService {
     return this.http
       .get<Notificacion<Cotizacion[]>>(`${this.baseUri}/cotizaciones`)
       .pipe(map((res) => (res?.modelo ?? []).map((c) => new CotizacionModel(c))));
+  }
+
+  // ====================== Bloque D: "Consultar Pedidos" / detalle / bitácora / devolución ======================
+
+  /**
+   * Búsqueda histórica de pedidos especiales (SP_OBTENER_PEDIDOS_ESPECIALES). Los 6 filtros son
+   * opcionales, igual que el legado (0/vacío/null = sin filtrar) — **a diferencia de
+   * Bloques B/C, este endpoint SÍ filtra los 6 server-side** (no es "último recurso" en cliente).
+   * `ConsultarPedidosComponent` solo pagina en cliente el resultado ya filtrado (el SP no
+   * pagina), mismo patrón `Paginador<T>` que Bloques B/C.
+   */
+  buscar(
+    idCliente = 0,
+    idUsuario = 0,
+    idEstatusPedidoEspecial = 0,
+    fechaIni: string | null = null,
+    fechaFin: string | null = null,
+    codigoBarras: string | null = null,
+  ): Observable<PedidoEspecialHistorico[]> {
+    let params = new HttpParams();
+    if (idCliente) params = params.set('idCliente', idCliente);
+    if (idUsuario) params = params.set('idUsuario', idUsuario);
+    if (idEstatusPedidoEspecial) params = params.set('idEstatusPedidoEspecial', idEstatusPedidoEspecial);
+    if (fechaIni) params = params.set('fechaIni', fechaIni);
+    if (fechaFin) params = params.set('fechaFin', fechaFin);
+    if (codigoBarras) params = params.set('codigoBarras', codigoBarras);
+
+    return this.http
+      .get<Notificacion<PedidoEspecialHistorico[]>>(`${this.baseUri}/buscar`, { params })
+      .pipe(map((res) => (res?.modelo ?? []).map((p) => new PedidoEspecialHistoricoModel(p))));
+  }
+
+  /**
+   * Detalle de un pedido especial para "Consultar Pedidos" (misma fuente que
+   * `obtenerProductosConfirmar` de Bloque B — el legado reusa el mismo SP para ambas pantallas).
+   * Alimenta tanto la tabla "Ver Detalle" como el formulario "Registrar Devolución" (réplica de
+   * `ObtenerPedidosEspecialesDetalle`, que el legado consume una sola vez para ambos modales).
+   */
+  obtenerDetalle(folio: number): Observable<PedidoEspecialDetalle[]> {
+    return this.http
+      .get<Notificacion<PedidoEspecialDetalle[]>>(`${this.baseUri}/${folio}/detalle`)
+      .pipe(map((res) => (res?.modelo ?? []).map((p) => new PedidoEspecialDetalleModel(p))));
+  }
+
+  /** Registra una devolución de productos sobre un pedido especial ya entregado (SP_REALIZA_DEVOLUCION_PEDIDOS_ESPECIALES). */
+  realizarDevolucion(folio: number, request: RealizarDevolucionRequest): Observable<Notificacion<string>> {
+    return this.http.post<Notificacion<string>>(`${this.baseUri}/${folio}/devolucion`, request);
+  }
+
+  /**
+   * Listado de tickets históricos de un pedido especial (SP_CONSULTA_TICKETS_PEDIDO_ESPECIAL).
+   * Solo datos crudos (la API no regenera el PDF de cada ticket histórico, ver desviación
+   * documentada en Bloque D) — se usa para el diálogo de solo lectura "Tickets".
+   */
+  obtenerTickets(folio: number): Observable<TicketPedidoEspecialResumen[]> {
+    return this.http
+      .get<Notificacion<TicketPedidoEspecialResumen[]>>(`${this.baseUri}/${folio}/tickets`)
+      .pipe(map((res) => (res?.modelo ?? []).map((t) => new TicketPedidoEspecialResumenModel(t))));
+  }
+
+  /**
+   * Clientes con al menos un pedido especial (SP_OBTENER_CLIENTES_PEDIDOS_ESPECIALES — catálogo
+   * del filtro "Consultar Pedidos"). Reusa el modelo genérico `Catalogo` (mismo shape
+   * `{id, descripcion}` que `CatalogoItem` de la API). Sin paginación server-side (el SP no la
+   * soporta, ver desviación documentada en Bloque D) — se carga completo para un `ng-select`.
+   */
+  obtenerClientesCatalogo(): Observable<Catalogo[]> {
+    return this.http
+      .get<Notificacion<Catalogo[]>>(`${this.baseUri}/clientes`)
+      .pipe(map((res) => (res?.modelo ?? []).map((c) => new CatalogoModel(c))));
+  }
+
+  /** Usuarios que han dado de alta algún pedido especial (SP_OBTENER_USUARIOS_PEDIDOS_ESPECIALES). Mismo criterio sin paginar que `obtenerClientesCatalogo`. */
+  obtenerUsuariosCatalogo(): Observable<Catalogo[]> {
+    return this.http
+      .get<Notificacion<Catalogo[]>>(`${this.baseUri}/usuarios`)
+      .pipe(map((res) => (res?.modelo ?? []).map((u) => new CatalogoModel(u))));
+  }
+
+  /** Catálogo de estatus de pedido especial (SP_OBTENER_ESTATUS_PEDIDOS_ESPECIALES). */
+  obtenerEstatusCatalogo(): Observable<Catalogo[]> {
+    return this.http
+      .get<Notificacion<Catalogo[]>>(`${this.baseUri}/estatus`)
+      .pipe(map((res) => (res?.modelo ?? []).map((e) => new CatalogoModel(e))));
+  }
+
+  /**
+   * Catálogo de configuración de Pedidos Especiales (SP_OBTENER_CONFIGURACION_PEDIDOS_ESPECIALES).
+   * `idConfig` opcional (`null` = todas). Expuesto por completitud del contrato de Bloque D; no
+   * lo consume todavía ninguna pantalla de este bloque (los valores conocidos del legado
+   * pertenecen al flujo de Cierre Cajas, fuera de alcance — ver el modelo).
+   */
+  obtenerConfiguracion(idConfig: number | null = null): Observable<ConfiguracionPedidoEspecial[]> {
+    let params = new HttpParams();
+    if (idConfig) params = params.set('idConfig', idConfig);
+    return this.http
+      .get<Notificacion<ConfiguracionPedidoEspecial[]>>(`${this.baseUri}/configuracion`, { params })
+      .pipe(map((res) => (res?.modelo ?? []).map((c) => new ConfiguracionPedidoEspecialModel(c))));
   }
 }

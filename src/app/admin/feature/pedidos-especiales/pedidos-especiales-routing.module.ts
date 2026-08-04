@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-// Rutas del dominio "Pedidos Especiales" (núcleo, Bloque A en adelante). "Nuevo Pedido" (FE-A3)
-// y "Entregar Pedido" + "Confirmar Productos" (FE-B3/FE-B4, Bloque B) ya existen; los sub-items
-// de "Pedidos en Ruta" y "Cotizaciones" se agregan en el Bloque C, "Consultar Pedidos" en el
-// Bloque D (ver task_pedidos_especiales.md). Cargada con loadComponent (regla 06).
+// Rutas del dominio "Pedidos Especiales" (núcleo, Bloque A en adelante). "Nuevo Pedido" (FE-A3),
+// "Entregar Pedido" + "Confirmar Productos" (FE-B3/FE-B4, Bloque B), "Pedidos en Ruta" +
+// "Cotizaciones" (FE-C3/FE-C4, Bloque C) y "Consultar Pedidos" (FE-D3, Bloque D — cierra el
+// núcleo) ya existen. Cargada con loadComponent (regla 06).
 const routes: Routes = [
   {
     path: 'nuevo',
@@ -41,6 +41,14 @@ const routes: Routes = [
     loadComponent: () =>
       import('./pages/cotizaciones/cotizaciones.component').then((m) => m.CotizacionesComponent),
     data: { title: 'Cotizaciones' },
+  },
+  {
+    path: 'consultar-pedidos',
+    loadComponent: () =>
+      import('./pages/consultar-pedidos/consultar-pedidos.component').then(
+        (m) => m.ConsultarPedidosComponent,
+      ),
+    data: { title: 'Consultar Pedidos' },
   },
 ];
 

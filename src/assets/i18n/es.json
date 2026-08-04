@@ -2659,6 +2659,137 @@
         "errorListado": "Error al consultar las cotizaciones."
       }
     },
+    "consultarPedidos": {
+      "title": "Consultar Pedidos",
+      "searchPlaceholder": "Buscar por folio, cliente, usuario u observaciones…",
+      "filters": {
+        "cliente": "Cliente",
+        "clientePlaceholder": "Selecciona un cliente…",
+        "usuario": "Usuario",
+        "usuarioPlaceholder": "Selecciona un usuario…",
+        "estatus": "Estatus",
+        "estatusPlaceholder": "Selecciona un estatus…",
+        "rangoFechas": "Rango de Fechas",
+        "fechaInicio": "Fecha inicio",
+        "fechaFin": "Fecha fin",
+        "codigoBarras": "Código de barras",
+        "codigoBarrasPlaceholder": "Código de barras del ticket…",
+        "limpiar": "Limpiar",
+        "buscar": "Buscar"
+      },
+      "columns": {
+        "folio": "No. Pedido",
+        "fecha": "Fecha",
+        "cliente": "Cliente",
+        "usuario": "Usuario",
+        "cantidad": "Cantidad",
+        "monto": "Monto Total",
+        "estatus": "Estatus",
+        "facturado": "Facturado",
+        "liquidado": "Liquidado",
+        "codigoBarras": "Código de barras",
+        "observaciones": "Observaciones",
+        "acciones": "Acciones"
+      },
+      "si": "SI",
+      "no": "NO",
+      "actions": {
+        "menu": "Acciones",
+        "verDetalle": "Ver Detalle",
+        "verTicketAlmacen": "Ver Ticket Almacén",
+        "tickets": "Tickets",
+        "registrarDevolucion": "Devolver Productos",
+        "cancelar": "Cancelar"
+      },
+      "empty": "No se encontraron pedidos especiales.",
+      "msg": {
+        "cargandoListado": "Consultando pedidos especiales…",
+        "errorListado": "Error al consultar los pedidos especiales.",
+        "ticketError": "No fue posible generar el ticket de almacén del pedido.",
+        "cancelando": "Cancelando pedido especial…",
+        "cancelarOk": "Pedido especial cancelado correctamente.",
+        "cancelarFallback": "No fue posible cancelar el pedido especial.",
+        "cancelarError": "Ocurrió un error al cancelar el pedido especial."
+      },
+      "confirm": {
+        "cancelarTitle": "¿Cancelar pedido especial?",
+        "cancelarText": "Se cancelará el pedido especial #{{folio}} y se devolverán todos sus productos.",
+        "accept": "Sí, cancelar",
+        "cancel": "No"
+      }
+    },
+    "pedidoEspecialDetalleDialog": {
+      "title": "Detalle Pedido Especial",
+      "cliente": "Cliente",
+      "usuario": "Usuario",
+      "fecha": "Fecha",
+      "estatus": "Estatus",
+      "montoTotal": "Monto Total",
+      "codigoBarras": "Código de barras",
+      "observaciones": "Observaciones",
+      "columns": {
+        "detalle": "No. detalle",
+        "producto": "Producto",
+        "almacen": "Almacén",
+        "cantidad": "Cantidad",
+        "atendida": "Atendida",
+        "rechazada": "Rechazada",
+        "aceptada": "Aceptada",
+        "monto": "Monto",
+        "precio": "Precio Venta",
+        "estatus": "Estatus"
+      },
+      "empty": "Este pedido especial no tiene productos.",
+      "verBitacora": "Ver Bitácora",
+      "registrarDevolucion": "Registrar Devolución",
+      "cerrar": "Cerrar",
+      "msg": {
+        "loadError": "Error al cargar el detalle del pedido especial."
+      }
+    },
+    "registrarDevolucionDialog": {
+      "title": "Devolver Productos Pedido Especial",
+      "columns": {
+        "idProducto": "Id Producto",
+        "producto": "Producto",
+        "almacen": "Almacén",
+        "precio": "Precio",
+        "cantidad": "Cantidad",
+        "total": "Total",
+        "devolver": "Devolver artículos"
+      },
+      "motivo": "Escriba el Motivo de la Devolución",
+      "motivoPlaceholder": "Motivo de la devolución…",
+      "totalADevolver": "Total a Devolver",
+      "empty": "Este pedido especial no tiene productos disponibles para devolver.",
+      "cancelar": "Cancelar",
+      "realizar": "Realizar Devolución",
+      "msg": {
+        "loadError": "Error al cargar los productos del pedido especial.",
+        "excedeCantidad": "No puede regresar más de lo que compró.",
+        "sinProductos": "Debe seleccionar al menos un producto para devolver.",
+        "motivoRequerido": "Debe escribir el motivo de la devolución.",
+        "guardando": "Realizando devolución…",
+        "guardadoOk": "Devolución registrada correctamente.",
+        "saveFallback": "No fue posible registrar la devolución.",
+        "saveError": "Ocurrió un error al registrar la devolución."
+      }
+    },
+    "ticketsPedidoEspecialDialog": {
+      "title": "Detalle de Tickets",
+      "columns": {
+        "folio": "No. Ticket",
+        "tipo": "Tipo",
+        "fecha": "Fecha",
+        "cantidad": "Cantidad",
+        "monto": "Monto Total"
+      },
+      "empty": "Este pedido especial no tiene tickets registrados.",
+      "cerrar": "Cerrar",
+      "msg": {
+        "loadError": "Error al cargar los tickets del pedido especial."
+      }
+    },
     "entregarPedidoDialog": {
       "title": "Entregar Pedido Especial",
       "entregadoA": {
