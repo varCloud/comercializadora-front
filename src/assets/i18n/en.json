@@ -2858,6 +2858,7 @@
       "retiro": {
         "title": "Cash Withdrawal",
         "montoARetirar": "Amount to withdraw",
+        "disponible": "Available",
         "retirar": "Withdraw",
         "verTicket": "View receipt",
         "sinRegistros": "No withdrawals found.",
@@ -2874,7 +2875,9 @@
           "guardando": "Registering withdrawal…",
           "exito": "Withdrawal registered successfully.",
           "error": "Error registering the withdrawal. Try again.",
-          "errorTicket": "Error generating the withdrawal receipt PDF."
+          "errorTicket": "Error generating the withdrawal receipt PDF.",
+          "excedeDisponible": "Only ${{disponible}} is available to withdraw.",
+          "errorDisponible": "Error retrieving the available cash amount."
         }
       },
       "cierre": {

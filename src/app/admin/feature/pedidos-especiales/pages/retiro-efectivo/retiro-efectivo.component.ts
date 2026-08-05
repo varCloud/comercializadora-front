@@ -26,7 +26,10 @@ import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
  *
  * A diferencia de `CajaService.RetirarAsync` (Ventas), el backend de Pedidos Especiales NO
  * valida el retiro contra `efectivoDisponible` (desviación real documentada en la HU/task) — no
- * se agrega esa validación aquí tampoco, se respeta el comportamiento real.
+ * se agrega esa validación en el servidor. El legado SÍ valida en CLIENTE antes del submit
+ * (`evtIngresosRetirosEfectivo.js`, hallazgo del paso 05 de verificación) — replicado aquí con
+ * el mismo criterio que `RetiroExcesoDialogComponent` de Ventas (UX temprana; el tope real, si
+ * alguna vez se agrega, lo valida el servidor).
  *
  * El endpoint `GET caja/retiros-efectivo` no pagina server-side (mismo caso que
  * `/api/caja/retiros` de Ventas) — se mantiene la paginación LOCAL ya implementada
@@ -59,6 +62,7 @@ export class RetiroEfectivoComponent implements OnInit {
 
   readonly guardando = signal(false);
   readonly generandoTicket = signal<number | null>(null);
+  readonly efectivoDisponible = signal(0);
 
   readonly retiroForm = this.fb.group({
     monto: [null as number | null, [Validators.required, Validators.min(0.01)]],
@@ -71,6 +75,17 @@ export class RetiroEfectivoComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarRetiros();
+    this.cargarEfectivoDisponible();
+  }
+
+  private cargarEfectivoDisponible(): void {
+    this.service.obtenerInfoCierre().subscribe({
+      next: (info) => this.efectivoDisponible.set(info.efectivoDisponible),
+      error: (err) => {
+        console.error('Error al consultar el efectivo disponible de Pedidos Especiales', err);
+        this.notify.notify('error', this.translate.instant('pedidosEspeciales.caja.retiro.msg.errorDisponible'));
+      },
+    });
   }
 
   private cargarRetiros(): void {
@@ -97,6 +112,19 @@ export class RetiroEfectivoComponent implements OnInit {
     }
 
     const monto = Number(this.retiroForm.value.monto ?? 0);
+    const disponible = this.efectivoDisponible();
+
+    // Validación en cliente (UX temprana, replica al legado); el servidor no valida tope (regla real documentada).
+    if (monto > disponible) {
+      this.notify.notify(
+        'warning',
+        this.translate.instant('pedidosEspeciales.caja.retiro.msg.excedeDisponible', {
+          disponible: disponible.toFixed(2),
+        }),
+      );
+      return;
+    }
+
     const request = new RetiroEfectivoPedidoEspecialRequestModel({ monto });
 
     this.guardando.set(true);
@@ -115,6 +143,7 @@ export class RetiroEfectivoComponent implements OnInit {
             this.notify.notify('success', res.mensaje ?? this.translate.instant('pedidosEspeciales.caja.retiro.msg.exito'));
             this.retiroForm.reset();
             this.cargarRetiros();
+            this.cargarEfectivoDisponible();
           } else {
             this.notify.notify('error', res?.mensaje ?? this.translate.instant('pedidosEspeciales.caja.retiro.msg.error'));
           }

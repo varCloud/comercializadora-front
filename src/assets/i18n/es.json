@@ -2858,6 +2858,7 @@
       "retiro": {
         "title": "Retiro de Efectivo",
         "montoARetirar": "Monto a retirar",
+        "disponible": "Disponible",
         "retirar": "Retirar",
         "verTicket": "Ver ticket",
         "sinRegistros": "No se encontraron retiros.",
@@ -2874,7 +2875,9 @@
           "guardando": "Registrando retiro…",
           "exito": "Retiro registrado correctamente.",
           "error": "Error al registrar el retiro. Intenta de nuevo.",
-          "errorTicket": "Error al generar el ticket PDF del retiro."
+          "errorTicket": "Error al generar el ticket PDF del retiro.",
+          "excedeDisponible": "Solo tiene ${{disponible}} disponible para retirar.",
+          "errorDisponible": "Error al consultar el efectivo disponible."
         }
       },
       "cierre": {
