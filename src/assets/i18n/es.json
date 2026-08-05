@@ -2518,6 +2518,8 @@
         "cancelarAjuste": "Cancelar ajuste",
         "total": "Total",
         "guardar": "Guardar pedido",
+        "guardarHandHeld": "Revisión por Hand Held",
+        "guardarCotizacion": "Guardar cotización",
         "limpiar": "Limpiar"
       },
       "msg": {
@@ -2532,8 +2534,6 @@
         "guardadoOk": "Pedido especial guardado correctamente.",
         "saveFallback": "No fue posible guardar el pedido especial.",
         "saveError": "Ocurrió un error al guardar el pedido especial.",
-        "ivaFallback": "El pedido se guardó, pero no fue posible ajustar sus datos fiscales.",
-        "ivaError": "Ocurrió un error al ajustar los datos fiscales del pedido.",
         "ticketError": "No fue posible generar el ticket del pedido."
       }
     },

@@ -2518,6 +2518,8 @@
         "cancelarAjuste": "Cancel adjustment",
         "total": "Total",
         "guardar": "Save order",
+        "guardarHandHeld": "Hand Held review",
+        "guardarCotizacion": "Save quote",
         "limpiar": "Clear"
       },
       "msg": {
@@ -2532,8 +2534,6 @@
         "guardadoOk": "Special order saved successfully.",
         "saveFallback": "Could not save the special order.",
         "saveError": "An error occurred while saving the special order.",
-        "ivaFallback": "The order was saved, but its tax data could not be adjusted.",
-        "ivaError": "An error occurred while adjusting the order's tax data.",
         "ticketError": "Could not generate the order's ticket."
       }
     },

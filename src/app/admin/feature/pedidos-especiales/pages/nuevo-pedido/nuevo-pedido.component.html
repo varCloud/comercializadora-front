@@ -228,8 +228,14 @@
           <span class="f-s-24 f-w-700">{{ total() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
         </div>
 
-        <button mat-flat-button color="primary" class="w-100 m-b-8" type="button" (click)="guardar()" [disabled]="guardando()">
+        <button mat-flat-button color="primary" class="w-100 m-b-8" type="button" (click)="guardar(1, 1)" [disabled]="guardando()">
           {{ 'pedidosEspeciales.nuevoPedido.resumen.guardar' | translate }}
+        </button>
+        <button mat-stroked-button color="primary" class="w-100 m-b-8" type="button" (click)="guardar(2, 1)" [disabled]="guardando()">
+          {{ 'pedidosEspeciales.nuevoPedido.resumen.guardarHandHeld' | translate }}
+        </button>
+        <button mat-stroked-button color="accent" class="w-100 m-b-8" type="button" (click)="guardar(3, 2)" [disabled]="guardando()">
+          {{ 'pedidosEspeciales.nuevoPedido.resumen.guardarCotizacion' | translate }}
         </button>
         <button mat-stroked-button color="warn" class="w-100" type="button" (click)="limpiar()">
           {{ 'pedidosEspeciales.nuevoPedido.resumen.limpiar' | translate }}

@@ -20,36 +20,47 @@ import {
 } from 'src/app/admin/models/pedidos-especiales/partida-pedido-especial';
 import { GuardarPedidoEspecialRequestModel } from 'src/app/admin/models/pedidos-especiales/guardar-pedido-especial-request';
 import { PedidoEspecialProductoRequestModel } from 'src/app/admin/models/pedidos-especiales/pedido-especial-producto-request';
-import { GuardarIvaPedidoEspecialRequestModel } from 'src/app/admin/models/pedidos-especiales/guardar-iva-pedido-especial-request';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { ProductosService } from 'src/app/admin/services/productos.service';
 import { UbicacionesService } from 'src/app/admin/services/ubicaciones.service';
 import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especiales.service';
 
 /**
- * Uso de CFDI por defecto cuando el pedido NO se factura ("No aplica" en el catálogo SAT).
- * Réplica del reset de `calculaTotales('true')` en `EvtPedidosEspecialesV2.js`
- * (`$('#usoCFDI').val("3")`) — el pedido siempre viaja con un uso de CFDI válido al ajustar IVA,
- * aunque el checkbox "Facturar" esté apagado.
- */
-const ID_USO_CFDI_NO_APLICA = 3;
-
-/**
- * Página "Nuevo Pedido" (Bloque A) — réplica de `Views/PedidosEspecialesV2/
- * PedidosEspeciales.cshtml` + `EvtPedidosEspecialesV2.js` (alta de pedido especial):
- * selección de cliente, almacén para validar existencia, productos con cantidad/precio/existencia
- * en una tabla de partidas editable, forma de pago, checkbox "Facturar" (igual que
- * `#chkFacturar`) que despliega Uso de CFDI y calcula IVA (`calculaTotales()`: 16% del subtotal
- * solo si factura), y total.
+ * Página "Nuevo Pedido" (Bloque A, corregida post-verificación paso 05) — réplica de
+ * `Views/PedidosEspecialesV2/PedidosEspeciales.cshtml` + `EvtPedidosEspecialesV2.js` (alta de
+ * pedido especial): selección de cliente, almacén para validar existencia, productos con
+ * cantidad/precio/existencia en una tabla de partidas editable, forma de pago, checkbox
+ * "Facturar" (igual que `#chkFacturar`) que despliega Uso de CFDI y calcula IVA
+ * (`calculaTotales()`: 16% del subtotal solo si factura), y total.
  *
- * Integración real (FE-A5): guarda con `PedidosEspecialesService.guardarPedido` (flujo "revisión
- * por ticket" del legado, `tipoRevision = 1`; ver nota en `GuardarPedidoEspecialRequest`), ajusta
- * los datos fiscales con `guardarIva` y descarga el ticket PDF — mismo patrón de
- * guardar→ajustar-iva→ticket que `PosComponent` (Ventas). Cliente/almacenes/búsqueda de
- * producto/precio por volumen reusan `ClientesService`/`UbicacionesService`/`ProductosService`
- * ya migrados (regla 00); solo lo propio de Pedidos Especiales (guardar, existencia por
- * almacén, formas de pago/uso CFDI propios, ajustar IVA, ticket) pasa por
- * `PedidosEspecialesService`.
+ * **Los 3 flujos de guardado del legado** (mismo formulario, misma función
+ * `GuardarPedidoEspecial(tipoRevision, idEstatusPedidoEspecial)` — `EvtPedidosEspecialesV2.js:579-638`):
+ * "Guardar" = Revisión por Ticket (`tipoRevision=1, idEstatusPedidoEspecial=1`,
+ * `btnRevisionPorTicket`), "Revisión por Hand Held" (`tipoRevision=2, idEstatusPedidoEspecial=1`,
+ * `btnRevisionPorHandHeld`) y "Guardar Cotización" (`tipoRevision=3, idEstatusPedidoEspecial=2`,
+ * `btnCotizar`/`btnGeneraCotizacion`) — este último alimenta la pantalla "Cotizaciones" (Bloque
+ * C). El legado valida los 3 igual (cliente + al menos un producto, `abrirModalGuardarPedidoEspecial`
+ * en `EvtPedidosEspecialesV2.js:530-576`); Forma de Pago/Uso CFDI **no** se envían en el payload
+ * de `GuardarPedidoEspecial` en ningún flujo (confirmado en el JS: el `dataToPost` solo lleva
+ * `productos/tipoRevision/idCliente/idEstatusPedidoEspecial/idPedidoEspecial/idPedidoEspecialMayoreo_`)
+ * — por eso `guardar()` usa la misma validación de formulario para los 3 botones.
+ *
+ * Integración real: guarda con `PedidosEspecialesService.guardarPedido` y descarga el ticket PDF
+ * — **sin** llamar `guardarIva` (corrección post-verificación: en el legado
+ * `SP_GUARDA_IVA_PEDIDO_ESPECIAL_V2` solo se dispara manualmente y después, desde "Consultar
+ * Pedidos" — `btnGuardarIVA`, `EvtConsultaPedidosEspecialesV2.js:858-889` — nunca desde el alta;
+ * `guardarIva` se conserva en `PedidosEspecialesService` por si se porta ese botón a futuro,
+ * pero esta pantalla ya no lo invoca). El legado tampoco descarga un PDF de ticket automáticamente
+ * en ninguno de los 3 flujos (dispara impresión física server-side — `imprimirTicketAlmacenes`/
+ * `ImprimeTicketPedidoEspecial`, no portable a web, mismo criterio que Bloque B); la descarga del
+ * PDF del ticket de alta (`obtenerTicket`, Bloque A) es la adaptación web ya establecida y
+ * aprobada de esa impresión — se replica igual para los 3 flujos porque el legado no distingue
+ * entre ellos en su handler de éxito.
+ *
+ * Cliente/almacenes/búsqueda de producto/precio por volumen reusan
+ * `ClientesService`/`UbicacionesService`/`ProductosService` ya migrados (regla 00); solo lo
+ * propio de Pedidos Especiales (guardar, existencia por almacén, formas de pago/uso CFDI
+ * propios, ticket) pasa por `PedidosEspecialesService`.
  */
 @Component({
   selector: 'app-nuevo-pedido',
@@ -396,12 +407,17 @@ export class NuevoPedidoComponent implements OnInit {
   // ====================== Guardar / limpiar ======================
 
   /**
-   * Guarda el pedido (`POST /pedidos-especiales`, flujo "revisión por ticket" — ver nota en
-   * `GuardarPedidoEspecialRequest`) y, si se obtiene folio, encadena `guardarIva` (fija los
-   * datos fiscales del pedido) y la descarga del ticket PDF — mismo patrón guardar→ajustar-iva→
-   * ticket que `PosComponent.guardarVenta`/`verTicket` (Ventas).
+   * Guarda el pedido (`POST /pedidos-especiales`) y, si se obtiene folio, descarga el ticket PDF
+   * — **sin** ajuste automático de IVA (ver nota de cabecera del componente).
+   *
+   * `tipoRevision`/`idEstatusPedidoEspecial` generalizan los 3 botones del legado sobre el mismo
+   * formulario (`GuardarPedidoEspecial(tipoRevision, idEstatusPedidoEspecial)`,
+   * `EvtPedidosEspecialesV2.js:641`): **1,1** = Revisión por Ticket (`guardar()` sin argumentos,
+   * botón "Guardar"), **2,1** = Revisión por Hand Held, **3,2** = Cotizar. La validación del
+   * formulario es idéntica para los 3 (el legado no distingue: valida solo cliente + productos
+   * antes de abrir el modal de guardado, ver cabecera del componente).
    */
-  guardar(): void {
+  guardar(tipoRevision: number = 1, idEstatusPedidoEspecial: number = 1): void {
     if (this.guardando()) return;
 
     const raw = this.nuevoPedidoForm.getRawValue();
@@ -437,9 +453,9 @@ export class NuevoPedidoComponent implements OnInit {
             idAlmacen,
           }),
       ),
-      tipoRevision: 1,
+      tipoRevision,
       idCliente: raw.idCliente,
-      idEstatusPedidoEspecial: 1,
+      idEstatusPedidoEspecial,
       idPedidoEspecial: 0,
       idPedidoEspecialMayoreo: 0,
     });
@@ -457,10 +473,9 @@ export class NuevoPedidoComponent implements OnInit {
               res.mensaje || this.translate.instant('pedidosEspeciales.nuevoPedido.msg.guardadoOk'),
             );
             const folio = res.modelo.idPedidoEspecial;
-            const idFormaPago = raw.idFormaPago!;
-            const idUsoCfdi = raw.idUsoCFDI ?? ID_USO_CFDI_NO_APLICA;
             this.limpiar();
-            this.finalizarPedido(folio, raw.idCliente!, idFormaPago, idUsoCfdi);
+            this.guardando.set(false);
+            this.descargarTicket(folio);
           } else {
             this.guardando.set(false);
             this.notify.notify(
@@ -477,37 +492,7 @@ export class NuevoPedidoComponent implements OnInit {
       });
   }
 
-  /** Ajusta los datos fiscales del pedido recién guardado y descarga su ticket PDF. */
-  private finalizarPedido(folio: number, idCliente: number, idFormaPago: number, idUsoCfdi: number): void {
-    const ivaRequest = new GuardarIvaPedidoEspecialRequestModel({
-      idCliente,
-      idFactFormaPago: idFormaPago,
-      idFactUsoCfdi: idUsoCfdi,
-    });
-
-    this.pedidosEspecialesService
-      .guardarIva(folio, ivaRequest)
-      .pipe(finalize(() => this.guardando.set(false)))
-      .subscribe({
-        next: (res) => {
-          if (res?.estatus !== 200) {
-            console.error('Ajuste de IVA del pedido especial no exitoso', res?.mensaje);
-            this.notify.notify(
-              'warning',
-              res?.mensaje ?? this.translate.instant('pedidosEspeciales.nuevoPedido.msg.ivaFallback'),
-            );
-          }
-          this.descargarTicket(folio);
-        },
-        error: (err) => {
-          console.error('Error al ajustar los datos fiscales del pedido especial', err);
-          this.notify.notify('warning', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.ivaError'));
-          // El pedido ya se guardó (tiene folio); el ticket sigue siendo útil aunque falle el ajuste fiscal.
-          this.descargarTicket(folio);
-        },
-      });
-  }
-
+  /** Descarga el ticket PDF del pedido recién guardado (Bloque A, adaptación web de la impresión física del legado). */
   private descargarTicket(folio: number): void {
     this.pedidosEspecialesService.obtenerTicket(folio).subscribe({
       next: (blob) => abrirPdfBlob(blob),
