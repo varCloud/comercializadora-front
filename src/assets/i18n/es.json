@@ -2837,6 +2837,103 @@
         "efectivoRequerido": "Debe escribir con cuánto efectivo le están pagando.",
         "efectivoInsuficiente": "El efectivo no alcanza a cubrir el costo total del pedido: {{total}}"
       }
+    },
+    "caja": {
+      "ingreso": {
+        "tituloApertura": "Apertura de caja",
+        "tituloIngreso": "Ingreso de efectivo",
+        "avisoApertura": "Esta estación no tiene caja abierta. Registra la apertura para continuar.",
+        "monto": "Monto",
+        "abrir": "Abrir caja",
+        "guardar": "Guardar",
+        "verTicket": "Ver ticket",
+        "msg": {
+          "guardando": "Guardando…",
+          "exito": "Ingreso registrado correctamente.",
+          "error": "Error al registrar el ingreso de efectivo. Intenta de nuevo.",
+          "montoRequerido": "Debe escribir el monto.",
+          "errorTicket": "Error al generar el ticket PDF del ingreso."
+        }
+      },
+      "retiro": {
+        "title": "Retiro de Efectivo",
+        "montoARetirar": "Monto a retirar",
+        "retirar": "Retirar",
+        "verTicket": "Ver ticket",
+        "sinRegistros": "No se encontraron retiros.",
+        "columns": {
+          "id": "Id",
+          "monto": "Monto",
+          "usuario": "Usuario",
+          "estacion": "Estación",
+          "fecha": "Fecha"
+        },
+        "msg": {
+          "cargandoListado": "Cargando retiros…",
+          "errorListado": "Error al consultar el listado de retiros.",
+          "guardando": "Registrando retiro…",
+          "exito": "Retiro registrado correctamente.",
+          "error": "Error al registrar el retiro. Intenta de nuevo.",
+          "errorTicket": "Error al generar el ticket PDF del retiro."
+        }
+      },
+      "cierre": {
+        "title": "Cierre de Caja",
+        "resumen": {
+          "ingresos": "Ingresos de efectivo:",
+          "retiros": "Retiros de efectivo:",
+          "saldoEfectivo": "Saldo en efectivo:",
+          "saldoTC": "Saldo en tarjeta:",
+          "devoluciones": "No. Devoluciones:",
+          "ticketsEfectivo": "No. Tickets efectivo:",
+          "ticketsCredito": "No. Tickets crédito:",
+          "pedidosResguardo": "No. Pedidos en resguardo:",
+          "pedidosEnRuta": "No. Pedidos en ruta:"
+        },
+        "columns": {
+          "categoria": "Categoría",
+          "almacen": "Almacén",
+          "ventasContado": "Contado",
+          "ventasTC": "Tarjeta",
+          "ventasTransferencias": "Transferencias",
+          "ventasOtras": "Otras formas de pago",
+          "ventasCredito": "Crédito",
+          "montoDevoluciones": "Devoluciones",
+          "abonos": "Abonos",
+          "totalEfectivo": "Total efectivo"
+        },
+        "sinDatos": "No hay datos de cierre para el día de hoy.",
+        "efectivoEntregado": "Efectivo entregado en cierre",
+        "realizarCierre": "Realizar cierre",
+        "verTicket": "Ver ticket",
+        "continuar": "Continuar",
+        "confirm": {
+          "text": "¿Está seguro que desea hacer el cierre de esta estación?",
+          "accept": "Aceptar",
+          "cancel": "Cancelar"
+        },
+        "msg": {
+          "cargando": "Cargando resumen de cierre…",
+          "errorCargar": "Error al consultar el resumen de cierre.",
+          "montoRequerido": "Debe escribir el efectivo entregado en el cierre.",
+          "guardando": "Realizando cierre…",
+          "exito": "Cierre de caja realizado correctamente.",
+          "error": "Error al realizar el cierre de caja. Intenta de nuevo.",
+          "errorTicket": "Error al generar el ticket PDF del cierre."
+        }
+      },
+      "autorizar": {
+        "title": "Autorización de cierre",
+        "instrucciones": "Esta estación requiere autorización de un supervisor para cerrar caja.",
+        "usuario": "Usuario",
+        "password": "Contraseña",
+        "cancelar": "Cancelar",
+        "autorizar": "Autorizar",
+        "msg": {
+          "credencialesRequeridas": "Debe ingresar usuario y contraseña para autorizar el cierre.",
+          "error": "Usuario o contraseña incorrectos."
+        }
+      }
     }
   }
 }

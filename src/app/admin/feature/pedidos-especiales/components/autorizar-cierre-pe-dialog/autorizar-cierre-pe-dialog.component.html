@@ -1,0 +1,33 @@
+<h2 mat-dialog-title>{{ 'pedidosEspeciales.caja.autorizar.title' | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <p class="f-s-14 m-b-16">{{ 'pedidosEspeciales.caja.autorizar.instrucciones' | translate }}</p>
+
+  <form [formGroup]="autorizarForm" class="row">
+    <div class="col-12">
+      <div class="row">
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.caja.autorizar.usuario' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="text" formControlName="usuario" />
+          </mat-form-field>
+        </div>
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.caja.autorizar.password' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="password" formControlName="contrasena" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" class="text-nowrap" type="button" (click)="cerrar()">
+    {{ 'pedidosEspeciales.caja.autorizar.cancelar' | translate }}
+  </button>
+  <button mat-flat-button color="primary" class="text-nowrap" type="button" [disabled]="validando()" (click)="autorizar()">
+    {{ 'pedidosEspeciales.caja.autorizar.autorizar' | translate }}
+  </button>
+</mat-dialog-actions>

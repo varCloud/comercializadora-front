@@ -1,9 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { map, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { URIS_CONFIG } from 'src/app/config/uris-config';
-import { Notificacion } from 'src/app/models/sesion';
+import { Notificacion, Sesion } from 'src/app/models/sesion';
 import { PedidoEspecialProducto } from 'src/app/admin/models/ventas/pedido-especial-producto';
 import { FormaPago, FormaPagoModel } from 'src/app/admin/models/ventas/forma-pago';
 import { UsoCfdi, UsoCfdiModel } from 'src/app/admin/models/ventas/uso-cfdi';
@@ -40,6 +40,26 @@ import {
   ConfiguracionPedidoEspecialModel,
 } from 'src/app/admin/models/pedidos-especiales/configuracion-pedido-especial';
 import { Catalogo, CatalogoModel } from 'src/app/admin/models/shared/catalogo';
+import { IngresoEfectivoPedidoEspecialRequest } from 'src/app/admin/models/pedidos-especiales/ingreso-efectivo-pedido-especial-request';
+import {
+  IngresoEfectivoPedidoEspecial,
+  IngresoEfectivoPedidoEspecialModel,
+} from 'src/app/admin/models/pedidos-especiales/ingreso-efectivo-pedido-especial';
+import { RetiroEfectivoPedidoEspecialRequest } from 'src/app/admin/models/pedidos-especiales/retiro-efectivo-pedido-especial-request';
+import {
+  RetiroEfectivoPedidoEspecial,
+  RetiroEfectivoPedidoEspecialModel,
+} from 'src/app/admin/models/pedidos-especiales/retiro-efectivo-pedido-especial';
+import {
+  InfoCierrePedidoEspecial,
+  InfoCierrePedidoEspecialModel,
+} from 'src/app/admin/models/pedidos-especiales/info-cierre-pedido-especial';
+import {
+  CierrePedidoEspecialDetalle,
+  CierrePedidoEspecialDetalleModel,
+} from 'src/app/admin/models/pedidos-especiales/cierre-pedido-especial-detalle';
+import { CierrePedidoEspecialRequest } from 'src/app/admin/models/pedidos-especiales/cierre-pedido-especial-request';
+import { ValidarUsuarioPedidoEspecialRequest } from 'src/app/admin/models/pedidos-especiales/validar-usuario-pedido-especial-request';
 
 /**
  * Servicio HTTP de Pedidos Especiales. Consume `PedidosEspecialesController`
@@ -311,5 +331,120 @@ export class PedidosEspecialesService {
     return this.http
       .get<Notificacion<ConfiguracionPedidoEspecial[]>>(`${this.baseUri}/configuracion`, { params })
       .pipe(map((res) => (res?.modelo ?? []).map((c) => new ConfiguracionPedidoEspecialModel(c))));
+  }
+
+  // ====================== Cierre de Caja (feature cierre_caja_pe) ======================
+  //
+  // Apertura/ingreso de efectivo, retiro por exceso de efectivo, resumen/cierre de estación.
+  // idUsuario/idEstacion/idAlmacen NUNCA se mandan desde aquí (JWT), mismo criterio que el resto
+  // del servicio. Entidades y endpoints propios del módulo — NO se reusa `CajaService` (Ventas):
+  // es un estado de caja independiente (ver HU).
+
+  /**
+   * Estado compartido de "caja abierta" de Pedidos Especiales (FE-6). Expuesto como signal de
+   * solo lectura para que esta feature y la futura `cuentas_por_cobrar_pe` ("Realizar abono"
+   * exige caja abierta) lo consuman sin duplicar la consulta. `null` = todavía no se ha
+   * consultado. Se refresca con {@link refrescarCajaAbierta}.
+   */
+  private readonly _cajaAbierta = signal<boolean | null>(null);
+  readonly cajaAbierta = this._cajaAbierta.asReadonly();
+
+  /** Consulta `GET caja/abierta` (reemplaza `ValidaCajaAbierta` del legado) y actualiza {@link cajaAbierta}. */
+  refrescarCajaAbierta(): Observable<boolean> {
+    return this.http.get<Notificacion<boolean>>(`${this.baseUri}/caja/abierta`).pipe(
+      map((res) => res?.modelo ?? false),
+      tap((abierta) => this._cajaAbierta.set(abierta)),
+    );
+  }
+
+  /** Marca localmente la caja como abierta (evita una consulta extra justo tras registrar la apertura). */
+  marcarCajaAbierta(): void {
+    this._cajaAbierta.set(true);
+  }
+
+  /** Marca localmente la caja como cerrada (tras un cierre exitoso). */
+  marcarCajaCerrada(): void {
+    this._cajaAbierta.set(false);
+  }
+
+  /** Apertura de caja (idTipoIngreso=1) o ingreso de efectivo normal (idTipoIngreso=2) — un mismo endpoint cubre ambos casos. */
+  guardarIngresoEfectivo(request: IngresoEfectivoPedidoEspecialRequest): Observable<Notificacion<number>> {
+    return this.http.post<Notificacion<number>>(`${this.baseUri}/caja/ingreso-efectivo`, request);
+  }
+
+  /** Listado de ingresos/aperturas de efectivo del usuario autenticado. `fecha` opcional (null = hoy). */
+  obtenerIngresosEfectivo(fecha: string | null = null): Observable<IngresoEfectivoPedidoEspecial[]> {
+    let params = new HttpParams();
+    if (fecha) params = params.set('fecha', fecha);
+    return this.http
+      .get<Notificacion<IngresoEfectivoPedidoEspecial[]>>(`${this.baseUri}/caja/ingresos-efectivo`, { params })
+      .pipe(map((res) => (res?.modelo ?? []).map((i) => new IngresoEfectivoPedidoEspecialModel(i))));
+  }
+
+  /** PDF del comprobante de ingreso/apertura de efectivo (QuestPDF + ZXing, sin temporales). */
+  obtenerTicketIngresoEfectivo(idIngreso: number): Observable<Blob> {
+    return this.http.get(`${this.baseUri}/caja/ingreso-efectivo/${idIngreso}/ticket`, { responseType: 'blob' });
+  }
+
+  /** Retiro por exceso de efectivo. A diferencia de Ventas, el back NO valida tope contra `efectivoDisponible` (ver desviación documentada en la HU). */
+  registrarRetiroEfectivo(request: RetiroEfectivoPedidoEspecialRequest): Observable<Notificacion<number>> {
+    return this.http.post<Notificacion<number>>(`${this.baseUri}/caja/retiro-efectivo`, request);
+  }
+
+  /**
+   * Listado de retiros de exceso de efectivo. `idUsuario` siempre forzado a la sesión por el
+   * backend (sin excepción por rol, a diferencia de Ventas). No pagina server-side — la
+   * paginación queda client-side (ver componente).
+   */
+  obtenerRetirosEfectivo(
+    fecha: string | null = null,
+    idAlmacen: number | null = null,
+  ): Observable<RetiroEfectivoPedidoEspecial[]> {
+    let params = new HttpParams();
+    if (fecha) params = params.set('fecha', fecha);
+    if (idAlmacen) params = params.set('idAlmacen', idAlmacen);
+    return this.http
+      .get<Notificacion<RetiroEfectivoPedidoEspecial[]>>(`${this.baseUri}/caja/retiros-efectivo`, { params })
+      .pipe(map((res) => (res?.modelo ?? []).map((r) => new RetiroEfectivoPedidoEspecialModel(r))));
+  }
+
+  /** PDF del comprobante de retiro por exceso de efectivo. */
+  obtenerTicketRetiroEfectivo(idRetiro: number): Observable<Blob> {
+    return this.http.get(`${this.baseUri}/caja/retiro-efectivo/${idRetiro}/ticket`, { responseType: 'blob' });
+  }
+
+  /** Resumen ligero para validar el retiro de exceso de efectivo (efectivo disponible). NO es el resumen de "Cierre de Caja" (ver {@link obtenerCierreDia}). */
+  obtenerInfoCierre(): Observable<InfoCierrePedidoEspecial> {
+    return this.http
+      .get<Notificacion<InfoCierrePedidoEspecial>>(`${this.baseUri}/caja/info-cierre`)
+      .pipe(map((res) => new InfoCierrePedidoEspecialModel(res?.modelo ?? {})));
+  }
+
+  /**
+   * Resumen de "Cierre de Caja" del día (ventas por forma de pago, devoluciones,
+   * ingresos/retiros de efectivo, abonos), previo a confirmar el cierre. Efecto colateral real
+   * del SP reusado: crea/recalcula el cierre pendiente del día si no existe (ver HU).
+   */
+  obtenerCierreDia(): Observable<CierrePedidoEspecialDetalle[]> {
+    return this.http
+      .get<Notificacion<CierrePedidoEspecialDetalle[]>>(`${this.baseUri}/caja/cierre-dia`)
+      .pipe(map((res) => (res?.modelo ?? []).map((c) => new CierrePedidoEspecialDetalleModel(c))));
+  }
+
+  /** Valida usuario/contraseña de un autorizador antes del cierre (modal de autorización condicional a `RequiereAutCierre`). */
+  validarUsuarioCierre(request: ValidarUsuarioPedidoEspecialRequest): Observable<Notificacion<Sesion>> {
+    return this.http.post<Notificacion<Sesion>>(`${this.baseUri}/caja/validar-usuario`, request);
+  }
+
+  /** Cierre de la estación de Pedidos Especiales. `usuarioAutoriza`/`contrasena` solo si la configuración lo exige. */
+  cerrarCaja(request: CierrePedidoEspecialRequest): Observable<Notificacion<string>> {
+    return this.http
+      .post<Notificacion<string>>(`${this.baseUri}/caja/cerrar`, request)
+      .pipe(tap((res) => res?.estatus === 200 && this.marcarCajaCerrada()));
+  }
+
+  /** PDF del comprobante de cierre de caja del día. `idCierre` se relee de {@link obtenerCierreDia} (el SP de cierre no regresa el id). */
+  obtenerTicketCierre(idCierre: number): Observable<Blob> {
+    return this.http.get(`${this.baseUri}/caja/${idCierre}/ticket`, { responseType: 'blob' });
   }
 }

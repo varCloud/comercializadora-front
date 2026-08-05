@@ -3,8 +3,9 @@ import { RouterModule, Routes } from '@angular/router';
 
 // Rutas del dominio "Pedidos Especiales" (núcleo, Bloque A en adelante). "Nuevo Pedido" (FE-A3),
 // "Entregar Pedido" + "Confirmar Productos" (FE-B3/FE-B4, Bloque B), "Pedidos en Ruta" +
-// "Cotizaciones" (FE-C3/FE-C4, Bloque C) y "Consultar Pedidos" (FE-D3, Bloque D — cierra el
-// núcleo) ya existen. Cargada con loadComponent (regla 06).
+// "Cotizaciones" (FE-C3/FE-C4, Bloque C), "Consultar Pedidos" (FE-D3, Bloque D — cierra el
+// núcleo) y "Apertura/Ingreso de Efectivo" + "Retiro de Efectivo" + "Cierre de Caja" (FE-6,
+// feature `cierre_caja_pe`) ya existen. Cargada con loadComponent (regla 06).
 const routes: Routes = [
   {
     path: 'nuevo',
@@ -49,6 +50,28 @@ const routes: Routes = [
         (m) => m.ConsultarPedidosComponent,
       ),
     data: { title: 'Consultar Pedidos' },
+  },
+  {
+    path: 'apertura-ingreso-efectivo',
+    loadComponent: () =>
+      import('./pages/apertura-ingreso-efectivo/apertura-ingreso-efectivo.component').then(
+        (m) => m.AperturaIngresoEfectivoComponent,
+      ),
+    data: { title: 'Apertura de Caja / Ingreso de Efectivo' },
+  },
+  {
+    path: 'retiro-efectivo',
+    loadComponent: () =>
+      import('./pages/retiro-efectivo/retiro-efectivo.component').then(
+        (m) => m.RetiroEfectivoComponent,
+      ),
+    data: { title: 'Retiro de Efectivo' },
+  },
+  {
+    path: 'cierre-caja',
+    loadComponent: () =>
+      import('./pages/cierre-caja/cierre-caja.component').then((m) => m.CierreCajaComponent),
+    data: { title: 'Cierre de Caja' },
   },
 ];
 

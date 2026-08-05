@@ -2837,6 +2837,103 @@
         "efectivoRequerido": "You must enter how much cash they are paying with.",
         "efectivoInsuficiente": "The cash amount is not enough to cover the order total: {{total}}"
       }
+    },
+    "caja": {
+      "ingreso": {
+        "tituloApertura": "Cash register opening",
+        "tituloIngreso": "Cash deposit",
+        "avisoApertura": "This station does not have an open cash register. Register the opening to continue.",
+        "monto": "Amount",
+        "abrir": "Open register",
+        "guardar": "Save",
+        "verTicket": "View receipt",
+        "msg": {
+          "guardando": "Saving…",
+          "exito": "Deposit registered successfully.",
+          "error": "Error registering the cash deposit. Try again.",
+          "montoRequerido": "You must enter the amount.",
+          "errorTicket": "Error generating the deposit receipt PDF."
+        }
+      },
+      "retiro": {
+        "title": "Cash Withdrawal",
+        "montoARetirar": "Amount to withdraw",
+        "retirar": "Withdraw",
+        "verTicket": "View receipt",
+        "sinRegistros": "No withdrawals found.",
+        "columns": {
+          "id": "Id",
+          "monto": "Amount",
+          "usuario": "User",
+          "estacion": "Station",
+          "fecha": "Date"
+        },
+        "msg": {
+          "cargandoListado": "Loading withdrawals…",
+          "errorListado": "Error retrieving the withdrawal list.",
+          "guardando": "Registering withdrawal…",
+          "exito": "Withdrawal registered successfully.",
+          "error": "Error registering the withdrawal. Try again.",
+          "errorTicket": "Error generating the withdrawal receipt PDF."
+        }
+      },
+      "cierre": {
+        "title": "Cash Register Closing",
+        "resumen": {
+          "ingresos": "Cash deposits:",
+          "retiros": "Cash withdrawals:",
+          "saldoEfectivo": "Cash balance:",
+          "saldoTC": "Card balance:",
+          "devoluciones": "No. Returns:",
+          "ticketsEfectivo": "No. Cash tickets:",
+          "ticketsCredito": "No. Credit tickets:",
+          "pedidosResguardo": "No. Orders held:",
+          "pedidosEnRuta": "No. Orders in transit:"
+        },
+        "columns": {
+          "categoria": "Category",
+          "almacen": "Warehouse",
+          "ventasContado": "Cash",
+          "ventasTC": "Card",
+          "ventasTransferencias": "Transfers",
+          "ventasOtras": "Other payment methods",
+          "ventasCredito": "Credit",
+          "montoDevoluciones": "Returns",
+          "abonos": "Payments",
+          "totalEfectivo": "Total cash"
+        },
+        "sinDatos": "No closing data for today.",
+        "efectivoEntregado": "Cash delivered at closing",
+        "realizarCierre": "Perform closing",
+        "verTicket": "View receipt",
+        "continuar": "Continue",
+        "confirm": {
+          "text": "Are you sure you want to close this station?",
+          "accept": "Accept",
+          "cancel": "Cancel"
+        },
+        "msg": {
+          "cargando": "Loading closing summary…",
+          "errorCargar": "Error retrieving the closing summary.",
+          "montoRequerido": "You must enter the cash delivered at closing.",
+          "guardando": "Closing register…",
+          "exito": "Cash register closed successfully.",
+          "error": "Error closing the cash register. Try again.",
+          "errorTicket": "Error generating the closing receipt PDF."
+        }
+      },
+      "autorizar": {
+        "title": "Closing authorization",
+        "instrucciones": "This station requires a supervisor's authorization to close the register.",
+        "usuario": "Username",
+        "password": "Password",
+        "cancelar": "Cancel",
+        "autorizar": "Authorize",
+        "msg": {
+          "credencialesRequeridas": "You must enter a username and password to authorize the closing.",
+          "error": "Incorrect username or password."
+        }
+      }
     }
   }
 }

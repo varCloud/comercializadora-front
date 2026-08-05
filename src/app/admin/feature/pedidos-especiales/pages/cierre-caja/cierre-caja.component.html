@@ -1,0 +1,152 @@
+<div class="row" *blockUI="'cierreCaja'">
+  <div class="col-12">
+    <mat-card class="cardWithShadow">
+      <mat-card-content class="p-24">
+        <h4 class="f-s-18 f-w-600 m-b-16">{{ 'pedidosEspeciales.caja.cierre.title' | translate }}</h4>
+
+        @if (cierreExitoso()) {
+          <div class="text-center p-24">
+            <i-tabler name="circle-check" class="icon-48" [style.color]="'#13deb9'"></i-tabler>
+            <p class="f-s-16 f-w-600 m-t-16">{{ 'pedidosEspeciales.caja.cierre.msg.exito' | translate }}</p>
+            <button
+              mat-flat-button
+              color="primary"
+              class="m-r-8 text-nowrap"
+              type="button"
+              [disabled]="generandoTicket()"
+              (click)="verTicketCierre()"
+            >
+              <i-tabler name="printer" class="icon-18"></i-tabler>
+              {{ 'pedidosEspeciales.caja.cierre.verTicket' | translate }}
+            </button>
+            <button mat-stroked-button color="primary" class="text-nowrap" type="button" (click)="continuar()">
+              {{ 'pedidosEspeciales.caja.cierre.continuar' | translate }}
+            </button>
+          </div>
+        } @else if (encabezado(); as info) {
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <p class="clearfix">
+                <span class="float-start">{{ 'pedidosEspeciales.caja.cierre.resumen.ingresos' | translate }}</span>
+                <span class="float-end text-muted">{{ info.montoIngresosEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+              </p>
+              <p class="clearfix">
+                <span class="float-start">{{ 'pedidosEspeciales.caja.cierre.resumen.retiros' | translate }}</span>
+                <span class="float-end text-muted">{{ info.montoRetirosEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+              </p>
+              <p class="clearfix">
+                <span class="float-start f-w-600">{{ 'pedidosEspeciales.caja.cierre.resumen.saldoEfectivo' | translate }}</span>
+                <span class="float-end f-w-600">{{ info.montoCierreEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+              </p>
+              <p class="clearfix">
+                <span class="float-start f-w-600">{{ 'pedidosEspeciales.caja.cierre.resumen.saldoTC' | translate }}</span>
+                <span class="float-end f-w-600">{{ info.montoCierreTC | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+              </p>
+            </div>
+
+            <div class="col-12 col-lg-6">
+              <p class="clearfix">
+                <span class="float-start">{{ 'pedidosEspeciales.caja.cierre.resumen.devoluciones' | translate }}</span>
+                <span class="float-end text-muted">{{ info.noDevoluciones }}</span>
+              </p>
+              <p class="clearfix">
+                <span class="float-start">{{ 'pedidosEspeciales.caja.cierre.resumen.ticketsEfectivo' | translate }}</span>
+                <span class="float-end text-muted">{{ info.noTicketsEfectivo }}</span>
+              </p>
+              <p class="clearfix">
+                <span class="float-start">{{ 'pedidosEspeciales.caja.cierre.resumen.ticketsCredito' | translate }}</span>
+                <span class="float-end text-muted">{{ info.noTicketsCredito }}</span>
+              </p>
+              <p class="clearfix">
+                <span class="float-start">{{ 'pedidosEspeciales.caja.cierre.resumen.pedidosResguardo' | translate }}</span>
+                <span class="float-end text-muted">{{ info.noPedidosEnResguardo }}</span>
+              </p>
+              <p class="clearfix">
+                <span class="float-start">{{ 'pedidosEspeciales.caja.cierre.resumen.pedidosEnRuta' | translate }}</span>
+                <span class="float-end text-muted">{{ info.noPedidosEnRuta }}</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Detalle por categoría/almacén (tabla acotada al día, sin paginación server-side — ver nota de clase). -->
+          <div class="table-responsive m-t-16 m-b-16">
+            <table mat-table [dataSource]="lineas()" class="w-100 table-stacked-mobile">
+              <ng-container matColumnDef="descripcion">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.caja.cierre.columns.categoria' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.categoria' | translate">{{ l.descripcion }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="descripcionAlmacen">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.caja.cierre.columns.almacen' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.almacen' | translate">{{ l.descripcionAlmacen }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="ventasContado">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.caja.cierre.columns.ventasContado' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.ventasContado' | translate">{{ l.ventasContado | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="ventasTC">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.caja.cierre.columns.ventasTC' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.ventasTC' | translate">{{ l.ventasTC | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="ventasTransferencias">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.caja.cierre.columns.ventasTransferencias' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.ventasTransferencias' | translate">{{ l.ventasTransferencias | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="ventasOtrasFormasPago">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.caja.cierre.columns.ventasOtras' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.ventasOtras' | translate">{{ l.ventasOtrasFormasPago | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="ventasCredito">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.caja.cierre.columns.ventasCredito' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.ventasCredito' | translate">{{ l.ventasCredito | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="montoDevoluciones">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.caja.cierre.columns.montoDevoluciones' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.montoDevoluciones' | translate">{{ l.montoDevoluciones | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="abonosEfectivo">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.caja.cierre.columns.abonos' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.abonos' | translate">{{ l.abonosEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="totalEfectivo">
+                <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.caja.cierre.columns.totalEfectivo' | translate }}</th>
+                <td mat-cell *matCellDef="let l" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.caja.cierre.columns.totalEfectivo' | translate">{{ l.totalEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="['descripcion','descripcionAlmacen','ventasContado','ventasTC','ventasTransferencias','ventasOtrasFormasPago','ventasCredito','montoDevoluciones','abonosEfectivo','totalEfectivo']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['descripcion','descripcionAlmacen','ventasContado','ventasTC','ventasTransferencias','ventasOtrasFormasPago','ventasCredito','montoDevoluciones','abonosEfectivo','totalEfectivo']"></tr>
+            </table>
+
+            @if (cargado() && lineas().length === 0) {
+              <p class="text-center m-t-16 text-muted">{{ 'pedidosEspeciales.caja.cierre.sinDatos' | translate }}</p>
+            }
+          </div>
+
+          <form [formGroup]="cierreForm" class="row m-t-8">
+            <div class="col-12 col-lg-6 m-b-16">
+              <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.caja.cierre.efectivoEntregado' | translate }}</mat-label>
+              <mat-form-field appearance="outline" class="w-100">
+                <span matPrefix>$&nbsp;</span>
+                <input matInput type="number" min="0" step="0.01" formControlName="efectivoEntregadoEnCierre" />
+              </mat-form-field>
+            </div>
+          </form>
+
+          <div class="text-end">
+            <button mat-flat-button color="primary" [disabled]="guardando()" (click)="confirmarCierre()">
+              {{ 'pedidosEspeciales.caja.cierre.realizarCierre' | translate }}
+            </button>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

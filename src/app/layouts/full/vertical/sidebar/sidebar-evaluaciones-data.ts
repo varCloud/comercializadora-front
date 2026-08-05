@@ -188,6 +188,21 @@ export const navItemsApp: NavItem[] = [
         iconName: 'file-search',
         route: '/admin/pedidos-especiales/consultar-pedidos',
       },
+      {
+        displayName: 'Apertura / Ingreso de Efectivo',
+        iconName: 'lock-open',
+        route: '/admin/pedidos-especiales/apertura-ingreso-efectivo',
+      },
+      {
+        displayName: 'Retiro de Efectivo',
+        iconName: 'cash-banknote',
+        route: '/admin/pedidos-especiales/retiro-efectivo',
+      },
+      {
+        displayName: 'Cierre de Caja',
+        iconName: 'cash-register',
+        route: '/admin/pedidos-especiales/cierre-caja',
+      },
     ],
   },
   {
