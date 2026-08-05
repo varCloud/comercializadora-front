@@ -2859,6 +2859,8 @@
         "title": "Cash Withdrawal",
         "montoARetirar": "Amount to withdraw",
         "disponible": "Available",
+        "cajaCerrada": "No cash register is open. Open the register before registering a withdrawal.",
+        "irAApertura": "Go to Register Opening",
         "retirar": "Withdraw",
         "verTicket": "View receipt",
         "sinRegistros": "No withdrawals found.",

@@ -20,9 +20,16 @@ workspace), **`RetiroEfectivoComponent` se quedó sin la validación cliente de 
 en Ventas — `RetiroExcesoDialogComponent`, precedente correcto en este mismo repo) y sin el
 guard de caja abierta al entrar directo a Retiro.
 
-**Deuda pendiente (no bloqueante):** en `RetiroEfectivoComponent`, consultar `GET
-caja/info-cierre` antes de habilitar el submit y bloquear con toast si `monto >
-efectivoDisponible`, replicando el patrón de `retiro-exceso-dialog.component.ts:96-108`.
+**Corregido el mismo día** (commit `eva@524bef3`): `RetiroEfectivoComponent` ahora consulta `GET
+caja/info-cierre` al iniciar y tras cada retiro exitoso, bloquea el submit con toast si `monto >
+efectivoDisponible` (mismo patrón que `retiro-exceso-dialog.component.ts:96-108`) y muestra un
+hint del disponible en el campo.
+
+**También corregido el mismo día** (commit `eva` posterior a `524bef3`): "Retiro de Efectivo"
+ahora consulta el signal compartido `cajaAbierta` al iniciar (`service.refrescarCajaAbierta()`)
+y, si está cerrada, bloquea el formulario (input readonly + botón deshabilitado) con un aviso y
+un botón directo a "Apertura de Caja" (`router.navigate(['/admin/pedidos-especiales/apertura-ingreso-efectivo'])`,
+mismo patrón que `CierreCajaComponent.continuar()`). Sin deuda pendiente conocida de esta feature.
 
 **Lección para features futuras:** cuando una pantalla del legado combina 2+ flujos y se separa
 en pantallas nuevas independientes, listar explícitamente qué validaciones-cliente y qué guards

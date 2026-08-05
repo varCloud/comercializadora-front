@@ -1,6 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
@@ -34,6 +35,13 @@ import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
  * El endpoint `GET caja/retiros-efectivo` no pagina server-side (mismo caso que
  * `/api/caja/retiros` de Ventas) — se mantiene la paginación LOCAL ya implementada
  * (`setLocalPage`, mismo patrón que `RetirosIngresosComponent`).
+ *
+ * **Guard de caja abierta (hallazgo del paso 05 de verificación):** en el legado, Ingreso y
+ * Retiro viven en el mismo partial (`_IngresosRetirosEfectivo.cshtml`), así que
+ * `ValidaCajaAbierta()` siempre se dispara antes de poder ver la sección de retiro. Al separar
+ * esta pantalla del ingreso (decisión de diseño de `cierre_caja_pe`), ese chequeo se perdía si el
+ * usuario navegaba directo aquí — corregido consultando el signal compartido `cajaAbierta` del
+ * servicio (FE-6) y bloqueando el formulario con un aviso + acceso directo a Apertura de Caja.
  */
 @Component({
   selector: 'app-retiro-efectivo',
@@ -55,6 +63,7 @@ export class RetiroEfectivoComponent implements OnInit {
   private readonly service = inject(PedidosEspecialesService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
 
   @BlockUI('retiro-efectivo') blockUI!: NgBlockUI;
 
@@ -63,6 +72,9 @@ export class RetiroEfectivoComponent implements OnInit {
   readonly guardando = signal(false);
   readonly generandoTicket = signal<number | null>(null);
   readonly efectivoDisponible = signal(0);
+
+  /** `true` solo cuando ya se confirmó que NO hay caja abierta (evita el flash mientras carga). */
+  readonly cajaCerrada = computed(() => this.service.cajaAbierta() === false);
 
   readonly retiroForm = this.fb.group({
     monto: [null as number | null, [Validators.required, Validators.min(0.01)]],
@@ -76,6 +88,14 @@ export class RetiroEfectivoComponent implements OnInit {
   ngOnInit(): void {
     this.cargarRetiros();
     this.cargarEfectivoDisponible();
+    this.service.refrescarCajaAbierta().subscribe({
+      error: (err) => console.error('Error al validar la caja abierta de Pedidos Especiales', err),
+    });
+  }
+
+  /** Botón del aviso de "caja cerrada" — misma ruta que usa `CierreCajaComponent.continuar()`. */
+  irAApertura(): void {
+    this.router.navigate(['/admin/pedidos-especiales/apertura-ingreso-efectivo']);
   }
 
   private cargarEfectivoDisponible(): void {
@@ -106,7 +126,7 @@ export class RetiroEfectivoComponent implements OnInit {
   }
 
   retirar(): void {
-    if (this.retiroForm.invalid || this.guardando()) {
+    if (this.retiroForm.invalid || this.guardando() || this.cajaCerrada()) {
       this.retiroForm.markAllAsTouched();
       return;
     }

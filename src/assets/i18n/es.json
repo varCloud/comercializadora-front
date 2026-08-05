@@ -2859,6 +2859,8 @@
         "title": "Retiro de Efectivo",
         "montoARetirar": "Monto a retirar",
         "disponible": "Disponible",
+        "cajaCerrada": "No hay caja abierta. Abre la caja antes de registrar un retiro.",
+        "irAApertura": "Ir a Apertura de Caja",
         "retirar": "Retirar",
         "verTicket": "Ver ticket",
         "sinRegistros": "No se encontraron retiros.",

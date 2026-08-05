@@ -7,6 +7,18 @@
 <!-- Alta de retiro (réplica de RetirarExcesoEfectivo). -->
 <mat-card class="cardWithShadow">
   <mat-card-content class="p-24">
+    @if (cajaCerrada()) {
+      <div class="d-flex align-items-center justify-content-between gap-16 p-16 rounded-8 bg-light-warning m-b-16">
+        <span>
+          <i-tabler name="alert-triangle" class="icon-18 m-r-8"></i-tabler>
+          {{ 'pedidosEspeciales.caja.retiro.cajaCerrada' | translate }}
+        </span>
+        <button mat-stroked-button color="primary" type="button" (click)="irAApertura()">
+          {{ 'pedidosEspeciales.caja.retiro.irAApertura' | translate }}
+        </button>
+      </div>
+    }
+
     <form [formGroup]="retiroForm">
       <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{
         'pedidosEspeciales.caja.retiro.montoARetirar' | translate
@@ -14,10 +26,10 @@
       <div class="d-flex gap-8 align-items-start">
         <mat-form-field appearance="outline" class="flex-1-auto">
           <span matPrefix>$&nbsp;</span>
-          <input matInput type="number" min="0.01" step="0.01" formControlName="monto" />
+          <input matInput type="number" min="0.01" step="0.01" formControlName="monto" [readonly]="cajaCerrada()" />
           <mat-hint>{{ 'pedidosEspeciales.caja.retiro.disponible' | translate }}: {{ efectivoDisponible() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</mat-hint>
         </mat-form-field>
-        <button mat-flat-button color="primary" class="text-nowrap" type="button" [disabled]="guardando()" (click)="retirar()">
+        <button mat-flat-button color="primary" class="text-nowrap" type="button" [disabled]="guardando() || cajaCerrada()" (click)="retirar()">
           <i-tabler name="cash-banknote" class="icon-18"></i-tabler>
           {{ 'pedidosEspeciales.caja.retiro.retirar' | translate }}
         </button>
