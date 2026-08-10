@@ -2480,54 +2480,106 @@
   },
   "pedidosEspeciales": {
     "nuevoPedido": {
-      "title": "New Special Order",
+      "title": "Add Products to the Special Order:",
       "cliente": "Customer",
       "clientePlaceholder": "Select a customer…",
-      "almacen": "Warehouse",
+      "almacen": "Warehouses",
       "almacenPlaceholder": "Select a warehouse…",
-      "formaPago": "Payment method",
-      "facturar": "Invoice",
-      "usoCfdi": "CFDI usage",
       "seleccione": "Select an option",
+      "autorizadoConPedido": "Authorized with Order",
+      "acciones": {
+        "ingresoEfectivo": "Cash deposit",
+        "retiroExceso": "Excess cash withdrawal",
+        "abrirCajon": "Open drawer",
+        "abrirCajonNoDisponible": "Opening the drawer requires the server receipt printer; it is not available in the web panel yet.",
+        "cierreCajas": "Cash register closing",
+        "cargarExistencias": "Reload stock",
+        "aprobarPrecioMayoreo": "Approve Wholesale Price"
+      },
       "buscarProducto": {
-        "label": "Search product",
-        "placeholder": "Type to search a product…",
+        "label": "Product:",
+        "placeholder": "Type the product name",
         "cantidad": "Quantity",
         "agregar": "Add",
+        "leyenda": "D: Available, E: In stock, S/A: Not shelved, R: Reserved, B: Blocked, ME: Retail price, MA: Wholesale price",
         "msg": {
-          "seleccionaProducto": "Select a product from the list before adding it.",
-          "cantidadRequerida": "You must enter a quantity greater than zero."
+          "seleccionaProducto": "You must select the product you want to add.",
+          "cantidadRequerida": "You must enter the quantity of products to add."
         }
       },
       "tabla": {
+        "idProducto": "Product Id",
         "producto": "Product",
+        "almacen": "Warehouse",
         "cantidad": "Quantity",
         "precio": "Price",
         "existencia": "Stock",
-        "existenciaPendiente": "Pending lookup",
-        "sinExistencia": "No stock",
-        "importe": "Amount",
+        "total": "Total",
+        "descuento": "Discount",
         "acciones": "Actions",
         "eliminar": "Remove",
         "vacio": "Search and add products to the order."
       },
       "resumen": {
+        "title": "Special Order Summary:",
         "subtotal": "Subtotal",
-        "iva": "VAT",
-        "ajustarIva": "Adjust VAT",
-        "cancelarAjuste": "Cancel adjustment",
         "total": "Total",
-        "guardar": "Save order",
-        "guardarHandHeld": "Hand Held review",
-        "guardarCotizacion": "Save quote",
+        "ultimoCambio": "Last change:",
+        "generarPedido": "Generate Special Order",
+        "guardarCotizacion": "Save Quote",
         "limpiar": "Clear"
+      },
+      "generarDialog": {
+        "titulo": "Generate Special Order",
+        "tituloCotizacion": "Generate Quote",
+        "cliente": "Customer Data",
+        "tipoRevision": "Review Type",
+        "porTicket": "Ticket review",
+        "porHandHeld": "Hand Held review",
+        "imprimirTicketCliente": "Do you want to print the customer ticket?",
+        "guardar": "Save",
+        "cerrar": "Close"
+      },
+      "mayoreo": {
+        "title": "Authorize Wholesale Price",
+        "datosTicket": "Ticket Data",
+        "ticket": "Ticket",
+        "consultar": "Search",
+        "articulos": "Items:",
+        "total": "Total:",
+        "cliente": "Customer:",
+        "autorizarPrecio": "Authorize Price",
+        "usuario": "User",
+        "password": "Password",
+        "autorizar": "Authorize",
+        "cerrar": "Close",
+        "confirm": "Are you sure you want to authorize this ticket at wholesale price?",
+        "msg": {
+          "folioRequerido": "You must enter the wholesale ticket number.",
+          "noEncontrado": "The requested special order was not found.",
+          "noEntregado": "The ticket must be in delivered status.",
+          "minArticulos": "The ticket does not contain at least 6 products.",
+          "credencialesRequeridas": "You must enter user and password to authorize the wholesale price.",
+          "consultaPrimero": "You must look up a valid special order to authorize the wholesale price.",
+          "errorConsulta": "An error occurred while looking up the wholesale ticket.",
+          "errorAutorizar": "The wholesale price could not be authorized."
+        }
+      },
+      "confirm": {
+        "title": "Message",
+        "porTicket": "Are you sure you want to do the ticket review?",
+        "porHandHeld": "Are you sure you want to do the Hand Held review?",
+        "cotizacion": "Are you sure you want to save this special order as a quote?",
+        "accept": "Yes",
+        "cancel": "No"
       },
       "msg": {
         "clienteRequerido": "You must select a customer.",
-        "almacenRequerido": "You must select a warehouse.",
-        "formaPagoRequerida": "You must select a payment method.",
-        "usoCfdiRequerido": "You must select a CFDI usage to invoice.",
-        "sinProductos": "Add at least one product to the order.",
+        "almacenRequerido": "You must select a warehouse to check its stock.",
+        "sinProductos": "You must add products to continue with the special order.",
+        "sinInventario": "There is not enough product in stock.",
+        "sinPrecio": "You must configure the individual and wholesale price of the product.",
+        "existenciasActualizadas": "Stock updated.",
         "loadError": "Error loading the special order catalogs.",
         "preciosError": "Could not get the price for the selected product.",
         "guardando": "Saving special order…",
@@ -2853,6 +2905,61 @@
           "error": "Error registering the cash deposit. Try again.",
           "montoRequerido": "You must enter the amount.",
           "errorTicket": "Error generating the deposit receipt PDF."
+        }
+      },
+      "ingresoDialog": {
+        "tituloApertura": "Cash register opening",
+        "tituloIngreso": "Cash Deposit",
+        "instrucciones": "This station has no open cash register. Register the opening amount to work on special orders.",
+        "monto": "Amount",
+        "guardar": "Save",
+        "salir": "Exit",
+        "cancelar": "Cancel",
+        "msg": {
+          "validando": "Validating cash register opening…",
+          "errorValidar": "Error validating the cash register opening.",
+          "montoRequerido": "You must enter the cash amount.",
+          "montoMayorCero": "The cash deposit must be greater than 0.",
+          "exito": "Movement registered successfully.",
+          "error": "Error registering the cash movement. Try again.",
+          "errorTicket": "Error generating the movement receipt PDF.",
+          "aperturaRequerida": "You must register the cash register opening to create special orders."
+        }
+      },
+      "retiroDialog": {
+        "title": "Excess cash withdrawal",
+        "tabs": {
+          "retirar": "Withdraw",
+          "retirosDia": "Withdrawals of the day"
+        },
+        "resumen": {
+          "apertura": "Cash register opening:",
+          "ingresos": "Cash deposits (request):",
+          "pedidosDia": "Sales of the day:",
+          "montoPedidosDia": "Sales amount:",
+          "efectivo": "Cash on hand:",
+          "retirado": "Withdrawn today:"
+        },
+        "montoARetirar": "Amount to withdraw:",
+        "retirar": "Withdraw cash",
+        "cerrar": "Close",
+        "sinRegistros": "No withdrawals found.",
+        "columns": {
+          "id": "Id",
+          "monto": "Amount",
+          "usuario": "User",
+          "estacion": "Station",
+          "fecha": "Date",
+          "reimprimir": "Reprint"
+        },
+        "msg": {
+          "montoRequerido": "You must enter an amount to withdraw.",
+          "excedeDisponible": "You only have ${{disponible}} available to withdraw.",
+          "exito": "Withdrawal registered successfully.",
+          "error": "Error registering the withdrawal. Try again.",
+          "errorTicket": "Error generating the withdrawal receipt PDF.",
+          "errorListado": "Error loading the withdrawals list.",
+          "errorDisponible": "Error loading the available cash."
         }
       },
       "retiro": {

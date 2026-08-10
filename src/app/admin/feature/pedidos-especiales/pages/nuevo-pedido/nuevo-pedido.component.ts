@@ -1,16 +1,17 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatCheckboxChange } from '@angular/material/checkbox';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
-import { debounceTime, distinctUntilChanged, finalize, map, of, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, forkJoin, map, of, switchMap } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { NotificationService } from 'src/app/services/notification.service';
-import { SelectPaginadoComponent } from 'src/app/admin/shared/components/select-paginado/select-paginado.component';
-import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
+import { ENUM_ESTATUS_MODAL, ResultModalModel } from 'src/app/models/result-modal';
+import { abrirPdfBlob, imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { CONSTANTS } from 'src/app/config/constants';
 import { Catalogo } from 'src/app/admin/models/shared/catalogo';
 import { Producto } from 'src/app/admin/models/productos/producto';
@@ -20,47 +21,27 @@ import {
 } from 'src/app/admin/models/pedidos-especiales/partida-pedido-especial';
 import { GuardarPedidoEspecialRequestModel } from 'src/app/admin/models/pedidos-especiales/guardar-pedido-especial-request';
 import { PedidoEspecialProductoRequestModel } from 'src/app/admin/models/pedidos-especiales/pedido-especial-producto-request';
-import { ClientesService } from 'src/app/admin/services/clientes.service';
+import { TipoIngresoPedidoEspecialId } from 'src/app/admin/models/pedidos-especiales/tipo-ingreso-pedido-especial';
 import { ProductosService } from 'src/app/admin/services/productos.service';
 import { UbicacionesService } from 'src/app/admin/services/ubicaciones.service';
 import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especiales.service';
+import { IngresoEfectivoDialogComponent } from '../../components/ingreso-efectivo-dialog/ingreso-efectivo-dialog.component';
+import { RetiroExcesoEfectivoDialogComponent } from '../../components/retiro-exceso-efectivo-dialog/retiro-exceso-efectivo-dialog.component';
+import { AprobarPrecioMayoreoDialogComponent } from '../../components/aprobar-precio-mayoreo-dialog/aprobar-precio-mayoreo-dialog.component';
+import {
+  GenerarPedidoEspecialDialogComponent,
+  GenerarPedidoEspecialResultado,
+} from '../../components/generar-pedido-especial-dialog/generar-pedido-especial-dialog.component';
 
 /**
- * Página "Nuevo Pedido" (Bloque A, corregida post-verificación paso 05) — réplica de
- * `Views/PedidosEspecialesV2/PedidosEspeciales.cshtml` + `EvtPedidosEspecialesV2.js` (alta de
- * pedido especial): selección de cliente, almacén para validar existencia, productos con
- * cantidad/precio/existencia en una tabla de partidas editable, forma de pago, checkbox
- * "Facturar" (igual que `#chkFacturar`) que despliega Uso de CFDI y calcula IVA
- * (`calculaTotales()`: 16% del subtotal solo si factura), y total.
+ * "Nuevo Pedido Especial" — réplica 1:1 (regla 21) de `PedidosEspeciales.cshtml` +
+ * `EvtPedidosEspecialesV2.js` + `evtIngresosRetirosEfectivo.js`.
  *
- * **Los 3 flujos de guardado del legado** (mismo formulario, misma función
- * `GuardarPedidoEspecial(tipoRevision, idEstatusPedidoEspecial)` — `EvtPedidosEspecialesV2.js:579-638`):
- * "Guardar" = Revisión por Ticket (`tipoRevision=1, idEstatusPedidoEspecial=1`,
- * `btnRevisionPorTicket`), "Revisión por Hand Held" (`tipoRevision=2, idEstatusPedidoEspecial=1`,
- * `btnRevisionPorHandHeld`) y "Guardar Cotización" (`tipoRevision=3, idEstatusPedidoEspecial=2`,
- * `btnCotizar`/`btnGeneraCotizacion`) — este último alimenta la pantalla "Cotizaciones" (Bloque
- * C). El legado valida los 3 igual (cliente + al menos un producto, `abrirModalGuardarPedidoEspecial`
- * en `EvtPedidosEspecialesV2.js:530-576`); Forma de Pago/Uso CFDI **no** se envían en el payload
- * de `GuardarPedidoEspecial` en ningún flujo (confirmado en el JS: el `dataToPost` solo lleva
- * `productos/tipoRevision/idCliente/idEstatusPedidoEspecial/idPedidoEspecial/idPedidoEspecialMayoreo_`)
- * — por eso `guardar()` usa la misma validación de formulario para los 3 botones.
- *
- * Integración real: guarda con `PedidosEspecialesService.guardarPedido` y descarga el ticket PDF
- * — **sin** llamar `guardarIva` (corrección post-verificación: en el legado
- * `SP_GUARDA_IVA_PEDIDO_ESPECIAL_V2` solo se dispara manualmente y después, desde "Consultar
- * Pedidos" — `btnGuardarIVA`, `EvtConsultaPedidosEspecialesV2.js:858-889` — nunca desde el alta;
- * `guardarIva` se conserva en `PedidosEspecialesService` por si se porta ese botón a futuro,
- * pero esta pantalla ya no lo invoca). El legado tampoco descarga un PDF de ticket automáticamente
- * en ninguno de los 3 flujos (dispara impresión física server-side — `imprimirTicketAlmacenes`/
- * `ImprimeTicketPedidoEspecial`, no portable a web, mismo criterio que Bloque B); la descarga del
- * PDF del ticket de alta (`obtenerTicket`, Bloque A) es la adaptación web ya establecida y
- * aprobada de esa impresión — se replica igual para los 3 flujos porque el legado no distingue
- * entre ellos en su handler de éxito.
- *
- * Cliente/almacenes/búsqueda de producto/precio por volumen reusan
- * `ClientesService`/`UbicacionesService`/`ProductosService` ya migrados (regla 00); solo lo
- * propio de Pedidos Especiales (guardar, existencia por almacén, formas de pago/uso CFDI
- * propios, ticket) pasa por `PedidosEspecialesService`.
+ * - Al entrar valida `ValidaCajaAbierta()` y, si no hay caja, fuerza el modal de apertura.
+ * - Cliente y tipo de revisión se piden en el modal "Generar Pedido Especial", no en la pantalla.
+ * - No hay Forma de Pago / Facturar / Uso CFDI: restos del modal de venta del legado, nunca
+ *   viajan en el payload; el IVA se ajusta después desde "Consultar Pedidos".
+ * - Guardado: 1,1 = por Ticket; 2,1 = por Hand Held; 3,2 = Cotización.
  */
 @Component({
   selector: 'app-nuevo-pedido',
@@ -73,16 +54,15 @@ import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especia
     TranslatePipe,
     BlockUIModule,
     CurrencyPipe,
-    SelectPaginadoComponent,
   ],
   templateUrl: './nuevo-pedido.component.html',
   styleUrl: './nuevo-pedido.component.scss',
 })
 export class NuevoPedidoComponent implements OnInit {
-  private readonly fb = inject(FormBuilder);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
-  private readonly clientesService = inject(ClientesService);
+  private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
   private readonly productosService = inject(ProductosService);
   private readonly ubicacionesService = inject(UbicacionesService);
   private readonly pedidosEspecialesService = inject(PedidosEspecialesService);
@@ -91,34 +71,13 @@ export class NuevoPedidoComponent implements OnInit {
 
   @ViewChild('buscarProductoInput') private readonly buscarProductoInputRef!: ElementRef<HTMLInputElement>;
 
-  readonly nuevoPedidoForm = this.fb.group({
-    idCliente: [null as number | null, Validators.required],
-    idAlmacen: [null as number | null, Validators.required],
-    idFormaPago: [null as number | null, Validators.required],
-    facturar: [false],
-    idUsoCFDI: [null as number | null],
-  });
-
-  readonly facturarValue = toSignal(this.nuevoPedidoForm.controls.facturar.valueChanges, {
-    initialValue: this.nuevoPedidoForm.controls.facturar.value,
-  });
-
-  // ====================== Catálogos ======================
+  // ====================== Almacén / buscador de producto ======================
 
   readonly almacenes = signal<Catalogo[]>([]);
-  readonly formasPago = signal<Catalogo[]>([]);
-  readonly usoCfdiOpciones = signal<Catalogo[]>([]);
-  /** Sembrado del cliente seleccionado para `app-select-paginado` (regla 16). */
-  readonly clientePreload = signal<unknown[]>([]);
-
-  /**
-   * Catálogo grande (>25, mismo precedente que `ventas-list`/`cobro-dialog`) → selector
-   * paginado (regla 16), reusando `ClientesService.listar` ya migrado (regla 00).
-   */
-  readonly fetchClientes = (q: string, page: number) =>
-    this.clientesService.listar({ q, page, perPage: 25 }).pipe(map((res) => res.data));
-
-  // ====================== Buscador de producto (réplica del select2 legado) ======================
+  readonly idAlmacen = new FormControl<number | null>(null);
+  private readonly idAlmacenValue = toSignal(this.idAlmacen.valueChanges, {
+    initialValue: this.idAlmacen.value,
+  });
 
   readonly buscarProductoControl = new FormControl<Producto | string>('', { nonNullable: true });
   readonly productoSeleccionado = signal<Producto | null>(null);
@@ -126,9 +85,9 @@ export class NuevoPedidoComponent implements OnInit {
   cantidadManual = 1;
 
   /**
-   * Búsqueda server-side por descripción (`ProductosService.buscarPorDescripcion`, regla 00 —
-   * mismo endpoint `GET /productos/buscar?descripcion=` que el resto del catálogo). Debounce +
-   * `distinctUntilChanged` (regla 13) para no disparar una petición por tecla.
+   * Búsqueda server-side por descripción (`ProductosService.buscarPorDescripcion`, regla 00), con
+   * debounce + `distinctUntilChanged` (regla 13). Equivale al autocompletado jQuery UI del legado
+   * (`InitSelect2Productos`), que precarga los productos del almacén seleccionado.
    */
   readonly sugerenciasProductos = toSignal(
     this.buscarProductoControl.valueChanges.pipe(
@@ -146,40 +105,118 @@ export class NuevoPedidoComponent implements OnInit {
     { initialValue: [] as Producto[] },
   );
 
-  // ====================== Tabla de partidas ======================
+  // ====================== Partidas / totales ======================
 
   readonly partidas = signal<PartidaPedidoEspecialModel[]>([]);
+  /** Mismas columnas (y orden) que la tabla `#tablaRepVentas` del legado. */
+  readonly displayedColumns = [
+    'indice',
+    'idProducto',
+    'producto',
+    'almacen',
+    'precio',
+    'cantidad',
+    'total',
+    'descuento',
+    'acciones',
+  ];
+  readonly agregando = signal(false);
+  readonly guardando = signal(false);
+
+  /** Folio del ticket autorizado a precio de mayoreo (`idPedidoEspecialMayoreo_` del legado). */
+  readonly idPedidoEspecialMayoreo = signal(0);
 
   readonly subtotal = computed(() =>
     this.round2(this.partidas().reduce((acc, p) => acc + this.importePartida(p), 0)),
   );
 
-  /** IVA 16% del subtotal, solo si "Facturar" está marcado — réplica exacta de `calculaTotales()`. */
-  private readonly ivaCalculado = computed(() =>
-    this.facturarValue() ? this.round2(this.subtotal() * 0.16) : 0,
-  );
-
-  /** Ajuste manual de IVA: solo afecta el total mostrado antes de guardar (ver nota en el DTO). */
-  readonly ivaAjustado = signal<number | null>(null);
-  readonly ajustandoIva = signal(false);
-
-  readonly iva = computed(() => this.ivaAjustado() ?? this.ivaCalculado());
-
-  readonly total = computed(() => this.round2(this.subtotal() + this.iva()));
-
-  readonly guardando = signal(false);
-
   ngOnInit(): void {
-    this.cargarCatalogosIniciales();
-    this.nuevoPedidoForm.controls.idAlmacen.valueChanges.subscribe((idAlmacen) => {
-      if (!idAlmacen) return;
-      this.partidas().forEach((p) => this.actualizarExistencia(p.idProducto, idAlmacen));
+    this.cargarAlmacenes();
+    this.validarCajaAbierta();
+  }
+
+  // ====================== Guard de caja abierta (legado: ValidaCajaAbierta) ======================
+
+  private validarCajaAbierta(): void {
+    this.blockUI.start(this.translate.instant('pedidosEspeciales.caja.ingresoDialog.msg.validando'));
+    this.pedidosEspecialesService
+      .refrescarCajaAbierta()
+      .pipe(finalize(() => this.blockUI.stop()))
+      .subscribe({
+        next: (abierta) => {
+          if (!abierta) this.abrirAperturaCaja();
+        },
+        error: (err) => {
+          console.error('Error al validar la caja abierta de Pedidos Especiales', err);
+          this.notify.notify('error', this.translate.instant('pedidosEspeciales.caja.ingresoDialog.msg.errorValidar'));
+        },
+      });
+  }
+
+  /** Modal bloqueante de apertura; si se sale sin registrarla, no se permite operar la pantalla. */
+  private abrirAperturaCaja(): void {
+    this.dialog
+      .open(IngresoEfectivoDialogComponent, {
+        width: '480px',
+        maxWidth: '95vw',
+        disableClose: true,
+        data: { tipo: TipoIngresoPedidoEspecialId.AperturaCaja },
+      })
+      .afterClosed()
+      .subscribe((res: ResultModalModel | undefined) => {
+        if (res?.status === ENUM_ESTATUS_MODAL.OK) return;
+        this.notify.notify('warning', this.translate.instant('pedidosEspeciales.caja.ingresoDialog.msg.aperturaRequerida'));
+        this.router.navigate(['/admin/pedidos-especiales/consultar-pedidos']);
+      });
+  }
+
+  // ====================== Acciones del header (1:1 con el legado) ======================
+
+  /** "Ingreso de efectivo" — `AbrirModalIngresoEfectivo(2)`. */
+  abrirIngresoEfectivo(): void {
+    this.dialog.open(IngresoEfectivoDialogComponent, {
+      width: '480px',
+      maxWidth: '95vw',
+      data: { tipo: TipoIngresoPedidoEspecialId.IngresoEfectivo },
     });
   }
 
-  private cargarCatalogosIniciales(): void {
-    // Almacenes de la sucursal fija (Uruapan, regla 15): el selector de sucursal no aplica aquí,
-    // solo se usa el id fijo para pedir los almacenes (reusa UbicacionesService, regla 00).
+  /** "Retiro de exceso de efectivo" — `AbrirModalRetiroExcesoEfectivo()`. */
+  abrirRetiroExcesoEfectivo(): void {
+    this.dialog.open(RetiroExcesoEfectivoDialogComponent, { width: '900px', maxWidth: '95vw' });
+  }
+
+  /**
+   * "Abrir cajón" — el legado manda una secuencia ESC/POS a la impresora térmica del servidor
+   * (`PedidosEspecialesV2Controller.AbrirCajon`). No hay endpoint equivalente en la API migrada
+   * (misma limitación ya documentada para la impresión de tickets), así que se avisa al usuario
+   * en vez de simular la acción.
+   */
+  abrirCajon(): void {
+    this.notify.notify('info', this.translate.instant('pedidosEspeciales.nuevoPedido.acciones.abrirCajonNoDisponible'));
+  }
+
+  /** "Cierre de cajas" — el legado navega a `PedidosEspecialesV2/CierreCajas`. */
+  irACierreCajas(): void {
+    this.router.navigate(['/admin/pedidos-especiales/cierre-caja']);
+  }
+
+  /** "Aprobar Precio Mayoreo" — `ModalAutorizarPrecioMayoreo()`. */
+  abrirAprobarPrecioMayoreo(): void {
+    this.dialog
+      .open(AprobarPrecioMayoreoDialogComponent, { width: '900px', maxWidth: '95vw' })
+      .afterClosed()
+      .subscribe((res: ResultModalModel | undefined) => {
+        if (res?.status !== ENUM_ESTATUS_MODAL.OK) return;
+        this.idPedidoEspecialMayoreo.set(Number(res.data) || 0);
+        this.recalcularPrecios();
+      });
+  }
+
+  // ====================== Catálogos / existencias ======================
+
+  private cargarAlmacenes(): void {
+    // Sucursal fija Uruapan (regla 15): aquí no hay selector de sucursal, solo su id.
     this.ubicacionesService.obtenerAlmacenes(CONSTANTS.SUCURSAL_DEFAULT.ID).subscribe({
       next: (lista) => this.almacenes.set(lista),
       error: (err) => {
@@ -187,65 +224,35 @@ export class NuevoPedidoComponent implements OnInit {
         this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.loadError'));
       },
     });
-
-    this.pedidosEspecialesService.obtenerFormasPago().subscribe({
-      next: (lista) => this.formasPago.set(lista),
-      error: (err) => {
-        console.error('Error al cargar el catálogo de formas de pago', err);
-        this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.loadError'));
-      },
-    });
-
-    this.pedidosEspecialesService.obtenerUsosCfdi().subscribe({
-      next: (lista) => this.usoCfdiOpciones.set(lista),
-      error: (err) => {
-        console.error('Error al cargar el catálogo de usos de CFDI', err);
-        this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.loadError'));
-      },
-    });
   }
 
-  /**
-   * Existencia de un producto en el almacén indicado (o el seleccionado en el form). Actualiza
-   * la partida con `existencia`/`inhabilitado` (ya calculados por la API, el front no los
-   * re-evalúa — mismo criterio que `PedidoEspecialProducto` en Ventas Bloque E).
-   */
-  private actualizarExistencia(idProducto: number, idAlmacen?: number | null): void {
-    const almacen = idAlmacen ?? this.nuevoPedidoForm.controls.idAlmacen.value;
-    if (!almacen) return;
+  /** Botón de recarga del legado (`ActualizarProductosAlmacen`): refresca existencias del almacén. */
+  actualizarExistencias(): void {
+    const almacen = this.idAlmacenValue();
+    if (!almacen) {
+      this.notify.notify('info', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.almacenRequerido'));
+      return;
+    }
 
-    this.pedidosEspecialesService.consultarExistencia(idProducto, almacen).subscribe({
+    this.partidas().forEach((p) => this.refrescarExistenciaPartida(p.idProducto, p.idAlmacen));
+    this.notify.notify('info', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.existenciasActualizadas'));
+  }
+
+  private refrescarExistenciaPartida(idProducto: number, idAlmacen: number): void {
+    this.pedidosEspecialesService.consultarExistencia(idProducto, idAlmacen).subscribe({
       next: (res) => {
         const existencia = res?.modelo?.cantidad ?? 0;
         const inhabilitado = res?.modelo?.inhabilitado ?? true;
         this.partidas.update((lista) =>
           lista.map((p) =>
-            p.idProducto === idProducto ? new PartidaPedidoEspecialModel({ ...p, existencia, inhabilitado }) : p,
+            p.idProducto === idProducto && p.idAlmacen === idAlmacen
+              ? new PartidaPedidoEspecialModel({ ...p, existencia, inhabilitado })
+              : p,
           ),
         );
       },
-      error: (err) => {
-        console.error('Error al consultar la existencia del producto', err);
-      },
+      error: (err) => console.error('Error al consultar la existencia del producto', err),
     });
-  }
-
-  // ====================== Cliente ======================
-
-  /**
-   * Sin validación adicional de datos fiscales al seleccionar: a diferencia de `cobro-dialog`
-   * (Ventas), esta HU no pide validar RFC/régimen del cliente antes de guardar — el pedido se
-   * puede ajustar fiscalmente después con "Ajustar IVA" (ver `guardarIva`). Hook reservado por
-   * si una HU futura de este bloque lo requiere.
-   */
-  onClienteSeleccionado(_item: unknown): void {}
-
-  // ====================== Facturar / Uso CFDI ======================
-
-  onFacturarChange(_event: MatCheckboxChange): void {
-    if (!this.nuevoPedidoForm.controls.facturar.value) {
-      this.nuevoPedidoForm.controls.idUsoCFDI.setValue(null);
-    }
   }
 
   // ====================== Buscador de producto ======================
@@ -259,7 +266,20 @@ export class NuevoPedidoComponent implements OnInit {
     return valor.descripcion;
   }
 
+  /**
+   * "Agregar" del legado (`AgregarProducto`): valida producto, cantidad, existencia en el almacén
+   * y precios configurados; si el producto ya está en la tabla **con el mismo almacén**, suma la
+   * cantidad en vez de duplicar la fila.
+   */
   agregarProducto(): void {
+    if (this.agregando()) return;
+
+    const idAlmacen = this.idAlmacenValue();
+    if (!idAlmacen) {
+      this.notify.notify('warning', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.almacenRequerido'));
+      return;
+    }
+
     const producto = this.productoSeleccionado();
     if (!producto) {
       this.notify.notify(
@@ -278,48 +298,81 @@ export class NuevoPedidoComponent implements OnInit {
       return;
     }
 
-    const existente = this.partidas().find((p) => p.idProducto === producto.idProducto);
-    if (existente) {
-      this.partidas.update((lista) =>
-        lista.map((p) =>
-          p.idProducto === producto.idProducto
-            ? new PartidaPedidoEspecialModel({ ...p, cantidad: this.round2(p.cantidad + cantidad) })
-            : p,
-        ),
-      );
-      this.recalcularPrecios();
-      this.resetearBuscadorProducto();
-      return;
-    }
+    const existente = this.partidas().find(
+      (p) => p.idProducto === producto.idProducto && p.idAlmacen === idAlmacen,
+    );
+    const cantidadFinal = this.round2((existente?.cantidad ?? 0) + cantidad);
 
-    // Precios + rangos de mayoreo del producto (GET /productos/{id}/precios, regla 00): se
-    // piden al agregarlo, no en la búsqueda (evita llamadas por cada tecla del autocompletado).
-    this.productosService.obtenerPrecios(producto.idProducto).subscribe({
-      next: (precios) => {
-        this.partidas.update((lista) => [
-          ...lista,
-          new PartidaPedidoEspecialModel({
-            idProducto: producto.idProducto,
-            descripcion: producto.descripcion,
-            codigoBarras: producto.codigoBarras,
-            cantidad,
-            precioIndividual: precios.precioIndividual ?? producto.precioIndividual ?? 0,
-            precioMenudeo: precios.precioMenudeo ?? producto.precioMenudeo ?? 0,
-            precio: precios.precioIndividual ?? producto.precioIndividual ?? 0,
-            existencia: -1,
-            rangos: precios.rangos,
-          }),
-        ]);
-        this.recalcularPrecios();
-        this.actualizarExistencia(producto.idProducto);
-      },
-      error: (err) => {
-        console.error('Error al consultar el precio del producto', err);
-        this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.preciosError'));
-      },
-    });
+    this.agregando.set(true);
+    // Existencia + precios en paralelo: el legado valida ambos antes de pintar la fila.
+    forkJoin({
+      existencia: this.pedidosEspecialesService.consultarExistencia(producto.idProducto, idAlmacen),
+      precios: this.productosService.obtenerPrecios(producto.idProducto),
+    })
+      .pipe(finalize(() => this.agregando.set(false)))
+      .subscribe({
+        next: ({ existencia, precios }) => {
+          const disponible = existencia?.modelo?.cantidad ?? 0;
+          const inhabilitado = existencia?.modelo?.inhabilitado ?? true;
 
-    this.resetearBuscadorProducto();
+          if (cantidadFinal > disponible) {
+            this.notify.notify(
+              'warning',
+              this.translate.instant('pedidosEspeciales.nuevoPedido.msg.sinInventario'),
+            );
+            return;
+          }
+
+          const precioIndividual = precios.precioIndividual ?? producto.precioIndividual ?? 0;
+          const precioMenudeo = precios.precioMenudeo ?? producto.precioMenudeo ?? 0;
+          if (precioIndividual <= 0 || precioMenudeo <= 0) {
+            this.notify.notify(
+              'warning',
+              this.translate.instant('pedidosEspeciales.nuevoPedido.msg.sinPrecio'),
+            );
+            return;
+          }
+
+          if (existente) {
+            this.partidas.update((lista) =>
+              lista.map((p) =>
+                p.idProducto === producto.idProducto && p.idAlmacen === idAlmacen
+                  ? new PartidaPedidoEspecialModel({ ...p, cantidad: cantidadFinal, existencia: disponible, inhabilitado })
+                  : p,
+              ),
+            );
+          } else {
+            this.partidas.update((lista) => [
+              new PartidaPedidoEspecialModel({
+                idProducto: producto.idProducto,
+                descripcion: producto.descripcion,
+                codigoBarras: producto.codigoBarras,
+                idAlmacen,
+                almacen: this.nombreAlmacen(idAlmacen),
+                cantidad,
+                precioIndividual,
+                precioMenudeo,
+                precio: precioIndividual,
+                existencia: disponible,
+                inhabilitado,
+                rangos: precios.rangos,
+              }),
+              ...lista,
+            ]);
+          }
+
+          this.recalcularPrecios();
+          this.resetearBuscadorProducto();
+        },
+        error: (err) => {
+          console.error('Error al agregar el producto al pedido especial', err);
+          this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.preciosError'));
+        },
+      });
+  }
+
+  private nombreAlmacen(idAlmacen: number): string {
+    return this.almacenes().find((a) => a.id === idAlmacen)?.descripcion ?? '';
   }
 
   private resetearBuscadorProducto(): void {
@@ -329,8 +382,16 @@ export class NuevoPedidoComponent implements OnInit {
     this.focusBuscarProducto();
   }
 
+  private focusBuscarProducto(): void {
+    setTimeout(() => this.buscarProductoInputRef?.nativeElement?.focus());
+  }
+
+  // ====================== Tabla de partidas ======================
+
+  /** Edición de la cantidad en la tabla (`initInputsTabla` del legado: revalida contra existencia). */
   onCantidadPartidaBlur(partida: PartidaPedidoEspecial): void {
     let cantidad = Number(partida.cantidad);
+
     if (isNaN(cantidad) || cantidad <= 0) {
       this.notify.notify(
         'warning',
@@ -338,14 +399,26 @@ export class NuevoPedidoComponent implements OnInit {
       );
       cantidad = 1;
     }
+
+    if (partida.existencia >= 0 && cantidad > partida.existencia) {
+      this.notify.notify('warning', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.sinInventario'));
+      cantidad = partida.existencia > 0 ? partida.existencia : 1;
+    }
+
     this.partidas.update((lista) =>
-      lista.map((p) => (p.idProducto === partida.idProducto ? new PartidaPedidoEspecialModel({ ...p, cantidad }) : p)),
+      lista.map((p) =>
+        p.idProducto === partida.idProducto && p.idAlmacen === partida.idAlmacen
+          ? new PartidaPedidoEspecialModel({ ...p, cantidad })
+          : p,
+      ),
     );
     this.recalcularPrecios();
   }
 
-  eliminarPartida(idProducto: number): void {
-    this.partidas.update((lista) => lista.filter((p) => p.idProducto !== idProducto));
+  eliminarPartida(partida: PartidaPedidoEspecial): void {
+    this.partidas.update((lista) =>
+      lista.filter((p) => !(p.idProducto === partida.idProducto && p.idAlmacen === partida.idAlmacen)),
+    );
     this.recalcularPrecios();
   }
 
@@ -353,23 +426,24 @@ export class NuevoPedidoComponent implements OnInit {
     return this.round2(partida.cantidad * partida.precio);
   }
 
-  private focusBuscarProducto(): void {
-    setTimeout(() => this.buscarProductoInputRef?.nativeElement?.focus());
+  /** Columna "Descuento" del legado: (precioIndividual - precioVenta) × cantidad. */
+  descuentoPartida(partida: PartidaPedidoEspecial): number {
+    return this.round2((partida.precioIndividual - partida.precio) * partida.cantidad);
   }
 
   /**
-   * Recalcula el precio unitario de CADA partida — réplica exacta de `calculaTotales()`/
-   * `actualizaTicketVenta()` del legado (ya migrada en `PosComponent.recalcularTicket`, Ventas):
-   * cantidad TOTAL del pedido >= 6 → precioMenudeo, si no precioIndividual; si la cantidad de la
-   * partida cae en uno de sus rangos propios, ese costo gana; si excede el `max` de todos sus
-   * rangos, se usa el costo del rango de mayor `max`.
+   * Recalcula el precio unitario de CADA partida — réplica de `actualizaTicketVenta()`:
+   * cantidad TOTAL del pedido >= 6 **o** ticket autorizado a mayoreo → precioMenudeo, si no
+   * precioIndividual; si la cantidad de la partida cae en uno de sus rangos propios, ese costo
+   * gana; si excede el `max` de todos sus rangos, se usa el costo del rango de mayor `max`.
    */
   private recalcularPrecios(): void {
     const partidas = this.partidas();
     const cantidadTotal = partidas.reduce((acc, p) => acc + p.cantidad, 0);
+    const forzarMayoreo = cantidadTotal >= 6 || this.idPedidoEspecialMayoreo() > 0;
 
     const actualizadas = partidas.map((p) => {
-      let precio = cantidadTotal >= 6 ? p.precioMenudeo : p.precioIndividual;
+      let precio = forzarMayoreo ? p.precioMenudeo : p.precioIndividual;
 
       const rangoAplicable = p.rangos.find((r) => p.cantidad >= r.min && p.cantidad <= r.max);
       if (rangoAplicable) {
@@ -387,84 +461,62 @@ export class NuevoPedidoComponent implements OnInit {
     this.partidas.set(actualizadas);
   }
 
-  // ====================== IVA (ajuste manual) ======================
-
-  /** Muestra el input de ajuste manual, precargado con el IVA calculado (réplica de "Ajustar IVA"). */
-  abrirAjusteIva(): void {
-    this.ivaAjustado.set(this.iva());
-    this.ajustandoIva.set(true);
-  }
-
-  cancelarAjusteIva(): void {
-    this.ivaAjustado.set(null);
-    this.ajustandoIva.set(false);
-  }
-
-  onIvaAjustadoChange(valor: number): void {
-    this.ivaAjustado.set(this.round2(Number(valor) || 0));
-  }
-
   // ====================== Guardar / limpiar ======================
 
-  /**
-   * Guarda el pedido (`POST /pedidos-especiales`) y, si se obtiene folio, descarga el ticket PDF
-   * — **sin** ajuste automático de IVA (ver nota de cabecera del componente).
-   *
-   * `tipoRevision`/`idEstatusPedidoEspecial` generalizan los 3 botones del legado sobre el mismo
-   * formulario (`GuardarPedidoEspecial(tipoRevision, idEstatusPedidoEspecial)`,
-   * `EvtPedidosEspecialesV2.js:641`): **1,1** = Revisión por Ticket (`guardar()` sin argumentos,
-   * botón "Guardar"), **2,1** = Revisión por Hand Held, **3,2** = Cotizar. La validación del
-   * formulario es idéntica para los 3 (el legado no distingue: valida solo cliente + productos
-   * antes de abrir el modal de guardado, ver cabecera del componente).
-   */
-  guardar(tipoRevision: number = 1, idEstatusPedidoEspecial: number = 1): void {
+  /** "Generar Pedido Especial" — `abrirModalGuardarPedidoEspecial(1)`. */
+  generarPedidoEspecial(): void {
+    this.abrirModalGuardar('pedido');
+  }
+
+  /** "Guardar Cotización" — `abrirModalGuardarPedidoEspecial(2)`. */
+  guardarCotizacion(): void {
+    this.abrirModalGuardar('cotizacion');
+  }
+
+  private abrirModalGuardar(modo: 'pedido' | 'cotizacion'): void {
     if (this.guardando()) return;
 
-    const raw = this.nuevoPedidoForm.getRawValue();
-
-    if (!raw.idCliente) {
-      this.notify.notify('warning', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.clienteRequerido'));
-      return;
-    }
-    if (!raw.idAlmacen) {
-      this.notify.notify('warning', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.almacenRequerido'));
-      return;
-    }
-    if (!raw.idFormaPago) {
-      this.notify.notify('warning', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.formaPagoRequerida'));
-      return;
-    }
-    if (raw.facturar && !raw.idUsoCFDI) {
-      this.notify.notify('warning', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.usoCfdiRequerido'));
-      return;
-    }
-    if (this.partidas().length === 0) {
+    if (this.subtotal() <= 0) {
       this.notify.notify('warning', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.sinProductos'));
       return;
     }
 
-    const idAlmacen = raw.idAlmacen;
+    this.dialog
+      .open(GenerarPedidoEspecialDialogComponent, { width: '600px', maxWidth: '95vw', data: { modo } })
+      .afterClosed()
+      .subscribe((res: ResultModalModel | undefined) => {
+        if (res?.status !== ENUM_ESTATUS_MODAL.OK) return;
+        this.guardar(res.data as GenerarPedidoEspecialResultado);
+      });
+  }
+
+  private guardar(opciones: GenerarPedidoEspecialResultado): void {
     const request = new GuardarPedidoEspecialRequestModel({
       productos: this.partidas().map(
         (p) =>
           new PedidoEspecialProductoRequestModel({
             idProducto: p.idProducto,
             cantidad: p.cantidad,
-            idAlmacen,
+            idAlmacen: p.idAlmacen,
           }),
       ),
-      tipoRevision,
-      idCliente: raw.idCliente,
-      idEstatusPedidoEspecial,
+      tipoRevision: opciones.tipoRevision,
+      idCliente: opciones.idCliente,
+      idEstatusPedidoEspecial: opciones.idEstatusPedidoEspecial,
       idPedidoEspecial: 0,
-      idPedidoEspecialMayoreo: 0,
+      idPedidoEspecialMayoreo: this.idPedidoEspecialMayoreo(),
     });
 
     this.guardando.set(true);
     this.blockUI.start(this.translate.instant('pedidosEspeciales.nuevoPedido.msg.guardando'));
     this.pedidosEspecialesService
       .guardarPedido(request)
-      .pipe(finalize(() => this.blockUI.stop()))
+      .pipe(
+        finalize(() => {
+          this.guardando.set(false);
+          this.blockUI.stop();
+        }),
+      )
       .subscribe({
         next: (res) => {
           if (res?.estatus === 200 && res.modelo) {
@@ -474,10 +526,8 @@ export class NuevoPedidoComponent implements OnInit {
             );
             const folio = res.modelo.idPedidoEspecial;
             this.limpiar();
-            this.guardando.set(false);
-            this.descargarTicket(folio);
+            this.imprimirTickets(folio, opciones.imprimirTicketCliente);
           } else {
-            this.guardando.set(false);
             this.notify.notify(
               'error',
               res?.mensaje ?? this.translate.instant('pedidosEspeciales.nuevoPedido.msg.saveFallback'),
@@ -485,15 +535,28 @@ export class NuevoPedidoComponent implements OnInit {
           }
         },
         error: (err) => {
-          this.guardando.set(false);
           console.error('Error al guardar el pedido especial', err);
           this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.saveError'));
         },
       });
   }
 
-  /** Descarga el ticket PDF del pedido recién guardado (Bloque A, adaptación web de la impresión física del legado). */
-  private descargarTicket(folio: number): void {
+  /**
+   * El legado siempre imprime el ticket de almacén (`imprimirTicketAlmacenes`) y, solo si se marcó
+   * el checkbox, además el ticket del cliente (`ImprimeTicketPedidoEspecial`). Aquí ambos son PDF
+   * (adaptación web ya aprobada de la impresión térmica del servidor).
+   */
+  private imprimirTickets(folio: number, imprimirTicketCliente: boolean): void {
+    this.pedidosEspecialesService.obtenerTicketAlmacen(folio).subscribe({
+      next: (blob) => imprimirPdfBlob(blob),
+      error: (err) => {
+        console.error('Error al generar el ticket de almacén del pedido especial', err);
+        this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.ticketError'));
+      },
+    });
+
+    if (!imprimirTicketCliente) return;
+
     this.pedidosEspecialesService.obtenerTicket(folio).subscribe({
       next: (blob) => abrirPdfBlob(blob),
       error: (err) => {
@@ -503,15 +566,14 @@ export class NuevoPedidoComponent implements OnInit {
     });
   }
 
+  /** "Limpiar" — `limpiarTicket()` del legado (vacía el ticket, no el almacén seleccionado). */
   limpiar(): void {
-    this.nuevoPedidoForm.reset({ idCliente: null, idAlmacen: null, idFormaPago: null, facturar: false, idUsoCFDI: null });
     this.partidas.set([]);
-    this.ivaAjustado.set(null);
-    this.ajustandoIva.set(false);
+    this.idPedidoEspecialMayoreo.set(0);
     this.buscarProductoControl.setValue('');
     this.productoSeleccionado.set(null);
     this.cantidadManual = 1;
-    this.clientePreload.set([]);
+    this.focusBuscarProducto();
   }
 
   private round2(n: number): number {

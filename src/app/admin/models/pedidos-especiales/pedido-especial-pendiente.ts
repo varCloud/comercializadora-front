@@ -23,6 +23,13 @@ export interface PedidoEspecialPendiente {
   idUsuario: number;
   nombreUsuario: string | null;
   fechaAlta: string | null;
+  /**
+   * Estatus del pedido (4-7 = entregado/liquidado). Lo expone el mismo endpoint desde el
+   * inicio (`PedidoEspecialPendienteEntrega.IdEstatusPedidoEspecial` de la API); se agregó al
+   * modelo para "Aprobar Precio Mayoreo" (Nuevo Pedido), que exige un ticket ya entregado —
+   * réplica de `btnConsultaTicketMayoreo` (`EvtPedidosEspecialesV2.js:1780-1807`).
+   */
+  idEstatusPedidoEspecial: number;
   /** false = el pedido ya no admite la acción "Entregar" (p. ej. cancelado o ya entregado). */
   puedeEntregar: boolean;
 }
@@ -36,6 +43,7 @@ export class PedidoEspecialPendienteModel implements PedidoEspecialPendiente {
   idUsuario: number;
   nombreUsuario: string | null;
   fechaAlta: string | null;
+  idEstatusPedidoEspecial: number;
   puedeEntregar: boolean;
 
   constructor(data: Partial<PedidoEspecialPendiente> = {}) {
@@ -47,6 +55,7 @@ export class PedidoEspecialPendienteModel implements PedidoEspecialPendiente {
     this.idUsuario = data.idUsuario ?? 0;
     this.nombreUsuario = data.nombreUsuario ?? null;
     this.fechaAlta = data.fechaAlta ?? null;
+    this.idEstatusPedidoEspecial = data.idEstatusPedidoEspecial ?? 0;
     this.puedeEntregar = data.puedeEntregar ?? false;
   }
 }

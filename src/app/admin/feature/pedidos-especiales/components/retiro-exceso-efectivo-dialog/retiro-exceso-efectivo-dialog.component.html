@@ -1,0 +1,109 @@
+<h2 mat-dialog-title>{{ 'pedidosEspeciales.caja.retiroDialog.title' | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <mat-tab-group>
+    <!-- Tab "Retirar" — resumen de caja + monto a retirar (1:1 con #itemRetirarEfectivo del legado). -->
+    <mat-tab [label]="'pedidosEspeciales.caja.retiroDialog.tabs.retirar' | translate">
+      <div class="row m-t-16">
+        <div class="col-md-6 m-b-16">
+          <div class="d-flex justify-content-between m-b-8">
+            <span>{{ 'pedidosEspeciales.caja.retiroDialog.resumen.apertura' | translate }}</span>
+            <span class="text-muted">{{ info().montoApertura | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+          <div class="d-flex justify-content-between m-b-8">
+            <span>{{ 'pedidosEspeciales.caja.retiroDialog.resumen.ingresos' | translate }}</span>
+            <span class="text-muted">{{ info().montoIngresosEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+          <div class="d-flex justify-content-between m-b-8">
+            <span>{{ 'pedidosEspeciales.caja.retiroDialog.resumen.pedidosDia' | translate }}</span>
+            <span class="text-muted">{{ info().totalPedidosEspeciales }}</span>
+          </div>
+          <div class="d-flex justify-content-between m-b-8">
+            <span>{{ 'pedidosEspeciales.caja.retiroDialog.resumen.montoPedidosDia' | translate }}</span>
+            <span class="text-muted">{{ info().montoPedidosEspecialesDelDia | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+          <div class="d-flex justify-content-between m-b-8">
+            <span class="f-w-600">{{ 'pedidosEspeciales.caja.retiroDialog.resumen.efectivo' | translate }}</span>
+            <span class="f-w-600">{{ info().efectivoDisponible | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+          <div class="d-flex justify-content-between m-b-8">
+            <span>{{ 'pedidosEspeciales.caja.retiroDialog.resumen.retirado' | translate }}</span>
+            <span class="text-muted">{{ info().retirosExcesoEfectivo | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+        </div>
+
+        <div class="col-md-6 m-b-16">
+          <form [formGroup]="retiroForm">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.caja.retiroDialog.montoARetirar' | translate }}</mat-label>
+            <div class="d-flex gap-8 align-items-start">
+              <mat-form-field appearance="outline" class="flex-1-auto">
+                <span matPrefix>$&nbsp;</span>
+                <input matInput type="number" min="0.01" step="0.01" formControlName="monto" />
+              </mat-form-field>
+              <button mat-flat-button color="primary" class="text-nowrap" type="button" [disabled]="guardando()" (click)="retirar()">
+                <i-tabler name="cash-banknote" class="icon-18"></i-tabler>
+                {{ 'pedidosEspeciales.caja.retiroDialog.retirar' | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab "Retiros del día" — 1:1 con #itemRetiros del legado. -->
+    <mat-tab [label]="'pedidosEspeciales.caja.retiroDialog.tabs.retirosDia' | translate">
+      <div class="table-responsive m-t-16">
+        <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+          <ng-container matColumnDef="idRetiro">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.caja.retiroDialog.columns.id' | translate }}</th>
+            <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'pedidosEspeciales.caja.retiroDialog.columns.id' | translate">{{ r.idRetiro }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="monto">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.caja.retiroDialog.columns.monto' | translate }}</th>
+            <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'pedidosEspeciales.caja.retiroDialog.columns.monto' | translate">{{ r.monto | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="usuario">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.caja.retiroDialog.columns.usuario' | translate }}</th>
+            <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'pedidosEspeciales.caja.retiroDialog.columns.usuario' | translate">{{ r.nombreUsuario }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="estacion">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.caja.retiroDialog.columns.estacion' | translate }}</th>
+            <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'pedidosEspeciales.caja.retiroDialog.columns.estacion' | translate">{{ r.nombreEstacion }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.caja.retiroDialog.columns.fecha' | translate }}</th>
+            <td mat-cell *matCellDef="let r" class="f-s-14" [attr.data-label]="'pedidosEspeciales.caja.retiroDialog.columns.fecha' | translate">{{ r.fechaAlta | date: 'short' }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="ticket" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.caja.retiroDialog.columns.reimprimir' | translate }}</th>
+            <td mat-cell *matCellDef="let r" class="f-s-14 action-link text-right" [attr.data-label]="'pedidosEspeciales.caja.retiroDialog.columns.reimprimir' | translate">
+              <a (click)="verTicket(r.idRetiro)" class="cursor-pointer" [matTooltip]="'pedidosEspeciales.caja.retiroDialog.columns.reimprimir' | translate">
+                <i-tabler name="printer" class="icon-18"></i-tabler>
+              </a>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        @if (pag.isEmpty()) {
+          <div class="text-center p-24 text-muted">{{ 'pedidosEspeciales.caja.retiroDialog.sinRegistros' | translate }}</div>
+        }
+      </div>
+
+      <app-paginador [paginador]="pag" (navegar)="navegar($event)" (perPageChange)="onPerPage($event)"></app-paginador>
+    </mat-tab>
+  </mat-tab-group>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" class="text-nowrap" type="button" (click)="cerrar()">
+    {{ 'pedidosEspeciales.caja.retiroDialog.cerrar' | translate }}
+  </button>
+</mat-dialog-actions>

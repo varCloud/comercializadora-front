@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>
+  {{
+    (esApertura()
+      ? 'pedidosEspeciales.caja.ingresoDialog.tituloApertura'
+      : 'pedidosEspeciales.caja.ingresoDialog.tituloIngreso'
+    ) | translate
+  }}
+</h2>
+
+<mat-dialog-content class="b-t-1">
+  @if (esApertura()) {
+    <p class="f-s-14 m-b-16">{{ 'pedidosEspeciales.caja.ingresoDialog.instrucciones' | translate }}</p>
+  }
+
+  <form [formGroup]="ingresoForm" class="row">
+    <div class="col-12">
+      <div class="row">
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.caja.ingresoDialog.monto' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <span matPrefix>$&nbsp;</span>
+            <input matInput type="number" min="0" step="0.01" formControlName="monto" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" class="text-nowrap" type="button" (click)="cerrar()">
+    {{
+      (esApertura()
+        ? 'pedidosEspeciales.caja.ingresoDialog.salir'
+        : 'pedidosEspeciales.caja.ingresoDialog.cancelar'
+      ) | translate
+    }}
+  </button>
+  <button mat-flat-button color="primary" class="text-nowrap" type="button" [disabled]="guardando()" (click)="guardar()">
+    {{ 'pedidosEspeciales.caja.ingresoDialog.guardar' | translate }}
+  </button>
+</mat-dialog-actions>

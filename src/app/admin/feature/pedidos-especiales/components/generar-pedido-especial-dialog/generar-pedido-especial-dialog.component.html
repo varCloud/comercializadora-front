@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>
+  {{
+    (esCotizacion
+      ? 'pedidosEspeciales.nuevoPedido.generarDialog.tituloCotizacion'
+      : 'pedidosEspeciales.nuevoPedido.generarDialog.titulo'
+    ) | translate
+  }}
+</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="generarForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.generarDialog.cliente' | translate }}</mat-label>
+          <app-select-paginado
+            [control]="$any(generarForm.controls.idCliente)"
+            [fetchPage]="fetchClientes"
+            identifier="idCliente"
+            bindLabel="nombreCompleto"
+            bindValue="idCliente"
+            placeholder="pedidosEspeciales.nuevoPedido.clientePlaceholder"
+          ></app-select-paginado>
+        </div>
+
+        @if (!esCotizacion) {
+          <div class="col-12 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.generarDialog.tipoRevision' | translate }}</mat-label>
+            <div class="d-flex gap-8 flex-wrap">
+              <button mat-flat-button color="primary" type="button" (click)="revisionPorTicket()">
+                {{ 'pedidosEspeciales.nuevoPedido.generarDialog.porTicket' | translate }}
+              </button>
+              <button mat-flat-button color="accent" type="button" (click)="revisionPorHandHeld()">
+                {{ 'pedidosEspeciales.nuevoPedido.generarDialog.porHandHeld' | translate }}
+              </button>
+            </div>
+          </div>
+
+          <div class="col-12 m-b-16">
+            <mat-checkbox formControlName="imprimirTicketCliente">
+              {{ 'pedidosEspeciales.nuevoPedido.generarDialog.imprimirTicketCliente' | translate }}
+            </mat-checkbox>
+          </div>
+        }
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" class="text-nowrap" type="button" (click)="cerrar()">
+    {{ 'pedidosEspeciales.nuevoPedido.generarDialog.cerrar' | translate }}
+  </button>
+  @if (esCotizacion) {
+    <button mat-flat-button color="primary" class="text-nowrap" type="button" (click)="cotizar()">
+      {{ 'pedidosEspeciales.nuevoPedido.generarDialog.guardar' | translate }}
+    </button>
+  }
+</mat-dialog-actions>

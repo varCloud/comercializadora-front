@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>{{ 'pedidosEspeciales.nuevoPedido.mayoreo.title' | translate }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="mayoreoForm" class="row m-t-8">
+    <div class="col-12">
+      <div class="row">
+        <!-- Datos del ticket (col izquierda del legado). -->
+        <div class="col-md-6 m-b-16">
+          <h4 class="f-s-16 f-w-600 m-b-16">{{ 'pedidosEspeciales.nuevoPedido.mayoreo.datosTicket' | translate }}</h4>
+
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.mayoreo.ticket' | translate }}</mat-label>
+          <div class="d-flex gap-8 align-items-start">
+            <mat-form-field appearance="outline" class="flex-1-auto">
+              <input matInput type="number" min="1" step="1" formControlName="folio" (keyup.enter)="consultar()" />
+            </mat-form-field>
+            <button mat-flat-button color="primary" class="text-nowrap" type="button" [disabled]="consultando()" (click)="consultar()">
+              {{ 'pedidosEspeciales.nuevoPedido.mayoreo.consultar' | translate }}
+            </button>
+          </div>
+
+          <div class="d-flex justify-content-between m-b-8">
+            <span class="f-w-600">{{ 'pedidosEspeciales.nuevoPedido.mayoreo.articulos' | translate }}</span>
+            <span class="text-muted">{{ ticket()?.cantidad ?? '' }}</span>
+          </div>
+          <div class="d-flex justify-content-between m-b-8">
+            <span class="f-w-600">{{ 'pedidosEspeciales.nuevoPedido.mayoreo.total' | translate }}</span>
+            <span class="text-muted">
+              @if (ticket(); as t) {
+                {{ t.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
+              }
+            </span>
+          </div>
+          <div class="d-flex justify-content-between m-b-8">
+            <span class="f-w-600">{{ 'pedidosEspeciales.nuevoPedido.mayoreo.cliente' | translate }}</span>
+            <span class="text-muted">{{ ticket()?.nombreCliente ?? '' }}</span>
+          </div>
+        </div>
+
+        <!-- Autorizar precio (col derecha del legado). -->
+        <div class="col-md-6 m-b-16">
+          <h4 class="f-s-16 f-w-600 m-b-16">{{ 'pedidosEspeciales.nuevoPedido.mayoreo.autorizarPrecio' | translate }}</h4>
+
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.mayoreo.usuario' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="text" autocomplete="off" formControlName="usuario" />
+          </mat-form-field>
+
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.nuevoPedido.mayoreo.password' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="password" autocomplete="off" formControlName="contrasena" (keyup.enter)="autorizar()" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" class="text-nowrap" type="button" (click)="cerrar()">
+    {{ 'pedidosEspeciales.nuevoPedido.mayoreo.cerrar' | translate }}
+  </button>
+  <button mat-flat-button color="primary" class="text-nowrap" type="button" [disabled]="autorizando()" (click)="autorizar()">
+    {{ 'pedidosEspeciales.nuevoPedido.mayoreo.autorizar' | translate }}
+  </button>
+</mat-dialog-actions>

@@ -1,7 +1,9 @@
-// Estilos mínimos locales (regla 01): réplica de los mismos usados en el ticket del POS
-// (pos.component.scss) para la celda editable de cantidad y el campo de cantidad del buscador.
+// La densidad compacta de los campos y las alturas `.btn-linea` / `.btn-accion` son globales
+// (assets/scss/style.scss, ver rules/01): aquí solo lo específico de esta pantalla.
+
+// Celda editable de cantidad (mismo estilo que el ticket del POS).
 .celda-input {
-  width: 80px;
+  width: 72px;
   text-align: center;
   border: none;
   background: transparent;
@@ -10,6 +12,15 @@
 .celda-input:focus {
   border-bottom: 1px solid var(--mat-sys-primary, #5d87ff);
 }
-.buscador-cantidad {
-  width: 110px;
+
+// Badge de subtotal: el legado usa un badge outline rojo y las utilidades globales solo dan
+// fondos; el color lo hereda de `.text-error`.
+.subtotal-badge {
+  border: 1px solid currentColor;
+}
+
+// La celda de acciones es sticky (regla 10): sin fondo propio se transparenta al hacer scroll.
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
 }

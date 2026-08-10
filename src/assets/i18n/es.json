@@ -2480,54 +2480,106 @@
   },
   "pedidosEspeciales": {
     "nuevoPedido": {
-      "title": "Nuevo Pedido Especial",
+      "title": "Agregar Productos al Pedido Especial:",
       "cliente": "Cliente",
       "clientePlaceholder": "Selecciona un cliente…",
-      "almacen": "Almacén",
+      "almacen": "Almacenes",
       "almacenPlaceholder": "Selecciona un almacén…",
-      "formaPago": "Forma de pago",
-      "facturar": "Facturar",
-      "usoCfdi": "Uso de CFDI",
       "seleccione": "Selecciona una opción",
+      "autorizadoConPedido": "Autorizado con Pedido",
+      "acciones": {
+        "ingresoEfectivo": "Ingreso de efectivo",
+        "retiroExceso": "Retiro de exceso de efectivo",
+        "abrirCajon": "Abrir cajon",
+        "abrirCajonNoDisponible": "Abrir cajón requiere la impresora de tickets del servidor; aún no está disponible en el panel web.",
+        "cierreCajas": "Cierre de cajas",
+        "cargarExistencias": "Cargar existencias",
+        "aprobarPrecioMayoreo": "Aprobar Precio Mayoreo"
+      },
       "buscarProducto": {
-        "label": "Buscar producto",
-        "placeholder": "Escribe para buscar un producto…",
+        "label": "Producto:",
+        "placeholder": "Escriba el nombre del producto",
         "cantidad": "Cantidad",
         "agregar": "Agregar",
+        "leyenda": "D: Disponible, E: En existencia, S/A: Sin acomodar, R: Resguardo, B: Bloqueo, ME: Precio menudeo, MA: Precio mayoreo",
         "msg": {
-          "seleccionaProducto": "Selecciona un producto de la lista antes de agregarlo.",
-          "cantidadRequerida": "Debes indicar una cantidad mayor a cero."
+          "seleccionaProducto": "Debe seleccionar el producto que desea agregar.",
+          "cantidadRequerida": "Debe escribir la cantidad de productos que va a agregar."
         }
       },
       "tabla": {
+        "idProducto": "Id Producto",
         "producto": "Producto",
+        "almacen": "Almacen",
         "cantidad": "Cantidad",
         "precio": "Precio",
         "existencia": "Existencia",
-        "existenciaPendiente": "Pendiente de consultar",
-        "sinExistencia": "Sin existencia",
-        "importe": "Importe",
+        "total": "Total",
+        "descuento": "Descuento",
         "acciones": "Acciones",
         "eliminar": "Eliminar",
         "vacio": "Busca y agrega productos al pedido."
       },
       "resumen": {
+        "title": "Resumen del Pedido Especial:",
         "subtotal": "Subtotal",
-        "iva": "IVA",
-        "ajustarIva": "Ajustar IVA",
-        "cancelarAjuste": "Cancelar ajuste",
         "total": "Total",
-        "guardar": "Guardar pedido",
-        "guardarHandHeld": "Revisión por Hand Held",
-        "guardarCotizacion": "Guardar cotización",
+        "ultimoCambio": "Último Cambio:",
+        "generarPedido": "Generar Pedido Especial",
+        "guardarCotizacion": "Guardar Cotización",
         "limpiar": "Limpiar"
       },
+      "generarDialog": {
+        "titulo": "Generar Pedido Especial",
+        "tituloCotizacion": "Generar Cotización",
+        "cliente": "Datos del Cliente",
+        "tipoRevision": "Tipo de Revisión",
+        "porTicket": "Revisión por Ticket",
+        "porHandHeld": "Revisión por Hand Held",
+        "imprimirTicketCliente": "¿Desea imprimir el ticket del cliente?",
+        "guardar": "Guardar",
+        "cerrar": "Cerrar"
+      },
+      "mayoreo": {
+        "title": "Autorizar Precio de Mayoreo",
+        "datosTicket": "Datos del Ticket",
+        "ticket": "Ticket",
+        "consultar": "Consultar",
+        "articulos": "Artículos:",
+        "total": "Total:",
+        "cliente": "Cliente:",
+        "autorizarPrecio": "Autorizar Precio",
+        "usuario": "Usuario",
+        "password": "Contraseña",
+        "autorizar": "Autorizar",
+        "cerrar": "Cerrar",
+        "confirm": "¿Está seguro que desea autorizar el ticket a precio de mayoreo?",
+        "msg": {
+          "folioRequerido": "Debe escribir el # de ticket de mayoreo.",
+          "noEncontrado": "No se encontró el pedido especial indicado.",
+          "noEntregado": "El ticket tiene que estar en estatus de entregado.",
+          "minArticulos": "El ticket no contiene al menos 6 productos.",
+          "credencialesRequeridas": "Debe ingresar Usuario y Contraseña para autorizar el precio de mayoreo.",
+          "consultaPrimero": "Debe consultar un pedido especial válido para autorizar el precio de mayoreo.",
+          "errorConsulta": "Ocurrió un error al consultar el ticket de mayoreo.",
+          "errorAutorizar": "No fue posible autorizar el precio de mayoreo."
+        }
+      },
+      "confirm": {
+        "title": "Mensaje",
+        "porTicket": "¿Está seguro que desea hacer la revisión por ticket?",
+        "porHandHeld": "¿Está seguro que desea hacer la revisión por Hand Held?",
+        "cotizacion": "¿Está seguro que desea guardar este pedido especial como una cotización?",
+        "accept": "Sí",
+        "cancel": "No"
+      },
       "msg": {
-        "clienteRequerido": "Debes seleccionar un cliente.",
-        "almacenRequerido": "Debes seleccionar un almacén.",
-        "formaPagoRequerida": "Debes seleccionar una forma de pago.",
-        "usoCfdiRequerido": "Debes seleccionar un uso de CFDI para facturar.",
-        "sinProductos": "Agrega al menos un producto al pedido.",
+        "clienteRequerido": "Debe seleccionar un cliente.",
+        "almacenRequerido": "Debe seleccionar un almacen para consultar sus existencias.",
+        "sinProductos": "Debe tener productos agregados para continuar con el alta del pedido especial.",
+        "sinInventario": "No existe suficiente producto en inventario.",
+        "sinPrecio": "Debe configurar el precio individual y de mayoreo del producto.",
+        "existenciasActualizadas": "Existencias actualizadas.",
         "loadError": "Error al cargar los catálogos del pedido especial.",
         "preciosError": "No fue posible obtener el precio del producto seleccionado.",
         "guardando": "Guardando pedido especial…",
@@ -2853,6 +2905,61 @@
           "error": "Error al registrar el ingreso de efectivo. Intenta de nuevo.",
           "montoRequerido": "Debe escribir el monto.",
           "errorTicket": "Error al generar el ticket PDF del ingreso."
+        }
+      },
+      "ingresoDialog": {
+        "tituloApertura": "Apertura de caja",
+        "tituloIngreso": "Ingreso de Efectivo",
+        "instrucciones": "Esta estación no tiene caja abierta. Registra el monto de apertura para poder operar los pedidos especiales.",
+        "monto": "Monto",
+        "guardar": "Guardar",
+        "salir": "Salir",
+        "cancelar": "Cancelar",
+        "msg": {
+          "validando": "Validando apertura de caja…",
+          "errorValidar": "Error al validar la apertura de caja.",
+          "montoRequerido": "Debe escribir la cantidad de ingreso de efectivo.",
+          "montoMayorCero": "El ingreso de efectivo debe de ser mayor que 0.",
+          "exito": "Movimiento registrado correctamente.",
+          "error": "Error al registrar el movimiento de efectivo. Intenta de nuevo.",
+          "errorTicket": "Error al generar el ticket PDF del movimiento.",
+          "aperturaRequerida": "Debe registrar la apertura de caja para generar pedidos especiales."
+        }
+      },
+      "retiroDialog": {
+        "title": "Retiro por exceso de efectivo",
+        "tabs": {
+          "retirar": "Retirar",
+          "retirosDia": "Retiros del día"
+        },
+        "resumen": {
+          "apertura": "Apertura de Caja:",
+          "ingresos": "Ingresos de Efectivo (Solicitud):",
+          "pedidosDia": "Ventas del día:",
+          "montoPedidosDia": "Monto de Ventas:",
+          "efectivo": "Cantidad en Efectivo:",
+          "retirado": "Cantidad Retirada del día:"
+        },
+        "montoARetirar": "Cantidad a Retirar:",
+        "retirar": "Retirar Dinero",
+        "cerrar": "Cerrar",
+        "sinRegistros": "No se encontraron retiros.",
+        "columns": {
+          "id": "Id",
+          "monto": "Monto",
+          "usuario": "Usuario",
+          "estacion": "Estación",
+          "fecha": "Fecha",
+          "reimprimir": "Reimprimir"
+        },
+        "msg": {
+          "montoRequerido": "Debe seleccionar un monto para retirar.",
+          "excedeDisponible": "Solo tiene ${{disponible}} para retirar.",
+          "exito": "Retiro registrado correctamente.",
+          "error": "Error al registrar el retiro. Intenta de nuevo.",
+          "errorTicket": "Error al generar el ticket PDF del retiro.",
+          "errorListado": "Error al consultar el listado de retiros.",
+          "errorDisponible": "Error al consultar el efectivo disponible."
         }
       },
       "retiro": {

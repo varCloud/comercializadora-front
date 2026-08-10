@@ -18,6 +18,10 @@ export interface PartidaPedidoEspecial {
   idProducto: number;
   descripcion: string;
   codigoBarras: string;
+  /** Almacén con el que se agregó la partida (el legado la identifica por idProducto + idAlmacen). */
+  idAlmacen: number;
+  /** Nombre del almacén, para la columna "Almacen" de la tabla (paridad visual con el legado). */
+  almacen: string;
   cantidad: number;
   /** Precio unitario normal ("Precio Menudeo" en UI, ver nota en precios-producto.ts). */
   precioIndividual: number;
@@ -37,6 +41,8 @@ export class PartidaPedidoEspecialModel implements PartidaPedidoEspecial {
   idProducto: number;
   descripcion: string;
   codigoBarras: string;
+  idAlmacen: number;
+  almacen: string;
   cantidad: number;
   precioIndividual: number;
   precioMenudeo: number;
@@ -49,6 +55,8 @@ export class PartidaPedidoEspecialModel implements PartidaPedidoEspecial {
     this.idProducto = data.idProducto ?? 0;
     this.descripcion = data.descripcion ?? '';
     this.codigoBarras = data.codigoBarras ?? '';
+    this.idAlmacen = data.idAlmacen ?? 0;
+    this.almacen = data.almacen ?? '';
     this.cantidad = data.cantidad ?? 0;
     this.precioIndividual = data.precioIndividual ?? 0;
     this.precioMenudeo = data.precioMenudeo ?? 0;
