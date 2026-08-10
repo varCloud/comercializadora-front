@@ -14,6 +14,13 @@
 //@import "@ng-select/ng-select/themes/material.theme.css";
 @include mat.all-component-themes($bluetheme);
 
+// Densidad compacta de formularios — GLOBAL (REGLA DURA, ver rules/01).
+// Los mat-form-field/mat-select miden 56px por defecto y desentonan con los botones (40px);
+// -3 los deja en 44px. Se aplica con la API de theming de Material, no con CSS a mano, y NO se
+// vuelve a declarar por componente.
+@include mat.form-field-density(-3);
+@include mat.select-density(-3);
+
 .dark-theme {
   @include mat.all-component-colors($darkbluetheme);
 }
@@ -251,61 +258,101 @@ textarea:disabled:not(.mat-mdc-input-element) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ng-select con apariencia "outline" de Material — consistencia con los
-// mat-form-field appearance="outline" del resto del formulario (reglas 12 y 16).
-// El tema material de ng-select trae estilo "underline" (línea inferior); aquí lo
-// convertimos en un recuadro con borde redondeado igual que los demás inputs.
+// ng-select con apariencia "outline" y MISMA ALTURA que los campos Material (ver rules/01 y 16).
+// El tema material de ng-select trae estilo "underline" y ~51.5px + padding reservado para el
+// subrayado; aquí se convierte en un recuadro de 44px igual que los mat-form-field densificados.
+// Punto único: NO reimplementar el look de ng-select por componente.
 // ─────────────────────────────────────────────────────────────────────────────
-// .ng-select.ng-select-single .ng-select-container,
-// .ng-select.ng-select-multiple .ng-select-container {
-//   min-height: 53px;
-//   border: 1px solid rgba(0, 0, 0, 0.38);
-//   border-radius: 4px;
-//   background-color: transparent;
-//   align-items: center;
-//   padding: 0 8px;
-// }
+.ng-select {
+  padding-bottom: 0; // el tema reserva espacio para el subrayado; aquí no hay subrayado
+}
 
-// // quita el subrayado animado del tema material
-// .ng-select.ng-select-single .ng-select-container::after,
-// .ng-select.ng-select-multiple .ng-select-container::after {
-//   border: 0 !important;
-// }
+.ng-select .ng-select-container {
+  min-height: 44px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid $borderColor;
+  border-radius: $border-radius;
+  background-color: transparent;
+}
 
-// // hover y foco como un campo Material (borde más oscuro / primario)
-// .ng-select:not(.ng-select-disabled) .ng-select-container:hover {
-//   border-color: rgba(0, 0, 0, 0.87);
-// }
-// .ng-select.ng-select-focused:not(.ng-select-opened) .ng-select-container,
-// .ng-select.ng-select-opened .ng-select-container {
-//   border-color: var(--mat-sys-primary, #5d87ff) !important;
-//   box-shadow: inset 0 0 0 1px var(--mat-sys-primary, #5d87ff);
-// }
+// quita el subrayado animado del tema material
+.ng-select .ng-select-container::after {
+  border: 0 !important;
+}
 
-// // Placeholder NORMAL — desactiva el "floating label" del tema material (el placeholder no
-// // debe subir ni encogerse). El label ya va arriba con <mat-label> y ningún otro control hace
-// // ese efecto. El placeholder se queda fijo y desaparece cuando ya hay un valor seleccionado.
-// .ng-select .ng-placeholder {
-//   transform: none !important;
-//   transition: none !important;
-// }
-// .ng-select.ng-has-value .ng-placeholder {
-//   display: none !important;
-// }
-// .ng-select.ng-select-single .ng-select-container .ng-value-container {
-//   padding-top: 0 !important;
-// }
+.ng-select:not(.ng-select-disabled) .ng-select-container:hover {
+  border-color: rgba(0, 0, 0, 0.38);
+}
 
-// .ng-select.ng-select-single .ng-select-container .ng-clear-wrapper
-// {
-//     align-self: center;
-//      bottom: 0;
-// }
+.ng-select.ng-select-focused:not(.ng-select-opened) .ng-select-container,
+.ng-select.ng-select-opened .ng-select-container {
+  border-color: $primary;
+  box-shadow: inset 0 0 0 1px $primary;
+}
 
-// .ng-select.ng-select-single .ng-select-container .ng-arrow-wrapper {
-//     align-self: center;
-//      bottom: 0;
-// }
+// el tema deja hueco arriba para el "floating label", que aquí no se usa
+.ng-select .ng-select-container .ng-value-container {
+  padding: 0;
+  border-top: 0;
+  align-items: center;
+}
+
+.ng-select .ng-select-container .ng-value-container .ng-input {
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+// En single select el input de búsqueda va `position:absolute; left:0`, y ese 0 se mide desde el
+// borde (el padding del contenedor no cuenta para un absoluto), así que el texto quedaba pegado
+// al borde izquierdo: se le repite el padding horizontal del contenedor.
+.ng-select.ng-select-single .ng-select-container .ng-value-container .ng-input {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+// Placeholder fijo: el label va arriba con <mat-label>, el placeholder no sube ni encoge.
+.ng-select .ng-placeholder {
+  transform: none !important;
+  transition: none !important;
+}
+// OJO: `ng-has-value` la pone ng-select en el CONTENEDOR, no en el host — con `.ng-select.ng-has-value`
+// la regla no hace match y el tema material deja el placeholder visible DEBAJO del valor.
+.ng-select .ng-select-container.ng-has-value .ng-placeholder,
+.ng-select .ng-select-container.ng-has-value .ng-value-container .ng-placeholder,
+.ng-select.ng-select-filtered .ng-select-container .ng-placeholder {
+  display: none !important;
+}
+.ng-select.ng-select-focused .ng-select-container .ng-value-container .ng-placeholder {
+  transform: none !important;
+}
+
+// Selección múltiple: el tema reserva el mismo hueco del floating label en los iconos
+.ng-select.ng-select-multiple .ng-select-container.ng-has-value .ng-clear-wrapper,
+.ng-select.ng-select-multiple .ng-select-container.ng-has-value .ng-arrow-wrapper,
+.ng-select.ng-select-multiple .ng-select-container.ng-has-value .ng-value-container {
+  border-top: 0;
+  padding-top: 0;
+}
+
+// flecha y "limpiar" centrados verticalmente (el tema los pega al borde inferior)
+.ng-select .ng-arrow-wrapper,
+.ng-select .ng-clear-wrapper,
+.ng-select.ng-select-single .ng-select-container .ng-arrow-wrapper,
+.ng-select.ng-select-single .ng-select-container .ng-clear-wrapper {
+  align-self: center;
+  top: auto;
+  bottom: 0;
+}
+
+// el panel compensaba el padding-bottom que acabamos de quitar: se reposiciona pegado al campo
+.ng-dropdown-panel.ng-select-bottom {
+  top: calc(100% + 2px);
+}
+.ng-dropdown-panel.ng-select-top {
+  bottom: calc(100% + 2px);
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tabs (mat-tab-group / mat-button-toggle-group) — estilo delgado con subrayado
@@ -435,4 +482,22 @@ textarea:disabled:not(.mat-mdc-input-element) {
       }
     }
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Alturas de botón junto a campos — GLOBAL (ver rules/01).
+// Con la densidad -3 los campos miden 44px; un mat-button mide 40px y en una barra de captura
+// (input + botón en la misma fila) la diferencia se nota. Estas clases igualan alturas y NO se
+// redefinen por componente.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Botón que comparte fila con un mat-form-field (buscar, agregar, filtrar…).
+.btn-linea {
+  height: 44px;
+}
+
+// Botón de acción de encabezado de card (barra de herramientas), más compacto.
+.btn-accion {
+  height: 38px;
+  font-size: 13px;
 }

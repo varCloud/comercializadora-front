@@ -47,6 +47,13 @@ this.claveSatPreload.set([new ClaveSatModel({ claveProdServ: p.claveProdServ })]
 El endpoint debe **paginar** (`?q=&page=&perPage=`, `perPage` = 25 por defecto). Ejemplo real:
 clave SAT (~52k) en el form de `productos`. En Compras: Proveedor (~153) y Producto (~1948).
 
+## Apariencia: global, no por componente
+
+El look de `ng-select` está homogeneizado con los `mat-form-field` en **`assets/scss/style.scss`**:
+recuadro *outline* con el mismo borde/radio y **44px de alto**, igual que la densidad global de los
+campos de Material (ver regla 01). **No** lo redefinas en el SCSS de un componente: si algo no
+calza, se ajusta el bloque global.
+
 ## Cómo aplicar
 
 - En el componente **standalone**, importa `NgSelectModule` from `'@ng-select/ng-select'`.

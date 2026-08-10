@@ -24,6 +24,22 @@ Definidas en `src/assets/scss/helpers/` (`_display`, `_flexbox`, `_spacing`, `_t
   Lluvia) y está centralizado en `_variables.scss` y `themecolors/_default_theme.scss`
   (ver memoria `paleta-marca`). Si cambia la marca, se ajusta ahí, no por componente.
 
+## ⚠️ Densidad de formularios y alturas de botón: GLOBALES
+
+**La densidad de los campos se define una sola vez, en `assets/scss/style.scss`.** Ahí se aplica
+`mat.form-field-density(-3)` + `mat.select-density(-3)` (campos de **44px** en lugar de los 56px
+por defecto de Material, que desentonan con los botones). **Prohibido** volver a declarar densidad
+en el SCSS de un componente (`:host { @include mat.form-field-density(...) }`) ni forzar alturas de
+input a mano.
+
+Para botones que comparten fila con un campo hay dos clases globales — úsalas, no reinventes
+alturas:
+
+- **`.btn-linea`** (44px) — botón pegado a un `mat-form-field` (buscar, agregar, filtrar…).
+- **`.btn-accion`** (38px) — botón de la barra de acciones del encabezado de una card.
+
+Si hace falta ajustar la densidad general, se toca **`style.scss`**, no la pantalla.
+
 ## Cuándo (y cómo) sí escribir SCSS
 
 - Solo cuando las utilidades no alcancen. Manténlo **mínimo y local** al componente.
