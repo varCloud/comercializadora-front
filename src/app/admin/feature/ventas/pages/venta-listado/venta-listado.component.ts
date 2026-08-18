@@ -21,6 +21,7 @@ import { Venta } from 'src/app/admin/models/ventas/venta';
 import { EstatusVentaId } from 'src/app/admin/models/ventas/estatus-venta';
 import { FormaPago } from 'src/app/admin/models/ventas/forma-pago';
 import { VentasService } from 'src/app/admin/services/ventas.service';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
 import { abrirPdfBlob, imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { UsuariosService } from 'src/app/admin/services/usuarios.service';
@@ -67,6 +68,7 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly ventasService = inject(VentasService);
+  private readonly printAgent = inject(PrintAgentService);
   private readonly facturasService = inject(FacturasService);
   private readonly clientesService = inject(ClientesService);
   private readonly usuariosService = inject(UsuariosService);
@@ -365,7 +367,7 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
   }
 
   imprimirTicketDespachador(venta: Venta): void {
-    this.generarTicketDespachador(venta, imprimirPdfBlob);
+    this.generarTicketDespachador(venta, (blob) => imprimirPdfBlob(blob, this.printAgent));
   }
 
   private generarTicketDespachador(venta: Venta, accion: (blob: Blob) => void): void {
@@ -426,7 +428,7 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
   }
 
   imprimirTicket(venta: Venta): void {
-    this.generarTicket(venta, imprimirPdfBlob);
+    this.generarTicket(venta, (blob) => imprimirPdfBlob(blob, this.printAgent));
   }
 
   private generarTicket(venta: Venta, accion: (blob: Blob) => void): void {

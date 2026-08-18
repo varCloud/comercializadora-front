@@ -628,7 +628,8 @@
         "consultarExistencias": "Check Stock",
         "buscarPedidoEspecial": "Search Special Order",
         "msg": {
-          "cajonNoDisponible": "Feature not available"
+          "cajonNoDisponible": "Feature not available",
+          "cajonExito": "Drawer opened"
         }
       },
       "existencias": {
@@ -2491,7 +2492,8 @@
         "ingresoEfectivo": "Cash deposit",
         "retiroExceso": "Excess cash withdrawal",
         "abrirCajon": "Open drawer",
-        "abrirCajonNoDisponible": "Opening the drawer requires the server receipt printer; it is not available in the web panel yet.",
+        "abrirCajonNoDisponible": "Couldn't open the drawer: check that the local print agent is installed and running on this station.",
+        "abrirCajonExito": "Drawer opened",
         "cierreCajas": "Cash register closing",
         "cargarExistencias": "Reload stock",
         "aprobarPrecioMayoreo": "Approve Wholesale Price"

@@ -628,7 +628,8 @@
         "consultarExistencias": "Consultar Existencias",
         "buscarPedidoEspecial": "Buscar Pedido Especial",
         "msg": {
-          "cajonNoDisponible": "Función no disponible"
+          "cajonNoDisponible": "Función no disponible",
+          "cajonExito": "Cajón abierto"
         }
       },
       "existencias": {
@@ -2491,7 +2492,8 @@
         "ingresoEfectivo": "Ingreso de efectivo",
         "retiroExceso": "Retiro de exceso de efectivo",
         "abrirCajon": "Abrir cajon",
-        "abrirCajonNoDisponible": "Abrir cajón requiere la impresora de tickets del servidor; aún no está disponible en el panel web.",
+        "abrirCajonNoDisponible": "No se pudo abrir el cajón: verifica que el agente local de impresión esté instalado y encendido en esta estación.",
+        "abrirCajonExito": "Cajón abierto",
         "cierreCajas": "Cierre de cajas",
         "cargarExistencias": "Cargar existencias",
         "aprobarPrecioMayoreo": "Aprobar Precio Mayoreo"

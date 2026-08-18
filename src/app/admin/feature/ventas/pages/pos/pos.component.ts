@@ -35,6 +35,7 @@ import { VentaDetalleRequestModel } from 'src/app/admin/models/ventas/venta-deta
 import { TipoVentaId } from 'src/app/admin/models/ventas/tipo-venta';
 import { Venta } from 'src/app/admin/models/ventas/venta';
 import { VentasService, TicketVentaTipo } from 'src/app/admin/services/ventas.service';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
 import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { PosCatalogoService } from '../../services/pos-catalogo.service';
 import {
@@ -124,6 +125,7 @@ type ModoPos = 'venta' | 'devolucion' | 'complemento' | 'agregar-productos';
 export class PosComponent implements OnInit, AfterViewInit {
   private readonly posCatalogo = inject(PosCatalogoService);
   private readonly ventasService = inject(VentasService);
+  private readonly printAgent = inject(PrintAgentService);
   private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
@@ -378,9 +380,16 @@ export class PosComponent implements OnInit, AfterViewInit {
     this.dialog.open(CierreDiaDialogComponent, { width: '900px', maxWidth: '95vw', disableClose: true });
   }
 
-  /** Placeholder puro (Supuesto #1 del Bloque E): sin hardware conectado, solo avisa. */
+  /**
+   * Abre el cajón vía el agente local de impresión POS (`PrintAgentService`). Si la estación
+   * no tiene el agente instalado/encendido todavía (rollout gradual), avisa en vez de fallar
+   * en silencio — reemplaza el placeholder del Supuesto #1 del Bloque E.
+   */
   abrirCajonDinero(): void {
-    this.notify.notify('info', this.translate.instant('ventas.pos.herramientas.msg.cajonNoDisponible'));
+    this.printAgent.abrirCajon().subscribe((abierto) => {
+      const key = abierto ? 'ventas.pos.herramientas.msg.cajonExito' : 'ventas.pos.herramientas.msg.cajonNoDisponible';
+      this.notify.notify(abierto ? 'success' : 'info', this.translate.instant(key));
+    });
   }
 
   /**

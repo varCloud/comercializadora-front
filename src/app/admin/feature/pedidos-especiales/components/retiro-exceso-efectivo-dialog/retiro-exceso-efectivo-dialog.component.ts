@@ -16,6 +16,7 @@ import { InfoCierrePedidoEspecial, InfoCierrePedidoEspecialModel } from 'src/app
 import { RetiroEfectivoPedidoEspecial } from 'src/app/admin/models/pedidos-especiales/retiro-efectivo-pedido-especial';
 import { RetiroEfectivoPedidoEspecialRequestModel } from 'src/app/admin/models/pedidos-especiales/retiro-efectivo-pedido-especial-request';
 import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especiales.service';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
 import { imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 
 /**
@@ -43,6 +44,7 @@ import { imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 export class RetiroExcesoEfectivoDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly service = inject(PedidosEspecialesService);
+  private readonly printAgent = inject(PrintAgentService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly dialogRef = inject(MatDialogRef<RetiroExcesoEfectivoDialogComponent>);
@@ -151,7 +153,7 @@ export class RetiroExcesoEfectivoDialogComponent implements OnInit {
       .obtenerTicketRetiroEfectivo(idRetiro)
       .pipe(finalize(() => this.generandoTicket.set(null)))
       .subscribe({
-        next: (blob) => imprimirPdfBlob(blob),
+        next: (blob) => imprimirPdfBlob(blob, this.printAgent),
         error: (err) => {
           console.error('Error al generar el ticket PDF del retiro de efectivo', err);
           this.notify.notify('error', this.translate.instant('pedidosEspeciales.caja.retiroDialog.msg.errorTicket'));

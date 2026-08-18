@@ -9,6 +9,7 @@ import { ENUM_ESTATUS_MODAL, ResultModalModel } from 'src/app/models/result-moda
 import { IngresoEfectivoPedidoEspecialRequestModel } from 'src/app/admin/models/pedidos-especiales/ingreso-efectivo-pedido-especial-request';
 import { TipoIngresoPedidoEspecialId } from 'src/app/admin/models/pedidos-especiales/tipo-ingreso-pedido-especial';
 import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especiales.service';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
 import { imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 
 /** Tipo con el que se abre el modal: apertura de caja (1) o ingreso de efectivo del turno (2). */
@@ -33,6 +34,7 @@ export interface IngresoEfectivoDialogData {
 export class IngresoEfectivoDialogComponent {
   private readonly fb = inject(FormBuilder);
   private readonly service = inject(PedidosEspecialesService);
+  private readonly printAgent = inject(PrintAgentService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly dialogRef = inject(MatDialogRef<IngresoEfectivoDialogComponent>);
@@ -103,7 +105,7 @@ export class IngresoEfectivoDialogComponent {
   /** Ticket del movimiento (el legado lo manda a la impresora térmica sin preguntar). */
   private imprimirTicket(idIngreso: number): void {
     this.service.obtenerTicketIngresoEfectivo(idIngreso).subscribe({
-      next: (blob) => imprimirPdfBlob(blob),
+      next: (blob) => imprimirPdfBlob(blob, this.printAgent),
       error: (err) => {
         console.error('Error al generar el ticket PDF del ingreso de efectivo', err);
         this.notify.notify('error', this.translate.instant('pedidosEspeciales.caja.ingresoDialog.msg.errorTicket'));

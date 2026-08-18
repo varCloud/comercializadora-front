@@ -25,6 +25,7 @@ import { TipoIngresoPedidoEspecialId } from 'src/app/admin/models/pedidos-especi
 import { ProductosService } from 'src/app/admin/services/productos.service';
 import { UbicacionesService } from 'src/app/admin/services/ubicaciones.service';
 import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especiales.service';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
 import { IngresoEfectivoDialogComponent } from '../../components/ingreso-efectivo-dialog/ingreso-efectivo-dialog.component';
 import { RetiroExcesoEfectivoDialogComponent } from '../../components/retiro-exceso-efectivo-dialog/retiro-exceso-efectivo-dialog.component';
 import { AprobarPrecioMayoreoDialogComponent } from '../../components/aprobar-precio-mayoreo-dialog/aprobar-precio-mayoreo-dialog.component';
@@ -66,6 +67,7 @@ export class NuevoPedidoComponent implements OnInit {
   private readonly productosService = inject(ProductosService);
   private readonly ubicacionesService = inject(UbicacionesService);
   private readonly pedidosEspecialesService = inject(PedidosEspecialesService);
+  private readonly printAgent = inject(PrintAgentService);
 
   @BlockUI('nuevo-pedido') blockUI!: NgBlockUI;
 
@@ -188,12 +190,17 @@ export class NuevoPedidoComponent implements OnInit {
 
   /**
    * "Abrir cajón" — el legado manda una secuencia ESC/POS a la impresora térmica del servidor
-   * (`PedidosEspecialesV2Controller.AbrirCajon`). No hay endpoint equivalente en la API migrada
-   * (misma limitación ya documentada para la impresión de tickets), así que se avisa al usuario
-   * en vez de simular la acción.
+   * (`PedidosEspecialesV2Controller.AbrirCajon`). Se replica vía el agente local de impresión
+   * POS (`PrintAgentService`, ver `abrir-pdf-blob.ts`); si la estación no tiene el agente
+   * instalado/encendido (rollout gradual), se avisa en vez de fallar en silencio.
    */
   abrirCajon(): void {
-    this.notify.notify('info', this.translate.instant('pedidosEspeciales.nuevoPedido.acciones.abrirCajonNoDisponible'));
+    this.printAgent.abrirCajon().subscribe((abierto) => {
+      const key = abierto
+        ? 'pedidosEspeciales.nuevoPedido.acciones.abrirCajonExito'
+        : 'pedidosEspeciales.nuevoPedido.acciones.abrirCajonNoDisponible';
+      this.notify.notify(abierto ? 'success' : 'info', this.translate.instant(key));
+    });
   }
 
   /** "Cierre de cajas" — el legado navega a `PedidosEspecialesV2/CierreCajas`. */
@@ -548,7 +555,7 @@ export class NuevoPedidoComponent implements OnInit {
    */
   private imprimirTickets(folio: number, imprimirTicketCliente: boolean): void {
     this.pedidosEspecialesService.obtenerTicketAlmacen(folio).subscribe({
-      next: (blob) => imprimirPdfBlob(blob),
+      next: (blob) => imprimirPdfBlob(blob, this.printAgent),
       error: (err) => {
         console.error('Error al generar el ticket de almacén del pedido especial', err);
         this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.ticketError'));
