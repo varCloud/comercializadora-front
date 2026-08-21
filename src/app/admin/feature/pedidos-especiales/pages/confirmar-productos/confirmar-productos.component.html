@@ -2,10 +2,33 @@
   <div class="col-12">
     <mat-card class="cardWithShadow">
       <mat-card-content class="p-24">
-        <div class="d-flex justify-content-between align-items-center m-b-16">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-8 m-b-16">
           <h3 class="f-w-600 m-0">
             {{ 'pedidosEspeciales.confirmarProductos.title' | translate }} #{{ folio() }}
           </h3>
+
+          <!-- Toolbar de caja (P-03, réplica de `ConfirmarProductos.cshtml:65-68`, 1:1 con "Nuevo Pedido"). -->
+          <div class="d-flex gap-8 flex-wrap">
+            <button mat-flat-button class="bg-success text-white text-nowrap btn-accion" type="button" (click)="abrirIngresoEfectivo()">
+              <i-tabler name="cash" class="icon-18"></i-tabler>
+              {{ 'pedidosEspeciales.nuevoPedido.acciones.ingresoEfectivo' | translate }}
+            </button>
+            <button mat-flat-button class="bg-warning text-white text-nowrap btn-accion" type="button" (click)="abrirRetiroExcesoEfectivo()">
+              <i-tabler name="cash-banknote" class="icon-18"></i-tabler>
+              {{ 'pedidosEspeciales.nuevoPedido.acciones.retiroExceso' | translate }}
+            </button>
+            <button mat-flat-button class="bg-accent text-white text-nowrap btn-accion" type="button" (click)="abrirCajon()">
+              <i-tabler name="external-link" class="icon-18"></i-tabler>
+              {{ 'pedidosEspeciales.nuevoPedido.acciones.abrirCajon' | translate }}
+            </button>
+            <button mat-flat-button class="bg-error text-white text-nowrap btn-accion" type="button" (click)="irACierreCajas()">
+              <i-tabler name="cash-register" class="icon-18"></i-tabler>
+              {{ 'pedidosEspeciales.nuevoPedido.acciones.cierreCajas' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end m-b-16">
           <span class="f-s-18 f-w-700">
             {{ 'pedidosEspeciales.confirmarProductos.subtotal' | translate }}
             {{ subtotal() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
@@ -16,25 +39,33 @@
           <table class="w-100 table-stacked-mobile">
             <thead>
               <tr>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.numero' | translate }}</th>
+                <th class="f-s-16 f-w-600">{{ 'pedidosEspeciales.confirmarProductos.tabla.idProducto' | translate }}</th>
                 <th class="f-s-16 f-w-600">{{ 'pedidosEspeciales.confirmarProductos.tabla.producto' | translate }}</th>
                 <th class="f-s-16 f-w-600">{{ 'pedidosEspeciales.confirmarProductos.tabla.almacen' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.monto' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.descuento' | translate }}</th>
                 <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.solicitada' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.observacionesEntrega' | translate }}</th>
                 <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.atendida' | translate }}</th>
                 <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.rechazada' | translate }}</th>
                 <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.aceptada' | translate }}</th>
-                <th class="f-s-16 f-w-600">{{ 'pedidosEspeciales.confirmarProductos.tabla.observaciones' | translate }}</th>
+                <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.observacionesConfirmar' | translate }}</th>
                 <th class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.confirmarProductos.tabla.eliminar' | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              @for (producto of productos(); track producto.idPedidoEspecialDetalle) {
+              @for (producto of productos(); track producto.idPedidoEspecialDetalle; let i = $index) {
                 <tr>
-                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.producto' | translate" class="f-s-14">
-                    {{ producto.descripcion }}
-                    <div class="f-s-12 text-muted">{{ producto.cantidadAceptada * producto.precioVenta | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
-                  </td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.numero' | translate" class="f-s-14 text-center">{{ i + 1 }}</td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.idProducto' | translate" class="f-s-14">{{ producto.idProducto }}</td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.producto' | translate" class="f-s-14">{{ producto.descripcion }}</td>
                   <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.almacen' | translate" class="f-s-14">{{ producto.almacen }}</td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.monto' | translate" class="f-s-14 text-center">{{ producto.precioVenta | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+                  <!-- Réplica literal del legado: la columna "Descuento" es texto estático `$0.00` (`ConfirmarProductos.cshtml:116`, sin dato real detrás). -->
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.descuento' | translate" class="f-s-14 text-center">{{ 0 | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
                   <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.solicitada' | translate" class="f-s-14 text-center">{{ producto.cantidadSolicitada }}</td>
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.observacionesEntrega' | translate" class="f-s-14 text-center">{{ producto.observaciones }}</td>
                   <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.atendida' | translate" class="f-s-14 text-center">{{ producto.cantidadAtendida }}</td>
                   <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.rechazada' | translate" class="f-s-14 text-center">{{ producto.cantidadRechazada }}</td>
                   <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.aceptada' | translate" class="f-s-14 text-center">
@@ -48,7 +79,7 @@
                       (ngModelChange)="onCantidadAceptadaChange(producto, $event)"
                     />
                   </td>
-                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.observaciones' | translate" class="f-s-14">
+                  <td [attr.data-label]="'pedidosEspeciales.confirmarProductos.tabla.observacionesConfirmar' | translate" class="f-s-14">
                     <input
                       class="celda-input w-100"
                       type="text"
@@ -71,7 +102,7 @@
                 </tr>
               } @empty {
                 <tr>
-                  <td colspan="8" class="text-center p-16">{{ 'pedidosEspeciales.confirmarProductos.tabla.vacio' | translate }}</td>
+                  <td colspan="13" class="text-center p-16">{{ 'pedidosEspeciales.confirmarProductos.tabla.vacio' | translate }}</td>
                 </tr>
               }
             </tbody>

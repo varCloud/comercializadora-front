@@ -13,9 +13,13 @@ import { ENUM_ESTATUS_MODAL } from 'src/app/models/result-modal';
 import { Cliente } from 'src/app/admin/models/clientes/cliente';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especiales.service';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
 import { ProductoConfirmar, ProductoConfirmarModel } from 'src/app/admin/models/pedidos-especiales/producto-confirmar';
 import { ConfirmacionProductoRequestModel } from 'src/app/admin/models/pedidos-especiales/confirmacion-producto-request';
 import { GuardarConfirmacionRequestModel } from 'src/app/admin/models/pedidos-especiales/guardar-confirmacion-request';
+import { TipoIngresoPedidoEspecialId } from 'src/app/admin/models/pedidos-especiales/tipo-ingreso-pedido-especial';
+import { IngresoEfectivoDialogComponent } from '../../components/ingreso-efectivo-dialog/ingreso-efectivo-dialog.component';
+import { RetiroExcesoEfectivoDialogComponent } from '../../components/retiro-exceso-efectivo-dialog/retiro-exceso-efectivo-dialog.component';
 import {
   EntregarPedidoEspecialDialogComponent,
   EntregarPedidoEspecialDialogData,
@@ -52,6 +56,7 @@ export class ConfirmarProductosComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly clientesService = inject(ClientesService);
   private readonly pedidosEspecialesService = inject(PedidosEspecialesService);
+  private readonly printAgent = inject(PrintAgentService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
 
@@ -89,6 +94,41 @@ export class ConfirmarProductosComponent implements OnInit {
         error: (err) => console.error('Error al cargar el cliente del pedido especial', err),
       });
     }
+  }
+
+  // ====================== Toolbar de caja (P-03, 1:1 con `nuevo-pedido.component.ts`) ======================
+  // Réplica de `ConfirmarProductos.cshtml:65-68` (mismo bloque de 4 botones que "Nuevo Pedido"):
+  // el legado repite este toolbar en ambas pantallas hermanas. Mismos métodos/diálogos que
+  // `NuevoPedidoComponent` (regla 00, no se duplica lógica) — sin el guard de "caja abierta" al
+  // cargar (ese guard ya se ejecutó en "Nuevo Pedido"/"Entregar Pedido" antes de llegar aquí).
+
+  /** "Ingreso de efectivo" — `AbrirModalIngresoEfectivo(2)`. */
+  abrirIngresoEfectivo(): void {
+    this.dialog.open(IngresoEfectivoDialogComponent, {
+      width: '480px',
+      maxWidth: '95vw',
+      data: { tipo: TipoIngresoPedidoEspecialId.IngresoEfectivo },
+    });
+  }
+
+  /** "Retiro de exceso de efectivo" — `AbrirModalRetiroExcesoEfectivo()`. */
+  abrirRetiroExcesoEfectivo(): void {
+    this.dialog.open(RetiroExcesoEfectivoDialogComponent, { width: '900px', maxWidth: '95vw' });
+  }
+
+  /** "Abrir cajón" — vía el agente local de impresión POS (`PrintAgentService`), mismo criterio que "Nuevo Pedido". */
+  abrirCajon(): void {
+    this.printAgent.abrirCajon().subscribe((abierto) => {
+      const key = abierto
+        ? 'pedidosEspeciales.nuevoPedido.acciones.abrirCajonExito'
+        : 'pedidosEspeciales.nuevoPedido.acciones.abrirCajonNoDisponible';
+      this.notify.notify(abierto ? 'success' : 'info', this.translate.instant(key));
+    });
+  }
+
+  /** "Cierre de cajas" — el legado navega a `PedidosEspecialesV2/CierreCajas`. */
+  irACierreCajas(): void {
+    this.router.navigate(['/admin/pedidos-especiales/cierre-caja']);
   }
 
   /** `GET /pedidos-especiales/{folio}/productos-confirmar` (SP_CONSULTA_PEDIDOS_ESPECIALES_DETALLE_V2). */

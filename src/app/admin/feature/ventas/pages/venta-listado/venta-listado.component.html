@@ -3,6 +3,19 @@
      barras del ticket). Listado paginado server-side (regla 10, app-paginador). -->
 <mat-card class="cardWithShadow">
   <mat-card-content class="p-24">
+    <div class="d-flex justify-content-between align-items-center m-b-16">
+      <h5 class="f-s-16 f-w-600 m-0">{{ 'ventas.listado.filters.title' | translate }}</h5>
+      <button
+        mat-icon-button
+        type="button"
+        (click)="toggleFiltros()"
+        [matTooltip]="(filtrosExpandidos() ? 'ventas.listado.filters.colapsar' : 'ventas.listado.filters.expandir') | translate"
+      >
+        <i-tabler [name]="filtrosExpandidos() ? 'minus' : 'plus'" class="icon-20"></i-tabler>
+      </button>
+    </div>
+
+    @if (filtrosExpandidos()) {
     <div class="row">
       <div class="col-lg-4 col-sm-12 m-b-12">
         <mat-form-field appearance="outline" class="w-100 hide-hint">
@@ -89,6 +102,7 @@
         </button>
       </div>
     </div>
+    }
   </mat-card-content>
 </mat-card>
 
@@ -118,7 +132,13 @@
 
         <ng-container matColumnDef="descripcionFactFormaPago">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'ventas.listado.columns.formaPago' | translate }}</th>
-          <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.formaPago' | translate">{{ v.descripcionFactFormaPago }}</td>
+          <td mat-cell *matCellDef="let v" class="f-s-14" [attr.data-label]="'ventas.listado.columns.formaPago' | translate">
+            @if (formaPagoColor(v.idFactFormaPago); as color) {
+              <span class="forma-pago-chip" [style.color]="color" [style.borderColor]="color">{{ v.descripcionFactFormaPago }}</span>
+            } @else {
+              {{ v.descripcionFactFormaPago }}
+            }
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="cantidad">

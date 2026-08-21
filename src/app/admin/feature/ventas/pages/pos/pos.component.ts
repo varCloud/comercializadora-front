@@ -248,7 +248,13 @@ export class PosComponent implements OnInit, AfterViewInit {
     this.focusScan();
   }
 
-  private cargarCatalogo(): void {
+  /**
+   * Réplica de `InitSelect2Productos()` (`EvtVentas.js:1989-2110`): recarga el catálogo completo
+   * de productos/existencias. Se dispara solo (`ngOnInit`, tras guardar una venta) y también a
+   * mano desde el ícono "Cargar Existencias" de la barra Herramientas (P-03) — el legado lo deja
+   * disponible para que el cajero refresque sin completar una venta primero.
+   */
+  cargarCatalogo(): void {
     this.blockUI.start(this.translate.instant('ventas.pos.msg.cargandoCatalogo'));
     this.posCatalogo
       .obtenerCatalogoProductos()

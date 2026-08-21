@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, formatDate } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -13,6 +13,8 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { ENUM_ESTATUS_MODAL, ResultModalModel } from 'src/app/models/result-modal';
 import { CajaInfo } from 'src/app/admin/models/ventas/caja-info';
 import { CierreRequestModel } from 'src/app/admin/models/ventas/cierre-request';
+import { Retiro } from 'src/app/admin/models/ventas/retiro';
+import { TipoRetiroId } from 'src/app/admin/models/ventas/tipo-retiro';
 import { CajaService } from 'src/app/admin/services/caja.service';
 import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import {
@@ -37,7 +39,15 @@ import {
 @Component({
   selector: 'app-cierre-dia-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, MaterialModule, TablerIconsModule, TranslatePipe, BlockUIModule, CurrencyPipe],
+  imports: [
+    ReactiveFormsModule,
+    MaterialModule,
+    TablerIconsModule,
+    TranslatePipe,
+    BlockUIModule,
+    CurrencyPipe,
+    DatePipe,
+  ],
   templateUrl: './cierre-dia-dialog.component.html',
 })
 export class CierreDiaDialogComponent implements OnInit {
@@ -51,8 +61,22 @@ export class CierreDiaDialogComponent implements OnInit {
 
   @BlockUI('cierreDiaDialog') blockUI!: NgBlockUI;
 
+  /** Réplica de `_CierreDia.cshtml:10-51`: para comparar `tipoRetiro` en el template. */
+  readonly TipoRetiroId = TipoRetiroId;
+
   readonly cajaInfo = signal<CajaInfo | null>(null);
   readonly guardando = signal(false);
+
+  /**
+   * Listado "Retiros del Día" del propio modal de cierre (P-04, réplica de `_CierreDia.cshtml:
+   * 10-51`): todos los retiros de HOY en esta estación (Cierre de día + Exceso de Efectivo, sin
+   * filtrar por tipo — a diferencia de `RetiroExcesoDialogComponent`, que solo lista los de
+   * exceso), cada uno con botón "Reimprimir Ticket" que reutiliza el mismo mecanismo de PDF
+   * (`abrirPdfBlob`) ya usado ahí.
+   */
+  readonly retirosHoy = signal<Retiro[]>([]);
+  readonly generandoTicketRetiro = signal<number | null>(null);
+  readonly displayedColumnsRetiros = ['usuario', 'fecha', 'monto', 'tipo', 'reimprimir'];
 
   /**
    * Tras un cierre exitoso, en vez de cerrar el modal de inmediato se muestra un resumen con el
@@ -69,6 +93,7 @@ export class CierreDiaDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargar();
+    this.cargarRetirosHoy();
   }
 
   private cargar(): void {
@@ -82,6 +107,29 @@ export class CierreDiaDialogComponent implements OnInit {
           console.error('Error al consultar el resumen de cierre', err);
           this.notify.notify('error', this.translate.instant('ventas.caja.cierre.msg.errorCargar'));
         },
+      });
+  }
+
+  /** Retiros de HOY en esta estación, sin filtrar por tipo (ver comentario de `retirosHoy`). */
+  private cargarRetirosHoy(): void {
+    const hoy = formatDate(new Date(), 'yyyy-MM-dd', 'en-US');
+    this.cajaService.obtenerRetiros({ fecha: hoy }).subscribe({
+      next: (res) => this.retirosHoy.set(res),
+      error: (err) => console.error('Error al consultar los retiros del día', err),
+    });
+  }
+
+  /** "Reimprimir Ticket" de una fila del listado de retiros de hoy (P-04). */
+  reimprimirRetiro(retiro: Retiro): void {
+    if (this.generandoTicketRetiro()) return;
+
+    this.generandoTicketRetiro.set(retiro.idRetiro);
+    this.cajaService
+      .obtenerTicketPdf(retiro.idRetiro, 'retiro')
+      .pipe(finalize(() => this.generandoTicketRetiro.set(null)))
+      .subscribe({
+        next: (blob) => abrirPdfBlob(blob),
+        error: (err) => console.error('Error al generar el ticket PDF del retiro', err),
       });
   }
 

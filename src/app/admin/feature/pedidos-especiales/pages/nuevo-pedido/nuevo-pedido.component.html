@@ -247,10 +247,20 @@
             <i-tabler name="credit-card" class="icon-18"></i-tabler>
             {{ 'pedidosEspeciales.nuevoPedido.resumen.generarPedido' | translate }}
           </button>
-          <button mat-flat-button class="bg-accent text-white text-nowrap" type="button" [disabled]="guardando()" (click)="guardarCotizacion()">
-            <i-tabler name="device-floppy" class="icon-18"></i-tabler>
-            {{ 'pedidosEspeciales.nuevoPedido.resumen.guardarCotizacion' | translate }}
-          </button>
+          <!-- Réplica de `PedidosEspeciales.cshtml:349-357`: "Guardar Cotización" en alta normal,
+               "Guardar cambios cotización" al editar una existente (P-07), oculto si se llegó en
+               edición de un pedido que ya no está en estatus Cotizado. -->
+          @if (idPedidoEspecialEdicion() === 0) {
+            <button mat-flat-button class="bg-accent text-white text-nowrap" type="button" [disabled]="guardando()" (click)="guardarCotizacion()">
+              <i-tabler name="device-floppy" class="icon-18"></i-tabler>
+              {{ 'pedidosEspeciales.nuevoPedido.resumen.guardarCotizacion' | translate }}
+            </button>
+          } @else if (idEstatusPedidoEspecialEdicion() === 2) {
+            <button mat-flat-button class="bg-accent text-white text-nowrap" type="button" [disabled]="guardando()" (click)="guardarCotizacion()">
+              <i-tabler name="device-floppy" class="icon-18"></i-tabler>
+              {{ 'pedidosEspeciales.nuevoPedido.resumen.guardarCambiosCotizacion' | translate }}
+            </button>
+          }
         </div>
       </div>
     </mat-card-content>

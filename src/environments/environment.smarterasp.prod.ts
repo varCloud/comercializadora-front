@@ -8,4 +8,5 @@ export const environment = {
   // TODO: URL real de la API (placeholder).
   BASE_URL: 'http://api.comercializadoralluvia.com/api',
   BASE_URL_ADMIN: 'https://api.comercializadoralluvia.com/api',
+   PRINT_AGENT_URL: 'http://localhost:5090/api/print'
 };

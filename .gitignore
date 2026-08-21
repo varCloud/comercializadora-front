@@ -43,3 +43,6 @@ Thumbs.db
 
 # CodeGraph local index (gentle-ai)
 .codegraph/
+
+# Credenciales de deploy FTP (deploy-ftp.js) — NUNCA versionar. Plantilla: .env.example
+.env

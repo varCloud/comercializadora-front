@@ -80,16 +80,17 @@ export class RetirosIngresosComponent implements OnInit {
     return idRol === CONSTANTS.ROLES.ADMIN || idRol === CONSTANTS.ROLES.ENCARGADO_ALMACEN;
   });
 
-  readonly displayedColumns = [
-    'tipo',
-    'monto',
-    'usuario',
-    'estacion',
-    'estatus',
-    'fecha',
-    'usuarioAutorizo',
-    'acciones',
-  ];
+  private readonly columnasBase = ['tipo', 'monto', 'usuario', 'estacion', 'estatus', 'fecha'];
+
+  /**
+   * Réplica de `_ObtenerRetirosAutorizacion.cshtml:34-41,92-98` (`if (idRol == 1 || idRol == 2)`):
+   * las columnas "Usuario Autorizó"/"Acciones" solo se muestran a Admin/Encargado (ver
+   * `esAutorizador`). Un cajero sin ese rol nunca las ve — antes se pintaban siempre, exponiendo
+   * inputs/botones de autorización que fallarían con 403 al usarlos (P-07).
+   */
+  readonly displayedColumns = computed(() =>
+    this.esAutorizador() ? [...this.columnasBase, 'usuarioAutorizo', 'acciones'] : this.columnasBase,
+  );
 
   readonly actualizandoRetiro = signal<number | null>(null);
 

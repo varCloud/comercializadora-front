@@ -115,6 +115,12 @@
                 <i-tabler name="truck-delivery" class="icon-18"></i-tabler>
               </a>
             }
+            <a (click)="ticketProductos(p)" class="m-r-10 cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'pedidosEspeciales.entregarPedido.actions.ticketProductos' | translate">
+              <i-tabler name="printer" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="imprimirTicketAlmacen(p)" class="m-r-10 cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'pedidosEspeciales.entregarPedido.actions.imprimirTicketAlmacen' | translate">
+              <i-tabler name="printer" class="icon-18"></i-tabler>
+            </a>
             <a (click)="verTicket(p)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'pedidosEspeciales.entregarPedido.actions.verTicket' | translate">
               <i-tabler name="eye" class="icon-18"></i-tabler>
             </a>

@@ -2,7 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -19,6 +19,7 @@ import {
   PartidaPedidoEspecial,
   PartidaPedidoEspecialModel,
 } from 'src/app/admin/models/pedidos-especiales/partida-pedido-especial';
+import { ProductoConfirmar } from 'src/app/admin/models/pedidos-especiales/producto-confirmar';
 import { GuardarPedidoEspecialRequestModel } from 'src/app/admin/models/pedidos-especiales/guardar-pedido-especial-request';
 import { PedidoEspecialProductoRequestModel } from 'src/app/admin/models/pedidos-especiales/pedido-especial-producto-request';
 import { TipoIngresoPedidoEspecialId } from 'src/app/admin/models/pedidos-especiales/tipo-ingreso-pedido-especial';
@@ -64,6 +65,7 @@ export class NuevoPedidoComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly productosService = inject(ProductosService);
   private readonly ubicacionesService = inject(UbicacionesService);
   private readonly pedidosEspecialesService = inject(PedidosEspecialesService);
@@ -128,6 +130,17 @@ export class NuevoPedidoComponent implements OnInit {
   /** Folio del ticket autorizado a precio de mayoreo (`idPedidoEspecialMayoreo_` del legado). */
   readonly idPedidoEspecialMayoreo = signal(0);
 
+  /**
+   * Edición de cotización (P-07) — réplica de `PedidosEspeciales(PedidosEspecialesV2
+   * pedidoEspecial)` + `AgregarProductosPedidoEspecial()` (`EvtPedidosEspecialesV2.js:1573-1587`):
+   * cuando se llega desde "Editar cotización" (`cotizaciones.component.ts`) con
+   * `?idPedidoEspecial=&idCliente=&idEstatusPedidoEspecial=` en la URL, se precargan sus
+   * productos y el guardado reusa el MISMO folio (`idPedidoEspecial` != 0) en vez de crear uno
+   * nuevo. `0` (default) = alta normal, igual que el legado (`Model.idPedidoEspecial == 0`).
+   */
+  readonly idPedidoEspecialEdicion = signal(0);
+  readonly idEstatusPedidoEspecialEdicion = signal(0);
+
   readonly subtotal = computed(() =>
     this.round2(this.partidas().reduce((acc, p) => acc + this.importePartida(p), 0)),
   );
@@ -135,6 +148,14 @@ export class NuevoPedidoComponent implements OnInit {
   ngOnInit(): void {
     this.cargarAlmacenes();
     this.validarCajaAbierta();
+
+    const idPedidoEspecial = Number(this.route.snapshot.queryParamMap.get('idPedidoEspecial')) || 0;
+    const idEstatusPedidoEspecial = Number(this.route.snapshot.queryParamMap.get('idEstatusPedidoEspecial')) || 0;
+    if (idPedidoEspecial > 0) {
+      this.idPedidoEspecialEdicion.set(idPedidoEspecial);
+      this.idEstatusPedidoEspecialEdicion.set(idEstatusPedidoEspecial);
+      this.cargarProductosDeCotizacion(idPedidoEspecial);
+    }
   }
 
   // ====================== Guard de caja abierta (legado: ValidaCajaAbierta) ======================
@@ -259,6 +280,71 @@ export class NuevoPedidoComponent implements OnInit {
         );
       },
       error: (err) => console.error('Error al consultar la existencia del producto', err),
+    });
+  }
+
+  // ====================== Edición de cotización (P-07) ======================
+
+  /**
+   * `GET /pedidos-especiales/{folio}/productos-confirmar` — mismo SP reusado que el legado
+   * (`SP_CONSULTA_PEDIDOS_ESPECIALES_DETALLE_V2` vía `ObtenerProductosPedidoEspecial`). Precarga
+   * cada línea de la cotización en `partidas()` para continuar editándola.
+   */
+  private cargarProductosDeCotizacion(folio: number): void {
+    this.blockUI.start(this.translate.instant('pedidosEspeciales.nuevoPedido.msg.cargandoCotizacion'));
+    this.pedidosEspecialesService
+      .obtenerProductosConfirmar(folio)
+      .pipe(finalize(() => this.blockUI.stop()))
+      .subscribe({
+        next: (lineas) => {
+          if (lineas.length === 0) {
+            this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.cotizacionSinProductos'));
+            return;
+          }
+          lineas.forEach((linea) => this.precargarPartidaCotizacion(linea));
+        },
+        error: (err) => {
+          console.error('Error al cargar los productos de la cotización', err);
+          this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.cotizacionError'));
+        },
+      });
+  }
+
+  /**
+   * Réplica de `AgregarProducto(productosPedidoEspecial[i], cantidad, true)`: la cantidad se topa
+   * a la existencia actual del almacén destino si es menor a la originalmente pedida
+   * (`cantidad > cantidadActualInvAlmacen ? cantidadActualInvAlmacen : cantidad`). Los rangos de
+   * precio por volumen se recargan vía `ProductosService.obtenerPrecios` (mismo catálogo que usa
+   * `agregarProducto()`; el SP de detalle no los expone).
+   */
+  private precargarPartidaCotizacion(linea: ProductoConfirmar): void {
+    const existencia = linea.cantidadActualInvAlmacen;
+    const cantidad = existencia != null && linea.cantidad > existencia ? existencia : linea.cantidad;
+
+    this.productosService.obtenerPrecios(linea.idProducto).subscribe({
+      next: (precios) => {
+        this.partidas.update((lista) => [
+          new PartidaPedidoEspecialModel({
+            idProducto: linea.idProducto,
+            descripcion: linea.descripcion,
+            idAlmacen: linea.idAlmacen,
+            almacen: linea.almacen,
+            cantidad,
+            precioIndividual: precios.precioIndividual ?? linea.precioIndividual,
+            precioMenudeo: precios.precioMenudeo ?? linea.precioMenudeo,
+            precio: precios.precioIndividual ?? linea.precioIndividual,
+            existencia: existencia ?? 0,
+            inhabilitado: false,
+            rangos: precios.rangos,
+          }),
+          ...lista,
+        ]);
+        this.recalcularPrecios();
+      },
+      error: (err) => {
+        console.error('Error al cargar los precios de un producto de la cotización', err);
+        this.notify.notify('error', this.translate.instant('pedidosEspeciales.nuevoPedido.msg.preciosError'));
+      },
     });
   }
 
@@ -510,7 +596,9 @@ export class NuevoPedidoComponent implements OnInit {
       tipoRevision: opciones.tipoRevision,
       idCliente: opciones.idCliente,
       idEstatusPedidoEspecial: opciones.idEstatusPedidoEspecial,
-      idPedidoEspecial: 0,
+      // P-07: réplica de `$('#idPedidoEspecial').val()` — 0 en alta normal, folio real al
+      // editar una cotización existente (mismo SP hace upsert según este valor).
+      idPedidoEspecial: this.idPedidoEspecialEdicion(),
       idPedidoEspecialMayoreo: this.idPedidoEspecialMayoreo(),
     });
 
@@ -526,6 +614,11 @@ export class NuevoPedidoComponent implements OnInit {
       )
       .subscribe({
         next: (res) => {
+          // Réplica de `$('#idPedidoEspecial').val(0)` en `success` (EvtPedidosEspecialesV2.js:701):
+          // se resetea SIEMPRE tras el intento de guardado, no solo si `estatus === 200`.
+          this.idPedidoEspecialEdicion.set(0);
+          this.idEstatusPedidoEspecialEdicion.set(0);
+
           if (res?.estatus === 200 && res.modelo) {
             this.notify.notify(
               'success',

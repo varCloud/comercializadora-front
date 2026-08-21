@@ -82,13 +82,16 @@
           <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.fecha' | translate">{{ p.fechaAlta | date: 'dd/MM/yyyy HH:mm' }}</td>
         </ng-container>
 
-        <!-- Acciones: réplica del dropdown "Acciones" del legado (Liquidar Pedido + Ver Ticket;
-             "Ver Productos"/"Imprimir Ticket" quedan fuera de este bloque, ver pendientes). -->
+        <!-- Acciones: réplica del dropdown "Acciones" del legado (Liquidar Pedido + Ver Productos
+             + Ver Ticket, P-04). "Imprimir Ticket" queda bloqueada, ver `verProductos()`. -->
         <ng-container matColumnDef="action" stickyEnd>
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.pedidosEnRuta.columns.acciones' | translate }}</th>
           <td mat-cell *matCellDef="let p" class="action-link text-right" [attr.data-label]="'pedidosEspeciales.pedidosEnRuta.columns.acciones' | translate">
             <a (click)="liquidar(p)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'pedidosEspeciales.pedidosEnRuta.actions.liquidar' | translate">
               <i-tabler name="cash" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="verProductos(p)" class="m-r-10 cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'pedidosEspeciales.pedidosEnRuta.actions.verProductos' | translate">
+              <i-tabler name="list" class="icon-18"></i-tabler>
             </a>
             <a (click)="verTicket(p)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'pedidosEspeciales.pedidosEnRuta.actions.verTicket' | translate">
               <i-tabler name="eye" class="icon-18"></i-tabler>

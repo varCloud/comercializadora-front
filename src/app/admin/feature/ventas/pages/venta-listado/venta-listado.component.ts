@@ -42,6 +42,13 @@ import { VentaDevolucionesComplementosDialogComponent } from '../../components/v
  * comportamiento (filtros, buscador, paginación server-side, ver detalle, ver devoluciones/
  * complementos) es idéntico en ambos modos.
  *
+ * P-09 (auditoría paridad `ventas-listado`) se REVIRTIÓ el 2026-08-21: se había reportado que el
+ * legado mostraba activas y canceladas mezcladas en "Editar Ventas", apoyándose en
+ * `salida_ventas.md:83-85` ("el SP original no filtraba por estatus"). Es falso: el SP legado
+ * `SP_CONSULTA_VENTAS_EDITAR` tiene `v.idStatusVenta = 1` fijo en su cuerpo — verificado contra
+ * `sys.sql_modules` en la BD real. No tiene *parámetro* de estatus, que no es lo mismo que no
+ * filtrar. `/listado` muestra solo Activas, igual que el legado, y así se queda.
+ *
  * Filtros/paginación server-side (reglas 10/13/18), mismo patrón que Clientes y
  * "Reportes > Ventas": `idAlmacen`/`idRol` los resuelve el backend del JWT, nunca se mandan
  * desde aquí (regla de seguridad dura de la feature Ventas).
@@ -96,22 +103,54 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
   /** `true` en la ruta `/ventas/canceladas` (ver nota de clase). */
   readonly soloCanceladas = this.route.snapshot.data['soloCanceladas'] === true;
 
+  /**
+   * P-07 (auditoría paridad `ventas-listado`): orden réplica de `_ObtenerVentas.cshtml:41-49`
+   * (# Ticket, Cliente, Fecha, Monto, Cantidad, Usuario, Forma de pago, Código de Barras,
+   * Acciones). "Estatus" no existe en el legado (columna P-06, ver nota del componente);
+   * se deja al final, antes de Acciones, en vez de quitarla.
+   */
   readonly displayedColumns = [
     'idVenta',
-    'fechaAlta',
     'nombreCliente',
+    'fechaAlta',
+    'montoTotal',
+    'cantidad',
     'nombreUsuario',
     'descripcionFactFormaPago',
-    'cantidad',
     'codigoBarrasTicket',
-    'montoTotal',
     'estatusVenta',
     'action',
   ];
 
+  /**
+   * P-07: colores de badge por forma de pago, réplica exacta del mapeo Bootstrap del legado
+   * (`_ObtenerVentas.cshtml:55-80`: 1=primary, 2=info, 3=secondary, 4=dark, 18=blue). IDs sin
+   * mapeo no llevan badge (mismo criterio que el `default` del legado, sin clase). Mismo patrón
+   * de chip determinístico que `UsuariosListComponent.rolColor` (regla 10).
+   */
+  private readonly formaPagoColorMap: Record<number, string> = {
+    1: '#5d87ff',
+    2: '#539bff',
+    3: '#757575',
+    4: '#2a3547',
+    18: '#1e88e5',
+  };
+
+  formaPagoColor(idFactFormaPago: number): string | null {
+    return this.formaPagoColorMap[idFactFormaPago] ?? null;
+  }
+
   readonly pag = new Paginador<Venta>(CONSTANTS.PAGINATION.PAGE_SIZE);
   readonly formasPago = signal<FormaPago[]>([]);
   readonly generandoTicket = signal(false);
+
+  /** P-08: colapsa/expande la card de filtros ("Buscar Ventas"), réplica del botón minus del
+   *  legado (`ConsultaVentas.cshtml:26-31`). Arranca expandida, igual que el legado. */
+  readonly filtrosExpandidos = signal(true);
+
+  toggleFiltros(): void {
+    this.filtrosExpandidos.update((v) => !v);
+  }
 
   private search = '';
   private readonly search$ = new Subject<string>();
@@ -255,18 +294,34 @@ export class VentaListadoComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /** Cancelar/ajustar IVA solo aplica a ventas activas, y nunca en el listado de canceladas. */
+  /**
+   * FE-2 (P-02, auditoría paridad `ventas-listado`): réplica exacta de la condición del legado
+   * (`_ObtenerVentas.cshtml:108`, misma guardia que "Generar Factura"/`puedeAjustarIva`): no se
+   * puede cancelar una venta que ya tiene una factura vigente o pendiente de cancelación — hay
+   * que cancelar la factura primero.
+   *
+   * El chequeo de `estatusVenta === Activa` se conserva: el dropdown legado no lo hace explícito
+   * porque no le hace falta — `SP_CONSULTA_VENTAS_EDITAR` filtra `v.idStatusVenta = 1` fijo en su
+   * cuerpo (verificado contra `sys.sql_modules` en la BD real, 2026-08-21), así que la lista
+   * legada solo contiene ventas Activas. Aquí la condición se hace explícita en vez de depender
+   * del dataset.
+   */
   puedeCancelar(venta: Venta): boolean {
-    return !this.soloCanceladas && venta.estatusVenta === EstatusVentaId.Activa;
+    return (
+      !this.soloCanceladas &&
+      venta.estatusVenta === EstatusVentaId.Activa &&
+      (venta.idEstatusFactura === 0 || venta.idEstatusFactura === EstatusFacturaId.Cancelada)
+    );
   }
 
   /**
-   * FE-2: además del estatus de la venta, "Ajustar IVA" (= "Generar Factura" del legado) no
-   * debe quedar disponible si la venta ya tiene una factura vigente o pendiente de cancelar
-   * (`idEstatusFactura` distinto de "sin factura"/"cancelada"), ni si la venta ya tiene
-   * devoluciones/complementos (`tieneCompleODev`, réplica de la guardia de
-   * `modalFacturar()`/`EvtConsultaVentas.js:484` del legado — hallazgo de verificación,
-   * ver `.claude/docs/feature/editar_venta/verificacion_editar_venta.md`).
+   * FE-2: "Ajustar IVA" (= "Generar Factura" del legado) no debe quedar disponible si la venta
+   * ya tiene una factura vigente o pendiente de cancelar (`idEstatusFactura` distinto de "sin
+   * factura"/"cancelada"), ni si la venta ya tiene devoluciones/complementos (`tieneCompleODev`,
+   * réplica de la guardia de `modalFacturar()`/`EvtConsultaVentas.js:484` del legado — hallazgo
+   * de verificación, ver `.claude/docs/feature/editar_venta/verificacion_editar_venta.md`).
+   *
+   * Conserva el chequeo de `estatusVenta === Activa` por el mismo motivo que `puedeCancelar`.
    */
   puedeAjustarIva(venta: Venta): boolean {
     return (

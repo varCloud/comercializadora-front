@@ -1,5 +1,6 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
@@ -15,10 +16,14 @@ import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especia
 
 /**
  * Página "Cotizaciones" (Bloque C, FE-C4) — réplica de `Views/PedidosEspecialesV2/
- * Cotizaciones.cshtml` + `evtCotizaciones.js`. Listado de solo lectura (según la HU, sin flujo
- * de alta/edición propio): el legado tiene un link "Editar cotización" que navega a la pantalla
- * de alta ("PedidosEspeciales") en modo edición — fuera de alcance de este bloque (no se toca
- * "Nuevo Pedido"), ver pendiente para el revisor.
+ * Cotizaciones.cshtml` + `evtCotizaciones.js`.
+ *
+ * **"Editar cotización" (P-07):** columna de acción que navega a "Nuevo Pedido"
+ * (`/admin/pedidos-especiales/nuevo`) con `idPedidoEspecial`/`idCliente`/`idEstatusPedidoEspecial`
+ * en el querystring — réplica de `Url.Action("PedidosEspeciales", "PedidosEspecialesV2", new {
+ * idPedidoEspecial, idCliente, idEstatusPedidoEspecial })` (`Cotizaciones.cshtml:57,70`).
+ * `NuevoPedidoComponent` precarga los productos de la cotización y reusa el mismo folio al
+ * guardar (ver su documentación de clase).
  *
  * El legado NO tiene formulario de filtros para esta pantalla (`ObtenerCotizaciones()` no recibe
  * parámetros); se agrega buscador de texto libre en cliente (regla 13).
@@ -39,10 +44,11 @@ export class CotizacionesComponent implements OnInit {
   private readonly pedidosEspecialesService = inject(PedidosEspecialesService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
+  private readonly router = inject(Router);
 
   @BlockUI('cotizaciones') blockUI!: NgBlockUI;
 
-  readonly displayedColumns = ['idPedidoEspecial', 'fechaAlta', 'nombreCliente', 'cantidad', 'montoTotal'];
+  readonly displayedColumns = ['idPedidoEspecial', 'fechaAlta', 'nombreCliente', 'cantidad', 'montoTotal', 'action'];
 
   /** Estado de paginación (en cliente, ver TODO de clase). */
   readonly pag = new Paginador<Cotizacion>(CONSTANTS.PAGINATION.PAGE_SIZE);
@@ -128,5 +134,16 @@ export class CotizacionesComponent implements OnInit {
 
   applyFilter(value: string): void {
     this.search$.next(value);
+  }
+
+  /** "Editar cotización" (P-07) — réplica del link de `Cotizaciones.cshtml:57,70`. */
+  editarCotizacion(cotizacion: Cotizacion): void {
+    this.router.navigate(['/admin/pedidos-especiales/nuevo'], {
+      queryParams: {
+        idPedidoEspecial: cotizacion.idPedidoEspecial,
+        idCliente: cotizacion.idCliente,
+        idEstatusPedidoEspecial: cotizacion.idEstatusPedidoEspecial,
+      },
+    });
   }
 }

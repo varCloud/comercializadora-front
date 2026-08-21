@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>{{ 'verProductosPedidoRutaDialog.title' | translate }} #{{ data.folio }}</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'verProductosPedidoRuta'">
+  @if (cargado() && productos().length === 0) {
+    <p class="text-center m-t-16 m-b-16">{{ 'verProductosPedidoRutaDialog.empty' | translate }}</p>
+  } @else {
+    <div class="table-responsive">
+      <table mat-table [dataSource]="productos()" class="w-100">
+        <ng-container matColumnDef="idProducto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'verProductosPedidoRutaDialog.columns.idProducto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14">{{ p.idProducto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'verProductosPedidoRutaDialog.columns.producto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14">{{ p.descripcion }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="almacen">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'verProductosPedidoRutaDialog.columns.almacen' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14">{{ p.almacen }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioVenta">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'verProductosPedidoRutaDialog.columns.precio' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right">{{ p.precioVenta | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'verProductosPedidoRutaDialog.columns.cantidad' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right">{{ p.cantidad }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'verProductosPedidoRutaDialog.columns.total' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right">{{ p.monto | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close>{{ 'verProductosPedidoRutaDialog.cerrar' | translate }}</button>
+</mat-dialog-actions>

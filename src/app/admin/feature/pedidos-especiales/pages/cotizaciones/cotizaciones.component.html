@@ -25,8 +25,7 @@
   </mat-card-content>
 </mat-card>
 
-<!-- Tabla de cotizaciones (mismas columnas que Cotizaciones.cshtml; sin columna "Editar", ver
-     pendiente: fuera de alcance de este bloque). -->
+<!-- Tabla de cotizaciones (mismas columnas que Cotizaciones.cshtml, incluida "Editar" — P-07). -->
 <mat-card class="cardWithShadow" *blockUI="'cotizaciones'">
   <mat-card-content class="p-24">
     <div class="table-responsive">
@@ -54,6 +53,21 @@
         <ng-container matColumnDef="montoTotal">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.cotizaciones.columns.monto' | translate }}</th>
           <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.cotizaciones.columns.monto' | translate">{{ c.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <!-- "Editar" (P-07) — réplica de la columna de link de `Cotizaciones.cshtml:57,70`. -->
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.cotizaciones.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="text-center" [attr.data-label]="'pedidosEspeciales.cotizaciones.columns.acciones' | translate">
+            <a
+              class="cursor-pointer"
+              [style.color]="'#1e88e5'"
+              [matTooltip]="'pedidosEspeciales.cotizaciones.actions.editar' | translate"
+              (click)="editarCotizacion(c)"
+            >
+              <i-tabler name="edit" class="icon-18"></i-tabler>
+            </a>
+          </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

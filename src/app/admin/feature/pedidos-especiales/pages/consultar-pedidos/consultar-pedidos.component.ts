@@ -17,7 +17,8 @@ import { EMPTY_LINKS } from 'src/app/admin/models/shared/paged-result';
 import { Paginador } from 'src/app/admin/models/shared/paginador';
 import { Catalogo } from 'src/app/admin/models/shared/catalogo';
 import { PaginadorComponent } from 'src/app/admin/shared/components/paginador/paginador.component';
-import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
+import { abrirPdfBlob, imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
 import { PedidoEspecialHistorico } from 'src/app/admin/models/pedidos-especiales/pedido-especial-historico';
 import { RealizarDevolucionRequestModel } from 'src/app/admin/models/pedidos-especiales/realizar-devolucion-request';
 import { ProductoDevueltoRequestModel } from 'src/app/admin/models/pedidos-especiales/producto-devuelto-request';
@@ -34,6 +35,10 @@ import {
   TicketsPedidoEspecialDialogComponent,
   TicketsPedidoEspecialData,
 } from '../../components/tickets-pedido-especial-dialog/tickets-pedido-especial-dialog.component';
+import {
+  FacturarPedidoEspecialDialogComponent,
+  FacturarPedidoEspecialDialogData,
+} from '../../components/facturar-pedido-especial-dialog/facturar-pedido-especial-dialog.component';
 
 /**
  * Página "Consultar Pedidos" (Bloque D, FE-D3/FE-D6) — réplica de `Views/PedidosEspecialesV2/
@@ -76,6 +81,7 @@ export class ConsultarPedidosComponent implements OnInit {
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
+  private readonly printAgent = inject(PrintAgentService);
 
   @BlockUI('consultar-pedidos') blockUI!: NgBlockUI;
 
@@ -271,6 +277,38 @@ export class ConsultarPedidosComponent implements OnInit {
     });
   }
 
+  /**
+   * "Ticket Original" (P-06, solo estatus Pagado=6 / A crédito=7) — réplica de
+   * `ImprimeTicket(id, 1, 0)` (`EvtConsultaPedidosEspecialesV2.js:119-124`). Misma acción de
+   * impresión directa que "Ticket Productos" de Entregar Pedido (P-05): ticket de cliente
+   * (`obtenerTicket`) enviado vía `PrintAgentService`, ya no bloqueada por GDI físico (ver
+   * memoria `agente-impresion-pos-print-agent`).
+   */
+  ticketOriginal(pedido: PedidoEspecialHistorico): void {
+    this.pedidosEspecialesService.obtenerTicket(pedido.idPedidoEspecial).subscribe({
+      next: (blob) => imprimirPdfBlob(blob, this.printAgent),
+      error: (err) => {
+        console.error('Error al generar el ticket original del pedido especial', err);
+        this.notify.notify('error', this.translate.instant('pedidosEspeciales.consultarPedidos.msg.ticketError'));
+      },
+    });
+  }
+
+  /**
+   * "Imprimir Ticket Almacén" (P-08) — réplica de `imprimirTicketAlmacenes(id)`
+   * (`EvtConsultaPedidosEspecialesV2.js:125`): impresión directa, acción separada de "Ver Ticket
+   * Almacén" (que abre el PDF). Restaura la paridad 1:1 que se había fusionado en una sola acción.
+   */
+  imprimirTicketAlmacen(pedido: PedidoEspecialHistorico): void {
+    this.pedidosEspecialesService.obtenerTicketAlmacen(pedido.idPedidoEspecial).subscribe({
+      next: (blob) => imprimirPdfBlob(blob, this.printAgent),
+      error: (err) => {
+        console.error('Error al generar el ticket de almacén del pedido especial', err);
+        this.notify.notify('error', this.translate.instant('pedidosEspeciales.consultarPedidos.msg.ticketError'));
+      },
+    });
+  }
+
   /** "Ver Ticket Almacén" (siempre disponible, reusa el PDF ya migrado en Bloque B). */
   verTicketAlmacen(pedido: PedidoEspecialHistorico): void {
     this.pedidosEspecialesService.obtenerTicketAlmacen(pedido.idPedidoEspecial).subscribe({
@@ -292,6 +330,23 @@ export class ConsultarPedidosComponent implements OnInit {
         maxWidth: '95vw',
       },
     );
+  }
+
+  /** "Facturar" (solo si `puedeFacturar`, P-02) — réplica de `modalFacturar()`/`#ModalFacturar`. */
+  facturar(pedido: PedidoEspecialHistorico): void {
+    const ref = this.dialog.open<FacturarPedidoEspecialDialogComponent, FacturarPedidoEspecialDialogData>(
+      FacturarPedidoEspecialDialogComponent,
+      {
+        data: { folio: pedido.idPedidoEspecial, montoTotal: pedido.montoTotal },
+        width: '900px',
+        maxWidth: '95vw',
+        disableClose: true,
+      },
+    );
+
+    ref.afterClosed().subscribe((res) => {
+      if (res?.status === ENUM_ESTATUS_MODAL.OK) this.cargar();
+    });
   }
 
   /** "Registrar Devolución" (solo si `puedeDevolver`) — atajo directo del dropdown, mismo diálogo que el detalle. */

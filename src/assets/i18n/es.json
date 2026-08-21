@@ -603,6 +603,8 @@
         "motivo": "Motivo de la devolución",
         "motivoPlaceholder": "Escribe el motivo de la devolución…",
         "tabla": {
+          "numero": "#",
+          "idProducto": "Id Producto",
           "producto": "Producto",
           "cantidadComprada": "Cant. comprada",
           "cantidadDevolver": "Cant. a devolver",
@@ -627,6 +629,7 @@
         "abrirCajon": "Abrir Cajón de Dinero",
         "consultarExistencias": "Consultar Existencias",
         "buscarPedidoEspecial": "Buscar Pedido Especial",
+        "cargarExistencias": "Cargar Existencias",
         "msg": {
           "cajonNoDisponible": "Función no disponible",
           "cajonExito": "Cajón abierto"
@@ -692,6 +695,8 @@
         }
       },
       "tabla": {
+        "numero": "#",
+        "idProducto": "Id Producto",
         "producto": "Producto",
         "cantidad": "Cantidad",
         "precioUnitario": "Precio Unitario",
@@ -776,6 +781,20 @@
       },
       "cierre": {
         "title": "Cierre de caja",
+        "retirosDelDia": {
+          "title": "Retiros del Día",
+          "vacio": "No se encontraron retiros.",
+          "columns": {
+            "usuario": "Usuario",
+            "fecha": "Fecha",
+            "monto": "Monto",
+            "tipo": "Tipo",
+            "reimprimir": "Reimprimir Ticket"
+          },
+          "msg": {
+            "cargando": "Cargando retiros del día…"
+          }
+        },
         "resumen": {
           "apertura": "Apertura de caja:",
           "ingresos": "Ingresos de efectivo:",
@@ -922,6 +941,9 @@
     "listado": {
       "searchPlaceholder": "Buscar por cliente, usuario, ticket o folio…",
       "filters": {
+        "title": "Buscar Ventas",
+        "colapsar": "Colapsar filtros",
+        "expandir": "Expandir filtros",
         "cliente": "Cliente",
         "clientePlaceholder": "Todos los clientes",
         "usuario": "Usuario",
@@ -937,14 +959,14 @@
         "limpiar": "Limpiar"
       },
       "columns": {
-        "folio": "Folio",
+        "folio": "# Ticket",
         "fecha": "Fecha",
         "cliente": "Cliente",
         "usuario": "Usuario",
         "formaPago": "Forma de pago",
         "cantidad": "Cantidad",
         "codigoBarras": "Código de barras",
-        "total": "Total",
+        "total": "Monto",
         "estatus": "Estatus",
         "acciones": "Acciones"
       },
@@ -1049,6 +1071,8 @@
       "emptyComplementos": "Esta venta no tiene complementos registrados.",
       "cerrar": "Cerrar",
       "verTicket": "Ver ticket",
+      "imprimirTicket": "Imprimir ticket",
+      "verTodo": "Ver todo",
       "msg": {
         "cargando": "Consultando devoluciones y complementos…",
         "error": "Error al consultar devoluciones y complementos de la venta.",
@@ -2529,6 +2553,7 @@
         "ultimoCambio": "Último Cambio:",
         "generarPedido": "Generar Pedido Especial",
         "guardarCotizacion": "Guardar Cotización",
+        "guardarCambiosCotizacion": "Guardar cambios cotización",
         "limpiar": "Limpiar"
       },
       "generarDialog": {
@@ -2588,7 +2613,10 @@
         "guardadoOk": "Pedido especial guardado correctamente.",
         "saveFallback": "No fue posible guardar el pedido especial.",
         "saveError": "Ocurrió un error al guardar el pedido especial.",
-        "ticketError": "No fue posible generar el ticket del pedido."
+        "ticketError": "No fue posible generar el ticket del pedido.",
+        "cargandoCotizacion": "Cargando productos de la cotización…",
+        "cotizacionSinProductos": "La cotización no tiene productos válidos para agregar.",
+        "cotizacionError": "Ocurrió un error al cargar los productos de la cotización."
       }
     },
     "entregarPedido": {
@@ -2617,6 +2645,8 @@
       },
       "actions": {
         "entregar": "Entregar",
+        "ticketProductos": "Ticket Productos",
+        "imprimirTicketAlmacen": "Imprimir Ticket Almacenes",
         "verTicket": "Ver ticket",
         "cancelar": "Cancelar pedido"
       },
@@ -2641,13 +2671,18 @@
       "title": "Confirmar Productos del Pedido",
       "subtotal": "Subtotal:",
       "tabla": {
+        "numero": "#",
+        "idProducto": "Id Producto",
         "producto": "Producto",
         "almacen": "Almacén",
+        "monto": "Monto",
+        "descuento": "Descuento",
         "solicitada": "Solicitada",
+        "observacionesEntrega": "Observaciones Entrega",
         "atendida": "Atendida",
         "rechazada": "Rechazada",
         "aceptada": "Aceptada",
-        "observaciones": "Observaciones",
+        "observacionesConfirmar": "Observaciones Confirmar",
         "observacionesPlaceholder": "Motivo si no acepta la cantidad completa…",
         "eliminar": "Eliminar",
         "vacio": "No hay productos por confirmar."
@@ -2687,6 +2722,7 @@
       },
       "actions": {
         "liquidar": "Liquidar Pedido",
+        "verProductos": "Ver Productos",
         "verTicket": "Ver ticket"
       },
       "empty": "No hay pedidos en ruta.",
@@ -2705,7 +2741,11 @@
         "fecha": "Fecha",
         "cliente": "Cliente",
         "cantidad": "Cantidad",
-        "monto": "Monto Total"
+        "monto": "Monto Total",
+        "acciones": "Editar"
+      },
+      "actions": {
+        "editar": "Editar cotización"
       },
       "empty": "No hay cotizaciones.",
       "msg": {
@@ -2750,10 +2790,13 @@
       "actions": {
         "menu": "Acciones",
         "verDetalle": "Ver Detalle",
+        "ticketOriginal": "Ticket Original",
+        "imprimirTicketAlmacen": "Imprimir Ticket Almacén",
         "verTicketAlmacen": "Ver Ticket Almacén",
         "tickets": "Tickets",
         "registrarDevolucion": "Devolver Productos",
-        "cancelar": "Cancelar"
+        "cancelar": "Cancelar",
+        "facturar": "Facturar"
       },
       "empty": "No se encontraron pedidos especiales.",
       "msg": {
@@ -2770,6 +2813,34 @@
         "cancelarText": "Se cancelará el pedido especial #{{folio}} y se devolverán todos sus productos.",
         "accept": "Sí, cancelar",
         "cancel": "No"
+      }
+    },
+    "facturarPedidoDialog": {
+      "title": "Facturar Pedido",
+      "cliente": "Cliente",
+      "clientePlaceholder": "Selecciona un cliente…",
+      "formaPago": "Forma de Pago",
+      "usoCfdi": "Uso del CFDI",
+      "seleccione": "Seleccione…",
+      "totalVenta": "Total de la Venta",
+      "subtotal": "Subtotal",
+      "iva": "I.V.A.",
+      "total": "Total",
+      "cambio": "Cambio",
+      "efectivo": "Efectivo",
+      "efectivoPlaceholder": "Introduzca la cantidad ($) que está recibiendo",
+      "cerrar": "Cancelar",
+      "guardar": "Guardar",
+      "msg": {
+        "errorFormasPago": "Error al cargar las formas de pago.",
+        "errorUsoCfdi": "Error al cargar los usos de CFDI.",
+        "clienteRequerido": "Debe seleccionar un Cliente.",
+        "clientePublicoGeneral": "Debe seleccionar un cliente diferente a Público en general.",
+        "efectivoRequerido": "Debe escribir con cuánto efectivo le están pagando.",
+        "efectivoInsuficiente": "El efectivo no alcanza a cubrir el costo del IVA faltante: {{total}}",
+        "guardadoOk": "Pedido especial facturado correctamente.",
+        "saveFallback": "No fue posible facturar el pedido especial.",
+        "saveError": "Ocurrió un error al facturar el pedido especial."
       }
     },
     "pedidoEspecialDetalleDialog": {
@@ -2842,6 +2913,22 @@
       "cerrar": "Cerrar",
       "msg": {
         "loadError": "Error al cargar los tickets del pedido especial."
+      }
+    },
+    "verProductosPedidoRutaDialog": {
+      "title": "Artículos del Pedido Especial en Ruta",
+      "columns": {
+        "idProducto": "Id Producto",
+        "producto": "Producto",
+        "almacen": "Almacen",
+        "precio": "Precio",
+        "cantidad": "Cantidad",
+        "total": "Total"
+      },
+      "empty": "Este pedido en ruta no tiene productos.",
+      "cerrar": "Cerrar",
+      "msg": {
+        "loadError": "Error al cargar los productos del pedido en ruta."
       }
     },
     "entregarPedidoDialog": {

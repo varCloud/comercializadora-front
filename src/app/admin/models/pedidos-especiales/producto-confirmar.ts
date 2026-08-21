@@ -23,9 +23,24 @@ export interface ProductoConfirmar {
   idPedidoEspecial: number;
   idProducto: number;
   descripcion: string;
+  /** Destino de la línea (`item.IdAlmacen`, alias de `IdAlmacenDestino` en la API). */
+  idAlmacen: number;
   /** Nombre del almacén destino (`item.Almacen`, columna de texto ya resuelta por el SP). */
   almacen: string;
   precioVenta: number;
+  /**
+   * Cantidad ORIGINAL de la línea (`item.Cantidad` cruda del SP) — a diferencia de
+   * `cantidadSolicitada` (calculada como `cantidadAceptada + cantidadRechazada`, 0 mientras el
+   * pedido no se procesa), este campo sí refleja lo pedido en el alta/cotización original. Usado
+   * por P-07 ("Editar cotización") para precargar `NuevoPedidoComponent` — réplica de
+   * `AgregarProductosPedidoEspecial()` (`EvtPedidosEspecialesV2.js:1580`), que reusa este mismo
+   * SP (`ObtenerProductosPedidoEspecial` → `ConsultaPedidoEspecialDetalle`).
+   */
+  cantidad: number;
+  /** Precio unitario normal ("Precio Menudeo" en UI, ver `precios-producto.ts`). Solo poblado por el SP; 0 si no aplica. */
+  precioIndividual: number;
+  /** Precio aplicado por defecto cuando el pedido completo alcanza 6+ artículos. */
+  precioMenudeo: number;
   /** Cantidad solicitada al almacén (columna "Solicitada" del legado). */
   cantidadSolicitada: number;
   /** Observaciones de entrega ya registradas (solo lectura en esta pantalla). */
@@ -38,6 +53,8 @@ export interface ProductoConfirmar {
   cantidadAceptada: number;
   /** Editable: motivo si `cantidadAceptada` no cubre toda la `cantidadAtendida`. */
   observacionesConfirmar: string;
+  /** Existencia actual en el almacén destino (`cantidadActualInvAlmacen`, left join — null si no hay registro). Usado por P-07 para tope de cantidad al precargar. */
+  cantidadActualInvAlmacen: number | null;
   idTicketMayoreo: number;
 }
 
@@ -46,14 +63,19 @@ export class ProductoConfirmarModel implements ProductoConfirmar {
   idPedidoEspecial: number;
   idProducto: number;
   descripcion: string;
+  idAlmacen: number;
   almacen: string;
   precioVenta: number;
+  cantidad: number;
+  precioIndividual: number;
+  precioMenudeo: number;
   cantidadSolicitada: number;
   observaciones: string | null;
   cantidadAtendida: number;
   cantidadRechazada: number;
   cantidadAceptada: number;
   observacionesConfirmar: string;
+  cantidadActualInvAlmacen: number | null;
   idTicketMayoreo: number;
 
   constructor(data: Partial<ProductoConfirmar> = {}) {
@@ -61,14 +83,19 @@ export class ProductoConfirmarModel implements ProductoConfirmar {
     this.idPedidoEspecial = data.idPedidoEspecial ?? 0;
     this.idProducto = data.idProducto ?? 0;
     this.descripcion = data.descripcion ?? '';
+    this.idAlmacen = data.idAlmacen ?? 0;
     this.almacen = data.almacen ?? '';
     this.precioVenta = data.precioVenta ?? 0;
+    this.cantidad = data.cantidad ?? 0;
+    this.precioIndividual = data.precioIndividual ?? 0;
+    this.precioMenudeo = data.precioMenudeo ?? 0;
     this.cantidadSolicitada = data.cantidadSolicitada ?? 0;
     this.observaciones = data.observaciones ?? null;
     this.cantidadAtendida = data.cantidadAtendida ?? 0;
     this.cantidadRechazada = data.cantidadRechazada ?? 0;
     this.cantidadAceptada = data.cantidadAceptada ?? this.cantidadAtendida;
     this.observacionesConfirmar = data.observacionesConfirmar ?? '';
+    this.cantidadActualInvAlmacen = data.cantidadActualInvAlmacen ?? null;
     this.idTicketMayoreo = data.idTicketMayoreo ?? 0;
   }
 }

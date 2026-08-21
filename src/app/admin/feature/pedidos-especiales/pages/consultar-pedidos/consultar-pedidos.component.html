@@ -172,8 +172,18 @@
                 <i-tabler name="eye" class="icon-18 m-r-8" [style.color]="'#2e7d32'"></i-tabler>
                 <span>{{ 'pedidosEspeciales.consultarPedidos.actions.verDetalle' | translate }}</span>
               </button>
+              @if (p.idEstatusPedidoEspecial === 6 || p.idEstatusPedidoEspecial === 7) {
+                <button mat-menu-item (click)="ticketOriginal(p)">
+                  <i-tabler name="printer" class="icon-18 m-r-8" [style.color]="'#00838f'"></i-tabler>
+                  <span>{{ 'pedidosEspeciales.consultarPedidos.actions.ticketOriginal' | translate }}</span>
+                </button>
+              }
+              <button mat-menu-item (click)="imprimirTicketAlmacen(p)">
+                <i-tabler name="printer" class="icon-18 m-r-8" [style.color]="'#00838f'"></i-tabler>
+                <span>{{ 'pedidosEspeciales.consultarPedidos.actions.imprimirTicketAlmacen' | translate }}</span>
+              </button>
               <button mat-menu-item (click)="verTicketAlmacen(p)">
-                <i-tabler name="printer" class="icon-18 m-r-8" [style.color]="'#1e88e5'"></i-tabler>
+                <i-tabler name="eye" class="icon-18 m-r-8" [style.color]="'#1e88e5'"></i-tabler>
                 <span>{{ 'pedidosEspeciales.consultarPedidos.actions.verTicketAlmacen' | translate }}</span>
               </button>
               @if (p.existeTicket) {
@@ -190,6 +200,12 @@
                 <button mat-menu-item (click)="cancelar(p)">
                   <i-tabler name="ban" class="icon-18 m-r-8" [style.color]="'#e53935'"></i-tabler>
                   <span>{{ 'pedidosEspeciales.consultarPedidos.actions.cancelar' | translate }}</span>
+                </button>
+              }
+              @if (p.puedeFacturar) {
+                <button mat-menu-item (click)="facturar(p)">
+                  <i-tabler name="file-invoice" class="icon-18 m-r-8" [style.color]="'#2e7d32'"></i-tabler>
+                  <span>{{ 'pedidosEspeciales.consultarPedidos.actions.facturar' | translate }}</span>
                 </button>
               }
             </mat-menu>

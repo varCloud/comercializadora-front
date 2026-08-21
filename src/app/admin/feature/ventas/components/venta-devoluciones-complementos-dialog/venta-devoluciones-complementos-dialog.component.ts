@@ -9,7 +9,8 @@ import { MaterialModule } from 'src/app/material.module';
 import { NotificationService } from 'src/app/services/notification.service';
 import { VentaDevolucionComplemento } from 'src/app/admin/models/ventas/venta-devolucion-complemento';
 import { VentasService } from 'src/app/admin/services/ventas.service';
-import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
+import { abrirPdfBlob, imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 
 /** Datos que recibe el modal al abrirse: el id de la venta consultada. */
 export interface VentaDevolucionesComplementosDialogData {
@@ -22,6 +23,14 @@ export interface VentaDevolucionesComplementosDialogData {
  * del legado, ahora combinados en una sola respuesta (`GET /ventas/{id}/devoluciones-complementos`).
  * Un estado vacío en cualquiera de las dos listas es normal (una venta puede no tener
  * devoluciones ni complementos), no un error.
+ *
+ * Auditoría de paridad `ventas-listado` (2026-08-20/21): el legado tenía por fila **dos**
+ * acciones separadas ("Ver" navega a la página completa del ticket, "Imprimir" lo manda a la
+ * impresora física) y un botón "Ver todo" en el encabezado (PDF combinado). Este componente
+ * originalmente solo tenía un botón "ver" con ícono de impresora que en realidad abría el PDF.
+ * P-03/P-04 restauraron las 3 acciones perdidas, reusando el mismo mecanismo de impresión que
+ * ya usa `VentaListadoComponent` (`PrintAgentService` + `imprimirPdfBlob`, con fallback al
+ * diálogo de impresión del navegador) y el endpoint `tipo=todos` que la API ya exponía.
  */
 @Component({
   selector: 'app-venta-devoluciones-complementos-dialog',
@@ -31,6 +40,7 @@ export interface VentaDevolucionesComplementosDialogData {
 })
 export class VentaDevolucionesComplementosDialogComponent implements OnInit {
   private readonly ventasService = inject(VentasService);
+  private readonly printAgent = inject(PrintAgentService);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly dialogRef = inject(MatDialogRef<VentaDevolucionesComplementosDialogComponent>);
@@ -41,6 +51,8 @@ export class VentaDevolucionesComplementosDialogComponent implements OnInit {
   readonly devoluciones = signal<VentaDevolucionComplemento[]>([]);
   readonly complementos = signal<VentaDevolucionComplemento[]>([]);
   readonly generandoTicket = signal(false);
+  /** P-04: bloquea el botón "Ver todo" mientras genera el PDF combinado. */
+  readonly generandoTicketTodos = signal(false);
 
   readonly displayedColumnsDevoluciones = ['fechaAlta', 'cantidad', 'montoTotal', 'observaciones', 'accion'];
   readonly displayedColumnsComplementos = ['fechaAlta', 'cantidad', 'montoTotal', 'accion'];
@@ -66,19 +78,40 @@ export class VentaDevolucionesComplementosDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  /** "Ver ticket" del ticket de devolución (FE-D1): venta original + `idDevolucion` de la fila. */
+  /** "Ver" del ticket de devolución (FE-D1): venta original + `idDevolucion` de la fila. */
   verTicketDevolucion(item: VentaDevolucionComplemento): void {
-    this.abrirTicket('devolucion', { idDevolucion: item.idDevolucion });
+    this.abrirTicket('devolucion', { idDevolucion: item.idDevolucion }, abrirPdfBlob);
   }
 
-  /** "Ver ticket" del ticket de complemento (FE-D1): venta original + `idComplemento` de la fila. */
+  /** "Ver" del ticket de complemento (FE-D1): venta original + `idComplemento` de la fila. */
   verTicketComplemento(item: VentaDevolucionComplemento): void {
-    this.abrirTicket('complemento', { idComplemento: item.idComplemento });
+    this.abrirTicket('complemento', { idComplemento: item.idComplemento }, abrirPdfBlob);
+  }
+
+  /**
+   * P-03 (auditoría paridad `ventas-listado`): "Imprimir" del ticket de devolución — réplica de
+   * `ImprimeTicketDevolucion` (`EvtConsultaVentas.js:91-113` del legado), que manda el ticket
+   * directo a la impresora física del servidor. Aquí se resuelve con el mismo mecanismo que ya
+   * usa el resto de la pantalla: el agente local de impresión POS (`PrintAgentService`), con
+   * fallback al diálogo de impresión del navegador si el agente no responde.
+   */
+  imprimirTicketDevolucion(item: VentaDevolucionComplemento): void {
+    this.abrirTicket('devolucion', { idDevolucion: item.idDevolucion }, (blob) =>
+      imprimirPdfBlob(blob, this.printAgent),
+    );
+  }
+
+  /** P-03: "Imprimir" del ticket de complemento, réplica de `ImprimeTicketComplemento`. */
+  imprimirTicketComplemento(item: VentaDevolucionComplemento): void {
+    this.abrirTicket('complemento', { idComplemento: item.idComplemento }, (blob) =>
+      imprimirPdfBlob(blob, this.printAgent),
+    );
   }
 
   private abrirTicket(
     tipo: 'devolucion' | 'complemento',
     opts: { idDevolucion?: number; idComplemento?: number },
+    accion: (blob: Blob) => void,
   ): void {
     if (this.generandoTicket()) return;
 
@@ -87,9 +120,32 @@ export class VentaDevolucionesComplementosDialogComponent implements OnInit {
       .obtenerTicketPdf(this.data.idVenta, tipo, opts)
       .pipe(finalize(() => this.generandoTicket.set(false)))
       .subscribe({
-        next: (blob) => abrirPdfBlob(blob),
+        next: accion,
         error: (err) => {
           console.error('Error al generar el ticket PDF', err);
+          this.notify.notify('error', this.translate.instant('ventas.devolucionesComplementos.msg.errorTicket'));
+        },
+      });
+  }
+
+  /**
+   * P-04 (auditoría paridad `ventas-listado`): "Ver todo", réplica de `VerTodosTickets`
+   * (`_ObtenerDetalleTickets.cshtml:32` del legado) — abre un PDF combinado con el ticket de la
+   * venta + un ticket por cada devolución/complemento. La API ya expone este PDF combinado
+   * (`GET /ventas/{id}/ticket-pdf?tipo=todos`, `VentasController.ObtenerTicketPdf` con
+   * `TipoTicketVenta.Todos`); no hacía falta crear endpoint nuevo.
+   */
+  verTodo(): void {
+    if (this.generandoTicketTodos()) return;
+
+    this.generandoTicketTodos.set(true);
+    this.ventasService
+      .obtenerTicketPdf(this.data.idVenta, 'todos')
+      .pipe(finalize(() => this.generandoTicketTodos.set(false)))
+      .subscribe({
+        next: (blob) => abrirPdfBlob(blob),
+        error: (err) => {
+          console.error('Error al generar el PDF combinado de tickets de la venta', err);
           this.notify.notify('error', this.translate.instant('ventas.devolucionesComplementos.msg.errorTicket'));
         },
       });

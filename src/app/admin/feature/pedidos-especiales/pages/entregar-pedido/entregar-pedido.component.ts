@@ -15,11 +15,12 @@ import { EMPTY_LINKS } from 'src/app/admin/models/shared/paged-result';
 import { Paginador } from 'src/app/admin/models/shared/paginador';
 import { PaginadorComponent } from 'src/app/admin/shared/components/paginador/paginador.component';
 import { SelectPaginadoComponent } from 'src/app/admin/shared/components/select-paginado/select-paginado.component';
-import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
+import { abrirPdfBlob, imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { PedidoEspecialPendiente } from 'src/app/admin/models/pedidos-especiales/pedido-especial-pendiente';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { UsuariosService } from 'src/app/admin/services/usuarios.service';
 import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especiales.service';
+import { PrintAgentService } from 'src/app/admin/services/print-agent.service';
 
 /**
  * Página "Entregar Pedido" (Bloque B, FE-B5) — réplica de `Views/PedidosEspecialesV2/
@@ -63,6 +64,7 @@ export class EntregarPedidoComponent implements OnInit {
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly fb = inject(FormBuilder);
+  private readonly printAgent = inject(PrintAgentService);
 
   @BlockUI('entregar-pedido') blockUI!: NgBlockUI;
 
@@ -209,6 +211,39 @@ export class EntregarPedidoComponent implements OnInit {
   entregar(pedido: PedidoEspecialPendiente): void {
     this.router.navigate(['/admin/pedidos-especiales/confirmar-productos', pedido.idPedidoEspecial], {
       queryParams: { idCliente: pedido.idCliente },
+    });
+  }
+
+  /**
+   * "Ticket Productos" (P-05) — réplica de `ImprimeTicketPedidoEspecial(id, 1, 0, false)`
+   * (`_ObtenerEntregarPedidos.cshtml:67`): ticket de **cliente** (mismo PDF que `obtenerTicket`,
+   * usado en "Nuevo Pedido"), distinto del PDF de almacén de `verTicket()`. En el legado es una
+   * acción de **impresión directa** (toast "Se envió el ticket a la impresora"), no de vista
+   * previa — se replica con `imprimirPdfBlob`/`PrintAgentService`, mismo patrón ya usado para el
+   * ticket de almacén de "Nuevo Pedido".
+   */
+  ticketProductos(pedido: PedidoEspecialPendiente): void {
+    this.pedidosEspecialesService.obtenerTicket(pedido.idPedidoEspecial).subscribe({
+      next: (blob) => imprimirPdfBlob(blob, this.printAgent),
+      error: (err) => {
+        console.error('Error al generar el ticket del pedido especial', err);
+        this.notify.notify('error', this.translate.instant('pedidosEspeciales.entregarPedido.msg.ticketError'));
+      },
+    });
+  }
+
+  /**
+   * "Imprimir Ticket Almacenes" (P-08) — réplica de `imprimirTicketAlmacenes(id)`
+   * (`_ObtenerEntregarPedidos.cshtml:68`): impresión directa, acción separada de "Ver Ticket"
+   * (que abre el PDF). Restaura la paridad 1:1 que se había fusionado en una sola acción.
+   */
+  imprimirTicketAlmacen(pedido: PedidoEspecialPendiente): void {
+    this.pedidosEspecialesService.obtenerTicketAlmacen(pedido.idPedidoEspecial).subscribe({
+      next: (blob) => imprimirPdfBlob(blob, this.printAgent),
+      error: (err) => {
+        console.error('Error al generar el ticket de almacén del pedido especial', err);
+        this.notify.notify('error', this.translate.instant('pedidosEspeciales.entregarPedido.msg.ticketError'));
+      },
     });
   }
 

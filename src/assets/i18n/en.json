@@ -603,6 +603,8 @@
         "motivo": "Return reason",
         "motivoPlaceholder": "Write the return reason…",
         "tabla": {
+          "numero": "#",
+          "idProducto": "Product Id",
           "producto": "Product",
           "cantidadComprada": "Qty. purchased",
           "cantidadDevolver": "Qty. to return",
@@ -627,6 +629,7 @@
         "abrirCajon": "Open Cash Drawer",
         "consultarExistencias": "Check Stock",
         "buscarPedidoEspecial": "Search Special Order",
+        "cargarExistencias": "Reload Stock",
         "msg": {
           "cajonNoDisponible": "Feature not available",
           "cajonExito": "Drawer opened"
@@ -692,6 +695,8 @@
         }
       },
       "tabla": {
+        "numero": "#",
+        "idProducto": "Product Id",
         "producto": "Product",
         "cantidad": "Quantity",
         "precioUnitario": "Unit Price",
@@ -776,6 +781,20 @@
       },
       "cierre": {
         "title": "Cash register closing",
+        "retirosDelDia": {
+          "title": "Today's Withdrawals",
+          "vacio": "No withdrawals found.",
+          "columns": {
+            "usuario": "User",
+            "fecha": "Date",
+            "monto": "Amount",
+            "tipo": "Type",
+            "reimprimir": "Reprint Ticket"
+          },
+          "msg": {
+            "cargando": "Loading today's withdrawals…"
+          }
+        },
         "resumen": {
           "apertura": "Register opening:",
           "ingresos": "Cash deposits:",
@@ -922,6 +941,9 @@
     "listado": {
       "searchPlaceholder": "Search by customer, user, ticket or folio…",
       "filters": {
+        "title": "Search Sales",
+        "colapsar": "Collapse filters",
+        "expandir": "Expand filters",
         "cliente": "Customer",
         "clientePlaceholder": "All customers",
         "usuario": "User",
@@ -937,14 +959,14 @@
         "limpiar": "Clear"
       },
       "columns": {
-        "folio": "Folio",
+        "folio": "# Ticket",
         "fecha": "Date",
         "cliente": "Customer",
         "usuario": "User",
         "formaPago": "Payment method",
         "cantidad": "Quantity",
         "codigoBarras": "Barcode",
-        "total": "Total",
+        "total": "Amount",
         "estatus": "Status",
         "acciones": "Actions"
       },
@@ -1049,6 +1071,8 @@
       "emptyComplementos": "This sale has no complements registered.",
       "cerrar": "Close",
       "verTicket": "View ticket",
+      "imprimirTicket": "Print ticket",
+      "verTodo": "View all",
       "msg": {
         "cargando": "Retrieving returns and complements…",
         "error": "Error retrieving the sale's returns and complements.",
@@ -2529,6 +2553,7 @@
         "ultimoCambio": "Last change:",
         "generarPedido": "Generate Special Order",
         "guardarCotizacion": "Save Quote",
+        "guardarCambiosCotizacion": "Save quote changes",
         "limpiar": "Clear"
       },
       "generarDialog": {
@@ -2588,7 +2613,10 @@
         "guardadoOk": "Special order saved successfully.",
         "saveFallback": "Could not save the special order.",
         "saveError": "An error occurred while saving the special order.",
-        "ticketError": "Could not generate the order's ticket."
+        "ticketError": "Could not generate the order's ticket.",
+        "cargandoCotizacion": "Loading quote products…",
+        "cotizacionSinProductos": "The quote has no valid products to add.",
+        "cotizacionError": "An error occurred while loading the quote's products."
       }
     },
     "entregarPedido": {
@@ -2617,6 +2645,8 @@
       },
       "actions": {
         "entregar": "Deliver",
+        "ticketProductos": "Product Ticket",
+        "imprimirTicketAlmacen": "Print Warehouse Ticket",
         "verTicket": "View ticket",
         "cancelar": "Cancel order"
       },
@@ -2641,13 +2671,18 @@
       "title": "Confirm Order Products",
       "subtotal": "Subtotal:",
       "tabla": {
+        "numero": "#",
+        "idProducto": "Product Id",
         "producto": "Product",
         "almacen": "Warehouse",
+        "monto": "Amount",
+        "descuento": "Discount",
         "solicitada": "Requested",
+        "observacionesEntrega": "Delivery Notes",
         "atendida": "Fulfilled",
         "rechazada": "Rejected",
         "aceptada": "Accepted",
-        "observaciones": "Notes",
+        "observacionesConfirmar": "Confirmation Notes",
         "observacionesPlaceholder": "Reason if not accepting the full quantity…",
         "eliminar": "Remove",
         "vacio": "There are no products to confirm."
@@ -2687,6 +2722,7 @@
       },
       "actions": {
         "liquidar": "Settle Order",
+        "verProductos": "View Products",
         "verTicket": "View ticket"
       },
       "empty": "There are no orders in transit.",
@@ -2705,7 +2741,11 @@
         "fecha": "Date",
         "cliente": "Customer",
         "cantidad": "Quantity",
-        "monto": "Total Amount"
+        "monto": "Total Amount",
+        "acciones": "Edit"
+      },
+      "actions": {
+        "editar": "Edit quote"
       },
       "empty": "There are no quotes.",
       "msg": {
@@ -2750,10 +2790,13 @@
       "actions": {
         "menu": "Actions",
         "verDetalle": "View Detail",
+        "ticketOriginal": "Original Ticket",
+        "imprimirTicketAlmacen": "Print Warehouse Ticket",
         "verTicketAlmacen": "View Warehouse Ticket",
         "tickets": "Tickets",
         "registrarDevolucion": "Return Products",
-        "cancelar": "Cancel"
+        "cancelar": "Cancel",
+        "facturar": "Invoice"
       },
       "empty": "No special orders were found.",
       "msg": {
@@ -2770,6 +2813,34 @@
         "cancelarText": "Special order #{{folio}} will be cancelled and all its products returned.",
         "accept": "Yes, cancel",
         "cancel": "No"
+      }
+    },
+    "facturarPedidoDialog": {
+      "title": "Invoice Order",
+      "cliente": "Customer",
+      "clientePlaceholder": "Select a customer…",
+      "formaPago": "Payment Method",
+      "usoCfdi": "CFDI Use",
+      "seleccione": "Select…",
+      "totalVenta": "Sale Total",
+      "subtotal": "Subtotal",
+      "iva": "VAT",
+      "total": "Total",
+      "cambio": "Change",
+      "efectivo": "Cash",
+      "efectivoPlaceholder": "Enter the amount ($) being received",
+      "cerrar": "Cancel",
+      "guardar": "Save",
+      "msg": {
+        "errorFormasPago": "Error loading the payment methods.",
+        "errorUsoCfdi": "Error loading the CFDI uses.",
+        "clienteRequerido": "You must select a Customer.",
+        "clientePublicoGeneral": "You must select a customer other than General Public.",
+        "efectivoRequerido": "You must enter the cash amount being received.",
+        "efectivoInsuficiente": "The cash received does not cover the missing VAT: {{total}}",
+        "guardadoOk": "Special order invoiced successfully.",
+        "saveFallback": "Could not invoice the special order.",
+        "saveError": "An error occurred while invoicing the special order."
       }
     },
     "pedidoEspecialDetalleDialog": {
@@ -2842,6 +2913,22 @@
       "cerrar": "Close",
       "msg": {
         "loadError": "Error loading the special order tickets."
+      }
+    },
+    "verProductosPedidoRutaDialog": {
+      "title": "En Route Special Order Items",
+      "columns": {
+        "idProducto": "Product Id",
+        "producto": "Product",
+        "almacen": "Warehouse",
+        "precio": "Price",
+        "cantidad": "Quantity",
+        "total": "Total"
+      },
+      "empty": "This en-route order has no products.",
+      "cerrar": "Close",
+      "msg": {
+        "loadError": "Error loading the en-route order's products."
       }
     },
     "entregarPedidoDialog": {

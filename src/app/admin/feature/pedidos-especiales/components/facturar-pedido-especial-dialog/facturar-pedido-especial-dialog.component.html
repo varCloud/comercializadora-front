@@ -1,0 +1,85 @@
+<h2 mat-dialog-title>{{ 'pedidosEspeciales.facturarPedidoDialog.title' | translate }} #{{ data.folio }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <form [formGroup]="facturarForm" class="row m-t-8">
+    <div class="col-lg-7">
+      <div class="row">
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.facturarPedidoDialog.cliente' | translate }}</mat-label>
+          <app-select-paginado
+            [control]="$any(facturarForm.controls.idCliente)"
+            [fetchPage]="fetchClientes"
+            identifier="idCliente"
+            bindLabel="nombreCompleto"
+            bindValue="idCliente"
+            placeholder="pedidosEspeciales.facturarPedidoDialog.clientePlaceholder"
+          ></app-select-paginado>
+        </div>
+
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.facturarPedidoDialog.formaPago' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100 hide-hint">
+            <mat-select formControlName="idFormaPago" [placeholder]="'pedidosEspeciales.facturarPedidoDialog.seleccione' | translate">
+              @for (f of formasPago(); track f.id) {
+                <mat-option [value]="f.id">{{ f.descripcion }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-12 m-b-16">
+          <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.facturarPedidoDialog.usoCfdi' | translate }}</mat-label>
+          <mat-form-field appearance="outline" class="w-100 hide-hint">
+            <mat-select formControlName="idUsoCFDI" [placeholder]="'pedidosEspeciales.facturarPedidoDialog.seleccione' | translate">
+              @for (u of usoCfdiOpciones(); track u.id) {
+                <mat-option [value]="u.id">{{ u.clave }} - {{ u.descripcion }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="d-flex justify-content-between">
+        <span>{{ 'pedidosEspeciales.facturarPedidoDialog.totalVenta' | translate }}</span>
+        <span>{{ subtotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <span>{{ 'pedidosEspeciales.facturarPedidoDialog.subtotal' | translate }}</span>
+        <span style="text-decoration: line-through">{{ subtotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <span>{{ 'pedidosEspeciales.facturarPedidoDialog.iva' | translate }}</span>
+        <span>{{ iva | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+      <hr class="m-t-8 m-b-8" />
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="f-s-16 f-w-600">{{ 'pedidosEspeciales.facturarPedidoDialog.total' | translate }}</span>
+        <span class="f-s-20 f-w-700">{{ total | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center m-t-16">
+        <span class="f-s-16 f-w-600">{{ 'pedidosEspeciales.facturarPedidoDialog.cambio' | translate }}</span>
+        <span class="f-s-20 f-w-700" style="color: #e53935">{{ cambio() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+      </div>
+
+      <div class="m-t-16">
+        <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.facturarPedidoDialog.efectivo' | translate }}</mat-label>
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <span matPrefix>$&nbsp;</span>
+          <input matInput type="number" min="0" step="0.01" formControlName="efectivo" [placeholder]="'pedidosEspeciales.facturarPedidoDialog.efectivoPlaceholder' | translate" />
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" type="button" (click)="cancelar()">
+    {{ 'pedidosEspeciales.facturarPedidoDialog.cerrar' | translate }}
+  </button>
+  <button mat-flat-button color="primary" type="button" [disabled]="enviando()" (click)="aceptar()">
+    {{ 'pedidosEspeciales.facturarPedidoDialog.guardar' | translate }}
+  </button>
+</mat-dialog-actions>

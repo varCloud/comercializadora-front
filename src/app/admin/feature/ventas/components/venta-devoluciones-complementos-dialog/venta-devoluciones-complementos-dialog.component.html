@@ -1,4 +1,10 @@
-<h2 mat-dialog-title>{{ 'ventas.devolucionesComplementos.title' | translate: { folio: data.idVenta } }}</h2>
+<h2 mat-dialog-title class="d-flex justify-content-between align-items-center gap-2">
+  <span>{{ 'ventas.devolucionesComplementos.title' | translate: { folio: data.idVenta } }}</span>
+  <button mat-stroked-button color="primary" type="button" (click)="verTodo()">
+    <i-tabler name="files" class="icon-18 m-r-4"></i-tabler>
+    {{ 'ventas.devolucionesComplementos.verTodo' | translate }}
+  </button>
+</h2>
 
 <mat-dialog-content class="b-t-1" *blockUI="'ventaDevolucionesComplementos'">
   <mat-tab-group>
@@ -28,7 +34,10 @@
           <ng-container matColumnDef="accion" stickyEnd>
             <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.devolucionesComplementos.columns.acciones' | translate }}</th>
             <td mat-cell *matCellDef="let d" class="action-link text-right" [attr.data-label]="'ventas.devolucionesComplementos.columns.acciones' | translate">
-              <a (click)="verTicketDevolucion(d)" class="cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'ventas.devolucionesComplementos.verTicket' | translate">
+              <a (click)="verTicketDevolucion(d)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'ventas.devolucionesComplementos.verTicket' | translate">
+                <i-tabler name="eye" class="icon-18"></i-tabler>
+              </a>
+              <a (click)="imprimirTicketDevolucion(d)" class="cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'ventas.devolucionesComplementos.imprimirTicket' | translate">
                 <i-tabler name="printer" class="icon-18"></i-tabler>
               </a>
             </td>
@@ -64,7 +73,10 @@
           <ng-container matColumnDef="accion" stickyEnd>
             <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'ventas.devolucionesComplementos.columns.acciones' | translate }}</th>
             <td mat-cell *matCellDef="let c" class="action-link text-right" [attr.data-label]="'ventas.devolucionesComplementos.columns.acciones' | translate">
-              <a (click)="verTicketComplemento(c)" class="cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'ventas.devolucionesComplementos.verTicket' | translate">
+              <a (click)="verTicketComplemento(c)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'ventas.devolucionesComplementos.verTicket' | translate">
+                <i-tabler name="eye" class="icon-18"></i-tabler>
+              </a>
+              <a (click)="imprimirTicketComplemento(c)" class="cursor-pointer" [style.color]="'#00838f'" [matTooltip]="'ventas.devolucionesComplementos.imprimirTicket' | translate">
                 <i-tabler name="printer" class="icon-18"></i-tabler>
               </a>
             </td>

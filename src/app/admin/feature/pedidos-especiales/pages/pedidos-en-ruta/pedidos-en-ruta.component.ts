@@ -1,6 +1,7 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -17,13 +18,18 @@ import { abrirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 import { PedidoEnRuta } from 'src/app/admin/models/pedidos-especiales/pedido-en-ruta';
 import { UsuariosService } from 'src/app/admin/services/usuarios.service';
 import { PedidosEspecialesService } from 'src/app/admin/services/pedidos-especiales.service';
+import {
+  VerProductosPedidoRutaDialogComponent,
+  VerProductosPedidoRutaData,
+} from '../../components/ver-productos-pedido-ruta-dialog/ver-productos-pedido-ruta-dialog.component';
 
 /**
  * Página "Pedidos en Ruta" (Bloque C, FE-C3) — réplica de `Views/PedidosEspecialesV2/
  * PedidosEnRuta.cshtml` + `_ObtenerPedidosEnRuta.cshtml` + `EvtConsultaPedidosEnRuta.js`.
  * Listado de pedidos especiales entregados al Encargado de Ruteo, pendientes de liquidar con el
- * cliente. Solo lectura (sin alta propia, ver HU) salvo la acción "Liquidar Pedido" del dropdown
- * de acciones del legado, que sí se replica (ver `liquidar()`).
+ * cliente. Solo lectura (sin alta propia, ver HU) salvo las acciones "Liquidar Pedido" y "Ver
+ * Productos" del dropdown de acciones del legado (P-04), que sí se replican (ver `liquidar()`/
+ * `verProductos()`). "Imprimir Ticket" del mismo dropdown queda bloqueada — ver `verProductos()`.
  *
  * **Filtros del legado:** en el `.cshtml` el único filtro visible es "Usuario" (`idUsuarioRuteo`)
  * — el rango de fechas está comentado en el código fuente ("COMENTADO A PETICION DE LLUVIA
@@ -56,6 +62,7 @@ export class PedidosEnRutaComponent implements OnInit {
   private readonly usuariosService = inject(UsuariosService);
   private readonly pedidosEspecialesService = inject(PedidosEspecialesService);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
   private readonly notify = inject(NotificationService);
   private readonly translate = inject(TranslateService);
 
@@ -190,6 +197,26 @@ export class PedidosEnRutaComponent implements OnInit {
     this.router.navigate(['/admin/pedidos-especiales/confirmar-productos', pedido.idPedidoEspecial], {
       queryParams: { idCliente: pedido.idCliente, esPedidoEnRuta: true },
     });
+  }
+
+  /**
+   * "Ver Productos" (P-04) — réplica de `MostrarDetallePedidoRuta` (dropdown legado). Nota: la
+   * segunda acción faltante del mismo hallazgo, "Imprimir Ticket" (`ImprimeTicket(id, 3)`), NO se
+   * implementa aquí: es un tipo de ticket físico propio ("ticket pedido en ruta",
+   * `idTipoTicketPedidoEspecial = 3`, distinto del PDF de almacén de "Ver Ticket") sin endpoint
+   * en `comercializadora-api` (verificado: no existe generador de ese formato en
+   * `PedidosEspecialesController`/`PedidosEspecialesService`). Bloqueado — falta el endpoint;
+   * ver reporte de paridad.
+   */
+  verProductos(pedido: PedidoEnRuta): void {
+    this.dialog.open<VerProductosPedidoRutaDialogComponent, VerProductosPedidoRutaData>(
+      VerProductosPedidoRutaDialogComponent,
+      {
+        data: { folio: pedido.idPedidoEspecial },
+        width: '900px',
+        maxWidth: '95vw',
+      },
+    );
   }
 
   /** PDF del ticket de almacén (reusa `obtenerTicketAlmacen`, ya migrado en el Bloque B). */

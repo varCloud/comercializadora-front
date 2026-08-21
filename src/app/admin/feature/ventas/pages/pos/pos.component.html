@@ -49,6 +49,13 @@
       >
         <i-tabler name="box" class="icon-22"></i-tabler>
       </a>
+      <a
+        class="cursor-pointer"
+        [matTooltip]="'ventas.pos.herramientas.cargarExistencias' | translate"
+        (click)="cargarCatalogo()"
+      >
+        <i-tabler name="refresh" class="icon-22"></i-tabler>
+      </a>
     </div>
   </div>
 
@@ -112,6 +119,8 @@
             <table class="w-100 ticket-table">
               <thead>
                 <tr>
+                  <th class="text-center" data-width="40" style="width: 40px;">{{ 'ventas.pos.devolucion.tabla.numero' | translate }}</th>
+                  <th>{{ 'ventas.pos.devolucion.tabla.idProducto' | translate }}</th>
                   <th>{{ 'ventas.pos.devolucion.tabla.producto' | translate }}</th>
                   <th class="text-center">{{ 'ventas.pos.devolucion.tabla.cantidadComprada' | translate }}</th>
                   <th class="text-center">{{ 'ventas.pos.devolucion.tabla.cantidadDevolver' | translate }}</th>
@@ -122,6 +131,8 @@
               <tbody>
                 @for (linea of lineasDevolucion(); track linea.detalle.idVentaDetalle) {
                   <tr>
+                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td>{{ linea.detalle.idProducto }}</td>
                     <td>{{ linea.detalle.descProducto }}</td>
                     <td class="text-center">{{ linea.detalle.cantidad }}</td>
                     <td class="text-center">
@@ -141,7 +152,7 @@
                   </tr>
                 } @empty {
                   <tr>
-                    <td colspan="5" class="text-center p-16">{{ 'ventas.pos.buscarTicket.vacio' | translate }}</td>
+                    <td colspan="7" class="text-center p-16">{{ 'ventas.pos.buscarTicket.vacio' | translate }}</td>
                   </tr>
                 }
               </tbody>
@@ -162,6 +173,12 @@
           <button mat-flat-button color="warn" class="w-100" type="button" (click)="confirmarDevolucion()">
             {{ 'ventas.pos.devolucion.confirmar' | translate }}
           </button>
+
+          <hr class="m-t-16 m-b-16" />
+          <div class="text-center">
+            <div class="f-s-14 text-muted">{{ 'ventas.pos.resumen.ultimoCambio' | translate }}</div>
+            <div class="f-s-22 f-w-700">{{ (ultimoCambio() ?? 0) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
@@ -226,6 +243,8 @@
             <table class="w-100 ticket-table">
               <thead>
                 <tr>
+                  <th class="text-center" data-width="40" style="width: 40px;">{{ 'ventas.pos.tabla.numero' | translate }}</th>
+                  <th>{{ 'ventas.pos.tabla.idProducto' | translate }}</th>
                   <th>{{ 'ventas.pos.tabla.producto' | translate }}</th>
                   <th class="text-center">{{ 'ventas.pos.tabla.cantidad' | translate }}</th>
                   <th class="text-center">{{ 'ventas.pos.tabla.precioUnitario' | translate }}</th>
@@ -237,6 +256,8 @@
               <tbody>
                 @for (linea of ticket(); track linea.idProducto) {
                   <tr>
+                    <td class="text-center">{{ $index + 1 }}</td>
+                    <td>{{ linea.idProducto }}</td>
                     <td>
                       {{ linea.descripcion }}
                       <div class="f-s-12 text-muted">{{ linea.codigoBarras }}</div>
@@ -268,7 +289,7 @@
                   </tr>
                 } @empty {
                   <tr>
-                    <td colspan="6" class="text-center p-16">{{ 'ventas.pos.tabla.vacio' | translate }}</td>
+                    <td colspan="8" class="text-center p-16">{{ 'ventas.pos.tabla.vacio' | translate }}</td>
                   </tr>
                 }
               </tbody>
@@ -303,13 +324,11 @@
             {{ 'ventas.pos.resumen.limpiar' | translate }}
           </button>
 
-          @if (ultimoCambio() !== null) {
-            <hr class="m-t-16 m-b-16" />
-            <div class="text-center">
-              <div class="f-s-14 text-muted">{{ 'ventas.pos.resumen.ultimoCambio' | translate }}</div>
-              <div class="f-s-22 f-w-700">{{ ultimoCambio() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
-            </div>
-          }
+          <hr class="m-t-16 m-b-16" />
+          <div class="text-center">
+            <div class="f-s-14 text-muted">{{ 'ventas.pos.resumen.ultimoCambio' | translate }}</div>
+            <div class="f-s-22 f-w-700">{{ (ultimoCambio() ?? 0) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
+          </div>
 
           @if (ultimoTicket(); as ticket) {
             <hr class="m-t-16 m-b-16" />
