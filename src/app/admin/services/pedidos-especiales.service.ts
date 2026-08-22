@@ -60,6 +60,25 @@ import {
 } from 'src/app/admin/models/pedidos-especiales/cierre-pedido-especial-detalle';
 import { CierrePedidoEspecialRequest } from 'src/app/admin/models/pedidos-especiales/cierre-pedido-especial-request';
 import { ValidarUsuarioPedidoEspecialRequest } from 'src/app/admin/models/pedidos-especiales/validar-usuario-pedido-especial-request';
+import {
+  EMPTY_LINKS,
+  EMPTY_META,
+  PagedResult,
+} from 'src/app/admin/models/shared/paged-result';
+import {
+  ListarParams,
+  buildListParams,
+} from 'src/app/admin/models/shared/listar-params';
+import {
+  CuentaPorCobrar,
+  CuentaPorCobrarModel,
+} from 'src/app/admin/models/pedidos-especiales/cuenta-por-cobrar';
+import {
+  DetalleCuentaPorCobrar,
+  DetalleCuentaPorCobrarModel,
+} from 'src/app/admin/models/pedidos-especiales/detalle-cuenta-por-cobrar';
+import { RealizarAbonoRequest } from 'src/app/admin/models/pedidos-especiales/realizar-abono-request';
+import { AbonoRealizado } from 'src/app/admin/models/pedidos-especiales/abono-realizado';
 
 /**
  * Servicio HTTP de Pedidos Especiales. Consume `PedidosEspecialesController`
@@ -446,5 +465,60 @@ export class PedidosEspecialesService {
   /** PDF del comprobante de cierre de caja del día. `idCierre` se relee de {@link obtenerCierreDia} (el SP de cierre no regresa el id). */
   obtenerTicketCierre(idCierre: number): Observable<Blob> {
     return this.http.get(`${this.baseUri}/caja/${idCierre}/ticket`, { responseType: 'blob' });
+  }
+
+  // ====================== Cuentas por Cobrar (feature cuentas_por_cobrar_pe) ======================
+  //
+  // Listado paginado de clientes con adeudo + detalle de pedidos por cliente + registro de
+  // abonos + PDFs (desglose de cuenta y ticket de abono). Mismo controller/servicio ya
+  // existente (ver notas de tareas), sin duplicar un dominio aparte.
+
+  private readonly cuentasPorCobrarUri = `${this.baseUri}/cuentas-por-cobrar`;
+
+  /** Listado paginado de clientes con adeudo (SP_V2_CONSULTA_CUENTAS_X_COBRAR_PEDIDOS_ESPECIALES). `q` busca por nombre de cliente. */
+  listarCuentasPorCobrar(opts: ListarParams = {}): Observable<PagedResult<CuentaPorCobrar>> {
+    const params = buildListParams(opts);
+    return this.http
+      .get<Notificacion<CuentaPorCobrar[]>>(this.cuentasPorCobrarUri, { params })
+      .pipe(map((res) => this.mapPageCuentasPorCobrar(res)));
+  }
+
+  /** Navega a una URL de paginación (link first/prev/next/last que devolvió la API). */
+  irLinkCuentasPorCobrar(url: string): Observable<PagedResult<CuentaPorCobrar>> {
+    return this.http
+      .get<Notificacion<CuentaPorCobrar[]>>(url)
+      .pipe(map((res) => this.mapPageCuentasPorCobrar(res)));
+  }
+
+  private mapPageCuentasPorCobrar(res: Notificacion<CuentaPorCobrar[]>): PagedResult<CuentaPorCobrar> {
+    return {
+      data: (res?.modelo ?? []).map((c) => new CuentaPorCobrarModel(c)),
+      links: res?.links ?? EMPTY_LINKS,
+      meta: res?.meta ?? EMPTY_META,
+    };
+  }
+
+  /** Detalle de pedidos con adeudo de un cliente (SP_OBTENER_DETALLE_CUENTAS_X_COBRAR_PEDIDOS_ESPECIALES). No pagina (acotado por cliente). */
+  obtenerDetalleCuentaPorCobrar(idCliente: number): Observable<DetalleCuentaPorCobrar[]> {
+    return this.http
+      .get<Notificacion<DetalleCuentaPorCobrar[]>>(`${this.cuentasPorCobrarUri}/${idCliente}/detalle`)
+      .pipe(map((res) => (res?.modelo ?? []).map((d) => new DetalleCuentaPorCobrarModel(d))));
+  }
+
+  /** Registra un abono de cliente (SP_REALIZA_ABONO_PEDIDOS_ESPECIALES). `idUsuario` lo toma el back del JWT. */
+  realizarAbono(request: RealizarAbonoRequest): Observable<Notificacion<AbonoRealizado>> {
+    return this.http.post<Notificacion<AbonoRealizado>>(`${this.cuentasPorCobrarUri}/abonos`, request);
+  }
+
+  /** PDF del desglose de cargos/abonos del cliente (A4, réplica de `Utils.GeneraPDFCuentasPorCobrar`). Solo se VE (`abrirPdfBlob`), nunca se manda al print-agent. */
+  obtenerPdfCuentaPorCobrar(idCliente: number): Observable<Blob> {
+    return this.http.get(`${this.cuentasPorCobrarUri}/${idCliente}/pdf`, { responseType: 'blob' });
+  }
+
+  /** PDF del ticket térmico (80mm) de un abono recién registrado — se IMPRIME vía el print-agent. */
+  obtenerTicketAbono(idAbonoCliente: number): Observable<Blob> {
+    return this.http.get(`${this.cuentasPorCobrarUri}/abonos/${idAbonoCliente}/ticket`, {
+      responseType: 'blob',
+    });
   }
 }

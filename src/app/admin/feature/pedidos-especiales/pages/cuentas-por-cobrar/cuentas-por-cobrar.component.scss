@@ -1,0 +1,7 @@
+// Fija el fondo de la columna de acciones (stickyEnd) para que no se transparente al hacer
+// scroll horizontal (regla 10). CSS mínimo (regla 01): solo lo que las utilidades globales no
+// resuelven.
+.mat-mdc-cell.mat-table-sticky,
+.mat-mdc-header-cell.mat-table-sticky {
+  background-color: var(--mat-sys-surface, #fff);
+}

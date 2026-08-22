@@ -1,0 +1,119 @@
+<h2 mat-dialog-title>{{ 'pedidosEspeciales.realizarAbonoDialog.title' | translate }} — {{ data.nombreCliente }}</h2>
+
+<mat-dialog-content class="b-t-1" *blockUI="'realizarAbono'">
+  @if (!cargando() && detalle().length === 0) {
+    <p class="text-center m-t-16 m-b-16">{{ 'pedidosEspeciales.realizarAbonoDialog.empty' | translate }}</p>
+  } @else {
+    <div class="table-responsive">
+      <table mat-table [dataSource]="detalle()" class="w-100">
+        <ng-container matColumnDef="seleccionar">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.realizarAbonoDialog.columns.seleccionar' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="text-center">
+            <mat-checkbox [checked]="idPedidoSeleccionado() === d.idPedidoEspecial" (change)="toggleSeleccion(d)"></mat-checkbox>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="idPedidoEspecial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.realizarAbonoDialog.columns.noPedido' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14">{{ d.idPedidoEspecial }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaUltimoAbono">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.realizarAbonoDialog.columns.fechaUltimoAbono' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14">{{ d.fechaUltimoAbono }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="saldoInicial">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.realizarAbonoDialog.columns.montoInicial' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14 text-right">{{ d.saldoInicial | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="saldoActual">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.realizarAbonoDialog.columns.montoAdeudo' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14 text-right">{{ d.saldoActual | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="facturado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.realizarAbonoDialog.columns.facturado' | translate }}</th>
+          <td mat-cell *matCellDef="let d" class="f-s-14 text-center">{{ 'pedidosEspeciales.realizarAbonoDialog.no' | translate }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <form [formGroup]="abonoForm" class="row m-t-16">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-sm-6 m-b-16 text-right">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.realizarAbonoDialog.totalAdeudo' | translate }}</mat-label>
+            <h3 class="f-w-600 m-0">{{ totalAdeudo() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</h3>
+          </div>
+
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.realizarAbonoDialog.formaPago' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100 hide-hint">
+              <mat-select formControlName="idFactFormaPago" [placeholder]="'pedidosEspeciales.realizarAbonoDialog.seleccione' | translate">
+                @for (f of formasPago(); track f.id) {
+                  <mat-option [value]="f.id">{{ f.descripcion }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-sm-6 m-b-16">
+            <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.realizarAbonoDialog.montoAbonar' | translate }}</mat-label>
+            <mat-form-field appearance="outline" class="w-100 hide-hint">
+              <span matPrefix>$&nbsp;</span>
+              <input matInput type="number" min="0" step="0.01" formControlName="montoAbono" />
+            </mat-form-field>
+          </div>
+
+          @if (esEfectivo()) {
+            <div class="col-sm-6 m-b-16">
+              <mat-label class="mat-subtitle-2 f-w-600 d-block m-b-8">{{ 'pedidosEspeciales.realizarAbonoDialog.efectivo' | translate }}</mat-label>
+              <mat-form-field appearance="outline" class="w-100 hide-hint">
+                <span matPrefix>$&nbsp;</span>
+                <input matInput type="number" min="0" step="0.01" formControlName="montoRecibido" (keydown.enter)="guardar()" />
+              </mat-form-field>
+            </div>
+          }
+        </div>
+      </div>
+    </form>
+
+    <hr class="m-t-8 m-b-16" />
+
+    <div class="row">
+      <div class="col-lg-6"></div>
+      <div class="col-lg-6">
+        @if (comisionBancaria() > 0) {
+          <div class="d-flex justify-content-between">
+            <span>{{ 'pedidosEspeciales.realizarAbonoDialog.comisionBancaria' | translate }}</span>
+            <span>{{ comisionBancaria() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+        }
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="f-s-16 f-w-600">{{ 'pedidosEspeciales.realizarAbonoDialog.total' | translate }}</span>
+          <span class="f-s-20 f-w-700">{{ total() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+        </div>
+        @if (esEfectivo()) {
+          <div class="d-flex justify-content-between">
+            <span>{{ 'pedidosEspeciales.realizarAbonoDialog.cambio' | translate }}</span>
+            <span class="f-s-16 f-w-700">{{ cambio() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="cancelar()">
+    {{ 'pedidosEspeciales.realizarAbonoDialog.cancelar' | translate }}
+  </button>
+  <button mat-flat-button color="primary" type="button" [disabled]="guardando()" (click)="guardar()">
+    {{ 'pedidosEspeciales.realizarAbonoDialog.abonar' | translate }}
+  </button>
+</mat-dialog-actions>

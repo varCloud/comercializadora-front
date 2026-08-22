@@ -14,7 +14,7 @@ import { Cliente } from 'src/app/admin/models/clientes/cliente';
 import { ClientesService } from 'src/app/admin/services/clientes.service';
 import { SelectPaginadoComponent } from 'src/app/admin/shared/components/select-paginado/select-paginado.component';
 import { validarEmail, validarRfc } from 'src/app/admin/shared/utils/validadores-fiscales';
-import { FormaPago } from 'src/app/admin/models/ventas/forma-pago';
+import { FormaPago, esFormaPagoEfectivo, esFormaPagoTarjeta } from 'src/app/admin/models/ventas/forma-pago';
 import { UsoCfdi } from 'src/app/admin/models/ventas/uso-cfdi';
 import { DatosCobroModel } from 'src/app/admin/models/ventas/datos-cobro';
 import { VentasService } from 'src/app/admin/services/ventas.service';
@@ -25,20 +25,6 @@ export interface CobroDialogData {
 }
 
 const CLIENTE_GENERICO_ID = 1;
-
-/**
- * La API (`FormaPago`) no trae flags booleanos "esEfectivo"/"esTarjeta" — se derivan por texto
- * de `nombre` (columna corta del SP, p. ej. "EFECTIVO"/"TARJETA DE CRÉDITO"), mismo criterio
- * que `esRuta` ya usa para el tipo de cliente. Evita depender de ids mágicos (1/4/18 en el
- * legado) que podrían no coincidir entre entornos.
- */
-function esFormaPagoEfectivo(forma: FormaPago | undefined): boolean {
-  return (forma?.nombre ?? '').trim().toUpperCase() === 'EFECTIVO';
-}
-
-function esFormaPagoTarjeta(forma: FormaPago | undefined): boolean {
-  return (forma?.nombre ?? '').toUpperCase().includes('TARJETA');
-}
 
 /**
  * Modal de cobro del POS (FE-A4). Réplica de `#ModalPrevioVenta` + `calculaTotales()` /

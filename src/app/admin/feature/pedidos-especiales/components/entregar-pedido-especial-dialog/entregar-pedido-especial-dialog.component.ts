@@ -9,7 +9,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ENUM_ESTATUS_MODAL, ResultModalModel } from 'src/app/models/result-modal';
 import { Cliente } from 'src/app/admin/models/clientes/cliente';
-import { FormaPago } from 'src/app/admin/models/ventas/forma-pago';
+import { FormaPago, esFormaPagoTarjeta } from 'src/app/admin/models/ventas/forma-pago';
 import { UsoCfdi } from 'src/app/admin/models/ventas/uso-cfdi';
 import { SelectPaginadoComponent } from 'src/app/admin/shared/components/select-paginado/select-paginado.component';
 import { UsuariosService } from 'src/app/admin/services/usuarios.service';
@@ -47,14 +47,6 @@ export interface ResultadoEntregarPedidoEspecial {
   total: number;
   efectivoRecibido: number;
   cambio: number;
-}
-
-/**
- * La API (`FormaPago`) no trae flags "esEfectivo"/"esTarjeta" — se derivan por texto de
- * `nombre`, mismo criterio ya usado en `cobro-dialog.component.ts` (Ventas/POS).
- */
-function esFormaPagoTarjeta(forma: FormaPago | undefined): boolean {
-  return (forma?.nombre ?? '').toUpperCase().includes('TARJETA');
 }
 
 /**

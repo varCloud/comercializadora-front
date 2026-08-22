@@ -5,8 +5,9 @@
 // simulado anterior, que los traía precalculados). El legado (EvtVentas.js) los determinaba
 // comparando el id contra magic numbers (1=Efectivo, 4=Crédito, 18=Débito) — frágil si la BD
 // llega a tener ids distintos. Aquí se derivan por texto de `nombre` (columna corta del SP,
-// p. ej. "EFECTIVO"/"TARJETA") en `cobro-dialog.component.ts` (`esFormaPagoEfectivo`/
-// `esFormaPagoTarjeta`), mismo criterio que ya usa `esRuta` para el tipo de cliente.
+// p. ej. "EFECTIVO"/"TARJETA") con `esFormaPagoEfectivo`/`esFormaPagoTarjeta`, mismo criterio
+// que ya usa `esRuta` para el tipo de cliente. Únicas implementaciones (regla 00): antes estaban
+// duplicadas en `cobro-dialog`, `entregar-pedido-especial-dialog` y `realizar-abono-dialog`.
 
 export interface FormaPago {
   id: number;
@@ -25,4 +26,12 @@ export class FormaPagoModel implements FormaPago {
     this.nombre = data.nombre ?? '';
     this.descripcion = data.descripcion ?? '';
   }
+}
+
+export function esFormaPagoEfectivo(forma: FormaPago | undefined): boolean {
+  return (forma?.nombre ?? '').trim().toUpperCase() === 'EFECTIVO';
+}
+
+export function esFormaPagoTarjeta(forma: FormaPago | undefined): boolean {
+  return (forma?.nombre ?? '').toUpperCase().includes('TARJETA');
 }

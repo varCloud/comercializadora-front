@@ -1,0 +1,85 @@
+<div class="row">
+  <div class="col-12">
+    <h3 class="f-w-600 m-b-16">{{ 'pedidosEspeciales.cuentasPorCobrar.title' | translate }}</h3>
+  </div>
+</div>
+
+<!-- Buscador (réplica del <select> Cliente legado, modernizado a texto server-side — regla 21). -->
+<mat-card class="cardWithShadow">
+  <mat-card-content class="p-24">
+    <div class="row">
+      <div class="col-lg-4 col-sm-12">
+        <mat-form-field appearance="outline" class="w-100 hide-hint">
+          <input
+            matInput
+            [placeholder]="'pedidosEspeciales.cuentasPorCobrar.searchPlaceholder' | translate"
+            (keyup)="applyFilter($any($event.target).value)"
+          />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- Tabla de clientes con adeudo (mismas columnas que ConsultarCuentasPorCobrar.cshtml). -->
+<mat-card class="cardWithShadow" *blockUI="'cuentas-por-cobrar'">
+  <mat-card-content class="p-24">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="pag.data()" class="w-100 table-stacked-mobile">
+        <ng-container matColumnDef="idCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-center">{{ 'pedidosEspeciales.cuentasPorCobrar.columns.noCliente' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-center" [attr.data-label]="'pedidosEspeciales.cuentasPorCobrar.columns.noCliente' | translate">{{ c.idCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nombreCliente">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'pedidosEspeciales.cuentasPorCobrar.columns.cliente' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14" [attr.data-label]="'pedidosEspeciales.cuentasPorCobrar.columns.cliente' | translate">{{ c.nombreCliente }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoTotal">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.cuentasPorCobrar.columns.montoTotal' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.cuentasPorCobrar.columns.montoTotal' | translate">{{ c.montoTotal | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoPagado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.cuentasPorCobrar.columns.montoPagado' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.cuentasPorCobrar.columns.montoPagado' | translate">{{ c.montoPagado | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="montoAdeudado">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.cuentasPorCobrar.columns.montoAdeudo' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="f-s-14 text-right" [attr.data-label]="'pedidosEspeciales.cuentasPorCobrar.columns.montoAdeudo' | translate">{{ c.montoAdeudado | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+        </ng-container>
+
+        <!-- Acciones por fila: "Generar PDF" (verde) / "Realizar abono" (azul) — regla 10. -->
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'pedidosEspeciales.cuentasPorCobrar.columns.acciones' | translate }}</th>
+          <td mat-cell *matCellDef="let c" class="action-link text-right" [attr.data-label]="'pedidosEspeciales.cuentasPorCobrar.columns.acciones' | translate">
+            <a (click)="generarPdf(c)" class="m-r-10 cursor-pointer" [matTooltip]="'pedidosEspeciales.cuentasPorCobrar.actions.generarPdf' | translate">
+              <i-tabler name="file-download" class="icon-18" [style.color]="'#2e7d32'"></i-tabler>
+            </a>
+            <a (click)="realizarAbono(c)" class="cursor-pointer" [matTooltip]="'pedidosEspeciales.cuentasPorCobrar.actions.realizarAbono' | translate">
+              <i-tabler name="credit-card" class="icon-18" [style.color]="'#1e88e5'"></i-tabler>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    @if (pag.isEmpty()) {
+      <p class="text-center m-t-16">{{ 'pedidosEspeciales.cuentasPorCobrar.empty' | translate }}</p>
+    }
+
+    <app-paginador
+      [paginador]="pag"
+      (navegar)="navegar($event)"
+      (perPageChange)="onPerPage($event)"
+    ></app-paginador>
+  </mat-card-content>
+</mat-card>

@@ -189,6 +189,11 @@ export const navItemsApp: NavItem[] = [
         route: '/admin/pedidos-especiales/consultar-pedidos',
       },
       {
+        displayName: 'Cuentas por Cobrar',
+        iconName: 'credit-card',
+        route: '/admin/pedidos-especiales/cuentas-por-cobrar',
+      },
+      {
         displayName: 'Apertura / Ingreso de Efectivo',
         iconName: 'lock-open',
         route: '/admin/pedidos-especiales/apertura-ingreso-efectivo',

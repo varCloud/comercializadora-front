@@ -4,8 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 // Rutas del dominio "Pedidos Especiales" (núcleo, Bloque A en adelante). "Nuevo Pedido" (FE-A3),
 // "Entregar Pedido" + "Confirmar Productos" (FE-B3/FE-B4, Bloque B), "Pedidos en Ruta" +
 // "Cotizaciones" (FE-C3/FE-C4, Bloque C), "Consultar Pedidos" (FE-D3, Bloque D — cierra el
-// núcleo) y "Apertura/Ingreso de Efectivo" + "Retiro de Efectivo" + "Cierre de Caja" (FE-6,
-// feature `cierre_caja_pe`) ya existen. Cargada con loadComponent (regla 06).
+// núcleo), "Apertura/Ingreso de Efectivo" + "Retiro de Efectivo" + "Cierre de Caja" (FE-6,
+// feature `cierre_caja_pe`) ya existen. "Cuentas por Cobrar" (FE-2, feature
+// `cuentas_por_cobrar_pe`) se maqueta con datos mock hasta que FE-4/FE-5 la conecten al backend.
+// Cargada con loadComponent (regla 06).
 const routes: Routes = [
   {
     path: 'nuevo',
@@ -50,6 +52,14 @@ const routes: Routes = [
         (m) => m.ConsultarPedidosComponent,
       ),
     data: { title: 'Consultar Pedidos' },
+  },
+  {
+    path: 'cuentas-por-cobrar',
+    loadComponent: () =>
+      import('./pages/cuentas-por-cobrar/cuentas-por-cobrar.component').then(
+        (m) => m.CuentasPorCobrarComponent,
+      ),
+    data: { title: 'Cuentas por Cobrar' },
   },
   {
     path: 'apertura-ingreso-efectivo',

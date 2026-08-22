@@ -2815,6 +2815,68 @@
         "cancel": "No"
       }
     },
+    "cuentasPorCobrar": {
+      "title": "Accounts Receivable",
+      "searchPlaceholder": "Search by customer name…",
+      "columns": {
+        "noCliente": "Customer #",
+        "cliente": "Customer",
+        "montoTotal": "Total amount",
+        "montoPagado": "Paid amount",
+        "montoAdeudo": "Balance due",
+        "acciones": "Actions"
+      },
+      "actions": {
+        "generarPdf": "Generate PDF",
+        "realizarAbono": "Make payment"
+      },
+      "empty": "No customers with a balance due were found.",
+      "msg": {
+        "cargandoListado": "Searching accounts receivable…",
+        "errorListado": "Error searching the accounts receivable.",
+        "generandoPdf": "Generating PDF…",
+        "generarPdfError": "Could not generate the account receivable PDF."
+      }
+    },
+    "realizarAbonoDialog": {
+      "title": "Make Payment",
+      "columns": {
+        "seleccionar": "Select",
+        "noPedido": "Order #",
+        "fechaUltimoAbono": "Last payment date",
+        "montoInicial": "Initial amount",
+        "montoAdeudo": "Balance due",
+        "facturado": "Invoiced"
+      },
+      "no": "NO",
+      "totalAdeudo": "Total balance due",
+      "formaPago": "Payment Method",
+      "seleccione": "Select…",
+      "montoAbonar": "Amount to pay",
+      "comisionBancaria": "Bank fee",
+      "total": "Total",
+      "efectivo": "Cash",
+      "cambio": "Change",
+      "empty": "This customer has no orders with a balance due.",
+      "cancelar": "Cancel",
+      "abonar": "Pay",
+      "msg": {
+        "cargando": "Searching the customer's balance due…",
+        "loadError": "Error loading the account receivable detail.",
+        "errorFormasPago": "Error loading the payment methods.",
+        "formaPagoRequerida": "You must select a Payment Method.",
+        "montoMayorCero": "The amount to pay must be greater than zero.",
+        "montoExcedeAdeudo": "The amount to pay cannot be greater than the balance due.",
+        "efectivoInsuficiente": "The cash received does not cover the Total.",
+        "guardando": "Registering payment…",
+        "guardadoOk": "Payment registered successfully.",
+        "saveFallback": "Could not register the payment.",
+        "saveError": "An error occurred while registering the payment.",
+        "ticketError": "Could not generate the payment ticket.",
+        "aperturaRequerida": "You must open the Special Orders cash register before registering a payment.",
+        "errorValidarCaja": "Error validating the Special Orders open cash register."
+      }
+    },
     "facturarPedidoDialog": {
       "title": "Invoice Order",
       "cliente": "Customer",

@@ -2815,6 +2815,68 @@
         "cancel": "No"
       }
     },
+    "cuentasPorCobrar": {
+      "title": "Cuentas por Cobrar",
+      "searchPlaceholder": "Buscar por nombre de cliente…",
+      "columns": {
+        "noCliente": "No. Cliente",
+        "cliente": "Cliente",
+        "montoTotal": "Monto total",
+        "montoPagado": "Monto pagado",
+        "montoAdeudo": "Monto adeudo",
+        "acciones": "Acciones"
+      },
+      "actions": {
+        "generarPdf": "Generar PDF",
+        "realizarAbono": "Realizar abono"
+      },
+      "empty": "No se encontraron clientes con adeudo.",
+      "msg": {
+        "cargandoListado": "Consultando cuentas por cobrar…",
+        "errorListado": "Error al consultar las cuentas por cobrar.",
+        "generandoPdf": "Generando PDF…",
+        "generarPdfError": "No fue posible generar el PDF de la cuenta por cobrar."
+      }
+    },
+    "realizarAbonoDialog": {
+      "title": "Realizar abono",
+      "columns": {
+        "seleccionar": "Seleccionar",
+        "noPedido": "No. pedido",
+        "fechaUltimoAbono": "Fecha últ. abono",
+        "montoInicial": "Monto inicial",
+        "montoAdeudo": "Monto adeudo",
+        "facturado": "Facturado"
+      },
+      "no": "NO",
+      "totalAdeudo": "Total adeudo",
+      "formaPago": "Forma de Pago",
+      "seleccione": "Seleccione…",
+      "montoAbonar": "Cantidad a abonar",
+      "comisionBancaria": "Comisión bancaria",
+      "total": "Total",
+      "efectivo": "Efectivo",
+      "cambio": "Cambio",
+      "empty": "Este cliente no tiene pedidos con adeudo.",
+      "cancelar": "Cancelar",
+      "abonar": "Abonar",
+      "msg": {
+        "cargando": "Consultando adeudo del cliente…",
+        "loadError": "Error al cargar el detalle de la cuenta por cobrar.",
+        "errorFormasPago": "Error al cargar las formas de pago.",
+        "formaPagoRequerida": "Debe seleccionar una Forma de Pago.",
+        "montoMayorCero": "La cantidad a abonar debe ser mayor a cero.",
+        "montoExcedeAdeudo": "La cantidad a abonar no puede ser mayor al monto adeudado.",
+        "efectivoInsuficiente": "El efectivo no alcanza a cubrir el Total.",
+        "guardando": "Registrando abono…",
+        "guardadoOk": "Abono registrado correctamente.",
+        "saveFallback": "No fue posible registrar el abono.",
+        "saveError": "Ocurrió un error al registrar el abono.",
+        "ticketError": "No fue posible generar el ticket del abono.",
+        "aperturaRequerida": "Debe abrir la caja de Pedidos Especiales antes de registrar un abono.",
+        "errorValidarCaja": "Error al validar la caja abierta de Pedidos Especiales."
+      }
+    },
     "facturarPedidoDialog": {
       "title": "Facturar Pedido",
       "cliente": "Cliente",
