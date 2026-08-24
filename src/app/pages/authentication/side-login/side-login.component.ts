@@ -20,6 +20,7 @@ import { SesionService } from 'src/app/services/sesion.service';
 import { LoginRequestModel } from 'src/app/models/requests/login/login-request';
 import { Sesion } from 'src/app/models/sesion';
 import { environment } from 'src/environments/environment';
+import { TablerIconsModule } from 'angular-tabler-icons';
 
 
 @Component({
@@ -32,6 +33,7 @@ import { environment } from 'src/environments/environment';
     BlockUIModule,
     SweetAlert2Module,
     CommonModule,
+    TablerIconsModule,
   ],
   templateUrl: './side-login.component.html',
   styleUrl: './side-login.component.scss',
@@ -41,6 +43,8 @@ export class AppSideLoginComponent {
   @BlockUI('login-container') blockUILayout: NgBlockUI;
   public readonly templateBlockModalUiComponent: BlockComponent =
     BlockComponent;
+  /** Alterna entre texto plano y puntos en el campo de contraseña (icono ojo). */
+  passwordVisible: boolean = false;
   _isAdmin: boolean = false;
 
   form = new FormGroup({
