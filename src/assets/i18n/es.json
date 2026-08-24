@@ -1450,7 +1450,8 @@
       "editar": "Editar",
       "eliminar": "Eliminar",
       "precios": "Precios",
-      "imprimirCodigos": "Imprimir Códigos"
+      "imprimirCodigos": "Imprimir Códigos",
+      "ubicaciones": "Ubicaciones del producto"
     },
     "form": {
       "titleAdd": "Agregar producto",
@@ -1543,6 +1544,37 @@
       "cancelar": "Cancelar",
       "saveError": "Error al guardar los precios",
       "saveFallback": "No se pudieron guardar los precios"
+    },
+    "ubicacionesProducto": {
+      "title": "Ubicaciones del producto",
+      "loading": "Cargando ubicaciones…",
+      "loadError": "Error al cargar las ubicaciones del producto",
+      "ajustando": "Ajustando inventario…",
+      "tabla": {
+        "almacen": "Almacén",
+        "piso": "Piso",
+        "pasillo": "Pasillo",
+        "raq": "Raq",
+        "cantidad": "Cantidad",
+        "cantidadFisico": "Cantidad en Físico",
+        "errorProceso": "Error de Proceso",
+        "acciones": "Ajustar"
+      },
+      "sinAcomodar": "Sin Acomodar",
+      "vacio": "Este producto no tiene ubicaciones registradas.",
+      "ajustar": "Ajustar",
+      "cerrar": "Cerrar",
+      "msg": {
+        "cantidadRequerida": "Capture la cantidad en físico.",
+        "sinCambios": "No hay nada que ajustar.",
+        "ajustarFallback": "Error al ajustar el inventario de la ubicación."
+      },
+      "confirm": {
+        "title": "Ajustar inventario",
+        "text": "¿Estás seguro que deseas ajustar el inventario de este producto?",
+        "accept": "Aceptar",
+        "cancel": "Cancelar"
+      }
     }
   },
   "lineasProducto": {

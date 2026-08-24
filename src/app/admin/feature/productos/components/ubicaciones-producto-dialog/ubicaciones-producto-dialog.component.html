@@ -1,0 +1,78 @@
+<h2 mat-dialog-title class="m-0">{{ 'productos.ubicacionesProducto.title' | translate }} — {{ data.descripcion }}</h2>
+
+<mat-dialog-content class="b-t-1">
+  <div *blockUI="'ubicacionesProducto'">
+    <div class="table-responsive">
+      <table class="w-100 table-stacked-mobile ubicaciones-tabla">
+        <thead>
+          <tr>
+            <th class="f-s-16 f-w-600">{{ 'productos.ubicacionesProducto.tabla.almacen' | translate }}</th>
+            <th class="f-s-16 f-w-600">{{ 'productos.ubicacionesProducto.tabla.piso' | translate }}</th>
+            <th class="f-s-16 f-w-600">{{ 'productos.ubicacionesProducto.tabla.pasillo' | translate }}</th>
+            <th class="f-s-16 f-w-600">{{ 'productos.ubicacionesProducto.tabla.raq' | translate }}</th>
+            <th class="f-s-16 f-w-600 text-right">{{ 'productos.ubicacionesProducto.tabla.cantidad' | translate }}</th>
+            <th class="f-s-16 f-w-600 text-center">{{ 'productos.ubicacionesProducto.tabla.cantidadFisico' | translate }}</th>
+            <th class="f-s-16 f-w-600 text-center">{{ 'productos.ubicacionesProducto.tabla.errorProceso' | translate }}</th>
+            <th class="f-s-16 f-w-600 text-right">{{ 'productos.ubicacionesProducto.tabla.acciones' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (fila of ubicaciones(); track fila.idUbicacion) {
+            <tr>
+              <td class="f-s-14" [attr.data-label]="'productos.ubicacionesProducto.tabla.almacen' | translate">{{ fila.almacen }}</td>
+
+              @if (fila.sinAcomodar) {
+                <!-- Réplica de `colspan="3"` del legado (Piso+Pasillo+Raq fusionados); reusa el
+                     mismo estado visual que `consultar-existencias-dialog` (regla 00). -->
+                <td colspan="3" class="f-s-14 text-center">
+                  <span class="status-badge status-inactivo">{{ 'productos.ubicacionesProducto.sinAcomodar' | translate }}</span>
+                </td>
+              } @else {
+                <td class="f-s-14" [attr.data-label]="'productos.ubicacionesProducto.tabla.piso' | translate">{{ fila.piso }}</td>
+                <td class="f-s-14" [attr.data-label]="'productos.ubicacionesProducto.tabla.pasillo' | translate">{{ fila.pasillo }}</td>
+                <td class="f-s-14" [attr.data-label]="'productos.ubicacionesProducto.tabla.raq' | translate">{{ fila.raq }}</td>
+              }
+
+              <td class="f-s-14 text-right" [attr.data-label]="'productos.ubicacionesProducto.tabla.cantidad' | translate">{{ fila.cantidad }}</td>
+
+              <td class="f-s-14 text-center" [attr.data-label]="'productos.ubicacionesProducto.tabla.cantidadFisico' | translate">
+                <input
+                  class="celda-input"
+                  type="number"
+                  inputmode="decimal"
+                  [ngModel]="fila.cantidadEnFisico"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="onCantidadFisicoChange(fila, $event)"
+                />
+              </td>
+
+              <td class="f-s-14 text-center" [attr.data-label]="'productos.ubicacionesProducto.tabla.errorProceso' | translate">
+                <mat-checkbox
+                  [ngModel]="fila.errorHumano"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="onErrorHumanoChange(fila, $event)"
+                ></mat-checkbox>
+              </td>
+
+              <td class="action-link text-right" [attr.data-label]="'productos.ubicacionesProducto.tabla.acciones' | translate">
+                <a (click)="ajustar(fila)" class="cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'productos.ubicacionesProducto.ajustar' | translate">
+                  <i-tabler name="adjustments" class="icon-18"></i-tabler>
+                </a>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="text-center p-16">{{ 'productos.ubicacionesProducto.vacio' | translate }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-x-24 p-b-16">
+  <button mat-flat-button color="primary" type="button" (click)="cerrar()">
+    {{ 'productos.ubicacionesProducto.cerrar' | translate }}
+  </button>
+</mat-dialog-actions>

@@ -27,6 +27,7 @@ import {
   UbicacionProducto,
   UbicacionProductoModel,
 } from 'src/app/admin/models/ventas/ubicacion-producto';
+import { AjustarUbicacionRequest } from 'src/app/admin/models/productos/ajustar-ubicacion-request';
 
 /**
  * Servicio HTTP del módulo de Productos. Consume la API nueva (comercializadora-api).
@@ -133,6 +134,24 @@ export class ProductosService {
     return this.http
       .get<Notificacion<UbicacionProducto[]>>(`${this.baseUri}/${idProducto}/ubicaciones`, { params })
       .pipe(map((res) => (res?.modelo ?? []).map((u) => new UbicacionProductoModel(u))));
+  }
+
+  /**
+   * Ajusta la cantidad en físico de una ubicación puntual del producto (modal "Ubicaciones del
+   * producto"). **Ojo:** el backend puede responder con éxito HTTP (200) pero `estatus !== 200`
+   * en el body — regla de negocio del SP: si la ubicación está en un pasillo/piso de "proceso
+   * interno", rechaza el ajuste con un mensaje de negocio aunque el request en sí sea válido.
+   * El caller debe revisar `notificacion.estatus`, nunca asumir éxito por el código HTTP.
+   */
+  ajustarUbicacion(
+    idProducto: number,
+    idUbicacion: number,
+    request: AjustarUbicacionRequest,
+  ): Observable<Notificacion<string>> {
+    return this.http.patch<Notificacion<string>>(
+      `${this.baseUri}/${idProducto}/ubicaciones/${idUbicacion}`,
+      request,
+    );
   }
 
   /**

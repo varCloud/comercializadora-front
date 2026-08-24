@@ -26,6 +26,10 @@ import {
   PreciosFormData,
   PreciosFormDialogComponent,
 } from '../../components/precios-form-dialog/precios-form-dialog.component';
+import {
+  UbicacionesProductoDialogData,
+  UbicacionesProductoDialogComponent,
+} from '../../components/ubicaciones-producto-dialog/ubicaciones-producto-dialog.component';
 
 @Component({
   selector: 'app-productos-list',
@@ -154,6 +158,19 @@ export class ProductosListComponent implements OnInit {
       if (res?.status === ENUM_ESTATUS_MODAL.OK) {
         this.cargar();
       }
+    });
+  }
+
+  /** Abre "Ubicaciones del producto" (hallazgo P-01, consulta + ajuste de existencia física). */
+  ubicaciones(producto: Producto): void {
+    const data: UbicacionesProductoDialogData = {
+      idProducto: producto.idProducto,
+      descripcion: producto.descripcion,
+    };
+    this.dialog.open(UbicacionesProductoDialogComponent, {
+      data,
+      width: '1000px',
+      maxWidth: '95vw',
     });
   }
 

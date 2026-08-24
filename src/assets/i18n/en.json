@@ -1450,7 +1450,8 @@
       "editar": "Edit",
       "eliminar": "Delete",
       "precios": "Prices",
-      "imprimirCodigos": "Print Codes"
+      "imprimirCodigos": "Print Codes",
+      "ubicaciones": "Product locations"
     },
     "form": {
       "titleAdd": "Add product",
@@ -1543,6 +1544,37 @@
       "cancelar": "Cancel",
       "saveError": "Error saving prices",
       "saveFallback": "Could not save prices"
+    },
+    "ubicacionesProducto": {
+      "title": "Product locations",
+      "loading": "Loading locations…",
+      "loadError": "Error loading the product's locations",
+      "ajustando": "Adjusting inventory…",
+      "tabla": {
+        "almacen": "Warehouse",
+        "piso": "Floor",
+        "pasillo": "Aisle",
+        "raq": "Rack",
+        "cantidad": "Quantity",
+        "cantidadFisico": "Physical Quantity",
+        "errorProceso": "Process Error",
+        "acciones": "Adjust"
+      },
+      "sinAcomodar": "Not Placed",
+      "vacio": "This product has no registered locations.",
+      "ajustar": "Adjust",
+      "cerrar": "Close",
+      "msg": {
+        "cantidadRequerida": "Enter the physical quantity.",
+        "sinCambios": "There is nothing to adjust.",
+        "ajustarFallback": "Error adjusting the location's inventory."
+      },
+      "confirm": {
+        "title": "Adjust inventory",
+        "text": "Are you sure you want to adjust this product's inventory?",
+        "accept": "Accept",
+        "cancel": "Cancel"
+      }
     }
   },
   "lineasProducto": {

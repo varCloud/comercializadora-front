@@ -1,0 +1,12 @@
+// CSS mínimo (regla 01): solo la celda editable de la tabla de ubicaciones necesita ajuste;
+// el resto se resuelve con utilidades globales (f-s-14, f-w-600, text-right, table-responsive).
+.celda-input {
+  width: 90px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+.celda-input:focus {
+  border-bottom: 1px solid var(--mat-sys-primary, #5d87ff);
+}
