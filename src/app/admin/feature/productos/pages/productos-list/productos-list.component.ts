@@ -1,6 +1,8 @@
-import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { TablerIconsModule } from 'angular-tabler-icons';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { BlockUI, BlockUIModule, NgBlockUI } from 'ng-block-ui';
@@ -12,7 +14,9 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { ENUM_ESTATUS_MODAL } from 'src/app/models/result-modal';
 import { Paginador } from 'src/app/admin/models/shared/paginador';
 import { PaginadorComponent } from 'src/app/admin/shared/components/paginador/paginador.component';
+import { Catalogo } from 'src/app/admin/models/shared/catalogo';
 import { Producto } from 'src/app/admin/models/productos/producto';
+import { ProductoCodigoBarraModel } from 'src/app/admin/models/productos/producto-codigo-barra';
 import { ProductosService } from 'src/app/admin/services/productos.service';
 import {
   ProductoFormData,
@@ -26,7 +30,17 @@ import {
 @Component({
   selector: 'app-productos-list',
   standalone: true,
-  imports: [MaterialModule, TablerIconsModule, BlockUIModule, TranslatePipe, PaginadorComponent, CurrencyPipe],
+  imports: [
+    MaterialModule,
+    FormsModule,
+    NgSelectModule,
+    TablerIconsModule,
+    BlockUIModule,
+    TranslatePipe,
+    PaginadorComponent,
+    CurrencyPipe,
+    DecimalPipe,
+  ],
   templateUrl: './productos-list.component.html',
   styles: [
     `.mat-mdc-cell.mat-table-sticky,
@@ -43,9 +57,26 @@ export class ProductosListComponent implements OnInit {
 
   @BlockUI('productos') blockUI!: NgBlockUI;
 
-  readonly displayedColumns = ['descripcion', 'articulo', 'codigoBarras', 'linea', 'unidad', 'precio', 'action'];
+  readonly displayedColumns = [
+    'descripcion',
+    'linea',
+    'articulo',
+    'precioMayoreo',
+    'precio',
+    'utilidadMenudeo',
+    'utilidadMayoreo',
+    'unidadCompra',
+    'cantidadUnidadCompra',
+    'ultimoCosto',
+    'action',
+  ];
 
   readonly pag = new Paginador<Producto>(CONSTANTS.PAGINATION.PAGE_SIZE);
+
+  /** Catálogo de líneas para el filtro (≤25 → ng-select con filtro cliente, regla 16). */
+  readonly lineas = signal<Catalogo[]>([]);
+  /** 0 = todas las líneas. */
+  idLinea = 0;
 
   private search = '';
   private readonly search$ = new Subject<string>();
@@ -57,13 +88,14 @@ export class ProductosListComponent implements OnInit {
         this.search = value;
         this.cargar();
       });
+    this.service.obtenerLineas().subscribe((lineas) => this.lineas.set(lineas));
     this.cargar();
   }
 
   cargar(): void {
     this.blockUI.start(this.translate.instant('productos.msg.loading'));
     this.service
-      .listar({ perPage: this.pag.perPage(), q: this.search })
+      .listar({ perPage: this.pag.perPage(), q: this.search, idLineaProducto: this.idLinea })
       .pipe(finalize(() => this.blockUI.stop()))
       .subscribe({
         next: (res) => this.pag.setPage(res),
@@ -72,6 +104,11 @@ export class ProductosListComponent implements OnInit {
           this.notify.notify('error', this.translate.instant('productos.msg.loadError'));
         },
       });
+  }
+
+  /** Cambió el filtro de Línea de Producto → recargar desde la página 1. */
+  onFiltroChange(): void {
+    this.cargar();
   }
 
   navegar(url: string): void {
@@ -105,10 +142,6 @@ export class ProductosListComponent implements OnInit {
     this.abrirFormulario({ producto });
   }
 
-  ver(producto: Producto): void {
-    this.abrirFormulario({ producto, readonly: true });
-  }
-
   precios(producto: Producto): void {
     const data: PreciosFormData = { producto };
     const ref = this.dialog.open(PreciosFormDialogComponent, {
@@ -122,6 +155,49 @@ export class ProductosListComponent implements OnInit {
         this.cargar();
       }
     });
+  }
+
+  /** Imprimir Códigos de este producto (1 clic, PDF de barra+QR igual que el generador masivo). */
+  imprimirCodigos(producto: Producto): void {
+    const payload = [ProductoCodigoBarraModel.fromProducto(producto)];
+    this.blockUI.start(this.translate.instant('productos.codigosBarras.msg.generando'));
+    this.service
+      .generarCodigosBarras(payload)
+      .pipe(finalize(() => this.blockUI.stop()))
+      .subscribe({
+        next: (blob) => this.abrirPdf(blob),
+        error: (err) => {
+          console.error('Error al generar el PDF de códigos de barras', err);
+          this.notify.notify('error', this.translate.instant('productos.msg.printCodesError'));
+        },
+      });
+  }
+
+  private abrirPdf(blob: Blob): void {
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+
+  // ── % Utilidad de columnas (migrado 1:1 de la fórmula de precios-form-dialog) ──
+
+  private round2(n: number): number {
+    return Math.round(n * 100) / 100;
+  }
+
+  private calcPorcUtilidad(costo: number, precio: number): number {
+    if (costo > 0 && precio > 0) return this.round2((precio * 100) / costo - 100);
+    return 0;
+  }
+
+  /** % Utilidad Menudeo = costo vs. precioIndividual ("Precio Menudeo" en el legado). */
+  utilidadMenudeo(p: Producto): number {
+    return this.calcPorcUtilidad(p.ultimoCostoCompra ?? 0, p.precioIndividual ?? 0);
+  }
+
+  /** % Utilidad Mayoreo = costo vs. precioMenudeo ("Precio Mayoreo" en el legado). */
+  utilidadMayoreo(p: Producto): number {
+    return this.calcPorcUtilidad(p.ultimoCostoCompra ?? 0, p.precioMenudeo ?? 0);
   }
 
   eliminar(producto: Producto): void {

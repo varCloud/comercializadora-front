@@ -1429,20 +1429,28 @@
     "add": "Agregar producto",
     "empty": "No hay productos para mostrar.",
     "searchPlaceholder": "Buscar por descripción, artículo o código…",
+    "filters": {
+      "linea": "Línea de Producto",
+      "todas": "Todas"
+    },
     "columns": {
       "descripcion": "Descripción",
       "articulo": "Artículo",
-      "codigoBarras": "Código de barras",
       "linea": "Línea",
-      "unidad": "Unidad",
-      "precio": "Precio",
+      "precioMayoreo": "Precio Mayoreo",
+      "precio": "Precio Menudeo",
+      "utilidadMenudeo": "% Utilidad Menudeo",
+      "utilidadMayoreo": "% Utilidad Mayoreo",
+      "unidadCompra": "Unidad de Compra",
+      "cantidadUnidadCompra": "Cantidad Unidad de Compra",
+      "ultimoCosto": "Último Costo de Compra",
       "acciones": "Acciones"
     },
     "actions": {
-      "ver": "Ver",
       "editar": "Editar",
       "eliminar": "Eliminar",
-      "precios": "Precios"
+      "precios": "Precios",
+      "imprimirCodigos": "Imprimir Códigos"
     },
     "form": {
       "titleAdd": "Agregar producto",
@@ -1490,7 +1498,8 @@
       "saveError": "Error al guardar el producto",
       "saveFallback": "No se pudo guardar el producto",
       "deleteError": "Error al eliminar el producto",
-      "deleteFallback": "No se pudo eliminar el producto"
+      "deleteFallback": "No se pudo eliminar el producto",
+      "printCodesError": "Error al generar el PDF de códigos de barras"
     },
     "precios": {
       "title": "Precios",

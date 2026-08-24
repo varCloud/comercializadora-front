@@ -1,7 +1,7 @@
 <mat-card class="cardWithShadow">
   <mat-card-content class="p-24">
     <div class="row justify-content-between">
-      <div class="col-lg-4">
+      <div class="col-lg-4 col-md-6 m-b-16">
         <mat-form-field appearance="outline" class="w-100 hide-hint">
           <input
             matInput
@@ -12,6 +12,18 @@
             <i-tabler name="search" class="icon-20"></i-tabler>
           </mat-icon>
         </mat-form-field>
+      </div>
+      <div class="col-lg-4 col-md-6 m-b-16">
+        <ng-select
+          [(ngModel)]="idLinea"
+          (ngModelChange)="onFiltroChange()"
+          bindValue="id"
+          bindLabel="descripcion"
+          [items]="lineas()"
+          [placeholder]="'productos.filters.linea' | translate"
+        >
+          <ng-option [value]="0">{{ 'productos.filters.todas' | translate }}</ng-option>
+        </ng-select>
       </div>
       <div class="col-lg-4 d-flex align-items-center justify-content-end">
         <button mat-flat-button color="primary" (click)="agregar()">
@@ -31,24 +43,19 @@
           <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.descripcion' | translate">{{ p.descripcion }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="articulo">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.articulo' | translate }}</th>
-          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.articulo' | translate">{{ p.articulo }}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="codigoBarras">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.codigoBarras' | translate }}</th>
-          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.codigoBarras' | translate">{{ p.codigoBarras }}</td>
-        </ng-container>
-
         <ng-container matColumnDef="linea">
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.linea' | translate }}</th>
           <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.linea' | translate">{{ p.descripcionLinea }}</td>
         </ng-container>
 
-        <ng-container matColumnDef="unidad">
-          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.unidad' | translate }}</th>
-          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.unidad' | translate">{{ p.descripcionUnidadMedida }}</td>
+        <ng-container matColumnDef="articulo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.articulo' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.articulo' | translate">{{ p.articulo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="precioMayoreo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'productos.columns.precioMayoreo' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'productos.columns.precioMayoreo' | translate">{{ (p.precioMenudeo ?? 0) | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="precio">
@@ -56,17 +63,42 @@
           <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'productos.columns.precio' | translate">{{ (p.precioIndividual ?? 0) | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
         </ng-container>
 
+        <ng-container matColumnDef="utilidadMenudeo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'productos.columns.utilidadMenudeo' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'productos.columns.utilidadMenudeo' | translate">{{ utilidadMenudeo(p) | number:'1.2-2' }}%</td>
+        </ng-container>
+
+        <ng-container matColumnDef="utilidadMayoreo">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'productos.columns.utilidadMayoreo' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'productos.columns.utilidadMayoreo' | translate">{{ utilidadMayoreo(p) | number:'1.2-2' }}%</td>
+        </ng-container>
+
+        <ng-container matColumnDef="unidadCompra">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600">{{ 'productos.columns.unidadCompra' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14" [attr.data-label]="'productos.columns.unidadCompra' | translate">{{ p.descripcionUnidadCompra }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cantidadUnidadCompra">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'productos.columns.cantidadUnidadCompra' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'productos.columns.cantidadUnidadCompra' | translate">{{ p.cantidadUnidadCompra }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="ultimoCosto">
+          <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'productos.columns.ultimoCosto' | translate }}</th>
+          <td mat-cell *matCellDef="let p" class="f-s-14 text-right" [attr.data-label]="'productos.columns.ultimoCosto' | translate">{{ (p.ultimoCostoCompra ?? 0) | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
         <ng-container matColumnDef="action" stickyEnd>
           <th mat-header-cell *matHeaderCellDef class="f-s-16 f-w-600 text-right">{{ 'productos.columns.acciones' | translate }}</th>
           <td mat-cell *matCellDef="let p" class="action-link text-right" [attr.data-label]="'productos.columns.acciones' | translate">
-            <a (click)="ver(p)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'productos.actions.ver' | translate">
-              <i-tabler name="eye" class="icon-18"></i-tabler>
+            <a (click)="precios(p)" class="m-r-10 cursor-pointer" [style.color]="'#7c4dff'" [matTooltip]="'productos.actions.precios' | translate">
+              <i-tabler name="coin" class="icon-18"></i-tabler>
+            </a>
+            <a (click)="imprimirCodigos(p)" class="m-r-10 cursor-pointer" [style.color]="'#2e7d32'" [matTooltip]="'productos.actions.imprimirCodigos' | translate">
+              <i-tabler name="barcode" class="icon-18"></i-tabler>
             </a>
             <a (click)="editar(p)" class="m-r-10 cursor-pointer" [style.color]="'#1e88e5'" [matTooltip]="'productos.actions.editar' | translate">
               <i-tabler name="edit" class="icon-18"></i-tabler>
-            </a>
-            <a (click)="precios(p)" class="m-r-10 cursor-pointer" [style.color]="'#7c4dff'" [matTooltip]="'productos.actions.precios' | translate">
-              <i-tabler name="coin" class="icon-18"></i-tabler>
             </a>
             <a (click)="eliminar(p)" class="m-r-10 cursor-pointer" [style.color]="'#e53935'" [matTooltip]="'productos.actions.eliminar' | translate">
               <i-tabler name="trash" class="icon-18"></i-tabler>

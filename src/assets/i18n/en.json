@@ -1429,20 +1429,28 @@
     "add": "Add product",
     "empty": "No products to display.",
     "searchPlaceholder": "Search by description, item or code…",
+    "filters": {
+      "linea": "Product Line",
+      "todas": "All"
+    },
     "columns": {
       "descripcion": "Description",
       "articulo": "Item",
-      "codigoBarras": "Barcode",
       "linea": "Line",
-      "unidad": "Unit",
-      "precio": "Price",
+      "precioMayoreo": "Wholesale Price",
+      "precio": "Retail Price",
+      "utilidadMenudeo": "% Retail Margin",
+      "utilidadMayoreo": "% Wholesale Margin",
+      "unidadCompra": "Purchase Unit",
+      "cantidadUnidadCompra": "Purchase Unit Qty",
+      "ultimoCosto": "Last Purchase Cost",
       "acciones": "Actions"
     },
     "actions": {
-      "ver": "View",
       "editar": "Edit",
       "eliminar": "Delete",
-      "precios": "Prices"
+      "precios": "Prices",
+      "imprimirCodigos": "Print Codes"
     },
     "form": {
       "titleAdd": "Add product",
@@ -1490,7 +1498,8 @@
       "saveError": "Error saving product",
       "saveFallback": "Could not save the product",
       "deleteError": "Error deleting product",
-      "deleteFallback": "Could not delete the product"
+      "deleteFallback": "Could not delete the product",
+      "printCodesError": "Error generating the barcode PDF"
     },
     "precios": {
       "title": "Prices",
