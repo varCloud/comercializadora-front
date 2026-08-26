@@ -39,10 +39,12 @@
                 <input
                   class="celda-input"
                   type="number"
-                  inputmode="decimal"
+                  [step]="fila.fraccion ? 'any' : '1'"
+                  [attr.inputmode]="fila.fraccion ? 'decimal' : 'numeric'"
                   [ngModel]="fila.cantidadEnFisico"
                   [ngModelOptions]="{ standalone: true }"
                   (ngModelChange)="onCantidadFisicoChange(fila, $event)"
+                  (keydown)="onCantidadFisicoKeydown($event, fila.fraccion)"
                 />
               </td>
 

@@ -96,6 +96,19 @@ export class UbicacionesProductoDialogComponent implements OnInit {
     );
   }
 
+  /**
+   * Paridad con `esNumero`/`esDecimal` de `Index.js` (legado): bloquea el punto decimal cuando
+   * la ubicación no es de `fraccion`, y solo permite un único punto cuando sí lo es. El legado
+   * lo hacía con `onkeypress`; acá con `keydown` (evento moderno, `keypress` está deprecado).
+   */
+  onCantidadFisicoKeydown(event: KeyboardEvent, fraccion: boolean): void {
+    const teclasControl = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'Home', 'End'];
+    if (teclasControl.includes(event.key) || event.ctrlKey || event.metaKey) return;
+    if (/^[0-9]$/.test(event.key)) return;
+    if (fraccion && event.key === '.' && !(event.target as HTMLInputElement).value.includes('.')) return;
+    event.preventDefault();
+  }
+
   onErrorHumanoChange(fila: FilaUbicacion, checked: boolean): void {
     this.ubicaciones.update((rows) =>
       rows.map((r) => (r.idUbicacion === fila.idUbicacion ? { ...r, errorHumano: checked } : r)),
