@@ -101,8 +101,9 @@ export class DashboardComponent implements OnInit {
 
   // Estado reactivo.
   readonly kpis = signal<DashboardKpis | null>(null);
-  readonly periodo = signal(PERIODO_MES);
+  readonly periodo = signal(PERIODO_SEMANA);
   readonly categorias = signal<Categoria[]>([]);
+  readonly categoriasIva = signal<Categoria[]>([]);
 
   /**
    * Tarjetas KPI con el estilo `top-cards` de dashboard1. Se derivan de los KPIs:
@@ -112,11 +113,9 @@ export class DashboardComponent implements OnInit {
     const k = this.kpis();
     if (!k) return [];
 
+    // Orden legado (index.cshtml:51-127): Ventas del día → Información Global → Semana → Mes → Año.
     const cards: KpiCard[] = [
       { color: 'primary', img: '/assets/images/svgs/icon-dd-cart.svg', title: this.t('dashboard.kpis.ventasDia'), value: this.money(k.ventasDia) },
-      { color: 'warning', img: '/assets/images/svgs/icon-dd-date.svg', title: this.t('dashboard.kpis.ventasSemana'), value: this.money(k.ventasSemana) },
-      { color: 'accent', img: '/assets/images/svgs/icon-dd-invoice.svg', title: this.t('dashboard.kpis.ventasMes'), value: this.money(k.ventasMes) },
-      { color: 'success', img: '/assets/images/svgs/icon-pie.svg', title: this.t('dashboard.kpis.ventasAnio'), value: this.money(k.ventasAnio) },
     ];
 
     // Información global (Compras del día, Nuevos clientes, …): id 3 = conteo, resto = moneda.
@@ -128,6 +127,12 @@ export class DashboardComponent implements OnInit {
         value: c.id === 3 ? this.num(c.total) : this.money(c.total),
       });
     }
+
+    cards.push(
+      { color: 'warning', img: '/assets/images/svgs/icon-dd-date.svg', title: this.t('dashboard.kpis.ventasSemana'), value: this.money(k.ventasSemana) },
+      { color: 'accent', img: '/assets/images/svgs/icon-dd-invoice.svg', title: this.t('dashboard.kpis.ventasMes'), value: this.money(k.ventasMes) },
+      { color: 'success', img: '/assets/images/svgs/icon-pie.svg', title: this.t('dashboard.kpis.ventasAnio'), value: this.money(k.ventasAnio) },
+    );
 
     if (k.mermaActual) {
       cards.push({ color: 'error', img: '/assets/images/svgs/icon-favorites.svg', title: this.t('dashboard.merma.actual'), value: `${this.money(k.mermaActual.totalCostoMerma)} · ${this.num(k.mermaActual.totalPorcMerma)}%` });
@@ -161,11 +166,13 @@ export class DashboardComponent implements OnInit {
 
   // Configuración de las gráficas (se rellena al cargar datos).
   ventasOptions: Partial<ColumnChart> = this.buildVentasChart([]);
+  ivaOptions: Partial<ColumnChart> = this.buildIvaChart([]);
   estacionesOptions: Partial<ColumnChart> = this.buildEstacionesChart([]);
 
   ngOnInit(): void {
     this.cargarKpis();
     this.cargarVentasPorFecha();
+    this.cargarIvaAcumulado();
     this.cargarEstacionesLista();
     this.cargarTopProductos();
     this.cargarTopClientes();
@@ -209,6 +216,24 @@ export class DashboardComponent implements OnInit {
   onPeriodoChange(value: number): void {
     this.periodo.set(value);
     this.cargarVentasPorFecha();
+    this.cargarIvaAcumulado();
+  }
+
+  /**
+   * IVA acumulado de ventas y pedidos especiales, junto a "Ventas por fecha" (mismo periodo).
+   * Replica el segundo gráfico del legado, "IVA COBRADO DE VENTAS & PEDIDOS ESPECIALES".
+   */
+  cargarIvaAcumulado(): void {
+    this.service.obtenerIvaAcumulado(this.periodo()).subscribe({
+      next: (res) => {
+        this.categoriasIva.set(res);
+        this.ivaOptions = this.buildIvaChart(res);
+      },
+      error: (err) => {
+        console.error('Error al obtener IVA acumulado', err);
+        this.notify.notify('error', this.translate.instant('dashboard.msg.ivaError'));
+      },
+    });
   }
 
   /** Drilldown: al clicar una columna carga el desglose por estación de esa categoría. */
@@ -313,6 +338,47 @@ export class DashboardComponent implements OnInit {
       stroke: { show: false },
       dataLabels: { enabled: false },
       legend: { show: true, position: 'top' },
+      grid: { borderColor: 'rgba(0,0,0,0.1)', strokeDashArray: 3 },
+      yaxis: { labels: { formatter: (v: number) => self.formatCurrency(v) } },
+      xaxis: {
+        categories: categorias.map((c) => c.categoria),
+        axisBorder: { show: false },
+      },
+      tooltip: {
+        theme: 'dark',
+        y: { formatter: (v: number) => self.formatCurrency(v) },
+      },
+    };
+  }
+
+  /**
+   * IVA acumulado (legado `graficoIvaAcumulado.js`): una sola serie "IVA Acumulado", una columna
+   * por categoría con `total + totalPE` (mismo criterio que `DashBoardController.CrearDataGraficoIVA`),
+   * colores distintos por barra (equivalente a `colorByPoint: true` de Highcharts).
+   */
+  private buildIvaChart(categorias: Categoria[]): Partial<ColumnChart> {
+    const self = this;
+    return {
+      series: [
+        {
+          name: this.translate.instant('dashboard.chart.ivaAcumulado'),
+          data: categorias.map((c) => c.total + c.totalPE),
+        },
+      ],
+      chart: {
+        type: 'bar',
+        fontFamily: "'Plus Jakarta Sans', sans-serif;",
+        foreColor: '#adb0bb',
+        toolbar: { show: false },
+        height: 360,
+      },
+      colors: ['#5d87ff', '#49beff', '#13deb9', '#ffae1f', '#fa896b'],
+      plotOptions: {
+        bar: { horizontal: false, columnWidth: '40%', borderRadius: 6, distributed: true },
+      },
+      stroke: { show: false },
+      dataLabels: { enabled: false },
+      legend: { show: false },
       grid: { borderColor: 'rgba(0,0,0,0.1)', strokeDashArray: 3 },
       yaxis: { labels: { formatter: (v: number) => self.formatCurrency(v) } },
       xaxis: {

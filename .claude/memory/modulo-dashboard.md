@@ -26,8 +26,15 @@ dentro de `AdminComponent`, así `/admin` cae en el dashboard tras login. Menú:
 desde `@angular/common` en los `imports` del componente standalone (no llegan por
 `MaterialModule`). Sin ese import el build falla.
 
-## Fase 2 (pendiente, NO implementada)
-Lista "Ventas de Estaciones"; Top Clientes/Productos/Proveedores con selector de periodo;
-series temporales de merma/costo. Los endpoints de API (`top-ten`, `informacion-global`,
-`iva-acumulado`) ya existen.
+## Fase 2 — implementada (ver `feature/reporte_...` no aplica; entró vía auditoría de paridad)
+Lista "Ventas de Estaciones" y Top Clientes/Productos/Proveedores con selector de periodo:
+**implementadas** (confirmado en runtime, auditoría de paridad `dashboard` 2026-08-24). Series
+temporales de merma/costo: siguen sin implementar.
+
+## Corrección 2026-08-24 (auditoría de paridad P-01): gráfica de IVA acumulado
+El endpoint `iva-acumulado` **no era código muerto del legado** (afirmación previa incorrecta,
+heredada de la HU): el legado renderiza un segundo gráfico ("IVA COBRADO DE VENTAS & PEDIDOS
+ESPECIALES") junto al de "Ventas por fecha". Se agregó `obtenerIvaAcumulado` al servicio y un
+segundo `apx-chart` (columna única, serie "IVA Acumulado" = `total + totalPE` por categoría) en
+una segunda columna dentro de la misma card, reusando el selector de periodo existente.
 </content>

@@ -28,6 +28,8 @@
       "ventas": "Sales",
       "ventasPE": "PE Sales",
       "ventaDia": "Day sales",
+      "ivaTitle": "VAT collected on sales and special orders",
+      "ivaAcumulado": "Accumulated VAT",
       "empty": "No sales to display."
     },
     "estaciones": {
@@ -46,6 +48,7 @@
       "loading": "Loading…",
       "kpisError": "Error loading dashboard indicators",
       "ventasError": "Error loading sales by date",
+      "ivaError": "Error loading accumulated VAT",
       "estacionesError": "Error loading sales by station",
       "topError": "Error loading Top"
     },

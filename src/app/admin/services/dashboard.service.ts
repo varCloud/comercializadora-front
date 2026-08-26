@@ -87,4 +87,17 @@ export class DashboardService {
       .get<Notificacion<Categoria[]>>(`${this.baseUri}/top-ten`, { params })
       .pipe(map((res) => (res?.modelo ?? []).map((c) => new CategoriaModel(c))));
   }
+
+  /**
+   * IVA acumulado de ventas y pedidos especiales, para la gráfica que acompaña a "Ventas por
+   * fecha" (mismo periodo: 1=Semana, 2=Mes, 3=Año). Replica al legado
+   * (`DashBoardController.CrearDataGraficoIVA` + `graficoIvaAcumulado.js`), que sí renderiza
+   * este segundo gráfico — no es código muerto.
+   */
+  obtenerIvaAcumulado(periodo: number): Observable<Categoria[]> {
+    const params = new HttpParams().set('periodo', periodo);
+    return this.http
+      .get<Notificacion<Categoria[]>>(`${this.baseUri}/iva-acumulado`, { params })
+      .pipe(map((res) => (res?.modelo ?? []).map((c) => new CategoriaModel(c))));
+  }
 }

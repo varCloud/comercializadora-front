@@ -28,6 +28,8 @@
       "ventas": "Ventas",
       "ventasPE": "Ventas PE",
       "ventaDia": "Venta del día",
+      "ivaTitle": "IVA cobrado de ventas y pedidos especiales",
+      "ivaAcumulado": "IVA Acumulado",
       "empty": "No hay ventas para mostrar."
     },
     "estaciones": {
@@ -46,6 +48,7 @@
       "loading": "Cargando…",
       "kpisError": "Error al cargar los indicadores del dashboard",
       "ventasError": "Error al cargar las ventas por fecha",
+      "ivaError": "Error al cargar el IVA acumulado",
       "estacionesError": "Error al cargar las ventas por estación",
       "topError": "Error al cargar el Top"
     },
