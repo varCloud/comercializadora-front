@@ -323,7 +323,7 @@
     },
     "import": {
       "add": "Import",
-      "title": "Import inventory limits",
+      "title": "Import excel file",
       "selectFile": "Select file",
       "hint": "Select an .xlsx file with the format (Barcode, Warehouse, Minimum, Maximum).",
       "invalidFile": "Invalid file. Only .xlsx or .xls are accepted.",
@@ -1597,7 +1597,7 @@
     "form": {
       "titleAdd": "Add product line",
       "titleEdit": "Edit product line",
-      "titleView": "Product line detail",
+      "titleView": "Product line information",
       "descripcion": "Description",
       "descripcionPlaceholder": "Line description",
       "requiredDescripcion": "Enter the description.",

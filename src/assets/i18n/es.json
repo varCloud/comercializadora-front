@@ -323,7 +323,7 @@
     },
     "import": {
       "add": "Importar",
-      "title": "Importar límites de inventario",
+      "title": "Importar archivo excel",
       "selectFile": "Seleccionar archivo",
       "hint": "Selecciona un archivo .xlsx con el formato (Código Barras, Almacén, Mínimo, Máximo).",
       "invalidFile": "Archivo inválido. Solo se aceptan .xlsx o .xls.",
@@ -1597,7 +1597,7 @@
     "form": {
       "titleAdd": "Agregar línea de producto",
       "titleEdit": "Editar línea de producto",
-      "titleView": "Detalle de línea de producto",
+      "titleView": "Información de la línea de producto",
       "descripcion": "Descripción",
       "descripcionPlaceholder": "Descripción de la línea",
       "requiredDescripcion": "Captura la descripción.",
