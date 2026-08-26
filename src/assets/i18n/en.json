@@ -2872,14 +2872,18 @@
       },
       "actions": {
         "generarPdf": "Generate PDF",
-        "realizarAbono": "Make payment"
+        "realizarAbono": "Make payment",
+        "exportar": "Export to CSV"
       },
       "empty": "No customers with a balance due were found.",
       "msg": {
         "cargandoListado": "Searching accounts receivable…",
         "errorListado": "Error searching the accounts receivable.",
         "generandoPdf": "Generating PDF…",
-        "generarPdfError": "Could not generate the account receivable PDF."
+        "generarPdfError": "Could not generate the account receivable PDF.",
+        "exportando": "Generating accounts receivable export…",
+        "exportOk": "Accounts receivable exported successfully",
+        "exportError": "Error exporting the accounts receivable"
       }
     },
     "realizarAbonoDialog": {

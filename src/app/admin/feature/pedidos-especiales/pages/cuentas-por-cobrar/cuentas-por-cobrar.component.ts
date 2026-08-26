@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, formatDate } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TablerIconsModule } from 'angular-tabler-icons';
@@ -43,6 +43,8 @@ export class CuentasPorCobrarComponent implements OnInit {
   private readonly translate = inject(TranslateService);
 
   @BlockUI('cuentas-por-cobrar') blockUI!: NgBlockUI;
+  /** Bloque propio para la exportación (no bloquea/depende del listado). */
+  @BlockUI('cuentas-por-cobrar-exportar') blockUIExportar!: NgBlockUI;
 
   readonly displayedColumns = [
     'idCliente',
@@ -119,6 +121,36 @@ export class CuentasPorCobrarComponent implements OnInit {
           this.notify.notify('error', this.translate.instant('pedidosEspeciales.cuentasPorCobrar.msg.generarPdfError'));
         },
       });
+  }
+
+  /**
+   * "Exportar a CSV" (P-02, auditoría de paridad `cuentas-por-cobrar-pe`): mismo criterio de
+   * búsqueda `q` que el listado, todas las filas (server-side, no cliente).
+   */
+  exportar(): void {
+    this.blockUIExportar.start(this.translate.instant('pedidosEspeciales.cuentasPorCobrar.msg.exportando'));
+    this.service
+      .exportarCuentasPorCobrarCSV(this.search)
+      .pipe(finalize(() => this.blockUIExportar.stop()))
+      .subscribe({
+        next: (blob) => this.descargarCSV(blob),
+        error: (err) => {
+          console.error('Error al exportar las cuentas por cobrar', err);
+          this.notify.notify('error', this.translate.instant('pedidosEspeciales.cuentasPorCobrar.msg.exportError'));
+        },
+      });
+  }
+
+  /** Dispara la descarga del blob CSV en el navegador (anchor temporal). */
+  private descargarCSV(blob: Blob): void {
+    const nombreArchivo = `CuentasPorCobrar_${formatDate(new Date(), 'yyyy-MM-dd', 'en-US')}.csv`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombreArchivo;
+    a.click();
+    URL.revokeObjectURL(url);
+    this.notify.notify('success', this.translate.instant('pedidosEspeciales.cuentasPorCobrar.msg.exportOk'));
   }
 
   /** "Realizar abono" — abre el diálogo con el detalle de pedidos con adeudo del cliente + el formulario de abono. */

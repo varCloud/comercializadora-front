@@ -2872,14 +2872,18 @@
       },
       "actions": {
         "generarPdf": "Generar PDF",
-        "realizarAbono": "Realizar abono"
+        "realizarAbono": "Realizar abono",
+        "exportar": "Exportar a CSV"
       },
       "empty": "No se encontraron clientes con adeudo.",
       "msg": {
         "cargandoListado": "Consultando cuentas por cobrar…",
         "errorListado": "Error al consultar las cuentas por cobrar.",
         "generandoPdf": "Generando PDF…",
-        "generarPdfError": "No fue posible generar el PDF de la cuenta por cobrar."
+        "generarPdfError": "No fue posible generar el PDF de la cuenta por cobrar.",
+        "exportando": "Generando exportación de cuentas por cobrar…",
+        "exportOk": "Cuentas por cobrar exportadas correctamente",
+        "exportError": "Error al exportar las cuentas por cobrar"
       }
     },
     "realizarAbonoDialog": {

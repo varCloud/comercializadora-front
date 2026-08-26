@@ -490,6 +490,17 @@ export class PedidosEspecialesService {
       .pipe(map((res) => this.mapPageCuentasPorCobrar(res)));
   }
 
+  /**
+   * Exporta a CSV el listado con el MISMO criterio `q` que {@link listarCuentasPorCobrar}, sin
+   * paginar (P-02 de la auditoría de paridad `cuentas-por-cobrar-pe`: el legado exportaba a
+   * Excel vía DataTables Buttons, ausente en la migración inicial). Mismo patrón server-side que
+   * `ReportesCierresPEService.exportarCSV`.
+   */
+  exportarCuentasPorCobrarCSV(q: string): Observable<Blob> {
+    const params = buildListParams({ q });
+    return this.http.get(`${this.cuentasPorCobrarUri}/exportar`, { params, responseType: 'blob' });
+  }
+
   private mapPageCuentasPorCobrar(res: Notificacion<CuentaPorCobrar[]>): PagedResult<CuentaPorCobrar> {
     return {
       data: (res?.modelo ?? []).map((c) => new CuentaPorCobrarModel(c)),
