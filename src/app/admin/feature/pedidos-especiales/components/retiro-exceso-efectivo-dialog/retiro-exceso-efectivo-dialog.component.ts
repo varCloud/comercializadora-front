@@ -22,10 +22,10 @@ import { imprimirPdfBlob } from 'src/app/admin/shared/utils/abrir-pdf-blob';
 /**
  * Modal "Retiro por exceso de efectivo" — réplica de `AbrirModalRetiroExcesoEfectivo()`
  * (`evtIngresosRetirosEfectivo.js:160-165`) y de `#ModalRetiroExcesoEfectivo`: resumen de caja,
- * monto con tope validado en cliente y pestaña "Retiros del día".
- *
- * Convive con la página `RetiroEfectivoComponent` (que tiene su entrada de menú): este modal
- * existe porque el legado retira sin salir del pedido en curso, y navegar perdería el ticket.
+ * monto con tope validado en cliente y pestaña "Retiros del día". Único punto de entrada al
+ * caso de uso (fiel al legado, que tampoco lo expone como pantalla propia): se abre desde el
+ * toolbar de "Nuevo Pedido" porque el legado retira sin salir del pedido en curso, y navegar
+ * perdería el ticket.
  */
 @Component({
   selector: 'app-retiro-exceso-efectivo-dialog',

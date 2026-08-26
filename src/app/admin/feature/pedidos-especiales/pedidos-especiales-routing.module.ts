@@ -4,10 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 // Rutas del dominio "Pedidos Especiales" (núcleo, Bloque A en adelante). "Nuevo Pedido" (FE-A3),
 // "Entregar Pedido" + "Confirmar Productos" (FE-B3/FE-B4, Bloque B), "Pedidos en Ruta" +
 // "Cotizaciones" (FE-C3/FE-C4, Bloque C), "Consultar Pedidos" (FE-D3, Bloque D — cierra el
-// núcleo), "Apertura/Ingreso de Efectivo" + "Retiro de Efectivo" + "Cierre de Caja" (FE-6,
-// feature `cierre_caja_pe`) ya existen. "Cuentas por Cobrar" (FE-2, feature
-// `cuentas_por_cobrar_pe`) se maqueta con datos mock hasta que FE-4/FE-5 la conecten al backend.
-// Cargada con loadComponent (regla 06).
+// núcleo), "Cierre de Caja" (FE-6, feature `cierre_caja_pe`) ya existen. "Apertura/Ingreso de
+// Efectivo" y "Retiro de Efectivo" NO son pantallas propias (el legado no las tiene como tal):
+// viven como modales del toolbar de "Nuevo Pedido" (`IngresoEfectivoDialogComponent`/
+// `RetiroExcesoEfectivoDialogComponent`) — las páginas/rutas independientes que existieron aquí
+// se eliminaron por paridad (auditoría `paridad_cierre-caja-pe.md`, hallazgo P-01, 2026-08-24).
+// "Cuentas por Cobrar" (FE-2, feature `cuentas_por_cobrar_pe`) se maqueta con datos mock hasta
+// que FE-4/FE-5 la conecten al backend. Cargada con loadComponent (regla 06).
 const routes: Routes = [
   {
     path: 'nuevo',
@@ -60,22 +63,6 @@ const routes: Routes = [
         (m) => m.CuentasPorCobrarComponent,
       ),
     data: { title: 'Cuentas por Cobrar' },
-  },
-  {
-    path: 'apertura-ingreso-efectivo',
-    loadComponent: () =>
-      import('./pages/apertura-ingreso-efectivo/apertura-ingreso-efectivo.component').then(
-        (m) => m.AperturaIngresoEfectivoComponent,
-      ),
-    data: { title: 'Apertura de Caja / Ingreso de Efectivo' },
-  },
-  {
-    path: 'retiro-efectivo',
-    loadComponent: () =>
-      import('./pages/retiro-efectivo/retiro-efectivo.component').then(
-        (m) => m.RetiroEfectivoComponent,
-      ),
-    data: { title: 'Retiro de Efectivo' },
   },
   {
     path: 'cierre-caja',

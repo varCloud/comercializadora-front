@@ -4,10 +4,16 @@
       <mat-card-content class="p-24">
         <h4 class="f-s-18 f-w-600 m-b-16">{{ 'pedidosEspeciales.caja.cierre.title' | translate }}</h4>
 
-        @if (cierreExitoso()) {
+        @if (mostrarResumenCierre()) {
           <div class="text-center p-24">
             <i-tabler name="circle-check" class="icon-48" [style.color]="'#13deb9'"></i-tabler>
             <p class="f-s-16 f-w-600 m-t-16">{{ 'pedidosEspeciales.caja.cierre.msg.exito' | translate }}</p>
+            @if (encabezado(); as info) {
+              <p class="f-s-14 text-muted">
+                {{ 'pedidosEspeciales.caja.cierre.efectivoEntregado' | translate }}:
+                {{ info.efectivoEntregadoEnCierre | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}
+              </p>
+            }
             <button
               mat-flat-button
               color="primary"

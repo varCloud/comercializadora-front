@@ -72,6 +72,18 @@ export class CierreCajaComponent implements OnInit {
   readonly ultimoCierreId = signal<number | null>(null);
   readonly generandoTicket = signal(false);
 
+  /**
+   * P-03 (auditoría paridad `cierre-caja-pe`): el dato real de si la caja ya está cerrada viene
+   * de `encabezado()?.cajaCerrada` (BD, igual que `Model.Modelo[0].cajaCerrada` del legado en
+   * `CierreCajas.cshtml:23`) — no solo de `cierreExitoso()`, que es un signal local que se pierde
+   * al recargar la página. Se combinan las dos: `cierreExitoso()` cubre el cierre recién hecho en
+   * esta sesión (antes de que `lineas` se refresque), `cajaYaCerrada()` cubre recargar/reabrir.
+   */
+  readonly cajaYaCerrada = computed(() => this.encabezado()?.cajaCerrada ?? false);
+  readonly mostrarResumenCierre = computed(() => this.cierreExitoso() || this.cajaYaCerrada());
+  /** Id del cierre para "Ver ticket": el de esta sesión si se acaba de cerrar, si no el del dato ya persistido. */
+  readonly idCierreParaTicket = computed(() => this.ultimoCierreId() ?? this.encabezado()?.idCierrePedidoEspecial ?? null);
+
   readonly cierreForm = this.fb.group({
     efectivoEntregadoEnCierre: [null as number | null, [Validators.required, Validators.min(0)]],
   });
@@ -187,17 +199,22 @@ export class CierreCajaComponent implements OnInit {
   /**
    * El SP de cierre no regresa el id del cierre — se relee `cierre-dia` tras un cierre exitoso
    * para obtener `idCierrePedidoEspecial` y poder ofrecer el ticket (nota del contrato de la HU).
+   * También refresca `lineas` (no solo el id) para que `encabezado()` refleje de inmediato
+   * `cajaCerrada`/`efectivoEntregadoEnCierre` reales — mismo dato que verá un reload (P-03).
    */
   private releerIdCierre(): void {
     this.service.obtenerCierreDia().subscribe({
-      next: (lineas) => this.ultimoCierreId.set(lineas[0]?.idCierrePedidoEspecial ?? null),
+      next: (lineas) => {
+        this.ultimoCierreId.set(lineas[0]?.idCierrePedidoEspecial ?? null);
+        this.lineas.set(lineas);
+      },
       error: (err) => console.error('Error al releer el id del cierre para el ticket', err),
     });
   }
 
-  /** "Ver ticket" del cierre recién realizado (ver `ultimoCierreId`). */
+  /** "Ver ticket" del cierre (recién realizado o ya persistido — ver `idCierreParaTicket`). */
   verTicketCierre(): void {
-    const id = this.ultimoCierreId();
+    const id = this.idCierreParaTicket();
     if (!id || this.generandoTicket()) return;
 
     this.generandoTicket.set(true);
@@ -213,8 +230,12 @@ export class CierreCajaComponent implements OnInit {
       });
   }
 
-  /** Tras el cierre, la caja ya no está abierta: navega a Apertura de Caja / Ingreso de Efectivo. */
+  /**
+   * Tras el cierre, la caja ya no está abierta: navega a "Nuevo Pedido", único punto de entrada
+   * a Apertura de Caja / Ingreso de Efectivo (modal de toolbar, fiel al legado — ver P-01 de
+   * `paridad_cierre-caja-pe.md`; la página independiente que existía aquí se eliminó).
+   */
   continuar(): void {
-    this.router.navigate(['/admin/pedidos-especiales/apertura-ingreso-efectivo']);
+    this.router.navigate(['/admin/pedidos-especiales/nuevo']);
   }
 }
