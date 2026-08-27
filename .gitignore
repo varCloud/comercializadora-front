@@ -44,5 +44,16 @@ Thumbs.db
 # CodeGraph local index (gentle-ai)
 .codegraph/
 
+# SDD skill registry cache (gentle-ai)
+.atl/
+
 # Credenciales de deploy FTP (deploy-ftp.js) — NUNCA versionar. Plantilla: .env.example
 .env
+
+# Cypress E2E (ventas-cypress-e2e) — artefactos locales y credenciales dev.
+# Plantilla commiteada: cypress.env.example.json.
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+cypress/results/
+cypress.env.json

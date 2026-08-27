@@ -200,6 +200,7 @@
                 #scanInput
                 matInput
                 autocomplete="off"
+                data-cy="pos-scan-input"
                 [formControl]="scanControl"
                 [matAutocomplete]="auto"
                 [placeholder]="'ventas.pos.escanearPlaceholder' | translate"
@@ -215,7 +216,7 @@
               (optionSelected)="onSugerenciaSeleccionada($event)"
             >
               @for (p of sugerencias(); track p.idProducto) {
-                <mat-option [value]="p" [disabled]="p.existencia <= 0">
+                <mat-option [value]="p" [disabled]="p.existencia <= 0" [attr.data-cy]="'pos-sugerencia-' + p.idProducto">
                   {{ p.descripcion }} - {{ existenciaLabel(p) }}
                 </mat-option>
               }
@@ -227,13 +228,14 @@
                 type="number"
                 min="0.01"
                 step="0.01"
+                data-cy="pos-cantidad-manual"
                 [placeholder]="'ventas.pos.buscarProducto.cantidad' | translate"
                 [(ngModel)]="cantidadManual"
                 [ngModelOptions]="{ standalone: true }"
               />
             </mat-form-field>
 
-            <button mat-flat-button color="primary" type="button" (click)="agregarSeleccionado()">
+            <button mat-flat-button color="primary" type="button" data-cy="pos-agregar" (click)="agregarSeleccionado()">
               {{ 'ventas.pos.buscarProducto.agregar' | translate }}
             </button>
           </div>
@@ -255,7 +257,7 @@
               </thead>
               <tbody>
                 @for (linea of ticket(); track linea.idProducto) {
-                  <tr>
+                  <tr [attr.data-cy]="'pos-linea-' + linea.idProducto">
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td>{{ linea.idProducto }}</td>
                     <td>
@@ -268,6 +270,7 @@
                         type="number"
                         [step]="linea.fraccion ? 0.01 : 1"
                         [min]="linea.fraccion ? 0.01 : 1"
+                        [attr.data-cy]="'pos-linea-cantidad-' + linea.idProducto"
                         [(ngModel)]="linea.cantidad"
                         [ngModelOptions]="{ standalone: true }"
                         (blur)="onCantidadBlur(linea)"
@@ -275,7 +278,7 @@
                     </td>
                     <td class="text-center">{{ linea.precioUnitario | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
                     <td class="text-center">{{ descuentoLinea(linea) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
-                    <td class="text-center f-w-600">{{ importeLinea(linea) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+                    <td class="text-center f-w-600" [attr.data-cy]="'pos-linea-importe-' + linea.idProducto">{{ importeLinea(linea) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
                     <td class="text-center">
                       <a
                         class="cursor-pointer"
@@ -302,7 +305,7 @@
     <div class="col-lg-4 col-12">
       <mat-card class="cardWithShadow">
         <mat-card-content class="p-24">
-          <div class="d-flex justify-content-between m-b-8">
+          <div class="d-flex justify-content-between m-b-8" data-cy="pos-articulos">
             <span>{{ 'ventas.pos.resumen.articulos' | translate }}</span>
             <span class="f-w-600">{{ cantidadTotalTicket() }}</span>
           </div>
@@ -312,12 +315,12 @@
               <span class="f-w-600">{{ idPedidoEspecialActual() }}</span>
             </div>
           }
-          <div class="d-flex justify-content-between m-b-16">
+          <div class="d-flex justify-content-between m-b-16" data-cy="pos-subtotal">
             <span class="f-s-18 f-w-600">{{ 'ventas.pos.resumen.subtotal' | translate }}</span>
             <span class="f-s-24 f-w-700">{{ subtotal() | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</span>
           </div>
 
-          <button mat-flat-button color="primary" class="w-100 m-b-8" type="button" (click)="abrirCobro()">
+          <button mat-flat-button color="primary" class="w-100 m-b-8" type="button" data-cy="pos-cobrar" (click)="abrirCobro()">
             {{ 'ventas.pos.resumen.cobrar' | translate }}
           </button>
           <button mat-stroked-button color="warn" class="w-100" type="button" (click)="limpiarTicket()">
@@ -325,7 +328,7 @@
           </button>
 
           <hr class="m-t-16 m-b-16" />
-          <div class="text-center">
+          <div class="text-center" data-cy="pos-ultimo-cambio">
             <div class="f-s-14 text-muted">{{ 'ventas.pos.resumen.ultimoCambio' | translate }}</div>
             <div class="f-s-22 f-w-700">{{ (ultimoCambio() ?? 0) | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</div>
           </div>
@@ -337,6 +340,7 @@
               color="primary"
               class="w-100 m-b-8"
               type="button"
+              data-cy="pos-ver-ticket"
               [disabled]="generandoTicket()"
               (click)="verTicket('venta')"
             >
